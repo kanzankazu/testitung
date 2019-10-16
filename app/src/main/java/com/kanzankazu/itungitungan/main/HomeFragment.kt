@@ -1,4 +1,4 @@
-package com.kanzankazu.itungitungan.logreg.ui.home
+package com.kanzankazu.itungitungan.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,20 +12,9 @@ import com.kanzankazu.itungitungan.R
 
 class HomeFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        homeViewModel =
-            ViewModelProviders.of(this).get(HomeViewModel::class.java)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         val textView: TextView = root.findViewById(R.id.text_home)
-        homeViewModel.text.observe(this, Observer {
-            textView.text = it
-        })
         return root
     }
 }

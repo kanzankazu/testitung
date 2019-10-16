@@ -15,6 +15,8 @@ import androidx.multidex.MultiDexApplication;
 import com.crashlytics.android.Crashlytics;
 import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.UnsupportedEncodingException;
@@ -29,7 +31,7 @@ public class MyApplication extends MultiDexApplication {
     private static MyApplication mInstance;
     public Activity activity;
     private FirebaseAnalytics mFirebaseAnalytics;
-    //private AppEventsLogger mAppEventsLogger;
+    private AppEventsLogger mAppEventsLogger;
     private String identifierCrashlytics = Constants.LogInStatus.GUEST;
 
     @Override
