@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">ItungItungan</string>
+    <string name="package_name" translatable="false">com.kanzankazu.itungitungan</string>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>
