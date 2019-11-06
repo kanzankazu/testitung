@@ -1,4 +1,4 @@
-package com.kanzankazu.itungitungan.main
+package com.kanzankazu.itungitungan.view.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kanzankazu.itungitungan.R
 
-class HomeFragment : Fragment() {
+class NotificationsFragment : Fragment() {
 
     private var mParam1: String? = ""
     private var mParam2: String? = ""
@@ -16,8 +16,8 @@ class HomeFragment : Fragment() {
         val ARG_PARAM1 = "param1"
         val ARG_PARAM2 = "param2"
 
-        fun newInstance(param1: String, param2: String): HomeFragment {
-            val fragment = HomeFragment()
+        fun newInstance(param1: String, param2: String): NotificationsFragment {
+            val fragment = NotificationsFragment()
             val args = Bundle()
             args.putString(ARG_PARAM1, param1)
             args.putString(ARG_PARAM2, param2)
@@ -26,11 +26,11 @@ class HomeFragment : Fragment() {
         }
 
         fun newInstance(): Fragment {
-            return HomeFragment()
+            return NotificationsFragment()
         }
     }
 
-    fun HomeFragment() {
+    fun NotificationsFragment() {
         // Required empty public constructor
     }
 
@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_notifications, container, false)
 
         initComponent(view)
         initParam()

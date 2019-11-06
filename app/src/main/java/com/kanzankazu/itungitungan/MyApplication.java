@@ -6,16 +6,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.util.Base64;
 import android.util.Log;
-
-import androidx.multidex.MultiDex;
-import androidx.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
 import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
-import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.analytics.FirebaseAnalytics;
 

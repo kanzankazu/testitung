@@ -1,0 +1,19 @@
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+    <android.support.design.widget.TabLayout
+            android:id="@+id/tablayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/colorPrimaryDark"
+            app:tabIndicatorHeight="@dimen/padding_margin_3dp"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/colorPrimaryDark"
+            app:tabTextColor="@color/colorAccent" />
+
+</android.support.design.widget.AppBarLayout>

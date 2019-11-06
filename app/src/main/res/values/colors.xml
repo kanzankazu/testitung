@@ -1,6 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#FFEB3B</color>
+    <color name="colorPrimaryDark">#FBC02D</color>
+    <color name="colorAccent">#FFF9C4</color>
+
+    <!--get from android studio toolbar-->
+    <color name="colorSecondary">#bababa</color>
+    <color name="colorAndroid">#7aa310</color>
+    <color name="androidOrange">#f4bf52</color>
+    <color name="androidOrange_Dark">#ffab00</color>
+    <color name="androidPurple">#a682b7</color>
+    <color name="androidBluelight">#acdaf5</color>
+    <color name="androidBluedark">#0076ac</color>
+
+    <color name="graylight">#cacaca</color>
+    <color name="accent">#ff5252</color>
+    <color name="secondary_text">#727272</color>
+    <color name="white_overlay">#F3F3F3</color>
+    <color name="White">#ffffff</color>
+
+    <!--get from android studio toolbar-->
+    <color name="maroon">#800000</color>
+    <color name="androidRed">#d86858</color>
+    <color name="accent_dark">#ff2929</color>
+    <color name="red">#F44336</color>
+    <color name="red_light">#EF9A9A</color>
+    <color name="orange3">#ff3300</color>
+    <color name="orange2">#ff6600</color>
+    <color name="orange1">#ff9900</color>
+    <color name="androidSorange">#f5b32c</color>
+    <color name="yellowlight">#fbeb75</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="olive">#808000</color>
+    <color name="androidSbluelight">#acdaf5</color>
+    <color name="aqua">#00FFFF</color>
+    <color name="androidSbluedark">#279ed4</color>
+    <color name="blue">#0000FF</color>
+    <color name="navy">#000080</color>
+    <color name="teal">#008080</color>
+    <color name="androidSgreen">#39b44a</color>
+    <color name="androidGreen">#39b44a</color>
+    <color name="lime">#00FF00</color>
+    <color name="green">#4CAF50</color>
+    <color name="green_light">#C8E6C9</color>
+    <color name="Black">#000000</color>
+    <color name="graydark">#2b2b2b</color>
+    <color name="gray">#808080</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="grey">#cccccc</color>
+    <color name="white">#FFFFFF</color>
+    <color name="fuchsia">#FF00FF</color>
+    <color name="purple">#800080</color>
+
+    <!--OTOMOTO-->
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_off_white">#FFFFFF</color>
+    <color name="color_black">#000000</color>
+    <color name="color_black_87_percent">#DE000000</color>
+    <color name="color_black_55_percent">#8C000000</color>
+    <color name="color_black_54_percent">#8A000000</color>
+    <color name="color_black_38_percent">#61000000</color>
+    <color name="black_overlay">#66000000</color>
+
+    <color name="color_transparent">#00000000</color>
+    <color name="color_hint_guideline_otomoto">#2d2d2d</color>
+    <color name="color_label_guideline_otomoto">#414042</color>
+    <color name="color_desc_guideline_otomoto">#3a3a3a</color>
+    <color name="color_hint_default_edittext">#808080</color>
+    <color name="color_hint_default_edittext2">#eeeeee</color>
+
+    <!--BLUE-->
+    <color name="color_blue_facebook">#3a5998</color>
+    <color name="color_blue_facebook_selected">#314c83</color>
+    <color name="color_blue_A400">#00B0FF</color>
+    <color name="navy_blue">#1e3559</color>
+    <color name="cyan">#5bcdcc</color>
+    <color name="light_cyan">#6ee0e0</color>
+    <color name="color_background_workshop_placeholder">#eaeaea</color>
+
+    <!--RED-->
+    <color name="color_red_A700">#D50000</color>
+    <color name="color_red_guideline_otomoto">#E56E6E</color>
+
+    <!--GREY-->
+    <color name="color_white_cardview">#F2F2F2</color>
+    <color name="color_grey_100">#F5F5F5</color>
+    <color name="color_grey_200">#EEEEEE</color>
+    <color name="color_grey_300">#E0E0E0</color>
+    <color name="color_grey_400">#BDBDBD</color>
+    <color name="color_grey_500">#9E9E9E</color>
+    <color name="color_grey_600">#757575</color>
+    <color name="color_grey_700">#616161</color>
+    <color name="color_grey_900">#212121</color>
+    <color name="color_grey_search_info">#F2F2F2</color>
+
+    <color name="color_grey_login_register">#bebecc</color>
+    <color name="color_grey_google_selected">#f4f4f4</color>
+    <color name="color_grey_vehicle_selected">#f9f9f9</color>
+
+    <!--GREEN-->
+    <color name="color_green_400">#66BB6A</color>
+
+    <!--YELLOW-->
+    <color name="yellow_guideline_otomoto">#F9D870</color>
+
+
+    <!--BOOKING STATUS-->
+    <color name="booking_status_canceled">#F25050</color>
+    <color name="booking_status_completed">#5DBC68</color>
+
+    <!--CALENDAR-->
+    <color name="greyed_out">#c7c7c7</color>
+
+    <color name="summer">#44eebd82</color>
+    <color name="fall">#44d8d27e</color>
+    <color name="winter">#44a1c1da</color>
+    <color name="spring">#448da64b</color>
+
+    <!-- PROMO LABEL -->
+    <color name="gratis_color_code_promo">#e56e6e</color>
+    <color name="paket_color_code_promo">#f9d870</color>
+    <color name="discount_color_code_promo">#93ea93</color>
+
+    <color name="green_point_color">#4ACD44</color>
+    <color name="red_point_color">#FF7373</color>
+
+    <color name="out_of_stock_image">#99000000</color>
+
+    <color name="out_of_stock_text_color">#898989</color>
+
+    <!-- BORDER COLOR -->
+    <color name="border_edit_text">#eaedef</color>
+    <color name="background_edit_text_rating">#eff3f6</color>
+
+    <!-- Notification-->
+    <color name="notification_header_background">#EAEAEA</color>
+
+    <!-- APPROVAL STATUS CARD -->
+    <color name="approval_status_text">#828386</color>
+    <color name="approval_card_cancel_button_text_color">#E56E6E</color>
+    <color name="approval_card_cancel_button">#ffffff</color>
+    <color name="approval_card_cancel_button_pressed">#f4f4f4</color>
+
+    <!-- APPROVAL BUTTON -->
+    <color name="approval_button_agree">#5DBC68</color>
+    <color name="approval_button_agree_pressed">#965DBC68</color>
+    <color name="approval_button_refuse">#E56E6E</color>
+    <color name="approval_button_refuse_pressed">#96E56E6E</color>
+
+    <!-- APPROVAL UPLOAD DOCUMENT -->
+    <color name="approval_upload_document_photo_background">#F4F3F4</color>
+
+    <!-- FILTER BORDER -->
+    <color name="filter_catalogue_border">#868686</color>
+
+    <!--JUBEL STATUS-->
+    <color name="jubel_open">#1E3559</color>
+    <color name="jubel_cancel">#E56E6E</color>
+    <color name="jubel_pending">#7584DD</color>
+    <color name="jubel_processing">#427EC6</color>
+    <color name="jubel_close">#989898</color>
+    <color name="jubel_deal">#93EA93</color>
 </resources>

@@ -34,8 +34,6 @@ public class FBDatabaseUtils {
         });
     }
 
-    public
-
     interface FirebaseInterface {
         interface ValueListener{
             void onChange(DataSnapshot dataSnapshot);

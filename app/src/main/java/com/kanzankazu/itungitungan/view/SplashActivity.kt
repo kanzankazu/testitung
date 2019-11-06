@@ -1,7 +1,7 @@
-package com.kanzankazu.itungitungan.intro
+package com.kanzankazu.itungitungan.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import com.kanzankazu.itungitungan.R
 
 class SplashActivity : AppCompatActivity() {

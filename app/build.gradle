@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 String fetchFirebase
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.kanzankazu.itungitungan"
         minSdkVersion 19
@@ -14,7 +14,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         flavorDimensions "release"
-        vectorDrawables.useSupportLibrary = true
     }
     productFlavors {
         MainApp {
@@ -112,7 +111,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     //noinspection GradleCompatible
@@ -122,47 +120,46 @@ dependencies {
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    //Play Service
+    /**/
     implementation 'com.google.android.gms:play-services:12.0.1'
     implementation 'com.google.android.gms:play-services-maps:12.0.1'
     implementation 'com.google.android.gms:play-services-location:12.0.1'
     implementation 'com.google.android.gms:play-services-auth:12.0.1'
     implementation 'com.google.android.gms:play-services-analytics:12.0.1'
 
-    //Firebase
-    implementation "com.google.firebase:firebase-invites:12.0.1"
-    implementation "com.google.firebase:firebase-ads:12.0.1"
+    implementation 'com.google.firebase:firebase-ads:12.0.1'
     implementation 'com.google.firebase:firebase-messaging:12.0.1'
-    implementation 'com.google.firebase:firebase-auth:12.0.1'
-    implementation 'com.google.firebase:firebase-core:12.0.1'
     implementation 'com.google.firebase:firebase-crash:12.0.1'
+    implementation 'com.google.firebase:firebase-auth:12.0.1'
+    implementation "com.google.firebase:firebase-invites:12.0.1"
+    implementation 'com.google.firebase:firebase-core:12.0.1'
     implementation 'com.google.firebase:firebase-config:12.0.1'
-    implementation 'com.google.firebase:firebase-database:12.0.1'
-
-    implementation 'com.firebaseui:firebase-ui-database:6.0.2'
-    implementation 'com.firebaseui:firebase-ui-firestore:6.0.2'
-    implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
-    implementation 'com.firebaseui:firebase-ui-storage:6.0.2'
-
-    //Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'com.google.code.gson:gson:2.8.0'
-    //noinspection DuplicatePlatformClasses
-    implementation 'org.apache.httpcomponents:httpclient:4.5'
-    implementation 'org.apache.httpcomponents:httpcore:4.4.1'
-
-    /*FACEBOOK LOGIN*/
-    implementation "com.facebook.android:facebook-android-sdk:5.4.0"
-    /*CRASHLYSTIC*/
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true
     }
+
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
+
+    /*FACEBOOK LOGIN*/
+    implementation "com.facebook.android:facebook-android-sdk:5.4.0"
+
+    /*BUTTERKNIFE*/
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    /*KOTLIN*/
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    /**/
+    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    //noinspection DuplicatePlatformClasses
+    implementation 'org.apache.httpcomponents:httpclient:4.5'
+    implementation 'org.apache.httpcomponents:httpcore:4.4.1'
 
     /*USED*/
     implementation 'com.hbb20:ccp:2.1.2'
@@ -170,14 +167,15 @@ dependencies {
     implementation 'com.mindorks.android:prdownloader:0.4.0'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
 
-    //Other Library
-    implementation 'androidx.vectordrawable:vectordrawable:1.0.1'
-    implementation 'androidx.navigation:navigation-fragment:2.0.0'
-    implementation 'androidx.navigation:navigation-ui:2.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
+    /*UNUSED*/
+    implementation 'us.belka:androidtoggleswitch:1.2.2'
+    implementation 'com.github.tajchert:nammu:1.2.0'
+    implementation 'com.github.siyamed:android-shape-imageview:0.9.3@aar'
+    implementation 'rongi.rotate-layout:rotate-layout:3.0.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.jsibbold:zoomage:1.1.0'
+    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'org.sufficientlysecure:html-textview:3.6'
+    implementation 'com.ebanx:swipe-button:0.8.3'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

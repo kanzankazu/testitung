@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/right_round_corner"
+        android:backgroundTint="@color/colorAccent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:gravity="right|center_vertical"
+            android:orientation="vertical"
+            android:paddingTop="75dp"
+            android:paddingEnd="75dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:text="Create"
+                android:textColor="@color/Black"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:text="Account"
+                android:textColor="@color/Black"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:padding="25dp">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilLoginName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/eLoginName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:hint="Name"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/Black" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilLoginEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/eLoginEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:hint="Email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/Black" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilLoginPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/eLoginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:hint="Password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/Black" />
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/colorAccent"
+                app:cardCornerRadius="50dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:animateLayoutChanges="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/iv"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_horizontal"
+                        android:rotation="0"
+                        android:src="@drawable/ic_back_black"
+                        android:tint="@color/Black" />
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:gravity="center_vertical|right"
+                android:text="Sign up"
+                android:textColor="@color/Black"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:gravity="center_vertical"
+                android:text="Sign in"
+                android:textColor="@color/Black"
+                android:textSize="17dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_margin_40dp"
+            android:layout_marginBottom="@dimen/padding_margin_10dp"
+            android:background="@drawable/google_button_selector"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_google_account" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_margin_16dp"
+                android:text="Sign up with Google" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_facebook_custom_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_margin_40dp"
+            android:background="@drawable/facebook_selector"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_facebook" />
+
+            <TextView
+                android:id="@+id/lbl_sign_in_facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_margin_16dp"
+                android:text="Sign up with Facebook"
+                android:textColor="@color/White" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

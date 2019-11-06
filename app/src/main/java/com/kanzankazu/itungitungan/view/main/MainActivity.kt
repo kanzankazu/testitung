@@ -1,7 +1,7 @@
-package com.kanzankazu.itungitungan.main
+package com.kanzankazu.itungitungan.view.main
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.support.v7.app.AppCompatActivity
 import com.kanzankazu.itungitungan.R
 
 class MainActivity : AppCompatActivity() {

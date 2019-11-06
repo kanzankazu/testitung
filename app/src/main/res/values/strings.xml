@@ -6,4 +6,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="sign_up"><u>Sign up</u></string>
+    <string name="sign_in"><u>Sign in</u></string>
+    <string name="title_activity_sample_crud_main">SampleCrudMainActivity</string>
 </resources>
