@@ -1,10 +1,10 @@
 package com.kanzankazu.itungitungan.view.main
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.kanzankazu.itungitungan.R
 
 class NotificationsFragment : Fragment() {
@@ -46,7 +46,7 @@ class NotificationsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_notifications, container, false)
 
-        initComponent(view)
+        initComponent()
         initParam()
         initSession()
         initContent()
@@ -55,7 +55,7 @@ class NotificationsFragment : Fragment() {
         return view
     }
 
-    private fun initComponent(view: View) {
+    private fun initComponent() {
 
     }
 

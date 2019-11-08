@@ -20,14 +20,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.logreg.SignInUp" />
+        <activity android:name=".view.logreg.SignInUpActivity" />
         <activity android:name=".view.main.MainActivity" />
 
         <!--Sample-->
-        <activity android:name=".sample.SampleCrudMainActivity" />
-        <activity android:name=".sample.SampleCrudCreateActivity" />
-        <activity android:name=".sample.SampleCrudReadActivity" />
-        <activity android:name=".sample.SampleCrudReadSingleActivity" />
+        <activity android:name="com.kanzankazu.itungitungan.view.sample.SampleCrudMainActivity" />
+        <activity android:name="com.kanzankazu.itungitungan.view.sample.SampleCrudCreateActivity" />
+        <activity android:name="com.kanzankazu.itungitungan.view.sample.SampleCrudReadActivity" />
+        <activity android:name="com.kanzankazu.itungitungan.view.sample.SampleCrudReadSingleActivity" />
     </application>
 
 </manifest>

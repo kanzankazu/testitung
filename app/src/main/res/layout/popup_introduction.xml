@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ll_popup">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/img_popup_intro"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignRight="@id/img_popup_intro"
+            android:src="@drawable/ic_clear"
+            android:tint="@color/White"
+            android:id="@+id/img_popup_close"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/padding_margin_16dp"
+        android:layout_marginRight="@dimen/padding_margin_16dp"
+        android:layout_marginBottom="@dimen/padding_margin_16dp">
+        <TextView
+            android:id="@+id/tv_popup_intro_title"
+            android:text="Title"
+            style="@style/TextFormStyle"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/padding_margin_10dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:fadeScrollbars="false"
+            android:id="@+id/sv_intro_desc">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ABC"
+                    style="@style/TextLabelStyle"
+                    android:id="@+id/tv_popup_intro_message"
+                    android:autoLink="web"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/option_ok"
+            style="@style/BlueButton"
+            android:enabled="true"
+            android:layout_marginTop="@dimen/padding_margin_10dp"
+            android:id="@+id/tv_popup_button"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/option_ok"
+            style="@style/WhiteButton"
+            android:enabled="true"
+            android:layout_marginTop="@dimen/padding_margin_10dp"
+            android:id="@+id/tv_popup_button2"/>
+
+    </LinearLayout>
+
+</LinearLayout>

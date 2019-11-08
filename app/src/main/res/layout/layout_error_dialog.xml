@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white">
+
+    <include layout="@layout/success_dialog_booking"></include>
+
+    <!-- <LinearLayout
+         android:paddingRight="@dimen/padding_margin_32dp"
+         android:paddingLeft="@dimen/padding_margin_32dp"
+         android:paddingTop="@dimen/padding_margin_16dp"
+         android:paddingBottom="@dimen/padding_margin_16dp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:orientation="vertical">
+
+         <ImageView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center"
+             android:layout_marginTop="@dimen/padding_margin_16dp"
+             android:src="@drawable/ic_complete"
+             android:id="@+id/image_booking_complete"/>
+
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Your booking has been noted.\n Thank you and see you soon "
+             android:layout_gravity="center"
+             android:layout_marginTop="@dimen/padding_margin_16dp"
+             android:textSize="@dimen/normal_medium_font_size"
+             android:id="@+id/tv_booking_complete"/>
+
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Close"
+             android:textColor="@color/color_red_A700"
+             android:layout_gravity="right"
+             android:layout_marginTop="@dimen/padding_margin_16dp"
+             android:paddingBottom="@dimen/padding_margin_16dp"
+             android:textSize="@dimen/normal_medium_font_size"
+             android:id="@+id/btn_close_dialog"/>
+
+     </LinearLayout>-->
+
+</LinearLayout>

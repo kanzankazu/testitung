@@ -10,4 +10,18 @@
     <string name="sign_up"><u>Sign up</u></string>
     <string name="sign_in"><u>Sign in</u></string>
     <string name="title_activity_sample_crud_main">SampleCrudMainActivity</string>
+    <string name="dialog_confirm_positive">Iya</string>
+    <string name="dialog_confirm_negative">Tidak</string>
+
+    <string name="maintenance_title">Maintenance sedang berlangsung</string>
+    <string name="force_update_title">Mohon update aplikasi anda</string>
+    <string name="suggest_update_title">Update telah tersedia</string>
+    <string name="exit_button_title">Keluar</string>
+    <string name="update_button_title">Update</string>
+    <string name="continue_button_title">Lanjutkan</string>
+    <string name="title_calendar">Kalender</string>
+    <string name="message_dialog_retry">Coba Lagi</string>
+    <string name="option_ok">OK</string>
+    <string name="login">LOGIN</string>
+
 </resources>

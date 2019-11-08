@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="horizontal">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/cyan"
+        android:padding="@dimen/padding_margin_20dp"
+        android:scaleX="0.75"
+        android:scaleY="0.75" />
+
+    <TextView
+        android:id="@+id/progress_message"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fontFamily="@font/avenir_next_ltpro_demi"
+        android:gravity="center_vertical"
+        android:paddingRight="@dimen/padding_margin_20dp"
+        android:text="Loading..." />
+
+
+</LinearLayout>
+

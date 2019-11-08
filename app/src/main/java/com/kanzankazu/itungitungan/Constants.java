@@ -127,7 +127,7 @@ public class Constants {
         String TOKEN = "TOKEN";
         String EXPIRED = "EXPIRED";
 
-        //SignInUp
+        //SignInUpActivity
         String EMAIL = "EMAIL";
         String NAME = "NAME";
         String PASSWORD = "PASSWORD";

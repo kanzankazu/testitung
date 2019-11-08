@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_margin_16dp"
+            android:layout_marginRight="@dimen/padding_margin_16dp"
+            android:text="TITLE"
+            android:layout_marginTop="@dimen/padding_margin_16dp"
+            style="@style/TextSubtitleStyle"
+            android:id="@+id/tv_confirmation_text"/>
+
+        <TextView
+            android:layout_below="@id/tv_confirmation_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_margin_16dp"
+            android:layout_marginRight="@dimen/padding_margin_16dp"
+            android:text="Description"
+            android:layout_marginTop="@dimen/padding_margin_8dp"
+            style="@style/TextMenuStyle"
+            android:id="@+id/tv_confirmation_description"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginRight="@dimen/padding_margin_16dp"
+            android:layout_below="@id/tv_confirmation_description"
+            android:layout_alignParentRight="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TIDAK"
+                android:textColor="@color/cyan"
+                android:background="@drawable/text_selector_popup"
+                android:paddingTop="@dimen/padding_margin_10dp"
+                android:paddingBottom="@dimen/padding_margin_10dp"
+                android:layout_marginBottom="@dimen/padding_margin_8dp"
+                android:layout_marginTop="@dimen/padding_margin_8dp"
+                android:layout_marginRight="@dimen/padding_margin_8dp"
+                style="@style/TextMenuStyle"
+                android:clickable="true"
+                android:paddingRight="@dimen/padding_margin_10dp"
+                android:paddingLeft="@dimen/padding_margin_10dp"
+                android:id="@+id/btn_close_dialog"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YA"
+                android:textColor="@color/cyan"
+                android:background="@drawable/text_selector_popup"
+                android:paddingTop="@dimen/padding_margin_10dp"
+                android:paddingBottom="@dimen/padding_margin_10dp"
+                android:layout_marginBottom="@dimen/padding_margin_8dp"
+                android:layout_marginTop="@dimen/padding_margin_8dp"
+                android:layout_marginRight="@dimen/padding_margin_8dp"
+                style="@style/TextMenuStyle"
+                android:clickable="true"
+                android:paddingRight="@dimen/padding_margin_10dp"
+                android:paddingLeft="@dimen/padding_margin_10dp"
+                android:id="@+id/btn_close_dialog_OK"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>
