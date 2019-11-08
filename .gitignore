@@ -10,7 +10,6 @@ gradle.properties
 /build
 /captures
 Thumbs.db
-/app/fabric.properties
 projectFilesBackup
 *.hprof
 output.json

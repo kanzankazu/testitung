@@ -16,7 +16,7 @@ class SignInUpActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
 
-    private var slidePagerAdapterInifinite: FragmentUtil.SlidePagerAdapterInfinite? = null
+    private var slidePagerAdapterInifinite: FragmentUtil.SlidePagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class SignInUpActivity : AppCompatActivity() {
         tabLayout = findViewById<TabLayout>(R.id.tablayout)
         viewPager = findViewById<ViewPager>(R.id.vp_signInUp)
 
-        slidePagerAdapterInifinite = fragmentUtil.setupTabLayoutViewPagerInfinite(
+        slidePagerAdapterInifinite = fragmentUtil.setupTabLayoutViewPager(
             arrayOf("Masuk", "Daftar"),
             null,
             tabLayout,

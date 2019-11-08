@@ -213,12 +213,12 @@ public class FragmentUtil {
     /**
      * ViewPager TabLayout
      */
-    public SlidePagerAdapter setupTabLayoutViewPager(String[] titleTab, int[] iconTab, TabLayout tabLayout, ViewPager viewPager, Fragment... fragments) {
+    public SlidePagerAdapter setupTabLayoutViewPager(String[] titleTab,@Nullable int[] iconTab, TabLayout tabLayout, ViewPager viewPager, Fragment... fragments) {
 
         SlidePagerAdapter mPagerAdapter = new SlidePagerAdapter(mActivity.getSupportFragmentManager());
         mPagerAdapter.addFragments(convertFragmentArrayToListFragment(fragments), convertStringArrayToListString(titleTab));
 
-        if (iconTab.length > 0) {
+        if (iconTab != null) {
             for (int i = 0; i < iconTab.length; i++) {
                 tabLayout.addTab(tabLayout.newTab().setIcon(iconTab[i]));
                 if (i == 0) {
@@ -291,20 +291,9 @@ public class FragmentUtil {
         }*/
     }
 
-    public SlidePagerAdapterInfinite setupTabLayoutViewPagerInfinite(String[] titleTab, int[] iconTab, TabLayout tabLayout, ViewPager viewPager, Fragment... fragments) {
+    public SlidePagerAdapterInfinite setupTabLayoutViewPagerInfinite(TabLayout tabLayout, ViewPager viewPager, Fragment... fragments) {
 
         SlidePagerAdapterInfinite mPagerAdapter = new SlidePagerAdapterInfinite(mActivity.getSupportFragmentManager(), convertFragmentArrayToListFragment(fragments));
-
-        if (iconTab.length > 0) {
-            for (int i = 0; i < iconTab.length; i++) {
-                tabLayout.addTab(tabLayout.newTab().setIcon(iconTab[i]));
-                if (i == 0) {
-                    tabLayout.getTabAt(0).getIcon().setColorFilter(mActivity.getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
-                } else {
-                    tabLayout.getTabAt(i).getIcon().setColorFilter(mActivity.getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_IN);
-                }
-            }
-        }
 
         viewPager.setAdapter(mPagerAdapter);
         int limit = (mPagerAdapter.getCount() > 1 ? mPagerAdapter.getCount() - 1 : 1);

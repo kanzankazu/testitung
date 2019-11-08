@@ -7,6 +7,7 @@ import com.facebook.LoggingBehavior;
 import com.kanzankazu.itungitungan.MyApplication;
 
 public class FacebookAnalyticsUtil {
+/*
     public static FacebookAnalyticsUtil mInstance;
 
     private FacebookAnalyticsUtil() {
@@ -29,4 +30,5 @@ public class FacebookAnalyticsUtil {
     public void logEventWithBundle(String eventName, Bundle params) {
         MyApplication.getInstance().getmAppEventsLogger().logEvent(eventName, params);
     }
+*/
 }

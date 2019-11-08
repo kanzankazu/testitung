@@ -46,7 +46,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        initComponent(view)
+        initComponent()
         initParam()
         initSession()
         initContent()
@@ -55,7 +55,7 @@ class HomeFragment : Fragment() {
         return view
     }
 
-    private fun initComponent(view: View) {
+    private fun initComponent() {
 
     }
 
