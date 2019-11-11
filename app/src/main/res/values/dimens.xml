@@ -2,6 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="round_corner_radius">50dp</dimen>
+
     <dimen name="padding_margin_1dp">1dp</dimen>
     <dimen name="padding_margin_2dp">2dp</dimen>
     <dimen name="padding_margin_3dp">3dp</dimen>
@@ -11,12 +13,13 @@
     <dimen name="padding_margin_20dp">20dp</dimen>
     <dimen name="padding_margin_24dp">24dp</dimen>
     <dimen name="padding_margin_25dp">25dp</dimen>
+    <dimen name="padding_margin_30dp">30dp</dimen>
     <dimen name="padding_margin_32dp">32dp</dimen>
     <dimen name="padding_margin_36dp">36dp</dimen>
     <dimen name="padding_margin_40dp">40dp</dimen>
     <dimen name="padding_margin_48dp">48dp</dimen>
     <dimen name="padding_margin_75dp">75dp</dimen>
     <dimen name="padding_margin_50dp">50dp</dimen>
-    <dimen name="padding_margin_150dp">150dp</dimen>
     <dimen name="padding_margin_100dp">100dp</dimen>
+    <dimen name="padding_margin_150dp">150dp</dimen>
 </resources>

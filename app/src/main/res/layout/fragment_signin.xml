@@ -1,184 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorAccent"
-    android:orientation="vertical">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_margin_150dp"
-        android:layout_marginLeft="@dimen/padding_margin_50dp"
-        android:layout_marginBottom="@dimen/padding_margin_10dp"
-        android:animateLayoutChanges="true"
-        android:background="@drawable/round_corner_left_bottom"
-        android:backgroundTint="@color/colorPrimary"
-        android:gravity="right|top"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_margin_100dp"
-        android:paddingTop="@dimen/padding_margin_25dp"
-        android:paddingRight="@dimen/padding_margin_25dp"
-        android:paddingBottom="@dimen/padding_margin_25dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_margin_50dp"
+            android:layout_marginBottom="@dimen/padding_margin_10dp"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/round_corner_left_bottom"
+            android:backgroundTint="@color/colorPrimary"
+            android:gravity="right|top"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_margin_20dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="@font/avenir_next_ltpro_demi"
-            android:maxLines="2"
-            android:text="Selamat Datang"
-            android:textAlignment="viewEnd"
-            android:textSize="@dimen/padding_margin_40dp"
-            android:textStyle="bold" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:singleLine="true"
+                android:text="Selamat Datang"
+                android:textAlignment="viewEnd"
+                android:textSize="@dimen/padding_margin_25dp"
+                android:textStyle="bold" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/padding_margin_25dp"
-        android:layout_marginRight="@dimen/padding_margin_25dp"
-        android:layout_marginBottom="@dimen/padding_margin_10dp"
-        android:layout_weight="1"
-        android:animateLayoutChanges="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilLoginEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/padding_margin_25dp"
+            android:layout_marginRight="@dimen/padding_margin_25dp"
+            android:layout_marginBottom="@dimen/padding_margin_10dp"
+            android:layout_weight="1"
+            android:animateLayoutChanges="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/etLoginEmail"
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:hint="Email"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:selectAllOnFocus="true" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilLoginEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                <android.support.design.widget.TextInputEditText
+                        android:id="@+id/etLoginEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/avenir_next_ltpro_demi"
+                        android:hint="Email"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        android:selectAllOnFocus="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageButton
+                    android:id="@+id/ibLoginEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="7"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_back_black" />
+        </LinearLayout>
+
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilLoginPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/etLoginPassword"
+                android:id="@+id/tilLoginPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:hint="Password"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:selectAllOnFocus="true" />
+                android:layout_marginBottom="20dp">
+
+            <android.support.design.widget.TextInputEditText
+                    android:id="@+id/etLoginPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/ic_back_black"
+                    android:fontFamily="@font/avenir_next_ltpro_demi"
+                    android:hint="Password"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:selectAllOnFocus="true" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/cvSignInSubmit"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="@dimen/padding_margin_10dp"
-            app:cardBackgroundColor="@color/colorPrimary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="5dp">
+                android:id="@+id/cvSignInSubmit"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:gravity="center"
-                android:text="Daftar"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/avenir_next_ltpro_demi"
+                    android:gravity="center"
+                    android:text="Masuk"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
 
         </android.support.v7.widget.CardView>
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginRight="@dimen/padding_margin_50dp"
-        android:animateLayoutChanges="true"
-        android:background="@drawable/round_corner_right_top"
-        android:backgroundTint="@color/colorPrimary"
-        android:gravity="bottom|right"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_margin_25dp"
-        android:paddingTop="@dimen/padding_margin_25dp"
-        android:paddingRight="@dimen/padding_margin_75dp"
-        android:paddingBottom="@dimen/padding_margin_25dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/padding_margin_50dp"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/round_corner_right_top"
+            android:backgroundTint="@color/colorPrimary"
+            android:gravity="bottom|right"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_margin_20dp">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/cvSignInGoogle"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_margin_40dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp">
+                android:id="@+id/cvSignInGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_margin_40dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_google_account" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_google_account" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_margin_16dp"
-                    android:fontFamily="@font/avenir_next_ltpro_demi"
-                    android:text="Sign in with Google" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/padding_margin_16dp"
+                        android:fontFamily="@font/avenir_next_ltpro_demi"
+                        android:text="Masuk dengan google" />
 
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_margin_10dp"
-            android:visibility="invisible" />
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_margin_10dp"
+                android:visibility="invisible" />
 
         <android.support.v7.widget.CardView
-            android:id="@+id/cvSignInFacebook"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_margin_40dp"
-            app:cardBackgroundColor="@color/color_blue_facebook"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp">
+                android:id="@+id/cvSignInFacebook"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_margin_40dp"
+                app:cardBackgroundColor="@color/color_blue_facebook"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
 
             <LinearLayout
-                android:id="@+id/ll_facebook_custom_btn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
+                    android:id="@+id/ll_facebook_custom_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_facebook" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_facebook" />
 
                 <TextView
-                    android:id="@+id/lbl_sign_in_facebook"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_margin_16dp"
-                    android:fontFamily="@font/avenir_next_ltpro_demi"
-                    android:text="Sign in with Facebook"
-                    android:textColor="@color/White" />
+                        android:id="@+id/lbl_sign_in_facebook"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/padding_margin_16dp"
+                        android:fontFamily="@font/avenir_next_ltpro_demi"
+                        android:text="Masuk dengan facebook"
+                        android:textColor="@color/White" />
 
             </LinearLayout>
 

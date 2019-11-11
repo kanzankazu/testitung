@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "495676044825-us20n2sls9c4i163t2u9uv1c2pagn7dr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kanzankazu.itungitungan",
+            "certificate_hash": "f4e00a11fb3e9f955cb5089279cb546f218004dd"
+          }
+        },
+        {
           "client_id": "495676044825-9rjp2356hcr9jtk3c3hbt0vihk2ml5ip.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -51,6 +59,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "495676044825-qlk4hem944t8ecj0ph4rsqv0sam9h3ta.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kanzankazu.itungitungan.dev",
+            "certificate_hash": "f4e00a11fb3e9f955cb5089279cb546f218004dd"
+          }
+        },
         {
           "client_id": "495676044825-96dbqnn3fhcp655g86hqn4g4a25799jh.apps.googleusercontent.com",
           "client_type": 1,

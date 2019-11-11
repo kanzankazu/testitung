@@ -6,11 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.view.base.BaseFragment
 
 /**
  * Created by Faisal Bahri on 2019-11-08.
  */
-class SignUpFragment : Fragment() {
+class SignUpFragment : BaseFragment() {
 
     private var mParam1: String? = null
     private var mParam2: String? = null

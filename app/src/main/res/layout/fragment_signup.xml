@@ -1,239 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:orientation="vertical">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginRight="@dimen/padding_margin_50dp"
-        android:layout_marginBottom="@dimen/padding_margin_10dp"
-        android:animateLayoutChanges="true"
-        android:background="@drawable/round_corner_right_bottom"
-        android:backgroundTint="@color/colorAccent"
-        android:gravity="left|top"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_margin_25dp"
-        android:paddingTop="@dimen/padding_margin_25dp"
-        android:paddingRight="@dimen/padding_margin_100dp"
-        android:paddingBottom="@dimen/padding_margin_25dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/padding_margin_50dp"
+            android:layout_marginBottom="@dimen/padding_margin_10dp"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/round_corner_right_bottom"
+            android:backgroundTint="@color/colorAccent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_margin_20dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="@font/avenir_next_ltpro_demi"
-            android:maxLines="2"
-            android:text="Buat Akun"
-            android:textAlignment="viewEnd"
-            android:textColor="@color/Black"
-            android:textSize="@dimen/padding_margin_40dp"
-            android:textStyle="bold" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:singleLine="true"
+                android:text="Buat Akun"
+                android:textAlignment="viewEnd"
+                android:textSize="@dimen/padding_margin_25dp"
+                android:textStyle="bold" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/padding_margin_25dp"
-        android:layout_marginRight="@dimen/padding_margin_25dp"
-        android:layout_marginBottom="@dimen/padding_margin_10dp"
-        android:layout_weight="1"
-        android:animateLayoutChanges="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilSignUpName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/padding_margin_25dp"
+            android:layout_marginRight="@dimen/padding_margin_25dp"
+            android:layout_marginBottom="@dimen/padding_margin_10dp"
+            android:layout_weight="1"
+            android:animateLayoutChanges="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/etSignUpName"
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:hint="Name"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:selectAllOnFocus="true"
-                android:textColor="@color/Black" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilSignUpEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilSignUpName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/etSignUpEmail"
+                <android.support.design.widget.TextInputEditText
+                        android:id="@+id/etSignUpName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/avenir_next_ltpro_demi"
+                        android:hint="Name"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:selectAllOnFocus="true"
+                        android:textColor="@color/Black" />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageButton
+                    android:id="@+id/ibSignUpName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="7"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_back_black" />
+        </LinearLayout>
+
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:hint="Email"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:selectAllOnFocus="true"
-                android:textColor="@color/Black" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilSignUpEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                <android.support.design.widget.TextInputEditText
+                        android:id="@+id/etSignUpEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/avenir_next_ltpro_demi"
+                        android:hint="Email"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        android:selectAllOnFocus="true"
+                        android:textColor="@color/Black" />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageButton
+                    android:id="@+id/ibSignUpEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="7"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_back_black" />
+        </LinearLayout>
+
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilSignUpPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/etSignUpPassword"
+                android:id="@+id/tilSignUpPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:hint="Password"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:selectAllOnFocus="true"
-                android:textColor="@color/Black" />
+                android:layout_marginBottom="20dp">
+
+            <android.support.design.widget.TextInputEditText
+                    android:id="@+id/etSignUpPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_next_ltpro_demi"
+                    android:hint="Password"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:drawableRight="@drawable/ic_back_black"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@color/Black" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/cvSignUpSubmit"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="@dimen/padding_margin_10dp"
-            app:cardBackgroundColor="@color/colorAccent"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="5dp">
+                android:id="@+id/cvSignUpSubmit"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="@dimen/padding_margin_10dp"
+                app:cardBackgroundColor="@color/colorAccent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:gravity="center"
-                android:text="Sign up"
-                android:textColor="@color/Black"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/avenir_next_ltpro_demi"
+                    android:gravity="center"
+                    android:text="Daftar"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
 
         </android.support.v7.widget.CardView>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/colorAccent" />
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padding_margin_10dp"
-                android:layout_marginRight="@dimen/padding_margin_10dp"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:gravity="center"
-                android:text="or"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padding_margin_10dp"
+                    android:layout_marginRight="@dimen/padding_margin_10dp"
+                    android:fontFamily="@font/avenir_next_ltpro_demi"
+                    android:gravity="center"
+                    android:text="or"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
 
             <View
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/colorAccent" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent" />
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginLeft="@dimen/padding_margin_50dp"
-        android:animateLayoutChanges="true"
-        android:background="@drawable/round_corner_left_top"
-        android:backgroundTint="@color/colorAccent"
-        android:gravity="bottom|right"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_margin_75dp"
-        android:paddingTop="@dimen/padding_margin_25dp"
-        android:paddingRight="@dimen/padding_margin_25dp"
-        android:paddingBottom="@dimen/padding_margin_25dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_margin_50dp"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/round_corner_left_top"
+            android:backgroundTint="@color/colorAccent"
+            android:gravity="bottom|right"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_margin_20dp">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/cvSignUpGoogle"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_margin_40dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp">
+                android:id="@+id/cvSignUpGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_margin_40dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_google_account" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_google_account" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_margin_16dp"
-                    android:fontFamily="@font/avenir_next_ltpro_demi"
-                    android:text="Sign up with Google" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/padding_margin_16dp"
+                        android:fontFamily="@font/avenir_next_ltpro_demi"
+                        android:text="Daftar dengan google" />
 
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <View
-            android:layout_width="1dp"
-            android:layout_height="@dimen/padding_margin_10dp"
-            android:background="@android:color/black"
-            android:visibility="invisible" />
+                android:layout_width="1dp"
+                android:layout_height="@dimen/padding_margin_10dp"
+                android:background="@android:color/black"
+                android:visibility="invisible" />
 
         <android.support.v7.widget.CardView
-            android:id="@+id/cvSignUpFacebook"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_margin_40dp"
-            app:cardBackgroundColor="@color/color_blue_facebook"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp">
+                android:id="@+id/cvSignUpFacebook"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_margin_40dp"
+                app:cardBackgroundColor="@color/color_blue_facebook"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
 
             <LinearLayout
-                android:id="@+id/ll_facebook_custom_btn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
+                    android:id="@+id/ll_facebook_custom_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_facebook" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_facebook" />
 
                 <TextView
-                    android:id="@+id/lbl_sign_in_facebook"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_margin_16dp"
-                    android:fontFamily="@font/avenir_next_ltpro_demi"
-                    android:text="Sign up with Facebook"
-                    android:textColor="@color/White" />
+                        android:id="@+id/lbl_sign_in_facebook"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/padding_margin_16dp"
+                        android:fontFamily="@font/avenir_next_ltpro_demi"
+                        android:text="Daftar dengan facebook"
+                        android:textColor="@color/White" />
 
             </LinearLayout>
 

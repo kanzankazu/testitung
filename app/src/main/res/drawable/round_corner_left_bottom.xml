@@ -3,6 +3,6 @@
     android:layout_width="wrap_content"
     android:shape="rectangle"
     android:thickness="0dp">
-    <corners android:bottomLeftRadius="100dp" />
+    <corners android:bottomLeftRadius="@dimen/round_corner_radius" />
     <solid android:color="@color/colorPrimary" />
 </shape>
