@@ -1,4 +1,4 @@
-package com.kanzankazu.itungitungan.contract.base;
+package com.kanzankazu.itungitungan.view.base;
 
 import android.view.View;
 import com.kanzankazu.itungitungan.util.Utils;

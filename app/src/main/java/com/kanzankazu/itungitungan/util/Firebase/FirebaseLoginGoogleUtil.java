@@ -7,11 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -19,28 +21,33 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.kanzankazu.itungitungan.BuildConfig;
+import com.kanzankazu.itungitungan.R;
 
-public class FirebaseLoginGoogleUtil {
-    private static final int RC_SIGN_IN = 120;
-    private static final String TAG = "LoginGoogleUtil";
+public class FirebaseLoginGoogleUtil extends FirebaseConnectionUtil {
+    public static final int RC_SIGN_IN = 120;
+    public static final String TAG = "LoginGoogleUtil";
 
     private final GoogleSignInClient mGoogleSignInClient;
+    private final GoogleApiClient mGoogleApiClient;
     private final Activity activity;
-    private FirebaseLoginUtil.FirebaseLoginListener mListener;
     private final FirebaseAuth mAuth;
+    private FirebaseLoginUtil.FirebaseLoginListener mListener;
+    private FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle;
 
-    public FirebaseLoginGoogleUtil(Activity activity, FirebaseLoginUtil.FirebaseLoginListener mListener) {
+    public FirebaseLoginGoogleUtil(Activity activity, FirebaseLoginUtil.FirebaseLoginListener mListener, FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle) {
         this.activity = activity;
         this.mListener = mListener;
+        this.mListenerGoogle = mListenerGoogle;
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(BuildConfig.GOOGLE_AUTH_CLIENT_ID)
+                .requestIdToken(activity.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(activity, gso);
+        mGoogleApiClient = new GoogleApiClient.Builder(activity)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -50,8 +57,16 @@ public class FirebaseLoginGoogleUtil {
      * call startActivityForResult
      */
     public void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        //Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         activity.startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    /**
+     * @return add in startActivityResult
+     */
+    public Intent signInFromFragment() {
+        return Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
     }
 
     public void signOut() {
@@ -78,8 +93,12 @@ public class FirebaseLoginGoogleUtil {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 //updateUI(null);
-                mListener.uiRevokeSuccess();
                 mListener.loginProgressDismiss();
+                if (task.isSuccessful()) {
+                    mListenerGoogle.uiRevokeGoogleSuccess();
+                } else {
+                    mListenerGoogle.uiRevokeGoogleUnSuccess();
+                }
             }
         });
 
@@ -87,6 +106,7 @@ public class FirebaseLoginGoogleUtil {
 
     /**
      * call in onActivityResult
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -94,24 +114,33 @@ public class FirebaseLoginGoogleUtil {
     public void signInActivityResult(int requestCode, int resultCode, Intent data) {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
+            mListener.loginProgressDismiss();
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
+                if (task.isSuccessful()) {
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    firebaseAuthWithGoogle(account);
+                } else {
+                    Log.d("Lihat", "signInActivityResult FirebaseLoginGoogleUtil : " + task.getException().getMessage());
+                    mListenerGoogle.uiSignInGoogleFailed(task.toString());
+                }
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-
-                //updateUI(null);
-                mListener.uiSignInFailure(e.toString());
-                mListener.loginProgressDismiss();
+                Log.d("Lihat", "signInActivityResult FirebaseLoginGoogleUtil : " + e.toString());
+                mListenerGoogle.uiSignInGoogleFailure(checkException(e.getStatusCode()));
             }
         }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getId());
+        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getIdToken());
+        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getDisplayName());
+        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getEmail());
+        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getGivenName());
+        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getFamilyName());
+        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getPhotoUrl());
+        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getServerAuthCode());
 
         //showProgressDialog();
         mListener.loginProgressShow();
@@ -132,7 +161,7 @@ public class FirebaseLoginGoogleUtil {
                     Log.w(TAG, "signInWithCredential:failure", task.getException());
                     Snackbar.make(activity.findViewById(android.R.id.content), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                     //updateUI(null);
-                    mListener.uiSignInFailed("");
+                    mListenerGoogle.uiSignInGoogleFailed("");
                     mListener.loginProgressDismiss();
                 }
             }
@@ -162,7 +191,7 @@ public class FirebaseLoginGoogleUtil {
 
             return user;
         }
-        return user;
+        return null;
     }
 
     public interface FirebaseLoginGoogleListener {

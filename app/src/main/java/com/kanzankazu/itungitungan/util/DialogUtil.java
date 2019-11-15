@@ -26,9 +26,9 @@ public class DialogUtil {
         builder.setView(view);
         builder.setTitle(title);
         if (twoButton) {
-            builder.setPositiveButton(context.getText(R.string.dialog_confirm_positive), positiveListener != null ? positiveListener : (DialogInterface.OnClickListener) (dialogInterface, i) -> dialogInterface.dismiss());
+            builder.setPositiveButton(context.getText(R.string.confirm_yes), positiveListener != null ? positiveListener : (DialogInterface.OnClickListener) (dialogInterface, i) -> dialogInterface.dismiss());
         }
-        builder.setNegativeButton(context.getText(R.string.dialog_confirm_negative), (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.setNegativeButton(context.getText(R.string.confirm_no), (dialogInterface, i) -> dialogInterface.dismiss());
     }
 
     public interface dialogStandartListener {
@@ -52,8 +52,8 @@ public class DialogUtil {
 
     public static void initMaintenanceDialog(Activity mActivity) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
-        dialog.setTitle(mActivity.getString(R.string.maintenance_title));
-        dialog.setPositiveButton(mActivity.getString(R.string.exit_button_title), (dialogInterface, i) -> {
+        dialog.setTitle(mActivity.getString(R.string.title_maintenance));
+        dialog.setPositiveButton(mActivity.getString(R.string.confirm_exit), (dialogInterface, i) -> {
             if (mActivity instanceof SplashActivity) {
                 mActivity.finish();
             } else {
@@ -74,15 +74,15 @@ public class DialogUtil {
 
     public static void initForceUpdateDialog(Activity mActivity) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
-        dialog.setTitle(mActivity.getString(R.string.force_update_title));
+        dialog.setTitle(mActivity.getString(R.string.title_force_update));
 
-        dialog.setPositiveButton(mActivity.getString(R.string.update_button_title), (dialogInterface, i) -> {
+        dialog.setPositiveButton(mActivity.getString(R.string.confirm_update), (dialogInterface, i) -> {
             goToPackagePlayStore(mActivity);
             dialogInterface.dismiss();
             mActivity.finish();
         });
 
-        dialog.setNegativeButton(mActivity.getString(R.string.exit_button_title), (dialogInterface, i) -> {
+        dialog.setNegativeButton(mActivity.getString(R.string.confirm_exit), (dialogInterface, i) -> {
             if (mActivity instanceof SplashActivity) {
                 mActivity.finish();
             } else {
@@ -105,15 +105,15 @@ public class DialogUtil {
 
     public static void initSuggestUpdateDialog(Activity mActivity, FirebaseRemoteConfigOnNext firebaseRemoteConfigurationOnNext) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
-        dialog.setTitle(mActivity.getString(R.string.suggest_update_title));
+        dialog.setTitle(mActivity.getString(R.string.title_suggest_update));
 
-        dialog.setPositiveButton(mActivity.getString(R.string.update_button_title), (dialogInterface, i) -> {
+        dialog.setPositiveButton(mActivity.getString(R.string.confirm_update), (dialogInterface, i) -> {
             goToPackagePlayStore(mActivity);
             dialogInterface.dismiss();
             firebaseRemoteConfigurationOnNext.onNextAction();
         });
 
-        dialog.setNegativeButton(mActivity.getString(R.string.continue_button_title), (dialogInterface, i) -> {
+        dialog.setNegativeButton(mActivity.getString(R.string.confirm_continue), (dialogInterface, i) -> {
             firebaseRemoteConfigurationOnNext.onNextAction();
             dialogInterface.dismiss();
         });

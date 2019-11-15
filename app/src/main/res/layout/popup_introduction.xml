@@ -63,7 +63,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/option_ok"
+            android:text="@string/confirm_ok"
             style="@style/BlueButton"
             android:enabled="true"
             android:layout_marginTop="@dimen/padding_margin_10dp"
@@ -72,7 +72,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/option_ok"
+            android:text="@string/confirm_ok"
             style="@style/WhiteButton"
             android:enabled="true"
             android:layout_marginTop="@dimen/padding_margin_10dp"

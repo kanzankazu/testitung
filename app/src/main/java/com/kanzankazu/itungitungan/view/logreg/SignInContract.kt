@@ -1,4 +1,4 @@
-package com.kanzankazu.itungitungan.contract
+package com.kanzankazu.itungitungan.view.logreg
 
 interface SignInContract {
     interface View {

@@ -533,7 +533,7 @@ public class NetworkUtil {
         return state;
     }
 
-    public static void setMobileNetworkfromLollipop(Context context) throws Exception {
+    /*public static void setMobileNetworkfromLollipop(Context context) throws Exception {
         String command = null;
         int state = 0;
         try {
@@ -567,7 +567,7 @@ public class NetworkUtil {
             // Oops! Something went wrong, so we throw the exception here.
             throw e;
         }
-    }
+    }*/
 
     private static String getTransactionCode(Context context) throws Exception {
         try {

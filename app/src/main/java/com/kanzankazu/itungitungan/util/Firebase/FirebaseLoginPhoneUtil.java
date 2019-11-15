@@ -16,6 +16,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.kanzankazu.itungitungan.util.NetworkUtil;
+
+import org.apache.http.util.NetUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,6 +36,7 @@ public class FirebaseLoginPhoneUtil {
 
     private final Activity activity;
     private final FirebaseLoginUtil.FirebaseLoginListener mListener;
+    private FirebaseLoginUtil.FirebaseLoginListener.Phone mListenerPhone;
     private final FirebaseAuth mAuth;
 
     private PhoneAuthProvider.ForceResendingToken mResendToken;
@@ -41,9 +45,10 @@ public class FirebaseLoginPhoneUtil {
     private boolean mVerificationInProgress = false;
     private String mVerificationId;
 
-    public FirebaseLoginPhoneUtil(Activity activity, FirebaseLoginUtil.FirebaseLoginListener mListener) {
+    public FirebaseLoginPhoneUtil(Activity activity, FirebaseLoginUtil.FirebaseLoginListener mListener, FirebaseLoginUtil.FirebaseLoginListener.Phone mListenerPhone) {
         this.activity = activity;
         this.mListener = mListener;
+        this.mListenerPhone = mListenerPhone;
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -120,7 +125,7 @@ public class FirebaseLoginPhoneUtil {
             PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
             signInWithPhoneAuthCredential(credential);
         } else {
-            mListener.uiPhoneCodeNotSent();
+            mListenerPhone.uiPhoneCodeNotSent();
         }
     }
 
@@ -222,20 +227,20 @@ public class FirebaseLoginPhoneUtil {
                 //enableViews(mStartButton, mPhoneNumberField);
                 //disableViews(mVerifyButton, mResendButton, mVerificationField);
                 //mDetailText.setText(null);
-                mListener.uiPhoneInitialize();
+                mListenerPhone.uiPhoneInitialize();
                 break;
             case STATE_CODE_SENT:
                 // Code sent state, show the verification field, the
                 //enableViews(mVerifyButton, mResendButton, mPhoneNumberField, mVerificationField);
                 //disableViews(mStartButton);
                 //mDetailText.setText(R.string.status_code_sent);
-                mListener.uiPhoneCodeSent();
+                mListenerPhone.uiPhoneCodeSent();
                 break;
             case STATE_VERIFY_FAILED:
                 // Verification has failed, show all options
                 //enableViews(mStartButton, mVerifyButton, mResendButton, mPhoneNumberField, mVerificationField);
                 //mDetailText.setText(R.string.status_verification_failed);
-                mListener.uiPhoneVerifyFailed(message);
+                mListenerPhone.uiPhoneVerifyFailed(message);
                 break;
             case STATE_VERIFY_SUCCESS:
                 // Verification has succeeded, proceed to firebase sign in
@@ -246,7 +251,7 @@ public class FirebaseLoginPhoneUtil {
                 if (cred != null) {
                     if (cred.getSmsCode() != null) {
                         // mVerificationField.setText(cred.getSmsCode());
-                        mListener.uiPhoneVerifySuccess(cred.getSmsCode());
+                        mListenerPhone.uiPhoneVerifySuccess(cred.getSmsCode());
                     } else {
                         //mVerificationField.setText(R.string.instant_validation);
                     }
@@ -256,7 +261,7 @@ public class FirebaseLoginPhoneUtil {
             case STATE_SIGNIN_FAILED:
                 // No-op, handled by sign-in check
                 //mDetailText.setText(R.string.status_sign_in_failed);
-                mListener.uiSignInFailed(message);
+                mListenerPhone.uiPhoneSignInFailed(message);
                 break;
             case STATE_SIGNIN_SUCCESS:
                 // Np-op, handled by sign-in check

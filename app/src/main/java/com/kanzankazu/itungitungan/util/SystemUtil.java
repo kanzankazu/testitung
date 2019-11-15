@@ -25,6 +25,9 @@ import com.kanzankazu.itungitungan.MyApplication;
 import java.util.Calendar;
 import java.util.List;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 public class SystemUtil {
 
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
@@ -98,14 +101,38 @@ public class SystemUtil {
         return s.replace(" ", "+");
     }
 
-    public static void visibileAnim(View view, int visible) {
-            view.setVisibility(visible);
+    public static void visibileAnim(Context context, View view, int animIn, int animOut, String s) {
+        if (view.getVisibility() == VISIBLE) {
+            visibileAnim(context, view, GONE, animIn);
+        } else {
+            visibileAnim(context, view, VISIBLE, animOut);
+        }
+    }
+
+    public static void visibileAnim(Context context, View view, int anim) {
+        if (view.getVisibility() == VISIBLE) {
+            visibileAnim(context, view, GONE, anim);
+        } else {
+            visibileAnim(context, view, VISIBLE, anim);
+        }
     }
 
     public static void visibileAnim(Context context, View view, int visible, int anim) {
         if (view.getVisibility() != visible) {
             view.setVisibility(visible);
             Animation animation = AnimationUtils.loadAnimation(context, anim);
+            view.startAnimation(animation);
+        }
+    }
+
+    public static void visibileAnim(Context context, View view, int visible, int animIn, int animOut) {
+        if (visible == VISIBLE) {
+            view.setVisibility(visible);
+            Animation animation = AnimationUtils.loadAnimation(context, animIn);
+            view.startAnimation(animation);
+        } else {
+            view.setVisibility(visible);
+            Animation animation = AnimationUtils.loadAnimation(context, animOut);
             view.startAnimation(animation);
         }
     }
@@ -132,11 +159,11 @@ public class SystemUtil {
 
     public static boolean visibileView(TextView textView, String s) {
         if (TextUtils.isEmpty(s)) {
-            textView.setVisibility(View.GONE);
+            textView.setVisibility(GONE);
             textView.setText("");
             return false;
         } else {
-            textView.setVisibility(View.VISIBLE);
+            textView.setVisibility(VISIBLE);
             textView.setText(s);
             return true;
         }
@@ -154,11 +181,11 @@ public class SystemUtil {
 
     public static boolean visibileView(View parentView, TextView textView, String s) {
         if (!TextUtils.isEmpty(s)) {
-            parentView.setVisibility(View.VISIBLE);
+            parentView.setVisibility(VISIBLE);
             textView.setText(s);
             return true;
         } else {
-            parentView.setVisibility(View.GONE);
+            parentView.setVisibility(GONE);
             textView.setText("");
             return false;
         }
@@ -175,10 +202,10 @@ public class SystemUtil {
                     textView.setText(ss.get(i));
                 }
             }
-            parentView.setVisibility(View.VISIBLE);
+            parentView.setVisibility(VISIBLE);
             return true;
         } else {
-            parentView.setVisibility(View.GONE);
+            parentView.setVisibility(GONE);
             return false;
         }
     }
@@ -196,26 +223,26 @@ public class SystemUtil {
         if (stringSize > 0 && stringSize <= 2) {
             textView1.setText(ss.get(0));
             textView1.setText(ss.get(1));
-            parentView.setVisibility(View.VISIBLE);
+            parentView.setVisibility(VISIBLE);
             return true;
         } else {
-            parentView.setVisibility(View.GONE);
+            parentView.setVisibility(GONE);
             return false;
         }
     }
 
     public static boolean visibileView(View parentView, String s) {
         if (TextUtils.isEmpty(s)) {
-            parentView.setVisibility(View.GONE);
+            parentView.setVisibility(GONE);
             return false;
         } else {
-            parentView.setVisibility(View.VISIBLE);
+            parentView.setVisibility(VISIBLE);
             return true;
         }
     }
 
     public static boolean isVisible(View view) {
-        return view.getVisibility() == View.VISIBLE;
+        return view.getVisibility() == VISIBLE;
     }
 
     public static int roundDouble(double d) {
@@ -249,10 +276,10 @@ public class SystemUtil {
     }
 
     public static void showHideView(View view) {
-        if (view.getVisibility() == View.VISIBLE) {
-            view.setVisibility(View.GONE);
-        } else if (view.getVisibility() == View.GONE) {
-            view.setVisibility(View.VISIBLE);
+        if (view.getVisibility() == VISIBLE) {
+            view.setVisibility(GONE);
+        } else if (view.getVisibility() == GONE) {
+            view.setVisibility(VISIBLE);
         }
     }
 

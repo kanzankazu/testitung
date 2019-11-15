@@ -3,6 +3,7 @@ package com.kanzankazu.itungitungan.util;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
@@ -15,7 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -82,7 +83,7 @@ public class FragmentUtil {
     }
 
     /**
-     * STATIC
+     * Fragment Control
      */
     public Fragment addFragment(Fragment fragment, Bundle bundle) {
         FragmentTransaction fragmentTransaction = getTransaction();
@@ -212,11 +213,21 @@ public class FragmentUtil {
 
     /**
      * ViewPager TabLayout
+     *
+     * @param titleTab
+     * @param iconTab
+     * @param tabLayout
+     * @param viewPager
+     * @param fragments
      */
-    public SlidePagerAdapter setupTabLayoutViewPager(String[] titleTab,@Nullable int[] iconTab, TabLayout tabLayout, ViewPager viewPager, Fragment... fragments) {
+    public SlidePagerAdapter setupTabLayoutViewPager(@Nullable String[] titleTab, @Nullable int[] iconTab, @Nullable TabLayout tabLayout, ViewPager viewPager, Fragment... fragments) {
 
         SlidePagerAdapter mPagerAdapter = new SlidePagerAdapter(mActivity.getSupportFragmentManager());
-        mPagerAdapter.addFragments(convertFragmentArrayToListFragment(fragments), convertStringArrayToListString(titleTab));
+        if (titleTab == null) {
+            mPagerAdapter.addFragments(convertFragmentArrayToListFragment(fragments));
+        } else {
+            mPagerAdapter.addFragmentsTitles(convertFragmentArrayToListFragment(fragments), convertStringArrayToListString(titleTab));
+        }
 
         if (iconTab != null) {
             for (int i = 0; i < iconTab.length; i++) {
@@ -229,10 +240,11 @@ public class FragmentUtil {
             }
         }
 
-        viewPager.setAdapter(mPagerAdapter);
         int limit = (mPagerAdapter.getCount() > 1 ? mPagerAdapter.getCount() - 1 : 1);
+        viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(limit);
-        tabLayout.setupWithViewPager(viewPager);
+
+        if (tabLayout != null) tabLayout.setupWithViewPager(viewPager);
 
         return mPagerAdapter;
     }
@@ -261,8 +273,18 @@ public class FragmentUtil {
             notifyDataSetChanged();
         }
 
-        public void addFragments(List<Fragment> fragments, List<String> strings) {
+        public void addFragmentsTitles(List<Fragment> fragments, List<String> strings) {
             this.titles = strings;
+            if (this.fragments.size() > 0) {
+                this.fragments.clear();
+                this.fragments = fragments;
+            } else {
+                this.fragments = fragments;
+            }
+            notifyDataSetChanged();
+        }
+
+        public void addFragments(List<Fragment> fragments) {
             if (this.fragments.size() > 0) {
                 this.fragments.clear();
                 this.fragments = fragments;
@@ -278,28 +300,19 @@ public class FragmentUtil {
             return titles.get(position);
         }
 
-        /*public Fragment[] add(Fragment[] originalArray, Fragment newItem) {
-            int currentSize = originalArray.length;
-            int newSize = currentSize + 1;
-            Fragment[] tempArray = new Fragment[newSize];
-            for (int i = 0; i < currentSize; i++) {
-                tempArray[i] = originalArray[i];
-            }
-            //System.arraycopy(originalArray, 0, tempArray, 0, currentSize);
-            tempArray[newSize - 1] = newItem;
-            return tempArray;
-        }*/
+
     }
 
-    public SlidePagerAdapterInfinite setupTabLayoutViewPagerInfinite(TabLayout tabLayout, ViewPager viewPager, Fragment... fragments) {
+    /**
+     * ViewPager Infinite
+     */
+    public SlidePagerAdapterInfinite setupViewPagerInfinite(ViewPager viewPager, Fragment... fragments) {
 
         SlidePagerAdapterInfinite mPagerAdapter = new SlidePagerAdapterInfinite(mActivity.getSupportFragmentManager(), convertFragmentArrayToListFragment(fragments));
 
         viewPager.setAdapter(mPagerAdapter);
         int limit = (mPagerAdapter.getCount() > 1 ? mPagerAdapter.getCount() - 1 : 1);
         viewPager.setOffscreenPageLimit(limit);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setVisibility(View.GONE);
 
         return mPagerAdapter;
     }

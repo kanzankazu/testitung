@@ -357,7 +357,7 @@ public class Utils {
             ivDialog.setImageResource(R.drawable.ic_no_internet);
             tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
             tvCloseDialog.setTextColor(ContextCompat.getColor(activity, R.color.color_blue_A400));
-            tvCloseDialog.setText(activity.getString(R.string.message_dialog_retry));
+            tvCloseDialog.setText(activity.getString(R.string.confirm_retry));
             tvCloseDialog.setOnClickListener(v -> {
                 dialog.dismiss();
                 dialogButtonListener.onDialogButtonClick();
@@ -447,7 +447,7 @@ public class Utils {
             ivDialog.setImageResource(R.drawable.ic_no_internet);
             tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
             tvCloseDialog.setTextColor(ContextCompat.getColor(mActivity, R.color.cyan));
-            tvCloseDialog.setText(mActivity.getResources().getString(R.string.message_dialog_retry));
+            tvCloseDialog.setText(mActivity.getResources().getString(R.string.confirm_retry));
             tvCloseDialog.setOnClickListener(v -> {
                 dialogButtonListener.onDialogButtonClick();
                 dialog.dismiss();

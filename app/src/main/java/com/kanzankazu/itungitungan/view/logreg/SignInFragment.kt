@@ -1,27 +1,32 @@
 package com.kanzankazu.itungitungan.view.logreg
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import com.google.firebase.auth.FirebaseUser
 import com.kanzankazu.itungitungan.R
-import com.kanzankazu.itungitungan.contract.SignInContract
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginEmailPasswordUtil
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginGoogleUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
+import com.kanzankazu.itungitungan.util.android.AndroidUtil.*
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_signin.*
 
 /**
  * Created by Faisal Bahri on 2019-11-08.
  */
-class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.FirebaseLoginListener, TextWatcher {
+class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.FirebaseLoginListener, FirebaseLoginUtil.FirebaseLoginListener.EmailPass, FirebaseLoginUtil.FirebaseLoginListener.Google, TextWatcher {
 
-    private lateinit var initLoginUtil: FirebaseLoginEmailPasswordUtil
+    private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
+    private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
 
     private var mParam1: String? = null
     private var mParam2: String? = null
@@ -53,26 +58,23 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_signin, container, false)
+        return inflater.inflate(R.layout.fragment_signin, container, false)
+    }
 
-        initComponent()
-        initParam()
-        initSession()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         initContent()
         initListener()
-
-        return view
     }
 
-    /*Widget*/
-    override fun afterTextChanged(p0: Editable?) {
-    }
-
-    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        checkData()
-    }
-
-    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQ_CODE_PICK_EMAIL_ACCOUNT) {
+            val accountResult = pickEmailAccountResult(requestCode, resultCode, data)
+            etSignInEmail.setText(accountResult)
+        } else if (requestCode == FirebaseLoginGoogleUtil.RC_SIGN_IN) {
+            loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
+        }
     }
 
     /**/
@@ -85,71 +87,98 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
     }
 
     override fun uiSignInSuccess(user: FirebaseUser?) {
-
+        showSnackbar(getString(R.string.message_login_success))
+        Log.d("Lihat", "uiSignInSuccess SignInFragment $user")
     }
 
     override fun uiSignOutSuccess() {
+        showSnackbar(getString(R.string.message_logout_success))
     }
 
-    override fun uiDisableButton() {
+    override fun uiConnectionError(messageError: String?, typeError: String?) {
+        showSnackbar(messageError)
     }
 
-    override fun uiEnableButton() {
+    override fun uiDisableEmailPassSubmitButton() {
     }
 
-    override fun uiSignInFailure(s: String?) {
+    override fun uiEnableEmailPassSubmitButton() {
     }
 
-    override fun uiSignInFailed(s: String?) {
+    override fun uiSignInGoogleFailure(s: String?) {
+        showSnackbar(s)
     }
 
-    override fun uiRevokeSuccess() {
+    override fun uiSignInGoogleFailed(s: String?) {
+        showSnackbar(s)
     }
 
-    override fun uiPhoneInitialize() {
+    override fun uiRevokeGoogleSuccess() {
     }
 
-    override fun uiPhoneCodeSent() {
+    override fun uiRevokeGoogleUnSuccess() {
     }
 
-    override fun uiPhoneCodeNotSent() {
+    /**/
+    override fun afterTextChanged(s: Editable?) {
+        checkData()
     }
 
-    override fun uiPhoneVerifyFailed(message: String?) {
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
     }
 
-    override fun uiPhoneVerifySuccess(smsCode: String?) {
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
     }
 
     /**/
     override fun checkData(): Boolean {
-        return if (InputValidUtil.isEmptyField(getString(R.string.message_empty_field), tilLoginEmail, etLoginEmail)) false
-        else if (!InputValidUtil.isValidateEmail("Format email salah", tilLoginEmail, etLoginEmail)) false
-        else !InputValidUtil.isEmptyField(getString(R.string.message_empty_field), tilLoginPassword, etLoginPassword)
+        return when {
+            InputValidUtil.isEmptyField(getString(R.string.message_empty_field), tilSignInEmail, etSignInEmail, false, ibSignInEmailClear) -> false
+            InputValidUtil.isEmptyField(getString(R.string.message_empty_field), tilSignInPassword, etSignInPassword, false, ibSignInPasswordClear) -> false
+            else -> InputValidUtil.isValidateEmail(getString(R.string.message_email_wrong_format), tilSignInEmail, etSignInEmail, false)
+        }
     }
 
-    private fun initComponent() {
-
-    }
-
-    private fun initParam() {
-
-    }
-
-    private fun initSession() {
-
+    private fun submitManualLogin() {
+        if (checkData())
+            loginEmailPasswordUtil.signIn(etSignInEmail.toString(), etSignInPassword.toString())
     }
 
     private fun initContent() {
-        initLoginUtil = FirebaseLoginEmailPasswordUtil(activity, this)
+        loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(mActivity, this, this)
+        loginGoogleUtil = FirebaseLoginGoogleUtil(mActivity, this, this)
     }
 
     private fun initListener() {
-        etLoginEmail.addTextChangedListener(this)
-        etLoginPassword.addTextChangedListener(this)
+        ibSignInEmailPick.setOnClickListener {
+            val intent = pickEmailAccountFromFragment()
+            startActivityForResult(intent, REQ_CODE_PICK_EMAIL_ACCOUNT)
+        }
+        ibSignInEmailClear.setOnClickListener {
+            etSignInEmail.setText("")
+        }
+        ibSignInPasswordShowHide.setOnClickListener {
+            InputValidUtil.showHidePassword(etSignInPassword, ibSignInPasswordShowHide)
+        }
+        ibSignInPasswordClear.setOnClickListener {
+            etSignInPassword.setText("")
+        }
 
-        cvSignInSubmit.setOnClickListener { }
-        cvSignInGoogle.setOnClickListener { }
+        etSignInEmail.addTextChangedListener(this)
+        etSignInPassword.addTextChangedListener(this)
+        etSignInPassword.setOnEditorActionListener { v, actionId, event ->
+            val handled = false
+            if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE) {
+                submitManualLogin()
+            }
+            handled
+        }
+
+        cvSignInSubmit.setOnClickListener { submitManualLogin() }
+        cvSignInGoogle.setOnClickListener {
+            val intent = loginGoogleUtil.signInFromFragment()
+            startActivityForResult(intent, FirebaseLoginGoogleUtil.RC_SIGN_IN)
+        }
         cvSignInFacebook.setOnClickListener { }
     }
 }

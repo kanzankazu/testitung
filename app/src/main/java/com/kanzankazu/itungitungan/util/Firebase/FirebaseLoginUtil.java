@@ -431,28 +431,39 @@ public class FirebaseLoginUtil {
 
         void uiSignOutSuccess();
 
-        /*EMAILPASS*/
-        void uiDisableButton();
+        void uiConnectionError(String messageError, String typeError);
 
-        void uiEnableButton();
+        interface EmailPass{
+            /*EMAILPASS*/
+            void uiDisableEmailPassSubmitButton();
 
-        /*GOOGLE*/
-        void uiSignInFailure(String s);
+            void uiEnableEmailPassSubmitButton();
+        }
 
-        void uiSignInFailed(String s);
+        interface Google{
+            /*GOOGLE*/
+            void uiSignInGoogleFailure(String s);
 
-        void uiRevokeSuccess();
+            void uiSignInGoogleFailed(String s);
 
-        /*PHONE*/
-        void uiPhoneInitialize();
+            void uiRevokeGoogleSuccess();
 
-        void uiPhoneCodeSent();
+            void uiRevokeGoogleUnSuccess();
+        }
 
-        void uiPhoneCodeNotSent();
+        interface Phone{
+            /*PHONE*/
+            void uiPhoneInitialize();
 
-        void uiPhoneVerifyFailed(String message);
+            void uiPhoneCodeSent();
 
-        void uiPhoneVerifySuccess(String smsCode);
+            void uiPhoneCodeNotSent();
 
+            void uiPhoneVerifyFailed(String message);
+
+            void uiPhoneVerifySuccess(String smsCode);
+
+            void uiPhoneSignInFailed(String message);
+        }
     }
 }

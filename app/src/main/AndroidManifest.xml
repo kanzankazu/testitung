@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="com.kanzankazu.itungitungan">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.kanzankazu.itungitungan">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-            android:name=".MyApplication"
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="${appsName}"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
-            android:theme="@style/AppTheme"
-            tools:ignore="GoogleAppIndexingWarning"
-            tools:replace="android:label">
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="${appsName}"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:label">
 
         <meta-data
-                android:name="io.fabric.ApiKey"
-                android:value="dcfe0e7c729b617ec9f5b9fe5bdfdc8ab3a1c797" />
+            android:name="io.fabric.ApiKey"
+            android:value="dcfe0e7c729b617ec9f5b9fe5bdfdc8ab3a1c797" />
 
         <activity android:name=".util.google.GooglePhoneNumberValidation" />
 
@@ -27,7 +30,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.logreg.SignInUpActivity" />
+        <activity
+            android:name=".view.logreg.SignInUpActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".view.main.MainActivity" />
 
         <!--Sample-->

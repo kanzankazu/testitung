@@ -1,4 +1,4 @@
-package com.kanzankazu.itungitungan.contract.base;
+package com.kanzankazu.itungitungan.view.base;
 
 import retrofit2.Call;
 

@@ -2,7 +2,6 @@ package com.kanzankazu.itungitungan.view.base;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,12 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.contract.base.BaseView;
-import com.kanzankazu.itungitungan.util.SystemUtil;
+
 import com.kanzankazu.itungitungan.util.Utils;
 import com.kanzankazu.itungitungan.util.dialog.ProgressDialogConnection;
 

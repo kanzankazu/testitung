@@ -10,7 +10,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.contract.base.BaseView;
 import com.kanzankazu.itungitungan.util.NetworkUtil;
 import com.kanzankazu.itungitungan.util.SystemUtil;
 import com.kanzankazu.itungitungan.util.Utils;
