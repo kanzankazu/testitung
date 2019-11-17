@@ -21,7 +21,7 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil
 import com.kanzankazu.itungitungan.view.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_signin.*
+import com.kanzankazu.itungitungan.view.sample.SampleCrudMainActivity
 import kotlinx.android.synthetic.main.fragment_signup.*
 
 
@@ -29,11 +29,11 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * Created by Faisal Bahri on 2019-11-08.
  */
 class SignUpFragment : BaseFragment(),
-    SignUpContract.View,
-    FirebaseLoginUtil.FirebaseLoginListener,
-    FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
-    FirebaseLoginUtil.FirebaseLoginListener.Google,
-    TextWatcher {
+        SignUpContract.View,
+        FirebaseLoginUtil.FirebaseLoginListener,
+        FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
+        FirebaseLoginUtil.FirebaseLoginListener.Google,
+        TextWatcher {
 
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
@@ -117,7 +117,7 @@ class SignUpFragment : BaseFragment(),
 
     override fun uiSignInSuccess(user: FirebaseUser?) {
         showSnackbar(getString(R.string.message_login_success))
-        Log.d("Lihat", "uiSignInSuccess SignUpFragment" + user)
+        Log.d("Lihat", "uiSignInSuccess SignUpFragment $user")
     }
 
     override fun uiSignOutSuccess() {
@@ -161,9 +161,9 @@ class SignUpFragment : BaseFragment(),
         }
     }
 
-    private fun submitManualLogin() {
-        if (checkData())
-            loginEmailPasswordUtil.createAccount(etSignUpEmail.toString(), etSignUpPassword.toString())
+    override fun moveToNext() {
+        val signInUpActivity = mActivity as SignInUpActivity
+        signInUpActivity.moveToNext(SampleCrudMainActivity::class.java, false)
     }
 
     private fun initContent() {
@@ -187,17 +187,23 @@ class SignUpFragment : BaseFragment(),
         etSignUpPassword.setOnEditorActionListener { v, actionId, event ->
             val handled = false
             if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE) {
-                checkData()
+                submitManualLogin()
             }
             handled
         }
 
-        cvSignUpSubmit.setOnClickListener { checkData() }
+        cvSignUpSubmit.setOnClickListener { submitManualLogin() }
         cvSignUpGoogle.setOnClickListener {
             val intent = loginGoogleUtil.signInFromFragment()
             startActivityForResult(intent, RC_SIGN_IN)
         }
         cvSignUpFacebook.setOnClickListener { }
     }
+
+    private fun submitManualLogin() {
+        if (checkData())
+            loginEmailPasswordUtil.createAccount(etSignUpEmail.toString(), etSignUpPassword.toString())
+    }
+
 
 }

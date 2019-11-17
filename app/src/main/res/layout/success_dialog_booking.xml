@@ -11,6 +11,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/padding_margin_16dp"
         android:paddingTop="@dimen/padding_margin_24dp"
+            android:tint="@color/colorPrimaryDark"
         android:src="@drawable/ic_complete" />
 
     <TextView

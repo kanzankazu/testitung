@@ -35,7 +35,7 @@
                 android:layout_height="match_parent"
                 android:background="?android:selectableItemBackground"
                 android:padding="@dimen/padding_margin_10dp"
-                android:src="@drawable/ic_notifications_black_24dp" />
+                android:src="@drawable/ic_home" />
 
         </LinearLayout>
 

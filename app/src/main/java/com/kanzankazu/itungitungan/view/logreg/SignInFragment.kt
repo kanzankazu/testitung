@@ -18,6 +18,7 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil.*
 import com.kanzankazu.itungitungan.view.base.BaseFragment
+import com.kanzankazu.itungitungan.view.sample.SampleCrudMainActivity
 import kotlinx.android.synthetic.main.fragment_signin.*
 
 /**
@@ -139,9 +140,9 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
         }
     }
 
-    private fun submitManualLogin() {
-        if (checkData())
-            loginEmailPasswordUtil.signIn(etSignInEmail.toString(), etSignInPassword.toString())
+    override fun moveToNext() {
+        val signInUpActivity = mActivity as SignInUpActivity
+        signInUpActivity.moveToNext(SampleCrudMainActivity::class.java, false)
     }
 
     private fun initContent() {
@@ -180,5 +181,10 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
             startActivityForResult(intent, FirebaseLoginGoogleUtil.RC_SIGN_IN)
         }
         cvSignInFacebook.setOnClickListener { }
+    }
+
+    private fun submitManualLogin() {
+        if (checkData())
+            loginEmailPasswordUtil.signIn(etSignInEmail.toString(), etSignInPassword.toString())
     }
 }

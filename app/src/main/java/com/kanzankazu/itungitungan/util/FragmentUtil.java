@@ -3,25 +3,18 @@ package com.kanzankazu.itungitungan.util;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.kanzankazu.itungitungan.R;
 
 import java.util.ArrayList;
@@ -41,27 +34,16 @@ public class FragmentUtil {
     private Fragment[] stepFragments;
     private Fragment stepCurrentFragment;
 
+    /**
+     * FragmentUtil
+     *
+     * @param mActivity
+     * @param targetView if -1 == without viewtarget like fragment/FrameLayout
+     */
     public FragmentUtil(AppCompatActivity mActivity, @IdRes int targetView) {
         this.mActivity = mActivity;
-        this.targetView = targetView;
-    }
-
-    public FragmentUtil(AppCompatActivity mActivity) {
-        this.mActivity = mActivity;
-    }
-
-    private FragmentTransaction getTransaction() {
-        return mActivity.getSupportFragmentManager().beginTransaction();
-    }
-
-    public boolean loadFragment(Fragment fragment) {
-        if (fragment != null) {
-            getTransaction()
-                    .replace(targetView, fragment)
-                    .commit();
-            return true;
-        }
-        return false;
+        if (targetView != -1)
+            this.targetView = targetView;
     }
 
     public static List<Fragment> convertFragmentArrayToListFragment(Fragment[] fragments) {
@@ -80,6 +62,20 @@ public class FragmentUtil {
             arrayList.add(fragments[i]);
         }*/
         return stringList;
+    }
+
+    private FragmentTransaction getTransaction() {
+        return mActivity.getSupportFragmentManager().beginTransaction();
+    }
+
+    public boolean loadFragment(Fragment fragment) {
+        if (fragment != null) {
+            getTransaction()
+                    .replace(targetView, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -149,11 +145,16 @@ public class FragmentUtil {
     }
 
     /**
-     * BottomNavigationView
+     * setupBottomNavigationView
+     *
+     * @param bottomNavigationView
+     * @param idMenus              semua id yang ada di menu sesuai urutan
+     * @param fragment             fragment yang pertama muncul
+     * @param isReplace            apakah di ganti atau muncul semua
+     * @param fragments            semua fragment yang akan di tampilkan sesuai id menu
      */
     public void setupBottomNavigationView(BottomNavigationView bottomNavigationView, int[] idMenus, Fragment fragment, Boolean isReplace, Fragment... fragments) {
         if (idMenus.length != fragments.length) {
-            mActivity.finishAffinity();
             Toast.makeText(getApplicationContext(), "Menu dan Fragment tidak sama", Toast.LENGTH_SHORT).show();
         } else {
             if (isReplace) {
@@ -212,13 +213,14 @@ public class FragmentUtil {
     }
 
     /**
-     * ViewPager TabLayout
+     * setupTabLayoutViewPager
      *
-     * @param titleTab
-     * @param iconTab
-     * @param tabLayout
+     * @param titleTab  @{@link Nullable}
+     * @param iconTab   @{@link Nullable}
+     * @param tabLayout @{@link Nullable}
      * @param viewPager
      * @param fragments
+     * @return SlidePagerAdapter
      */
     public SlidePagerAdapter setupTabLayoutViewPager(@Nullable String[] titleTab, @Nullable int[] iconTab, @Nullable TabLayout tabLayout, ViewPager viewPager, Fragment... fragments) {
 
@@ -247,109 +249,6 @@ public class FragmentUtil {
         if (tabLayout != null) tabLayout.setupWithViewPager(viewPager);
 
         return mPagerAdapter;
-    }
-
-    public class SlidePagerAdapter extends FragmentStatePagerAdapter {
-        private List<Fragment> fragments = new ArrayList<>();
-        private List<String> titles;
-
-        SlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
-
-        public void addFragment(Fragment fragment, String string) {
-            fragments.add(fragment);
-            titles.add(string);
-            notifyDataSetChanged();
-        }
-
-        public void addFragmentsTitles(List<Fragment> fragments, List<String> strings) {
-            this.titles = strings;
-            if (this.fragments.size() > 0) {
-                this.fragments.clear();
-                this.fragments = fragments;
-            } else {
-                this.fragments = fragments;
-            }
-            notifyDataSetChanged();
-        }
-
-        public void addFragments(List<Fragment> fragments) {
-            if (this.fragments.size() > 0) {
-                this.fragments.clear();
-                this.fragments = fragments;
-            } else {
-                this.fragments = fragments;
-            }
-            notifyDataSetChanged();
-        }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titles.get(position);
-        }
-
-
-    }
-
-    /**
-     * ViewPager Infinite
-     */
-    public SlidePagerAdapterInfinite setupViewPagerInfinite(ViewPager viewPager, Fragment... fragments) {
-
-        SlidePagerAdapterInfinite mPagerAdapter = new SlidePagerAdapterInfinite(mActivity.getSupportFragmentManager(), convertFragmentArrayToListFragment(fragments));
-
-        viewPager.setAdapter(mPagerAdapter);
-        int limit = (mPagerAdapter.getCount() > 1 ? mPagerAdapter.getCount() - 1 : 1);
-        viewPager.setOffscreenPageLimit(limit);
-
-        return mPagerAdapter;
-    }
-
-    public class SlidePagerAdapterInfinite extends FragmentPagerAdapter {
-
-        private List<Fragment> fragments;
-
-        public SlidePagerAdapterInfinite(FragmentManager fm, List<Fragment> fragments) {
-            super(fm);
-            this.fragments = fragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return getFragmentBasedOnPosition(position);
-        }
-
-        @Override
-        public int getCount() {
-            return Integer.MAX_VALUE;
-        }
-
-        private Fragment getFragmentBasedOnPosition(int position) {
-            int fragmentPos = position % fragments.size(); // Assuming you have 3 fragments
-
-            Fragment selectedFragment = null;
-
-            for (int i = 0; i < fragments.size(); i++) {
-
-                if (fragmentPos == i + 1) {
-                    selectedFragment = fragments.get(i);
-                }
-            }
-
-            return selectedFragment;
-        }
     }
 
     /**
@@ -415,6 +314,103 @@ public class FragmentUtil {
                     stepToolbarUpdate(i);
                 }
             }
+        }
+    }
+
+    public Fragment[] intFragment(Fragment... fragments) {
+        return fragments;
+    }
+
+    public int[] intArray(int... ints) {
+        return ints;
+    }
+
+    public class SlidePagerAdapter extends FragmentStatePagerAdapter {
+        private List<Fragment> fragments = new ArrayList<>();
+        private List<String> titles;
+
+        SlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        public void addFragment(Fragment fragment, String string) {
+            fragments.add(fragment);
+            titles.add(string);
+            notifyDataSetChanged();
+        }
+
+        public void addFragmentsTitles(List<Fragment> fragments, List<String> strings) {
+            this.titles = strings;
+            if (this.fragments.size() > 0) {
+                this.fragments.clear();
+                this.fragments = fragments;
+            } else {
+                this.fragments = fragments;
+            }
+            notifyDataSetChanged();
+        }
+
+        public void addFragments(List<Fragment> fragments) {
+            if (this.fragments.size() > 0) {
+                this.fragments.clear();
+                this.fragments = fragments;
+            } else {
+                this.fragments = fragments;
+            }
+            notifyDataSetChanged();
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles.get(position);
+        }
+
+
+    }
+
+    public class SlidePagerAdapterInfinite extends FragmentPagerAdapter {
+
+        private List<Fragment> fragments;
+
+        public SlidePagerAdapterInfinite(FragmentManager fm, List<Fragment> fragments) {
+            super(fm);
+            this.fragments = fragments;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return getFragmentBasedOnPosition(position);
+        }
+
+        @Override
+        public int getCount() {
+            return Integer.MAX_VALUE;
+        }
+
+        private Fragment getFragmentBasedOnPosition(int position) {
+            int fragmentPos = position % fragments.size(); // Assuming you have 3 fragments
+
+            Fragment selectedFragment = null;
+
+            for (int i = 0; i < fragments.size(); i++) {
+
+                if (fragmentPos == i + 1) {
+                    selectedFragment = fragments.get(i);
+                }
+            }
+
+            return selectedFragment;
         }
     }
 

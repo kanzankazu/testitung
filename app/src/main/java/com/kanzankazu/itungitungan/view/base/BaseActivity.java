@@ -76,7 +76,7 @@ public class BaseActivity extends AppCompatActivity implements BaseView {
         }, 1000);
     }
 
-    public void hideKeyboard(View view) {
+    public void hideKeyboard() {
         Utils.closeSoftKeyboard(this);
     }
 

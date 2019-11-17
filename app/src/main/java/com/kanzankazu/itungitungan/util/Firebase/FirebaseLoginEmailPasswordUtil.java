@@ -6,13 +6,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.kanzankazu.itungitungan.util.NetworkUtil;
 
 public class FirebaseLoginEmailPasswordUtil {
 
@@ -20,10 +18,10 @@ public class FirebaseLoginEmailPasswordUtil {
 
     private final Activity mActivity;
     private final FirebaseLoginUtil.FirebaseLoginListener mListener;
-    private FirebaseLoginUtil.FirebaseLoginListener.EmailPass mListenerEmailPass;
     private final FirebaseAuth mAuth;
+    private FirebaseLoginUtil.FirebaseLoginListener.EmailPass mListenerEmailPass;
 
-    public FirebaseLoginEmailPasswordUtil(Activity mActivity, FirebaseLoginUtil.FirebaseLoginListener mListener,FirebaseLoginUtil.FirebaseLoginListener.EmailPass mListenerEmailPass) {
+    public FirebaseLoginEmailPasswordUtil(Activity mActivity, FirebaseLoginUtil.FirebaseLoginListener mListener, FirebaseLoginUtil.FirebaseLoginListener.EmailPass mListenerEmailPass) {
         this.mActivity = mActivity;
         this.mListener = mListener;
         this.mListenerEmailPass = mListenerEmailPass;
@@ -174,6 +172,7 @@ public class FirebaseLoginEmailPasswordUtil {
         if (user != null) {
             mListener.uiSignInSuccess(user);
         } else {
+            signOut();
             mListener.uiSignOutSuccess();
         }
     }

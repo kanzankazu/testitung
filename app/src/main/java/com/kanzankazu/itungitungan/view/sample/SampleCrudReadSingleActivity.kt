@@ -34,7 +34,7 @@ class SampleCrudReadSingleActivity : AppCompatActivity() {
         etHarga.isEnabled = false
         btSubmit.visibility = View.GONE
 
-        val barang = intent.getSerializableExtra("data") as Barang
+        val barang = intent.getSerializableExtra("data") as Barang?
         if (barang != null) {
             etNama.setText(barang.nama)
             etMerk.setText(barang.merk)

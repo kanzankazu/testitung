@@ -4,6 +4,7 @@ interface SignUpContract {
     interface View {
         fun checkData(): Boolean
 
+        fun moveToNext()
     }
 
 }

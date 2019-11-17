@@ -1,5 +1,6 @@
 package com.kanzankazu.itungitungan;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -10,21 +11,21 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Base64;
 import android.util.Log;
-
 import com.crashlytics.android.Crashlytics;
 import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import io.fabric.sdk.android.Fabric;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import io.fabric.sdk.android.Fabric;
-
 public class MyApplication extends MultiDexApplication {
 
+    @SuppressLint("StaticFieldLeak")
     private static Context context;
+    @SuppressLint("StaticFieldLeak")
     private static MyApplication mInstance;
     public Activity activity;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -51,11 +52,7 @@ public class MyApplication extends MultiDexApplication {
         }
 
         byte[] encrpt = new byte[0];
-        try {
-            encrpt = identifierCrashlytics.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        encrpt = identifierCrashlytics.getBytes(StandardCharsets.UTF_8);
 
         String base64 = Base64.encodeToString(encrpt, Base64.DEFAULT);
 
@@ -109,9 +106,7 @@ public class MyApplication extends MultiDexApplication {
                 md.update(signature.toByteArray());
                 Log.e("KEY_HASH", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }

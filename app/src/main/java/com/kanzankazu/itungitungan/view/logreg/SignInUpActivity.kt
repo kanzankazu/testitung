@@ -29,25 +29,27 @@ class SignInUpActivity : BaseActivity(), SignInUpContract.View {
 
     private fun initContent() {
         if (FirebaseLoginUtil.isSignIn()) {
-            moveToNext(MainActivity::class.java)
+            moveToNext(MainActivity::class.java, false)
         }
 
-        fragmentUtil = FragmentUtil(this)
+        fragmentUtil = FragmentUtil(this, -1)
 
         viewPager = findViewById(R.id.vp_signInUp)
 
         slidePagerAdapter = fragmentUtil.setupTabLayoutViewPager(
-            null,
-            null,
-            null,
-            viewPager,
-            SignInFragment.newInstance(),
-            SignUpFragment.newInstance()
+                null,
+                null,
+                null,
+                viewPager,
+                SignInFragment.newInstance(),
+                SignUpFragment.newInstance()
         )
     }
 
-    private fun moveToNext(targetClass: Class<*>) {
+    fun moveToNext(targetClass: Class<*>, isFinish: Boolean) {
         startActivity(Intent(this, targetClass))
+        if (isFinish)
+            finish()
     }
 
 }

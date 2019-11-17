@@ -1,73 +1,54 @@
 package com.kanzankazu.itungitungan.view.sample
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.view.base.BaseActivity
+import kotlinx.android.synthetic.main.activity_sample_crud_create.*
 
 
 /**
  * Created by Herdi_WORK on 08.08.17.
  */
 
-class SampleCrudCreateActivity : AppCompatActivity() {
+class SampleCrudCreateActivity : BaseActivity() {
 
     // variable yang merefers ke Firebase Realtime Database
     private var database: DatabaseReference? = null
-
-    // variable fields EditText dan Button
-    private var btSubmit: Button? = null
-    private var etNama: EditText? = null
-    private var etMerk: EditText? = null
-    private var etHarga: EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample_crud_create)
 
-        // inisialisasi fields EditText dan Button
-        etNama = findViewById<View>(R.id.et_namabarang) as EditText
-        etMerk = findViewById<View>(R.id.et_merkbarang) as EditText
-        etHarga = findViewById<View>(R.id.et_hargabarang) as EditText
-        btSubmit = findViewById<View>(R.id.bt_submit) as Button
-
         // mengambil referensi ke Firebase Database
         database = FirebaseDatabase.getInstance().reference
 
-        val barang = intent.getSerializableExtra("data") as Barang
+        val barang = intent.getSerializableExtra("data") as Barang?
 
         if (barang != null) {
-            etNama!!.setText(barang.nama)
-            etMerk!!.setText(barang.merk)
-            etHarga!!.setText(barang.harga)
-            btSubmit!!.setOnClickListener {
-                barang.nama = etNama!!.text.toString()
-                barang.merk = etMerk!!.text.toString()
-                barang.harga = etHarga!!.text.toString()
+            et_namabarang.setText(barang.nama)
+            et_merkbarang.setText(barang.merk)
+            et_hargabarang.setText(barang.harga)
+            bt_submit.setOnClickListener {
+                barang.nama = et_namabarang.text.toString()
+                barang.merk = et_merkbarang.text.toString()
+                barang.harga = et_hargabarang.text.toString()
 
                 updateBarang(barang)
             }
         } else {
-            btSubmit!!.setOnClickListener {
-                if (!isEmpty(etNama!!.text.toString()) && !isEmpty(etMerk!!.text.toString()) && !isEmpty(etHarga!!.text.toString()))
-                    submitBarang(Barang(etNama!!.text.toString(), etMerk!!.text.toString(), etHarga!!.text.toString()))
+            bt_submit.setOnClickListener {
+                if (!isEmpty(et_namabarang.text.toString()) && !isEmpty(et_merkbarang.text.toString()) && !isEmpty(et_hargabarang.text.toString()))
+                    submitBarang(Barang(et_namabarang.text.toString(), et_merkbarang.text.toString(), et_hargabarang.text.toString()))
                 else
                     Snackbar.make(findViewById(R.id.bt_submit), "Data barang tidak boleh kosong", Snackbar.LENGTH_LONG).show()
 
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(
-                    etNama!!.windowToken, 0
-                )
+                hideKeyboard()
             }
         }
     }
@@ -83,17 +64,19 @@ class SampleCrudCreateActivity : AppCompatActivity() {
          * yang sudah dimasukkan di Firebase Realtime Database
          */
         database!!.child("barang") //akses parent index, ibaratnya seperti nama tabel
-            .child(barang.key) //select barang berdasarkan key
-            .setValue(barang) //set value barang yang baru
-            .addOnSuccessListener(this) {
-                /**
-                 * Baris kode yang akan dipanggil apabila proses update barang sukses
-                 */
-                /**
-                 * Baris kode yang akan dipanggil apabila proses update barang sukses
-                 */
-                Snackbar.make(findViewById(R.id.bt_submit), "Data berhasil diupdatekan", Snackbar.LENGTH_LONG).setAction("Oke") { finish() }.show()
-            }
+                .child(barang.key) //select barang berdasarkan key
+                .setValue(barang) //set value barang yang baru
+                .addOnSuccessListener(this) {
+                    /**
+                     * Baris kode yang akan dipanggil apabila proses update barang sukses
+                     */
+                    /**
+                     * Baris kode yang akan dipanggil apabila proses update barang sukses
+                     */
+                    Snackbar.make(findViewById(R.id.bt_submit), "Data berhasil diupdatekan", Snackbar.LENGTH_LONG).setAction("Oke") { finish() }.show()
+                }.addOnFailureListener(this) {
+                    showSnackbar(it.message)
+                }
     }
 
     private fun submitBarang(barang: Barang) {
@@ -103,10 +86,12 @@ class SampleCrudCreateActivity : AppCompatActivity() {
          * ketika data berhasil ditambahkan
          */
         database!!.child("barang").push().setValue(barang).addOnSuccessListener(this) {
-            etNama!!.setText("")
-            etMerk!!.setText("")
-            etHarga!!.setText("")
+            et_namabarang.setText("")
+            et_merkbarang.setText("")
+            et_hargabarang.setText("")
             Snackbar.make(findViewById(R.id.bt_submit), "Data berhasil ditambahkan", Snackbar.LENGTH_LONG).show()
+        }.addOnFailureListener(this) {
+            showSnackbar(it.message)
         }
     }
 
