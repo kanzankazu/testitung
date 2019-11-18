@@ -22,10 +22,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initContent() {
+        fragmentUtil = FragmentUtil(this, R.id.fl_main)
+
         arrayOfMenuId = fragmentUtil.intArray(R.id.menuHome, R.id.menuDash, R.id.menuNotif, R.id.menuProfile)
         arrayOfFragments = fragmentUtil.intFragment(HomeFragment.newInstance(), DashboardFragment.newInstance(), NotificationsFragment.newInstance(), ProfileFragment.newInstance())
-
-        fragmentUtil = FragmentUtil(this, R.id.fl_main)
         fragmentUtil.setupBottomNavigationView(bnv_main, arrayOfMenuId, HomeFragment.newInstance(), true, *arrayOfFragments)
     }
 

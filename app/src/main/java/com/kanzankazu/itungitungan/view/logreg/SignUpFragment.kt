@@ -21,7 +21,6 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil
 import com.kanzankazu.itungitungan.view.base.BaseFragment
-import com.kanzankazu.itungitungan.view.sample.SampleCrudMainActivity
 import kotlinx.android.synthetic.main.fragment_signup.*
 
 
@@ -163,7 +162,7 @@ class SignUpFragment : BaseFragment(),
 
     override fun moveToNext() {
         val signInUpActivity = mActivity as SignInUpActivity
-        signInUpActivity.moveToNext(SampleCrudMainActivity::class.java, false)
+        signInUpActivity.moveToNext()
     }
 
     private fun initContent() {

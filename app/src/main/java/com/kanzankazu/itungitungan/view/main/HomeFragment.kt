@@ -30,11 +30,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun HomeFragment() {
-        // Required empty public constructor
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -44,15 +39,17 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initComponent()
         initParam()
         initSession()
         initContent()
         initListener()
-
-        return view
     }
 
     private fun initComponent() {

@@ -7,7 +7,7 @@ import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.FragmentUtil
 import com.kanzankazu.itungitungan.view.base.BaseActivity
-import com.kanzankazu.itungitungan.view.main.MainActivity
+import com.kanzankazu.itungitungan.view.sample.SampleCrudMainActivity
 
 
 /**
@@ -29,7 +29,7 @@ class SignInUpActivity : BaseActivity(), SignInUpContract.View {
 
     private fun initContent() {
         if (FirebaseLoginUtil.isSignIn()) {
-            moveToNext(MainActivity::class.java, false)
+            moveToNext()
         }
 
         fragmentUtil = FragmentUtil(this, -1)
@@ -37,19 +37,18 @@ class SignInUpActivity : BaseActivity(), SignInUpContract.View {
         viewPager = findViewById(R.id.vp_signInUp)
 
         slidePagerAdapter = fragmentUtil.setupTabLayoutViewPager(
-                null,
-                null,
-                null,
-                viewPager,
-                SignInFragment.newInstance(),
-                SignUpFragment.newInstance()
+            null,
+            null,
+            null,
+            viewPager,
+            SignInFragment.newInstance(),
+            SignUpFragment.newInstance()
         )
     }
 
-    fun moveToNext(targetClass: Class<*>, isFinish: Boolean) {
-        startActivity(Intent(this, targetClass))
-        if (isFinish)
-            finish()
+    fun moveToNext() {
+        startActivity(Intent(this, SampleCrudMainActivity::class.java))
+        finish()
     }
 
 }

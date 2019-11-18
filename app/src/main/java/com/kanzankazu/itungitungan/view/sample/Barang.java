@@ -1,8 +1,11 @@
 package com.kanzankazu.itungitungan.view.sample;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Herdi_WORK on 18.06.17.
@@ -63,5 +66,16 @@ public class Barang implements Serializable {
         nama = nm;
         merk = mrk;
         harga = hrg;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("nama", nama);
+        result.put("merk", merk);
+        result.put("harga", harga);
+        result.put("key", key);
+
+        return result;
     }
 }

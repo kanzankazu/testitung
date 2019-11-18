@@ -8,6 +8,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ *
+ */
 public class FirebaseDatabaseUtil {
 
     private Activity activity;
@@ -16,8 +19,13 @@ public class FirebaseDatabaseUtil {
         this.activity = activity;
     }
 
-    public DatabaseReference getReference() {
+    public DatabaseReference getRootRef() {
         return FirebaseDatabase.getInstance().getReference();
+    }
+
+    public DatabaseReference getDataByPrimaryKey(String parent, String key) {
+        DatabaseReference rootRef = getRootRef();
+        return rootRef.child(parent).child(key);
     }
 
     public void getData(DatabaseReference database, FirebaseInterface.ValueListener listener) {
@@ -35,8 +43,9 @@ public class FirebaseDatabaseUtil {
     }
 
     interface FirebaseInterface {
-        interface ValueListener{
+        interface ValueListener {
             void onChange(DataSnapshot dataSnapshot);
+
             void onCancel(DatabaseError databaseError);
         }
     }

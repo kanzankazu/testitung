@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
+import android.util.Log
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.kanzankazu.itungitungan.R
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_sample_crud_create.*
 class SampleCrudCreateActivity : BaseActivity() {
 
     // variable yang merefers ke Firebase Realtime Database
-    private var database: DatabaseReference? = null
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,20 +64,20 @@ class SampleCrudCreateActivity : BaseActivity() {
          * Baris kode yang digunakan untuk mengupdate data barang
          * yang sudah dimasukkan di Firebase Realtime Database
          */
-        database!!.child("barang") //akses parent index, ibaratnya seperti nama tabel
-                .child(barang.key) //select barang berdasarkan key
-                .setValue(barang) //set value barang yang baru
-                .addOnSuccessListener(this) {
-                    /**
-                     * Baris kode yang akan dipanggil apabila proses update barang sukses
-                     */
-                    /**
-                     * Baris kode yang akan dipanggil apabila proses update barang sukses
-                     */
-                    Snackbar.make(findViewById(R.id.bt_submit), "Data berhasil diupdatekan", Snackbar.LENGTH_LONG).setAction("Oke") { finish() }.show()
-                }.addOnFailureListener(this) {
-                    showSnackbar(it.message)
-                }
+        database.child("barang") //akses parent index, ibaratnya seperti nama tabel
+            .child(barang.key) //select barang berdasarkan key
+            .setValue(barang) //set value barang yang baru
+            .addOnSuccessListener(this) {
+                /**
+                 * Baris kode yang akan dipanggil apabila proses update barang sukses
+                 */
+                /**
+                 * Baris kode yang akan dipanggil apabila proses update barang sukses
+                 */
+                Snackbar.make(findViewById(R.id.bt_submit), "Data berhasil diupdatekan", Snackbar.LENGTH_LONG).setAction("Oke") { finish() }.show()
+            }.addOnFailureListener(this) {
+                showSnackbar(it.message)
+            }
     }
 
     private fun submitBarang(barang: Barang) {
@@ -85,14 +86,24 @@ class SampleCrudCreateActivity : BaseActivity() {
          * dan juga kita set onSuccessListener yang berisi kode yang akan dijalankan
          * ketika data berhasil ditambahkan
          */
-        database!!.child("barang").push().setValue(barang).addOnSuccessListener(this) {
-            et_namabarang.setText("")
-            et_merkbarang.setText("")
-            et_hargabarang.setText("")
-            Snackbar.make(findViewById(R.id.bt_submit), "Data berhasil ditambahkan", Snackbar.LENGTH_LONG).show()
-        }.addOnFailureListener(this) {
-            showSnackbar(it.message)
-        }
+        val key = database.child("barang").push().key
+
+        Log.d("Lihat", "submitBarang SampleCrudCreateActivity" + database.child("barang").push().database)
+        Log.d("Lihat", "submitBarang SampleCrudCreateActivity" + database.child("barang").push().key)
+        Log.d("Lihat", "submitBarang SampleCrudCreateActivity" + database.child("barang").push().parent)
+        Log.d("Lihat", "submitBarang SampleCrudCreateActivity" + database.child("barang").push().root)
+
+        barang.key = key
+
+        database.child("barang").child(key).setValue(barang)
+            .addOnSuccessListener(this) {
+                et_namabarang.setText("")
+                et_merkbarang.setText("")
+                et_hargabarang.setText("")
+                Snackbar.make(findViewById(R.id.bt_submit), "Data berhasil ditambahkan", Snackbar.LENGTH_LONG).show()
+            }.addOnFailureListener(this) {
+                showSnackbar(it.message)
+            }
     }
 
     companion object {

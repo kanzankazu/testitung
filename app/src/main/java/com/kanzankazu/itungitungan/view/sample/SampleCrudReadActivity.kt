@@ -20,10 +20,10 @@ class SampleCrudReadActivity : AppCompatActivity(), AdapterSampleCrudRecyclerVie
      * Mendefinisikan variable yang akan dipakai
      */
     private var database: DatabaseReference? = null
-    private var rvView: RecyclerView? = null
-    private var adapter: RecyclerView.Adapter<*>? = null
-    private var layoutManager: RecyclerView.LayoutManager? = null
-    private var daftarBarang: ArrayList<Barang>? = null
+    private lateinit var rvView: RecyclerView
+    private lateinit var adapter: RecyclerView.Adapter<*>
+    private lateinit var layoutManager: RecyclerView.LayoutManager
+    private lateinit var daftarBarang: ArrayList<Barang>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +36,9 @@ class SampleCrudReadActivity : AppCompatActivity(), AdapterSampleCrudRecyclerVie
          * Inisialisasi RecyclerView & komponennya
          */
         rvView = findViewById<View>(R.id.rv_main) as RecyclerView
-        rvView!!.setHasFixedSize(true)
+        rvView.setHasFixedSize(true)
         layoutManager = LinearLayoutManager(this)
-        rvView!!.layoutManager = layoutManager
+        rvView.layoutManager = layoutManager
 
         /**
          * Inisialisasi dan mengambil Firebase Database Reference
@@ -68,15 +68,15 @@ class SampleCrudReadActivity : AppCompatActivity(), AdapterSampleCrudRecyclerVie
                      * Menambahkan object Barang yang sudah dimapping
                      * ke dalam ArrayList
                      */
-                    daftarBarang!!.add(barang)
+                    daftarBarang.add(barang)
                 }
 
                 /**
                  * Inisialisasi adapter dan data barang dalam bentuk ArrayList
                  * dan mengeset Adapter ke dalam RecyclerView
                  */
-                adapter = AdapterSampleCrudRecyclerView(daftarBarang!!, this@SampleCrudReadActivity)
-                rvView!!.adapter = adapter
+                adapter = AdapterSampleCrudRecyclerView(daftarBarang, this@SampleCrudReadActivity)
+                rvView.adapter = adapter
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -99,8 +99,9 @@ class SampleCrudReadActivity : AppCompatActivity(), AdapterSampleCrudRecyclerVie
          * Jika sukses akan memunculkan SnackBar
          */
         if (database != null) {
-            database!!.child("barang").child(barang.key).removeValue().addOnSuccessListener { Toast.makeText(this@SampleCrudReadActivity, "success delete", Toast.LENGTH_LONG).show() }
-
+            database!!.child("barang").child(barang.key).removeValue().addOnSuccessListener {
+                Toast.makeText(this@SampleCrudReadActivity, "success delete", Toast.LENGTH_LONG).show()
+            }
         }
     }
 }

@@ -34,7 +34,6 @@ class DashboardFragment : Fragment() {
         // Required empty public constructor
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -44,15 +43,17 @@ class DashboardFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_dashboard_content, container, false)
+        return inflater.inflate(R.layout.fragment_dashboard_content, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initComponent()
         initParam()
         initSession()
         initContent()
         initListener()
-
-        return view
     }
 
     private fun initComponent() {

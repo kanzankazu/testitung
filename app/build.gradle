@@ -172,6 +172,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.mindorks.android:prdownloader:0.4.0'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
 
     /*UNUSED*/
     implementation 'us.belka:androidtoggleswitch:1.2.2'

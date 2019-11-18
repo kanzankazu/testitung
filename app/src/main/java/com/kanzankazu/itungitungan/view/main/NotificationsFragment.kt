@@ -5,6 +5,10 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.anychart.AnyChart
+import com.anychart.chart.common.dataentry.DataEntry
+import com.anychart.chart.common.listener.Event
+import com.anychart.chart.common.listener.ListenersInterface
 import com.kanzankazu.itungitungan.R
 
 class NotificationsFragment : Fragment() {
@@ -30,11 +34,6 @@ class NotificationsFragment : Fragment() {
         }
     }
 
-    fun NotificationsFragment() {
-        // Required empty public constructor
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -44,15 +43,17 @@ class NotificationsFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_notifications, container, false)
+        return inflater.inflate(R.layout.fragment_notifications, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initComponent()
         initParam()
         initSession()
         initContent()
         initListener()
-
-        return view
     }
 
     private fun initComponent() {
