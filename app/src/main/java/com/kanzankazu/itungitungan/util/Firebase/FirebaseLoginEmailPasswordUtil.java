@@ -48,7 +48,8 @@ public class FirebaseLoginEmailPasswordUtil {
 
         mListener.loginProgressShow();
 
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(mActivity, new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(mActivity, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 mListener.loginProgressDismiss();
@@ -82,6 +83,8 @@ public class FirebaseLoginEmailPasswordUtil {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(mActivity, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                mListener.loginProgressDismiss();
+
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success");
@@ -96,7 +99,6 @@ public class FirebaseLoginEmailPasswordUtil {
                     updateUI(null);
                 }
 
-                mListener.loginProgressDismiss();
             }
         });
         // [END sign_in_with_email]

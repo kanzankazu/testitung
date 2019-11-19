@@ -21,7 +21,7 @@ public class FirebaseDatabaseUtil {
         DatabaseReference rootRef = getRootRef();
         return rootRef.child(parent).child(key);
     }
-    
+
     public Query getDataByEqualTo(DatabaseReference reference, String s) {
         return reference.equalTo(s);
     }
