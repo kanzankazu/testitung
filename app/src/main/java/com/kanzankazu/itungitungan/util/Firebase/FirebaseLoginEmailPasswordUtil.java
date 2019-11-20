@@ -41,10 +41,6 @@ public class FirebaseLoginEmailPasswordUtil {
     }
 
     public boolean createAccount(String email, String password) {
-        Log.d(TAG, "createAccount:" + email);
-        if (!validateForm(email, password)) {
-            return false;
-        }
 
         mListener.loginProgressShow();
 
@@ -73,10 +69,6 @@ public class FirebaseLoginEmailPasswordUtil {
     }
 
     public boolean signIn(String email, String password) {
-        Log.d(TAG, "signIn:" + email);
-        if (!validateForm(email, password)) {
-            return false;
-        }
 
         mListener.loginProgressShow();
 

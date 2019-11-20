@@ -87,8 +87,10 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
     }
 
     override fun uiSignInSuccess(user: FirebaseUser?) {
-        showSnackbar(getString(R.string.message_login_success))
         Log.d("Lihat", "uiSignInSuccess SignInFragment $user")
+        showSnackbar(getString(R.string.message_login_success))
+
+        moveToNext()
     }
 
     override fun uiSignOutSuccess() {
@@ -105,18 +107,18 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
     override fun uiEnableEmailPassSubmitButton() {
     }
 
-    override fun uiSignInGoogleFailure(s: String?) {
-        showSnackbar(s)
+    override fun uiSignInGoogleFailure(messageError: String?) {
+        showSnackbar(messageError)
     }
 
-    override fun uiSignInGoogleFailed(s: String?) {
-        showSnackbar(s)
+    override fun uiSignInGoogleFailed(messageError: String?) {
+        showSnackbar(messageError)
     }
 
     override fun uiRevokeGoogleSuccess() {
     }
 
-    override fun uiRevokeGoogleUnSuccess() {
+    override fun uiRevokeGoogleFailed() {
     }
 
     /**/

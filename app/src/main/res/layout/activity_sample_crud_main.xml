@@ -26,4 +26,11 @@
         android:layout_height="wrap_content"
         android:text="Lihat Data" />
 
+    <Button
+            android:layout_margin="5dp"
+            android:id="@+id/bt_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log out" />
+
 </LinearLayout>

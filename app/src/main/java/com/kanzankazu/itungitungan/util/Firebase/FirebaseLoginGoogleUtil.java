@@ -97,7 +97,7 @@ public class FirebaseLoginGoogleUtil extends FirebaseConnectionUtil {
                 if (task.isSuccessful()) {
                     mListenerGoogle.uiRevokeGoogleSuccess();
                 } else {
-                    mListenerGoogle.uiRevokeGoogleUnSuccess();
+                    mListenerGoogle.uiRevokeGoogleFailed();
                 }
             }
         });

@@ -6,36 +6,30 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.facebook.AccessToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.ActionCodeSettings;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GithubAuthProvider;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.SignInMethodQueryResult;
-import com.google.firebase.auth.UserInfo;
-import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.auth.*;
 
 import java.util.List;
 
 public class FirebaseLoginUtil {
 
-    private static final String TAG = "LoginUtil";
+    private final String TAG = "LoginUtil";
+    private final Activity activity;
+    private final FirebaseLoginListener mListener;
+    private final FirebaseAuth mAuth;
 
-    public static boolean isSignIn() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        return user != null;
+    public FirebaseLoginUtil(Activity activity, FirebaseLoginUtil.FirebaseLoginListener mListener) {
+        this.activity = activity;
+        this.mListener = mListener;
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
     }
 
-    public static FirebaseUser getUserProfile() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public FirebaseUser getUserProfile() {
+        FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             // Name, email address, and profile photo Url
             String name = user.getDisplayName();
@@ -50,16 +44,18 @@ public class FirebaseLoginUtil {
             // FirebaseUser.getIdToken() instead.
             String uid = user.getUid();
 
+            mListener.uiSignInSuccess(user);
+
             return user;
         }
-        return user;
+        return null;
     }
 
     /**
      * @return null/
      */
-    public static List<? extends UserInfo> getProviderData() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public List<? extends UserInfo> getProviderData() {
+        FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             for (UserInfo profile : user.getProviderData()) {
                 // Id of the provider (ex: google.com)
@@ -78,8 +74,8 @@ public class FirebaseLoginUtil {
         return null;
     }
 
-    public static void updateProfile(String name, String path) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public void updateProfile(String name, String path) {
+        FirebaseUser user = mAuth.getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
@@ -99,8 +95,8 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void updateEmail(String email) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public void updateEmail(String email) {
+        FirebaseUser user = mAuth.getCurrentUser();
 
         user.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -114,8 +110,8 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void updatePassword(String password) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public void updatePassword(String password) {
+        FirebaseUser user = mAuth.getCurrentUser();
 
         user.updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -129,8 +125,8 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void sendEmailVerification() {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+    public void sendEmailVerification() {
+        FirebaseAuth auth = mAuth;
         FirebaseUser user = auth.getCurrentUser();
 
         user.sendEmailVerification()
@@ -144,8 +140,8 @@ public class FirebaseLoginUtil {
                 });
     }
 
-    public static void sendEmailVerificationWithContinueUrl() {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+    public void sendEmailVerificationWithContinueUrl() {
+        FirebaseAuth auth = mAuth;
         FirebaseUser user = auth.getCurrentUser();
 
         String url = "http://www.example.com/verify?uid=" + user.getUid();
@@ -171,37 +167,39 @@ public class FirebaseLoginUtil {
         // auth.useAppLanguage();
     }
 
-    public static void sendPasswordReset(String email) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+    public void sendPasswordReset(String email) {
+        FirebaseAuth auth = mAuth;
 
         auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "Email sent.");
+                } else {
+                    Log.d(TAG, "Email not sent.");
                 }
             }
         });
     }
 
-    public static void deleteUser() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public void deleteUser() {
+        FirebaseUser user = mAuth.getCurrentUser();
 
         user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "User account deleted.");
+                    mListener.uiSignOutSuccess();
                 } else {
                     Log.d(TAG, "User account failed deleted.");
-
                 }
             }
         });
     }
 
-    public static void reauthenticate(String email, String password) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public void reauthenticate(String email, String password) {
+        FirebaseUser user = mAuth.getCurrentUser();
 
         // Get auth credentials from the user for re-authentication. The example below shows
         // email and password credentials but there are multiple possible providers,
@@ -217,8 +215,7 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void authWithGithub(Activity activity) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    public void authWithGithub(Activity activity) {
 
         String token = "<GITHUB-ACCESS-TOKEN>";
         AuthCredential credential = GithubAuthProvider.getCredential(token);
@@ -240,10 +237,9 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void linkAndMerge(AuthCredential credential) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    public void linkAndMerge(AuthCredential credential) {
 
-        FirebaseUser prevUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser prevUser = mAuth.getCurrentUser();
         mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -254,8 +250,7 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void unlink(Activity activity, String providerId) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    public void unlink(Activity activity, String providerId) {
 
         mAuth.getCurrentUser().unlink(providerId).addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
             @Override
@@ -268,7 +263,7 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void buildActionCodeSettings() {
+    public void buildActionCodeSettings() {
         ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
                 // URL you want to redirect back to. The domain (www.example.com) for this
                 // URL must be whitelisted in the Firebase Console.
@@ -283,8 +278,8 @@ public class FirebaseLoginUtil {
                 .build();
     }
 
-    public static void sendSignInLink(String email, ActionCodeSettings actionCodeSettings) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+    public void sendSignInLink(String email, ActionCodeSettings actionCodeSettings) {
+        FirebaseAuth auth = mAuth;
         auth.sendSignInLinkToEmail(email, actionCodeSettings).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -297,8 +292,8 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void verifySignInLink(Activity activity) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+    public void verifySignInLink(Activity activity) {
+        FirebaseAuth auth = mAuth;
         Intent intent = activity.getIntent();
         String emailLink = intent.getData().toString();
 
@@ -327,8 +322,8 @@ public class FirebaseLoginUtil {
         }
     }
 
-    public static void linkWithSignInLink(String email, String emailLink) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+    public void linkWithSignInLink(String email, String emailLink) {
+        FirebaseAuth auth = mAuth;
 
         // Construct the email link credential from the current URL.
         AuthCredential credential = EmailAuthProvider.getCredentialWithLink(email, emailLink);
@@ -352,8 +347,8 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void reauthWithLink(String email, String emailLink) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+    public void reauthWithLink(String email, String emailLink) {
+        FirebaseAuth auth = mAuth;
 
         // Construct the email link credential from the current URL.
         AuthCredential credential = EmailAuthProvider.getCredentialWithLink(email, emailLink);
@@ -371,8 +366,8 @@ public class FirebaseLoginUtil {
         });
     }
 
-    public static void differentiateLink(String email) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+    public void differentiateLink(String email) {
+        FirebaseAuth auth = mAuth;
 
         auth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
             @Override
@@ -393,21 +388,21 @@ public class FirebaseLoginUtil {
         // [END auth_differentiate_link]
     }
 
-    public static void getGoogleCredentials() {
+    public void getGoogleCredentials() {
         String googleIdToken = "";
         // [START auth_google_cred]
         AuthCredential credential = GoogleAuthProvider.getCredential(googleIdToken, null);
         // [END auth_google_cred]
     }
 
-    public static void getFbCredentials() {
+    public void getFbCredentials() {
         AccessToken token = AccessToken.getCurrentAccessToken();
         // [START auth_fb_cred]
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         // [END auth_fb_cred]
     }
 
-    public static void getEmailCredentials() {
+    public void getEmailCredentials() {
         String email = "";
         String password = "";
         // [START auth_email_cred]
@@ -415,10 +410,16 @@ public class FirebaseLoginUtil {
         // [END auth_email_cred]
     }
 
-    public static void signOut() {
+    public void signOut() {
         // [START auth_sign_out]
-        FirebaseAuth.getInstance().signOut();
+        mAuth.signOut();
+        mListener.uiSignOutSuccess();
         // [END auth_sign_out]
+    }
+
+    public boolean isSignIn() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        return user != null;
     }
 
     public interface FirebaseLoginListener {
@@ -433,25 +434,25 @@ public class FirebaseLoginUtil {
 
         void uiConnectionError(String messageError, String typeError);
 
-        interface EmailPass{
+        interface EmailPass {
             /*EMAILPASS*/
             void uiDisableEmailPassSubmitButton();
 
             void uiEnableEmailPassSubmitButton();
         }
 
-        interface Google{
+        interface Google {
             /*GOOGLE*/
-            void uiSignInGoogleFailure(String s);
+            void uiSignInGoogleFailure(String messageError);
 
-            void uiSignInGoogleFailed(String s);
+            void uiSignInGoogleFailed(String messageError);
 
             void uiRevokeGoogleSuccess();
 
-            void uiRevokeGoogleUnSuccess();
+            void uiRevokeGoogleFailed();
         }
 
-        interface Phone{
+        interface Phone {
             /*PHONE*/
             void uiPhoneInitialize();
 
@@ -459,11 +460,11 @@ public class FirebaseLoginUtil {
 
             void uiPhoneCodeNotSent();
 
-            void uiPhoneVerifyFailed(String message);
+            void uiPhoneVerifyFailed(String messageError);
 
             void uiPhoneVerifySuccess(String smsCode);
 
-            void uiPhoneSignInFailed(String message);
+            void uiPhoneSignInFailed(String messageError);
         }
     }
 }

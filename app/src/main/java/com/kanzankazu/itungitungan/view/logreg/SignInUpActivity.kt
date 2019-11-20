@@ -43,9 +43,6 @@ class SignInUpActivity : BaseActivity(), SignInUpContract.View {
     }
 
     private fun initContent() {
-        if (FirebaseLoginUtil.isSignIn()) {
-            moveToNext()
-        }
 
         fragmentUtil = FragmentUtil(this, -1)
 

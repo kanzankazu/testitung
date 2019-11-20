@@ -115,8 +115,10 @@ class SignUpFragment : BaseFragment(),
     }
 
     override fun uiSignInSuccess(user: FirebaseUser?) {
-        showSnackbar(getString(R.string.message_login_success))
         Log.d("Lihat", "uiSignInSuccess SignUpFragment $user")
+        showSnackbar(getString(R.string.message_login_success))
+
+        moveToNext()
     }
 
     override fun uiSignOutSuccess() {
@@ -135,18 +137,18 @@ class SignUpFragment : BaseFragment(),
         cvSignUpSubmit.isEnabled = true
     }
 
-    override fun uiSignInGoogleFailure(s: String?) {
-        showSnackbar(s)
+    override fun uiSignInGoogleFailure(messageError: String?) {
+        showSnackbar(messageError)
     }
 
-    override fun uiSignInGoogleFailed(s: String?) {
-        showSnackbar(s)
+    override fun uiSignInGoogleFailed(messageError: String?) {
+        showSnackbar(messageError)
     }
 
     override fun uiRevokeGoogleSuccess() {
     }
 
-    override fun uiRevokeGoogleUnSuccess() {
+    override fun uiRevokeGoogleFailed() {
     }
 
     /**
