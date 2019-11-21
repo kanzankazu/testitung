@@ -1,5 +1,6 @@
 package com.kanzankazu.itungitungan.view.logreg
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -34,6 +35,7 @@ class SignUpFragment : BaseFragment(),
         FirebaseLoginUtil.FirebaseLoginListener.Google,
         TextWatcher {
 
+    private lateinit var mContext: SignInUpActivity
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
     private var mParam1: String? = null
@@ -55,6 +57,11 @@ class SignUpFragment : BaseFragment(),
         fun newInstance(): Fragment {
             return SignUpFragment()
         }
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        mContext = context as SignInUpActivity
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -163,13 +170,12 @@ class SignUpFragment : BaseFragment(),
     }
 
     override fun moveToNext() {
-        val signInUpActivity = mActivity as SignInUpActivity
-        signInUpActivity.moveToNext()
+        mContext.moveToNext()
     }
 
     private fun initContent() {
-        loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(mActivity, this, this)
-        loginGoogleUtil = FirebaseLoginGoogleUtil(mActivity, this, this)
+        loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(mContext, this, this)
+        loginGoogleUtil = FirebaseLoginGoogleUtil(mContext, this, this)
     }
 
     private fun initListener() {
@@ -203,7 +209,7 @@ class SignUpFragment : BaseFragment(),
 
     private fun submitManualLogin() {
         if (checkData())
-            loginEmailPasswordUtil.createAccount(etSignUpEmail.toString(), etSignUpPassword.toString())
+            mContext.signUpEmailPass(etSignUpEmail.toString(),etSignUpPassword.toString())
     }
 
 

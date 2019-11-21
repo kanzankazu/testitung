@@ -9,11 +9,16 @@ import static android.content.Context.CONNECTIVITY_SERVICE;
 /**
  * Created by Faisal Bahri on 2019-11-15.
  */
-public class FirebaseConnectionUtil {
-    public static boolean isConnected(Context context) {
+class FirebaseConnectionUtil {
+    boolean isConnected(Context context, FirebaseConnectionListener listener) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
-        return (info != null && info.isConnected());
+        if (info != null && info.isConnected()) {
+            return true;
+        } else {
+            listener.noInternet();
+            return false;
+        }
     }
 
     String checkException(int statusCode) {
@@ -54,5 +59,9 @@ public class FirebaseConnectionUtil {
                 return "";
         }
 
+    }
+
+    interface FirebaseConnectionListener {
+        void noInternet();
     }
 }

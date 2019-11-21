@@ -1,5 +1,6 @@
 package com.kanzankazu.itungitungan.util.Firebase;
 
+import android.app.Activity;
 import android.text.TextUtils;
 import com.google.firebase.database.*;
 
@@ -7,6 +8,12 @@ import com.google.firebase.database.*;
  *
  */
 public class FirebaseDatabaseUtil {
+
+    private Activity mActivity;
+
+    public FirebaseDatabaseUtil(Activity mActivity) {
+        this.mActivity = mActivity;
+    }
 
     public DatabaseReference getRootRef() {
         return FirebaseDatabase.getInstance().getReference();
@@ -54,7 +61,7 @@ public class FirebaseDatabaseUtil {
         }
     }
 
-    public void addValue(DatabaseReference databaseReference, ValueEventListener listener) {
+    public void setValue(DatabaseReference databaseReference, ValueEventListener listener) {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -68,7 +75,7 @@ public class FirebaseDatabaseUtil {
         });
     }
 
-    public void addValueSingle(DatabaseReference databaseReference, ValueEventListener listener) {
+    public void setValueSingle(DatabaseReference databaseReference, ValueEventListener listener) {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -82,7 +89,7 @@ public class FirebaseDatabaseUtil {
         });
     }
 
-    public void addChild(DatabaseReference databaseReference, ChildEventListener listener) {
+    public void setChild(DatabaseReference databaseReference, ChildEventListener listener) {
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

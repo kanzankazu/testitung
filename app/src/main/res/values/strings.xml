@@ -22,5 +22,6 @@
     <string name="message_failed_login">Login Gagal</string>
     <string name="message_logout_success">Keluar berhasil</string>
     <string name="message_login_success">Masuk Berhasil</string>
+    <string name="message_no_internet_network">Tidak ada jaringan internet</string>
 
 </resources>

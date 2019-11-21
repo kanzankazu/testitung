@@ -15,6 +15,7 @@ public class User {
     String photo_url;
     String photo_dt;
 
+    Boolean isEmailVerified;
     Boolean isLogin;
     String firstLogin;
     String lastlogin;

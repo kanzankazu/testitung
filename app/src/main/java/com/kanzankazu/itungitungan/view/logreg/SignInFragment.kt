@@ -1,5 +1,6 @@
 package com.kanzankazu.itungitungan.view.logreg
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_signin.*
  */
 class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.FirebaseLoginListener, FirebaseLoginUtil.FirebaseLoginListener.EmailPass, FirebaseLoginUtil.FirebaseLoginListener.Google, TextWatcher {
 
+    private lateinit var mContext: SignInUpActivity
     private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
 
@@ -47,6 +49,11 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
         fun newInstance(): Fragment {
             return SignInFragment()
         }
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        mContext = context as SignInUpActivity
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,13 +149,12 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
     }
 
     override fun moveToNext() {
-        val signInUpActivity = mActivity as SignInUpActivity
-        signInUpActivity.moveToNext()
+        mContext.moveToNext()
     }
 
     private fun initContent() {
-        loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(mActivity, this, this)
-        loginGoogleUtil = FirebaseLoginGoogleUtil(mActivity, this, this)
+        loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(mContext, this, this)
+        loginGoogleUtil = FirebaseLoginGoogleUtil(mContext, this, this)
     }
 
     private fun initListener() {
@@ -156,19 +162,13 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
             val intent = pickEmailAccountFromFragment()
             startActivityForResult(intent, REQ_CODE_PICK_EMAIL_ACCOUNT)
         }
-        ibSignInEmailClear.setOnClickListener {
-            etSignInEmail.setText("")
-        }
-        ibSignInPasswordShowHide.setOnClickListener {
-            InputValidUtil.showHidePassword(etSignInPassword, ibSignInPasswordShowHide)
-        }
-        ibSignInPasswordClear.setOnClickListener {
-            etSignInPassword.setText("")
-        }
+        ibSignInEmailClear.setOnClickListener { etSignInEmail.setText("") }
+        ibSignInPasswordShowHide.setOnClickListener { InputValidUtil.showHidePassword(etSignInPassword, ibSignInPasswordShowHide) }
+        ibSignInPasswordClear.setOnClickListener { etSignInPassword.setText("") }
 
         etSignInEmail.addTextChangedListener(this)
         etSignInPassword.addTextChangedListener(this)
-        etSignInPassword.setOnEditorActionListener { v, actionId, event ->
+        etSignInPassword.setOnEditorActionListener { _, actionId, _ ->
             val handled = false
             if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE) {
                 submitManualLogin()
@@ -177,15 +177,12 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
         }
 
         cvSignInSubmit.setOnClickListener { submitManualLogin() }
-        cvSignInGoogle.setOnClickListener {
-            val intent = loginGoogleUtil.signInFromFragment()
-            startActivityForResult(intent, FirebaseLoginGoogleUtil.RC_SIGN_IN)
-        }
+        cvSignInGoogle.setOnClickListener { mContext.signInByGoogle() }
         cvSignInFacebook.setOnClickListener { }
     }
 
     private fun submitManualLogin() {
         if (checkData())
-            loginEmailPasswordUtil.signIn(etSignInEmail.toString(), etSignInPassword.toString())
+            mContext.signInEmailPass(etSignInEmail.toString(), etSignInPassword.toString())
     }
 }

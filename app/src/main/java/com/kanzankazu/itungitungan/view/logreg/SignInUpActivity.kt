@@ -5,7 +5,11 @@ import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginEmailPasswordUtil
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginGoogleUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.FragmentUtil
 import com.kanzankazu.itungitungan.view.base.BaseActivity
@@ -15,8 +19,16 @@ import com.kanzankazu.itungitungan.view.sample.SampleCrudMainActivity
 /**
  * Created by Faisal Bahri on 2019-11-05.
  */
-class SignInUpActivity : BaseActivity(), SignInUpContract.View {
+class SignInUpActivity :
+        BaseActivity(),
+        SignInUpContract.View,
+        FirebaseLoginUtil.FirebaseLoginListener,
+        FirebaseLoginUtil.FirebaseLoginListener.Google,
+        FirebaseLoginUtil.FirebaseLoginListener.EmailPass {
 
+    private lateinit var databaseUtil: FirebaseDatabaseUtil
+    private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
+    private lateinit var emailPasswordUtil: FirebaseLoginEmailPasswordUtil
     private lateinit var auth: FirebaseAuth
     private lateinit var fragmentUtil: FragmentUtil
     private lateinit var viewPager: ViewPager
@@ -29,6 +41,7 @@ class SignInUpActivity : BaseActivity(), SignInUpContract.View {
 
         initContent()
 
+         databaseUtil = FirebaseDatabaseUtil(this)
         auth = FirebaseAuth.getInstance()
     }
 
@@ -42,7 +55,58 @@ class SignInUpActivity : BaseActivity(), SignInUpContract.View {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == FirebaseLoginGoogleUtil.RC_SIGN_IN){
+            loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun loginProgressShow() {
+        showProgressDialog()
+    }
+
+    override fun loginProgressDismiss() {
+        dismissProgressDialog()
+    }
+
+    override fun uiSignInSuccess(user: FirebaseUser?) {
+
+
+        moveToNext()
+    }
+
+    override fun uiSignOutSuccess() {
+        showSnackbar(getString(R.string.message_logout_success))
+    }
+
+    override fun uiConnectionError(messageError: String?, typeError: String?) {
+        showSnackbar("$typeError === $messageError")
+    }
+
+    override fun uiSignInGoogleFailure(messageError: String?) {
+        showSnackbar(messageError)
+    }
+
+    override fun uiSignInGoogleFailed(messageError: String?) {
+        showSnackbar(messageError)
+    }
+
+    override fun uiRevokeGoogleSuccess() {
+    }
+
+    override fun uiRevokeGoogleFailed() {
+    }
+
+    override fun uiEnableEmailPassSubmitButton() {
+    }
+
+    override fun uiDisableEmailPassSubmitButton() {
+    }
+
     private fun initContent() {
+        loginGoogleUtil = FirebaseLoginGoogleUtil(this, this, this);
+        emailPasswordUtil = FirebaseLoginEmailPasswordUtil(this, this, this);
 
         fragmentUtil = FragmentUtil(this, -1)
 
@@ -61,6 +125,22 @@ class SignInUpActivity : BaseActivity(), SignInUpContract.View {
     fun moveToNext() {
         startActivity(Intent(this, SampleCrudMainActivity::class.java))
         finish()
+    }
+
+    fun signInByGoogle() {
+        loginGoogleUtil.signIn()
+    }
+
+    fun signInByFacebook(){
+
+    }
+
+    fun signInEmailPass(email: String, password: String) {
+        emailPasswordUtil.signIn(email, password)
+    }
+
+    fun signUpEmailPass(email: String, password: String) {
+        emailPasswordUtil.createAccount(email, password)
     }
 
 }
