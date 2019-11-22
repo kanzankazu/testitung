@@ -45,25 +45,22 @@ public class FirebaseLoginEmailPasswordUtil {
         mListener.loginProgressShow();
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(mActivity, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                mListener.loginProgressDismiss();
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success");
+                .addOnCompleteListener(mActivity, task -> {
+                    mListener.loginProgressDismiss();
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "createUserWithEmail:success");
 
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        updateUI(user);
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
 
-                    Toast.makeText(mActivity, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                    updateUI(null);
-                }
-            }
-        });
+                        Toast.makeText(mActivity, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        updateUI(null);
+                    }
+                });
 
         return true;
     }
@@ -72,26 +69,23 @@ public class FirebaseLoginEmailPasswordUtil {
 
         mListener.loginProgressShow();
 
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(mActivity, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                mListener.loginProgressDismiss();
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(mActivity, task -> {
+            mListener.loginProgressDismiss();
 
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithEmail:success");
+            if (task.isSuccessful()) {
+                // Sign in success, update UI with the signed-in user's information
+                Log.d(TAG, "signInWithEmail:success");
 
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                FirebaseUser user = mAuth.getCurrentUser();
+                updateUI(user);
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w(TAG, "signInWithEmail:failure", task.getException());
 
-                    Toast.makeText(mActivity, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                    updateUI(null);
-                }
-
+                Toast.makeText(mActivity, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                updateUI(null);
             }
+
         });
         // [END sign_in_with_email]
 
@@ -169,19 +163,5 @@ public class FirebaseLoginEmailPasswordUtil {
             signOut();
             mListener.uiSignOutSuccess();
         }
-    }
-
-    public interface FirebaseLoginEmailPasswordListener {
-        void uiSignInSuccess(FirebaseUser user);
-
-        void uiSignOutSuccess();
-
-        void uiDisableButton();
-
-        void uiDEnableButton();
-
-        void loginProgressShow();
-
-        void loginProgressDismiss();
     }
 }

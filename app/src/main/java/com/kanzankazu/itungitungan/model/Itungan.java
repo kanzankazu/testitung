@@ -1,9 +1,9 @@
 package com.kanzankazu.itungitungan.model;
 
-public class Anggaran {
+public class Itungan {
     String uId;
-    String grId;
-    String angId;
+    String gId;
+    String itId;
 
     String catId;
     String catDesc;
@@ -12,8 +12,7 @@ public class Anggaran {
     String desc;
     String makeDt;
 
-    Boolean isLoopingMonth;
-
     String updateDt;
     String updateBy;
+    String updateByNm;
 }

@@ -1,11 +1,11 @@
 package com.kanzankazu.itungitungan.view.sample
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.view.base.BaseActivity
@@ -20,7 +20,7 @@ class SampleCrudReadActivity : BaseActivity(), AdapterSampleCrudRecyclerView.Fir
     /**
      * Mendefinisikan variable yang akan dipakai
      */
-    private var database: DatabaseReference? = null
+    private var mDatabase: DatabaseReference? = null
     private lateinit var rvView: RecyclerView
     private lateinit var adapter: RecyclerView.Adapter<*>
     private lateinit var layoutManager: RecyclerView.LayoutManager
@@ -44,12 +44,12 @@ class SampleCrudReadActivity : BaseActivity(), AdapterSampleCrudRecyclerView.Fir
         /**
          * Inisialisasi dan mengambil Firebase Database Reference
          */
-        database = FirebaseDatabase.getInstance().reference
+        mDatabase = FirebaseDatabase.getInstance().reference
 
         /**
          * Mengambil data barang dari Firebase Realtime DB
          */
-        database!!.child("barang").addValueEventListener(object : ValueEventListener {
+        mDatabase!!.child("barang").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 /**
@@ -99,8 +99,8 @@ class SampleCrudReadActivity : BaseActivity(), AdapterSampleCrudRecyclerView.Fir
          * berdasarkan key barang.
          * Jika sukses akan memunculkan SnackBar
          */
-        if (database != null) {
-            database!!.child("barang").child(barang.key).removeValue().addOnSuccessListener {
+        if (mDatabase != null) {
+            mDatabase!!.child("barang").child(barang.key).removeValue().addOnSuccessListener {
                 Toast.makeText(this@SampleCrudReadActivity, "success delete", Toast.LENGTH_LONG).show()
             }
         }

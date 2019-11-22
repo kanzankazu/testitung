@@ -2,7 +2,16 @@ package com.kanzankazu.itungitungan.util.Firebase;
 
 import android.app.Activity;
 import android.text.TextUtils;
-import com.google.firebase.database.*;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  *
@@ -19,12 +28,12 @@ public class FirebaseDatabaseUtil {
         return FirebaseDatabase.getInstance().getReference();
     }
 
-    public DatabaseReference getDataAllFromPrimaryKey(String parent) {
+    public DatabaseReference getDataPrimaryKeyParent(String parent) {
         DatabaseReference rootRef = getRootRef();
         return rootRef.child(parent);
     }
 
-    public DatabaseReference getDataByPrimaryKey(String parent, String key) {
+    public DatabaseReference getDataPrimaryKeyChild(String parent, String key) {
         DatabaseReference rootRef = getRootRef();
         return rootRef.child(parent).child(key);
     }
@@ -61,32 +70,11 @@ public class FirebaseDatabaseUtil {
         }
     }
 
-    public void setValue(DatabaseReference databaseReference, ValueEventListener listener) {
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                listener.onDataChange(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                listener.onCancelled(databaseError);
-            }
-        });
-    }
-
-    public void setValueSingle(DatabaseReference databaseReference, ValueEventListener listener) {
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                listener.onDataChange(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                listener.onCancelled(databaseError);
-            }
-        });
+    public void setValue(DatabaseReference databaseReference, Object object, OnSuccessListener listener1, OnFailureListener listener2) {
+        databaseReference
+                .setValue(object)
+                .addOnSuccessListener(listener1)
+                .addOnFailureListener(listener2);
     }
 
     public void setChild(DatabaseReference databaseReference, ChildEventListener listener) {
@@ -116,6 +104,27 @@ public class FirebaseDatabaseUtil {
                 listener.onCancelled(databaseError);
             }
         });
+    }
+
+    public void getValueSingle(DatabaseReference databaseReference, ValueEventListener listener) {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listener.onDataChange(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onCancelled(databaseError);
+            }
+        });
+    }
+
+    public void removeValue(DatabaseReference databaseReference, OnSuccessListener listener1, OnFailureListener listener2) {
+        databaseReference
+                .removeValue()
+                .addOnSuccessListener(listener1)
+                .addOnFailureListener(listener2);
     }
 
     public void removeValue(DatabaseReference databaseReference, ValueEventListener listener) {

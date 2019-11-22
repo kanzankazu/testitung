@@ -57,6 +57,11 @@ public class FirebaseLoginGoogleUtil
         if (isConnected(mActivity, this)) {
             //Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.clearDefaultAccountAndReconnect();
+            }
+
             mActivity.startActivityForResult(signInIntent, RC_SIGN_IN);
         }
     }

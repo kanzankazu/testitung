@@ -6,19 +6,13 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import com.google.firebase.auth.FirebaseUser
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.R.string.message_email_wrong_format
 import com.kanzankazu.itungitungan.R.string.message_empty_field
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginEmailPasswordUtil
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginGoogleUtil
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginGoogleUtil.RC_SIGN_IN
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil
 import com.kanzankazu.itungitungan.view.base.BaseFragment
@@ -29,15 +23,10 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * Created by Faisal Bahri on 2019-11-08.
  */
 class SignUpFragment : BaseFragment(),
-        SignUpContract.View,
-        FirebaseLoginUtil.FirebaseLoginListener,
-        FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
-        FirebaseLoginUtil.FirebaseLoginListener.Google,
-        TextWatcher {
+    SignUpContract.View,
+    TextWatcher {
 
     private lateinit var mContext: SignInUpActivity
-    private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
-    private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
     private var mParam1: String? = null
     private var mParam2: String? = null
 
@@ -105,53 +94,6 @@ class SignUpFragment : BaseFragment(),
     }
 
     /**
-     *Firebase */
-    override fun loginProgressShow() {
-        showProgressDialog()
-    }
-
-    override fun loginProgressDismiss() {
-        dismissProgressDialog()
-    }
-
-    override fun uiSignInSuccess(user: FirebaseUser?) {
-        Log.d("Lihat", "uiSignInSuccess SignUpFragment $user")
-        showSnackbar(getString(R.string.message_login_success))
-
-        moveToNext()
-    }
-
-    override fun uiSignOutSuccess() {
-        showSnackbar(getString(R.string.message_logout_success))
-    }
-
-    override fun uiConnectionError(messageError: String, typeError: String) {
-        showSnackbar(messageError)
-    }
-
-    override fun uiDisableEmailPassSubmitButton() {
-        cvSignUpSubmit.isEnabled = false
-    }
-
-    override fun uiEnableEmailPassSubmitButton() {
-        cvSignUpSubmit.isEnabled = true
-    }
-
-    override fun uiSignInGoogleFailure(messageError: String?) {
-        showSnackbar(messageError)
-    }
-
-    override fun uiSignInGoogleFailed(messageError: String?) {
-        showSnackbar(messageError)
-    }
-
-    override fun uiRevokeGoogleSuccess() {
-    }
-
-    override fun uiRevokeGoogleFailed() {
-    }
-
-    /**
      * Contract*/
     override fun checkData(): Boolean {
         return when {
@@ -166,10 +108,7 @@ class SignUpFragment : BaseFragment(),
         mContext.moveToNext()
     }
 
-    private fun initContent() {
-        loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(mContext, this, this)
-        loginGoogleUtil = FirebaseLoginGoogleUtil(mContext, this, this)
-    }
+    private fun initContent() {}
 
     private fun initListener() {
         ibSignUpNameClear.setOnClickListener { etSignUpName.setText("") }
@@ -198,7 +137,7 @@ class SignUpFragment : BaseFragment(),
     }
 
     private fun submitManualLogin() {
-        if (checkData()) mContext.signUpEmailPass(etSignUpEmail.toString().trim(), etSignUpPassword.toString().trim())
+        if (checkData()) mContext.signUpEmailPass(etSignUpName.text.toString().trim(),etSignUpEmail.text.toString().trim(), etSignUpPassword.text.toString().trim())
     }
 
 
