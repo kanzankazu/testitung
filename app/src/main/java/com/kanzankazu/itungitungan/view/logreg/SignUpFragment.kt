@@ -85,16 +85,9 @@ class SignUpFragment : BaseFragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        for (fragment in childFragmentManager.fragments) {
-            fragment.onActivityResult(requestCode, resultCode, data)
-        }
-
         if (requestCode == AndroidUtil.REQ_CODE_PICK_EMAIL_ACCOUNT) {
             val accountResult = AndroidUtil.pickEmailAccountResult(requestCode, resultCode, data)
             etSignUpEmail.setText(accountResult)
-        } else if (requestCode == RC_SIGN_IN) {
-            loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -200,16 +193,12 @@ class SignUpFragment : BaseFragment(),
         }
 
         cvSignUpSubmit.setOnClickListener { submitManualLogin() }
-        cvSignUpGoogle.setOnClickListener {
-            val intent = loginGoogleUtil.signInFromFragment()
-            startActivityForResult(intent, RC_SIGN_IN)
-        }
+        cvSignUpGoogle.setOnClickListener { mContext.signInByGoogle() }
         cvSignUpFacebook.setOnClickListener { }
     }
 
     private fun submitManualLogin() {
-        if (checkData())
-            mContext.signUpEmailPass(etSignUpEmail.toString(),etSignUpPassword.toString())
+        if (checkData()) mContext.signUpEmailPass(etSignUpEmail.toString().trim(), etSignUpPassword.toString().trim())
     }
 
 

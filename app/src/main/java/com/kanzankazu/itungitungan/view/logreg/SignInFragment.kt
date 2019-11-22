@@ -79,8 +79,6 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
         if (requestCode == REQ_CODE_PICK_EMAIL_ACCOUNT) {
             val accountResult = pickEmailAccountResult(requestCode, resultCode, data)
             etSignInEmail.setText(accountResult)
-        } else if (requestCode == FirebaseLoginGoogleUtil.RC_SIGN_IN) {
-            loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -182,7 +180,6 @@ class SignInFragment : BaseFragment(), SignInContract.View, FirebaseLoginUtil.Fi
     }
 
     private fun submitManualLogin() {
-        if (checkData())
-            mContext.signInEmailPass(etSignInEmail.toString(), etSignInPassword.toString())
+        if (checkData()) mContext.signInEmailPass(etSignInEmail.toString().trim(), etSignInPassword.toString().trim())
     }
 }

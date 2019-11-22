@@ -3,7 +3,6 @@ package com.kanzankazu.itungitungan.util.Firebase;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import com.google.android.gms.auth.api.Auth;
@@ -13,16 +12,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.*;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.kanzankazu.itungitungan.R;
 
 public class FirebaseLoginGoogleUtil
         extends FirebaseConnectionUtil
         implements FirebaseConnectionUtil.FirebaseConnectionListener {
     public static final int RC_SIGN_IN = 120;
-    public static final String TAG = "LoginGoogleUtil";
+    private static final String TAG = "LoginGoogleUtil";
     private final GoogleSignInClient mGoogleSignInClient;
     private final GoogleApiClient mGoogleApiClient;
     private final Activity mActivity;
@@ -73,13 +74,10 @@ public class FirebaseLoginGoogleUtil
             mAuth.signOut();
 
             // Google sign out
-            mGoogleSignInClient.signOut().addOnCompleteListener(mActivity, new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    //updateUI(null);
-                    mListener.uiSignOutSuccess();
-                    mListener.loginProgressDismiss();
-                }
+            mGoogleSignInClient.signOut().addOnCompleteListener(mActivity, task -> {
+                //updateUI(null);
+                mListener.uiSignOutSuccess();
+                mListener.loginProgressDismiss();
             });
         }
     }
@@ -90,16 +88,13 @@ public class FirebaseLoginGoogleUtil
             mAuth.signOut();
 
             // Google revoke access
-            mGoogleSignInClient.revokeAccess().addOnCompleteListener(mActivity, new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    //updateUI(null);
-                    mListener.loginProgressDismiss();
-                    if (task.isSuccessful()) {
-                        mListenerGoogle.uiRevokeGoogleSuccess();
-                    } else {
-                        mListenerGoogle.uiRevokeGoogleFailed();
-                    }
+            mGoogleSignInClient.revokeAccess().addOnCompleteListener(mActivity, task -> {
+                //updateUI(null);
+                mListener.loginProgressDismiss();
+                if (task.isSuccessful()) {
+                    mListenerGoogle.uiRevokeGoogleSuccess();
+                } else {
+                    mListenerGoogle.uiRevokeGoogleFailed();
                 }
             });
         }
@@ -147,24 +142,21 @@ public class FirebaseLoginGoogleUtil
         mListener.loginProgressShow();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential).addOnCompleteListener(mActivity, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success");
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    //updateUI(user);
-                    mListener.uiSignInSuccess(user);
-                    mListener.loginProgressDismiss();
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.getException());
-                    Snackbar.make(mActivity.findViewById(android.R.id.content), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                    //updateUI(null);
-                    mListenerGoogle.uiSignInGoogleFailed("");
-                    mListener.loginProgressDismiss();
-                }
+        mAuth.signInWithCredential(credential).addOnCompleteListener(mActivity, task -> {
+            if (task.isSuccessful()) {
+                // Sign in success, update UI with the signed-in user's information
+                Log.d(TAG, "signInWithCredential:success");
+                FirebaseUser user = mAuth.getCurrentUser();
+                //updateUI(user);
+                mListener.uiSignInSuccess(user);
+                mListener.loginProgressDismiss();
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w(TAG, "signInWithCredential:failure", task.getException());
+                Snackbar.make(mActivity.findViewById(android.R.id.content), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                //updateUI(null);
+                mListenerGoogle.uiSignInGoogleFailed("");
+                mListener.loginProgressDismiss();
             }
         });
     }

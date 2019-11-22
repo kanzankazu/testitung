@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.kanzankazu.itungitungan.R
@@ -29,7 +30,7 @@ class SignInUpActivity :
     private lateinit var databaseUtil: FirebaseDatabaseUtil
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var emailPasswordUtil: FirebaseLoginEmailPasswordUtil
-    private lateinit var auth: FirebaseAuth
+    private lateinit var mAuth: FirebaseAuth
     private lateinit var fragmentUtil: FragmentUtil
     private lateinit var viewPager: ViewPager
 
@@ -41,14 +42,14 @@ class SignInUpActivity :
 
         initContent()
 
-         databaseUtil = FirebaseDatabaseUtil(this)
-        auth = FirebaseAuth.getInstance()
+        databaseUtil = FirebaseDatabaseUtil(this)
+        mAuth = FirebaseAuth.getInstance()
     }
 
     override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
+        val currentUser = mAuth.currentUser
         Log.d("Lihat", "onStart SignInUpActivity $currentUser")
         if (currentUser != null) {
             moveToNext()
@@ -57,7 +58,7 @@ class SignInUpActivity :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == FirebaseLoginGoogleUtil.RC_SIGN_IN){
+        if (requestCode == FirebaseLoginGoogleUtil.RC_SIGN_IN) {
             loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
         }
     }
@@ -71,8 +72,6 @@ class SignInUpActivity :
     }
 
     override fun uiSignInSuccess(user: FirebaseUser?) {
-
-
         moveToNext()
     }
 
@@ -131,16 +130,33 @@ class SignInUpActivity :
         loginGoogleUtil.signIn()
     }
 
-    fun signInByFacebook(){
+    fun signInByFacebook() {
 
     }
 
     fun signInEmailPass(email: String, password: String) {
-        emailPasswordUtil.signIn(email, password)
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        val user = mAuth.currentUser
+                        moveToNext()
+                    } else {
+                        Toast.makeText(this, "Authentication failed. " + task.exception?.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Authentication failed. " + task.exception?.cause.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                }
     }
 
     fun signUpEmailPass(email: String, password: String) {
-        emailPasswordUtil.createAccount(email, password)
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        val user = mAuth.currentUser
+                    } else {
+                        Toast.makeText(this, "Authentication failed. " + task.exception?.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Authentication failed. " + task.exception?.cause.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                }
     }
 
 }

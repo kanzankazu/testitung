@@ -8,13 +8,14 @@ import android.view.View
 import android.widget.Toast
 import com.google.firebase.database.*
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.view.base.BaseActivity
 import java.util.*
 
 /**
  * Created by Herdi_WORK on 18.06.17.
  */
 
-class SampleCrudReadActivity : AppCompatActivity(), AdapterSampleCrudRecyclerView.FirebaseDataListener {
+class SampleCrudReadActivity : BaseActivity(), AdapterSampleCrudRecyclerView.FirebaseDataListener {
 
     /**
      * Mendefinisikan variable yang akan dipakai
