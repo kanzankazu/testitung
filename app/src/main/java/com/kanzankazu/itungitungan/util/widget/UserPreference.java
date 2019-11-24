@@ -486,16 +486,16 @@ public class UserPreference {
         return getSharedPrefString(Constants.SharedPreference.JUBELMOTO_LINK);
     }
 
-    /*public void setUserData(User user) {
-        setEmail(user.getEmail());
-        setName(user.getName());
-        setAccessToken(user.getAccessToken());
+    /*public void setUserData(User USER) {
+        setEmail(USER.getEmail());
+        setName(USER.getName());
+        setAccessToken(USER.getAccessToken());
         setLoginStatus();
-        setDisplayPict(user.getDisplayPic());
-        setPhoneNumber(user.getVerifiedPhone());
-        setUserTotalVehicle(user.getVehicle().size());
+        setDisplayPict(USER.getDisplayPic());
+        setPhoneNumber(USER.getVerifiedPhone());
+        setUserTotalVehicle(USER.getVehicle().size());
         setPassedIntroduction(true);
-        getUserIdentifier(user.getEmail());
+        getUserIdentifier(USER.getEmail());
     }*/
 
     public void getUserIdentifier(String identifier) {

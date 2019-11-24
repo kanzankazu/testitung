@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kanzankazu.itungitungan.model.User;
 
 public class FirebaseLoginEmailPasswordUtil {
 
@@ -35,26 +36,24 @@ public class FirebaseLoginEmailPasswordUtil {
      * call onStart
      */
     public void isSignIn() {
-        // Check if user is signed in (non-null) and update UI accordingly.
+        // Check if USER is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
 
     public boolean createAccount(String email, String password) {
 
-        mListener.loginProgressShow();
-
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(mActivity, task -> {
                     mListener.loginProgressDismiss();
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
+                        // Sign in success, update UI with the signed-in USER's information
                         Log.d(TAG, "createUserWithEmail:success");
 
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
                     } else {
-                        // If sign in fails, display a message to the user.
+                        // If sign in fails, display a message to the USER.
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
 
                         Toast.makeText(mActivity, "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -67,19 +66,17 @@ public class FirebaseLoginEmailPasswordUtil {
 
     public boolean signIn(String email, String password) {
 
-        mListener.loginProgressShow();
-
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(mActivity, task -> {
             mListener.loginProgressDismiss();
 
             if (task.isSuccessful()) {
-                // Sign in success, update UI with the signed-in user's information
+                // Sign in success, update UI with the signed-in USER's information
                 Log.d(TAG, "signInWithEmail:success");
 
                 FirebaseUser user = mAuth.getCurrentUser();
                 updateUI(user);
             } else {
-                // If sign in fails, display a message to the user.
+                // If sign in fails, display a message to the USER.
                 Log.w(TAG, "signInWithEmail:failure", task.getException());
 
                 Toast.makeText(mActivity, "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -158,7 +155,7 @@ public class FirebaseLoginEmailPasswordUtil {
     private void updateUI(FirebaseUser user) {
         mListener.loginProgressDismiss();
         if (user != null) {
-            mListener.uiSignInSuccess(user);
+            mListener.uiSignInSuccess(new User(user));
         } else {
             signOut();
             mListener.uiSignOutSuccess();

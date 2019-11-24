@@ -10,6 +10,7 @@ import com.facebook.AccessToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
+import com.kanzankazu.itungitungan.model.User;
 
 import java.util.List;
 
@@ -35,16 +36,17 @@ public class FirebaseLoginUtil {
             String name = user.getDisplayName();
             String email = user.getEmail();
             Uri photoUrl = user.getPhotoUrl();
+            String phoneNumber = user.getPhoneNumber();
 
-            // Check if user's email is verified
+            // Check if USER's email is verified
             boolean emailVerified = user.isEmailVerified();
 
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
+            // The USER's ID, unique to the Firebase project. Do NOT use this value to
             // authenticate with your backend server, if you have one. Use
             // FirebaseUser.getIdToken() instead.
             String uid = user.getUid();
 
-            mListener.uiSignInSuccess(user);
+            mListener.uiSignInSuccess(new User(user));
 
             return user;
         }
@@ -201,12 +203,12 @@ public class FirebaseLoginUtil {
     public void reauthenticate(String email, String password) {
         FirebaseUser user = mAuth.getCurrentUser();
 
-        // Get auth credentials from the user for re-authentication. The example below shows
+        // Get auth credentials from the USER for re-authentication. The example below shows
         // email and password credentials but there are multiple possible providers,
         // such as GoogleAuthProvider or FacebookAuthProvider.
         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
 
-        // Prompt the user to re-provide their sign-in credentials
+        // Prompt the USER to re-provide their sign-in credentials
         user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -224,9 +226,9 @@ public class FirebaseLoginUtil {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                // If sign in fails, display a message to the user. If sign in succeeds
+                // If sign in fails, display a message to the USER. If sign in succeeds
                 // the auth state listener will be notified and logic to handle the
-                // signed in user can be handled in the listener.
+                // signed in USER can be handled in the listener.
                 if (task.isSuccessful()) {
                     Toast.makeText(activity, "Authentication Success.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -309,10 +311,10 @@ public class FirebaseLoginUtil {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "Successfully signed in with email link!");
                         AuthResult result = task.getResult();
-                        // You can access the new user via result.getUser()
-                        // Additional user info profile *not* available via:
+                        // You can access the new USER via result.getUser()
+                        // Additional USER info profile *not* available via:
                         // result.getAdditionalUserInfo().getProfile() == null
-                        // You can check if the user is new or existing:
+                        // You can check if the USER is new or existing:
                         // result.getAdditionalUserInfo().isNewUser()
                     } else {
                         Log.e(TAG, "Error signing in with email link", task.getException());
@@ -328,17 +330,17 @@ public class FirebaseLoginUtil {
         // Construct the email link credential from the current URL.
         AuthCredential credential = EmailAuthProvider.getCredentialWithLink(email, emailLink);
 
-        // Link the credential to the current user.
+        // Link the credential to the current USER.
         auth.getCurrentUser().linkWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "Successfully linked emailLink credential!");
                     AuthResult result = task.getResult();
-                    // You can access the new user via result.getUser()
-                    // Additional user info profile *not* available via:
+                    // You can access the new USER via result.getUser()
+                    // Additional USER info profile *not* available via:
                     // result.getAdditionalUserInfo().getProfile() == null
-                    // You can check if the user is new or existing:
+                    // You can check if the USER is new or existing:
                     // result.getAdditionalUserInfo().isNewUser()
                 } else {
                     Log.e(TAG, "Error linking emailLink credential", task.getException());
@@ -353,7 +355,7 @@ public class FirebaseLoginUtil {
         // Construct the email link credential from the current URL.
         AuthCredential credential = EmailAuthProvider.getCredentialWithLink(email, emailLink);
 
-        // Re-authenticate the user with this credential.
+        // Re-authenticate the USER with this credential.
         auth.getCurrentUser().reauthenticateAndRetrieveData(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -381,7 +383,7 @@ public class FirebaseLoginUtil {
                         // User can sign in with email/link
                     }
                 } else {
-                    Log.e(TAG, "Error getting sign in methods for user", task.getException());
+                    Log.e(TAG, "Error getting sign in methods for USER", task.getException());
                 }
             }
         });
@@ -428,7 +430,7 @@ public class FirebaseLoginUtil {
 
         void loginProgressDismiss();
 
-        void uiSignInSuccess(FirebaseUser user);
+        void uiSignInSuccess(User user);
 
         void uiSignOutSuccess();
 
@@ -447,9 +449,9 @@ public class FirebaseLoginUtil {
 
             void uiSignInGoogleFailed(String messageError);
 
-            void uiRevokeGoogleSuccess();
+            void uiRevokeGoogleSuccess(String string);
 
-            void uiRevokeGoogleFailed();
+            void uiRevokeGoogleFailed(String message);
         }
 
         interface Phone {

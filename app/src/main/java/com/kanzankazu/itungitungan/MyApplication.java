@@ -14,6 +14,8 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import io.fabric.sdk.android.Fabric;
 
@@ -29,7 +31,7 @@ public class MyApplication extends MultiDexApplication {
     private static MyApplication mInstance;
     public Activity activity;
     private FirebaseAnalytics mFirebaseAnalytics;
-    //private AppEventsLogger mAppEventsLogger;
+    private AppEventsLogger mAppEventsLogger;
     private String identifierCrashlytics = Constants.LogInStatus.GUEST;
 
     @Override
@@ -39,8 +41,8 @@ public class MyApplication extends MultiDexApplication {
         context = getApplicationContext();
 
         /*FACEBOOK START*/
-        //FacebookSdk.sdkInitialize(getApplicationContext());
-        //AppEventsLogger.activateApp(this);
+       FacebookSdk.sdkInitialize(getApplicationContext());
+       AppEventsLogger.activateApp(this);
         /*FACEBOOK END*/
 
         //setupCalligraphy();
@@ -59,8 +61,8 @@ public class MyApplication extends MultiDexApplication {
         Crashlytics.setUserIdentifier(base64);
 
         setmFirebaseAnalytics();
-        //setmAppEventsLogger();
-        //setupPRDownloader();
+        setmAppEventsLogger();
+        setupPRDownloader();
 
         System.out.println("identifier : " + identifierCrashlytics);
         System.out.println("identifier base64 : " + base64);
@@ -112,7 +114,7 @@ public class MyApplication extends MultiDexApplication {
     }
 
     /**
-     * FIREBASE ANALYTICS
+     * DATABASE ANALYTICS
      */
     public FirebaseAnalytics getmFirebaseAnalytics() {
         return mFirebaseAnalytics;
@@ -125,13 +127,13 @@ public class MyApplication extends MultiDexApplication {
     /**
      * FACEBOOK ANALYTICs
      */
-    /*public AppEventsLogger getmAppEventsLogger() {
+    public AppEventsLogger getmAppEventsLogger() {
         return mAppEventsLogger;
     }
 
     public void setmAppEventsLogger() {
         mAppEventsLogger = mAppEventsLogger.newLogger(this);
-    }*/
+    }
 
     public boolean isKitkatBelow() {
         return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;

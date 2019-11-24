@@ -2,6 +2,10 @@
     <string name="app_name">ItungItungan</string>
     <string name="package_name" translatable="false">com.kanzankazu.itungitungan</string>
 
+    <!--Facebook-->
+    <string name="facebook_app_id">2506960146067219</string>
+    <string name="fb_login_protocol_scheme">fb2506960146067219</string>
+
     <!--Dialog-->
     <string name="title_maintenance">Maintenance sedang berlangsung</string>
     <string name="title_force_update">Mohon update aplikasi anda</string>
@@ -19,9 +23,14 @@
     <!--Message Field EditText Error-->
     <string name="message_empty_field">Data ini tidak boleh kosong</string>
     <string name="message_email_wrong_format">Format email salah [***@***.***]</string>
-    <string name="message_failed_login">Login Gagal</string>
-    <string name="message_logout_success">Keluar berhasil</string>
     <string name="message_login_success">Masuk Berhasil</string>
+    <string name="message_login_failed">Login Gagal</string>
+    <string name="message_logout_success">Keluar berhasil</string>
+    <string name="message_revoke_success" >Revoke Berhasil</string>
     <string name="message_no_internet_network">Tidak ada jaringan internet</string>
+    <string name="message_save_database_success">data berhasil disimpan</string>
+    <string name="message_update_database_success">data berhasil diperbaharui</string>
+    <string name="message_delete_success">data berhasil dihapus</string>
+    <string name="message_delete_failed">data gagal di hapus</string>
 
 </resources>

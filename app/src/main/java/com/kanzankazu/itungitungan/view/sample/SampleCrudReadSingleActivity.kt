@@ -39,9 +39,9 @@ class SampleCrudReadSingleActivity : BaseActivity() {
         btSubmit.visibility = View.GONE
 
          barang = intent.getSerializableExtra("data") as Barang
-        if (barang != null) {
-            updateData(barang)
-        }
+        //if (barang != null) {
+        //    updateData(barang)
+        //}
 
         database = FirebaseDatabase.getInstance().reference
 
@@ -65,7 +65,7 @@ class SampleCrudReadSingleActivity : BaseActivity() {
             }
         })
 
-        database.child("barang").addListenerForSingleValueEvent(object :ValueEventListener{
+        database.child("barang").child(barang?.key).addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 Log.d("Lihat", "onDataChange addListenerForSingleValueEvent SampleCrudReadSingleActivity children " + dataSnapshot.children)
                 Log.d("Lihat", "onDataChange addListenerForSingleValueEvent SampleCrudReadSingleActivity key " + dataSnapshot.key)
@@ -82,7 +82,7 @@ class SampleCrudReadSingleActivity : BaseActivity() {
             }
         })
 
-        database.child("barang").removeEventListener(object : ValueEventListener{
+        database.child("barang").child(barang?.key).removeEventListener(object : ValueEventListener{
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 Log.d("Lihat", "onDataChange removeEventListener SampleCrudReadSingleActivity children " + dataSnapshot.children)
                 Log.d("Lihat", "onDataChange removeEventListener SampleCrudReadSingleActivity key " + dataSnapshot.key)

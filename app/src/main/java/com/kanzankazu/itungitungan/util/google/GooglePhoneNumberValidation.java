@@ -290,7 +290,7 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
                 //     verified without needing to send or enter a verification code.
                 // 2 - Auto-retrieval. On some devices Google Play services can automatically
                 //     detect the incoming verification SMS and perform verification without
-                //     user action.
+                //     USER action.
 
                 signInWithPhoneAuthCredential(credential);//onVerificationCompleted
 

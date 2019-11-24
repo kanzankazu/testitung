@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.kanzankazu.itungitungan.model.User;
 import com.kanzankazu.itungitungan.util.NetworkUtil;
 
 import org.apache.http.util.NetUtils;
@@ -61,7 +62,7 @@ public class FirebaseLoginPhoneUtil {
                 //     verified without needing to send or enter a verification code.
                 // 2 - Auto-retrieval. On some devices Google Play services can automatically
                 //     detect the incoming verification SMS and perform verification without
-                //     user action.
+                //     USER action.
                 Log.d(TAG, "onVerificationCompleted:" + credential);
                 mVerificationInProgress = false;
 
@@ -95,7 +96,7 @@ public class FirebaseLoginPhoneUtil {
             @Override
             public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
                 // The SMS verification code has been sent to the provided phone number, we
-                // now need to ask the user to enter the code and then construct a credential
+                // now need to ask the USER to enter the code and then construct a credential
                 // by combining the code with a verification ID.
                 Log.d(TAG, "onCodeSent:" + verificationId);
 
@@ -148,7 +149,7 @@ public class FirebaseLoginPhoneUtil {
      * call onStart
      */
     public void isSignIn() {
-        // Check if user is signed in (non-null) and update UI accordingly.
+        // Check if USER is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser, "");
 
@@ -169,7 +170,7 @@ public class FirebaseLoginPhoneUtil {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
+                    // Sign in success, update UI with the signed-in USER's information
                     Log.d(TAG, "signInWithCredential:success");
 
                     FirebaseUser user = task.getResult().getUser();
@@ -278,9 +279,9 @@ public class FirebaseLoginPhoneUtil {
             //mVerificationField.setText(null);
 
             //mStatusText.setText(R.string.signed_in);
-            //mDetailText.setText(getString(R.string.firebase_status_fmt, user.getUid()));
+            //mDetailText.setText(getString(R.string.firebase_status_fmt, USER.getUid()));
 
-            mListener.uiSignInSuccess(user);
+            mListener.uiSignInSuccess(new User(user));
 
         } else {
             // Signed out

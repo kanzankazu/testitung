@@ -21,7 +21,7 @@ public class NestedScrollingBehaviour extends AppBarLayout.Behavior {
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child,
                                   View target, int dx, int dy, int[] consumed) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed);
-        // Reset the total fling delta distance if the user starts scrolling back up
+        // Reset the total fling delta distance if the USER starts scrolling back up
         if(dy < 0) {
             mTotalDy = 0;
         }

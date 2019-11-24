@@ -13,6 +13,13 @@ public class Constants {
     public static final Class<?> kanzankazu = null;
     //public static final String DYNAMIC_LINK_DOMAIN = BuildConfig.DYNAMIC_LINK_DOMAIN;
     //public static final String DYNAMIC_LINK_PARAM = BuildConfig.DYNAMIC_LINK_PARAM;
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String PACKAGE_FACEBOOK = "com.facebook.katana";
+    public static final String PACKAGE_TWITTER = "com.twitter.android";
+    public static final String PACKAGE_INSTAGRAM = "com.instagram.android";
+    public static final String FACEBOOK_PAGE_ID = "158637887922970";
+    public static final String FACEBOOK_NEW_VERSION_BASE_URL = "fb://facewebmodal/f?href=";
+    public static final String FACEBOOK_OLD_VERSION_BASE_URL = "fb://page/";
 
     public interface SharedPreference {
         String EMAIL = "EMAIL";
@@ -81,7 +88,6 @@ public class Constants {
         String IS_BUY = "show_buy";
         String IS_SELL = "show_sell";
     }
-
 
     public interface SearchType {
         String NEARBY = "NEARBY";
@@ -284,7 +290,6 @@ public class Constants {
             String UPDATE_PROFILE = "UPDATE_PROFILE";
         }
     }
-
     public interface PriceEngine {
         String RESULT_FOR = "RESULT_FOR";
 
@@ -293,7 +298,6 @@ public class Constants {
             String HOME_BELI = "HOME_BELI";
         }
     }
-
     public interface Dialog {
         interface Identifier {
             String PROVINCE_DIALOG = "PROVINCE";
@@ -303,22 +307,18 @@ public class Constants {
             String ASSEMBLE_YEAR_DIALOG = "ASSEMBLE_YEAR";
         }
     }
-
     public interface Permission {
         String[] LOCATION = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
         String[] CALL_PHONE = {Manifest.permission.CALL_PHONE};
     }
-
     public interface Boolean {
         String IS_FROM_PUSH_NOTIFICATION = "IS_FROM_PUSH_NOTIFICATION";
     }
-
     public interface DEEPLINK_TYPE {
         String PRICE_ENGINE_CAR = "price-engine-car";
         String PRICE_ENGINE_BIKE = "price-engine-bike";
         String JUBELMOTO = "jubelmoto";
     }
-
     public interface OTO_QUIZ {
         interface UserAction {
             String TRY_AGAIN = "TRY_AGAIN";
@@ -326,11 +326,13 @@ public class Constants {
         }
     }
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
-    public static final String PACKAGE_FACEBOOK = "com.facebook.katana";
-    public static final String PACKAGE_TWITTER = "com.twitter.android";
-    public static final String PACKAGE_INSTAGRAM = "com.instagram.android";
-    public static final String FACEBOOK_PAGE_ID = "158637887922970";
-    public static final String FACEBOOK_NEW_VERSION_BASE_URL = "fb://facewebmodal/f?href=";
-    public static final String FACEBOOK_OLD_VERSION_BASE_URL = "fb://page/";
+    public interface DATABASE {
+        interface TABLE {
+            String USER = "user";
+        }
+
+        interface ROW {
+            String EMAIL = "email";
+        }
+    }
 }

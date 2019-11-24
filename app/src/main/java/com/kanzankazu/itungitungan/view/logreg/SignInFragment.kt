@@ -20,9 +20,9 @@ import kotlinx.android.synthetic.main.fragment_signin.*
  * Created by Faisal Bahri on 2019-11-08.
  */
 class SignInFragment :
-    BaseFragment(),
-    SignInContract.View,
-    TextWatcher {
+        BaseFragment(),
+        SignInContract.View,
+        TextWatcher {
 
     private lateinit var mContext: SignInUpActivity
 
@@ -125,7 +125,7 @@ class SignInFragment :
 
         cvSignInSubmit.setOnClickListener { submitManualLogin() }
         cvSignInGoogle.setOnClickListener { mContext.signInByGoogle() }
-        cvSignInFacebook.setOnClickListener { }
+        cvSignInFacebook.setOnClickListener { mContext.signInByFacebook() }
     }
 
     private fun submitManualLogin() {

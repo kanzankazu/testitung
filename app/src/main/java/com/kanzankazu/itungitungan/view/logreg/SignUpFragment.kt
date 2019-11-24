@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * Created by Faisal Bahri on 2019-11-08.
  */
 class SignUpFragment : BaseFragment(),
-    SignUpContract.View,
-    TextWatcher {
+        SignUpContract.View,
+        TextWatcher {
 
     private lateinit var mContext: SignInUpActivity
     private var mParam1: String? = null
@@ -133,11 +133,11 @@ class SignUpFragment : BaseFragment(),
 
         cvSignUpSubmit.setOnClickListener { submitManualLogin() }
         cvSignUpGoogle.setOnClickListener { mContext.signInByGoogle() }
-        cvSignUpFacebook.setOnClickListener { }
+        cvSignUpFacebook.setOnClickListener { mContext.signInByFacebook() }
     }
 
     private fun submitManualLogin() {
-        if (checkData()) mContext.signUpEmailPass(etSignUpName.text.toString().trim(),etSignUpEmail.text.toString().trim(), etSignUpPassword.text.toString().trim())
+        if (checkData()) mContext.signUpEmailPass(etSignUpName.text.toString().trim(), etSignUpEmail.text.toString().trim(), etSignUpPassword.text.toString().trim())
     }
 
 

@@ -290,7 +290,7 @@ public class SystemUtil {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } else {
-            // Bring user to the market or let them choose an app?
+            // Bring USER to the market or let them choose an app?
             intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             try {
