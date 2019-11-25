@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.util.DateTimeUtil;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
 
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ public class User {
     private String phone;
 
     private String photoUrl;
-    private Uri photoUrlUri;
     private String photoDt;
 
     private Boolean isEmailVerified;
@@ -63,6 +63,8 @@ public class User {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
+                            user.lastLogin = DateTimeUtil.getCurrentDate().toString();
+
                             database.child(Constants.DATABASE.TABLE.USER)
                                     .child(user.getuId())
                                     .setValue(user)
@@ -71,6 +73,8 @@ public class User {
                         } else {
                             String primaryKey = database.child(Constants.DATABASE.TABLE.USER).push().getKey();
                             user.setKey(primaryKey);
+                            user.firstLogin = DateTimeUtil.getCurrentDate().toString();
+                            user.lastLogin = DateTimeUtil.getCurrentDate().toString();
 
                             database.child(Constants.DATABASE.TABLE.USER)
                                     .child(user.getuId())
@@ -259,14 +263,6 @@ public class User {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
-    }
-
-    public Uri getPhotoUrlUri() {
-        return photoUrlUri;
-    }
-
-    public void setPhotoUrlUri(Uri photoUrlUri) {
-        this.photoUrlUri = photoUrlUri;
     }
 
     public String getPhotoDt() {
