@@ -30,25 +30,25 @@ public class FirebaseLoginUtil {
     }
 
     public FirebaseUser getUserProfile() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser != null) {
             // Name, email address, and profile photo Url
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-            Uri photoUrl = user.getPhotoUrl();
-            String phoneNumber = user.getPhoneNumber();
+            String name = firebaseUser.getDisplayName();
+            String email = firebaseUser.getEmail();
+            Uri photoUrl = firebaseUser.getPhotoUrl();
+            String phoneNumber = firebaseUser.getPhoneNumber();
 
             // Check if USER's email is verified
-            boolean emailVerified = user.isEmailVerified();
+            boolean emailVerified = firebaseUser.isEmailVerified();
 
             // The USER's ID, unique to the Firebase project. Do NOT use this value to
             // authenticate with your backend server, if you have one. Use
             // FirebaseUser.getIdToken() instead.
-            String uid = user.getUid();
+            String uid = firebaseUser.getUid();
 
-            mListener.uiSignInSuccess(new User(user));
+            mListener.uiSignInSuccess(new User(firebaseUser));
 
-            return user;
+            return firebaseUser;
         }
         return null;
     }
@@ -57,9 +57,9 @@ public class FirebaseLoginUtil {
      * @return null/
      */
     public List<? extends UserInfo> getProviderData() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            for (UserInfo profile : user.getProviderData()) {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            for (UserInfo profile : firebaseUser.getProviderData()) {
                 // Id of the provider (ex: google.com)
                 String providerId = profile.getProviderId();
 
@@ -71,13 +71,13 @@ public class FirebaseLoginUtil {
                 String email = profile.getEmail();
                 Uri photoUrl = profile.getPhotoUrl();
             }
-            return user.getProviderData();
+            return firebaseUser.getProviderData();
         }
         return null;
     }
 
     public void updateProfile(String name, String path) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
@@ -85,7 +85,7 @@ public class FirebaseLoginUtil {
                 //.setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
                 .build();
 
-        user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+        firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -98,9 +98,9 @@ public class FirebaseLoginUtil {
     }
 
     public void updateEmail(String email) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-        user.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+        firebaseUser.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -113,9 +113,9 @@ public class FirebaseLoginUtil {
     }
 
     public void updatePassword(String password) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-        user.updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
+        firebaseUser.updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -129,9 +129,9 @@ public class FirebaseLoginUtil {
 
     public void sendEmailVerification() {
         FirebaseAuth auth = mAuth;
-        FirebaseUser user = auth.getCurrentUser();
+        FirebaseUser firebaseUser = auth.getCurrentUser();
 
-        user.sendEmailVerification()
+        firebaseUser.sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -144,9 +144,9 @@ public class FirebaseLoginUtil {
 
     public void sendEmailVerificationWithContinueUrl() {
         FirebaseAuth auth = mAuth;
-        FirebaseUser user = auth.getCurrentUser();
+        FirebaseUser firebaseUser = auth.getCurrentUser();
 
-        String url = "http://www.example.com/verify?uid=" + user.getUid();
+        String url = "http://www.example.com/verify?uid=" + firebaseUser.getUid();
         ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
                 .setUrl(url)
                 .setIOSBundleId("com.example.ios")
@@ -154,7 +154,7 @@ public class FirebaseLoginUtil {
                 .setAndroidPackageName("com.example.android", false, null)
                 .build();
 
-        user.sendEmailVerification(actionCodeSettings)
+        firebaseUser.sendEmailVerification(actionCodeSettings)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -432,6 +432,8 @@ public class FirebaseLoginUtil {
 
         void uiSignInSuccess(User user);
 
+        void uiSignInFailed(String errorMessage);
+
         void uiSignOutSuccess();
 
         void uiConnectionError(String messageError, String typeError);
@@ -441,6 +443,10 @@ public class FirebaseLoginUtil {
             void uiDisableEmailPassSubmitButton();
 
             void uiEnableEmailPassSubmitButton();
+
+            void uiEmailVerifySentSuccess(FirebaseUser firebaseUser);
+
+            void uiEmailVerifySentFailed();
         }
 
         interface Google {

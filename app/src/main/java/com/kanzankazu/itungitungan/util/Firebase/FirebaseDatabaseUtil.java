@@ -11,10 +11,7 @@ import com.google.firebase.database.*;
  */
 public class FirebaseDatabaseUtil {
 
-    private Activity mActivity;
-
-    public FirebaseDatabaseUtil(Activity mActivity) {
-        this.mActivity = mActivity;
+    public FirebaseDatabaseUtil() {
     }
 
     public DatabaseReference getRootRef() {

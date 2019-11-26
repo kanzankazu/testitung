@@ -41,17 +41,8 @@ public class FirebaseAnalyticsUtil {
 
     public void getUserPropertyAndId() {
         String email = UserPreference.getInstance().getEmail();
-        String loginBy = UserPreference.getInstance().getLoginBy();
-        String abTestId = UserPreference.getInstance().getABTestId();
         if (!email.equals("")) {
             MyApplication.getInstance().getmFirebaseAnalytics().setUserId(email);
-        }
-        if (!loginBy.equals("")) {
-            MyApplication.getInstance().getmFirebaseAnalytics().setUserProperty("login_by", loginBy);
-            System.out.println("login by : " + loginBy);
-        }
-        if (!abTestId.equals("")) {
-            MyApplication.getInstance().getmFirebaseAnalytics().setUserProperty("ab_test", abTestId);
         }
     }
 

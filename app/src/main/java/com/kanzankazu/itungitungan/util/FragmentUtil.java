@@ -11,6 +11,7 @@ import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -335,6 +336,7 @@ public class FragmentUtil {
 
         @Override
         public Fragment getItem(int position) {
+            Log.d("Lihat", "getItem SlidePagerAdapter : " + position);
             return fragments.get(position);
         }
 
@@ -373,6 +375,7 @@ public class FragmentUtil {
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
+            Log.d("Lihat", "getPageTitle SlidePagerAdapter : " + position);
             return titles.get(position);
         }
 

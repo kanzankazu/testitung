@@ -26,11 +26,14 @@
     <string name="message_login_success">Masuk Berhasil</string>
     <string name="message_login_failed">Login Gagal</string>
     <string name="message_logout_success">Keluar berhasil</string>
-    <string name="message_revoke_success" >Revoke Berhasil</string>
+    <string name="message_revoke_success">Revoke Berhasil</string>
     <string name="message_no_internet_network">Tidak ada jaringan internet</string>
     <string name="message_save_database_success">data berhasil disimpan</string>
     <string name="message_update_database_success">data berhasil diperbaharui</string>
     <string name="message_delete_success">data berhasil dihapus</string>
     <string name="message_delete_failed">data gagal di hapus</string>
+    <string name="message_email_sent_success">Email verifikasi sudah terkirim ke %s</string>
+    <string name="message_email_sent_failed">Email verifikasi gagal terkirim</string>
+    <string name="message_email_must_verified">Anda belum konfirmasi email dari kami</string>
 
 </resources>

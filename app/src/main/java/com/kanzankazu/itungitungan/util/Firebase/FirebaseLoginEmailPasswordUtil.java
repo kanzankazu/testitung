@@ -1,14 +1,9 @@
 package com.kanzankazu.itungitungan.util.Firebase;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.EditText;
-import android.widget.Toast;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.model.User;
@@ -37,8 +32,8 @@ public class FirebaseLoginEmailPasswordUtil {
      */
     public void isSignIn() {
         // Check if USER is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        mListener.uiSignInSuccess(new User(firebaseUser));
     }
 
     public boolean createAccount(String email, String password) {
@@ -47,17 +42,10 @@ public class FirebaseLoginEmailPasswordUtil {
                 .addOnCompleteListener(mActivity, task -> {
                     mListener.loginProgressDismiss();
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in USER's information
-                        Log.d(TAG, "createUserWithEmail:success");
-
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        updateUI(user);
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        mListener.uiSignInSuccess(new User(firebaseUser));
                     } else {
-                        // If sign in fails, display a message to the USER.
-                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-
-                        Toast.makeText(mActivity, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                        updateUI(null);
+                        mListener.uiSignInFailed(task.getException().getMessage());
                     }
                 });
 
@@ -70,28 +58,20 @@ public class FirebaseLoginEmailPasswordUtil {
             mListener.loginProgressDismiss();
 
             if (task.isSuccessful()) {
-                // Sign in success, update UI with the signed-in USER's information
-                Log.d(TAG, "signInWithEmail:success");
-
                 FirebaseUser user = mAuth.getCurrentUser();
-                updateUI(user);
+                mListener.uiSignInSuccess(new User(user));
             } else {
-                // If sign in fails, display a message to the USER.
-                Log.w(TAG, "signInWithEmail:failure", task.getException());
-
-                Toast.makeText(mActivity, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                updateUI(null);
+                mListener.uiSignInFailed(task.getException().getMessage());
             }
 
         });
-        // [END sign_in_with_email]
 
         return true;
     }
 
     public void signOut() {
         mAuth.signOut();
-        updateUI(null);
+        mListener.uiSignOutSuccess();
     }
 
     public void sendEmailVerification() {
@@ -99,21 +79,18 @@ public class FirebaseLoginEmailPasswordUtil {
         mListenerEmailPass.uiDisableEmailPassSubmitButton();
 
         // Send verification email
-        final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification().addOnCompleteListener(mActivity, new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                // Re-enable button
-                mListenerEmailPass.uiEnableEmailPassSubmitButton();
+        final FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        firebaseUser.sendEmailVerification()
+                .addOnCompleteListener(mActivity, task -> {
+                    // Re-enable button
+                    mListenerEmailPass.uiEnableEmailPassSubmitButton();
 
-                if (task.isSuccessful()) {
-                    Toast.makeText(mActivity, "Verification email sent to " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e(TAG, "sendEmailVerification", task.getException());
-                    Toast.makeText(mActivity, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+                    if (task.isSuccessful()) {
+                        mListenerEmailPass.uiEmailVerifySentSuccess(firebaseUser);
+                    } else {
+                        mListenerEmailPass.uiEmailVerifySentFailed();
+                    }
+                });
     }
 
     private boolean validateForm(String email, String password) {
@@ -150,15 +127,5 @@ public class FirebaseLoginEmailPasswordUtil {
         }
 
         return valid;
-    }
-
-    private void updateUI(FirebaseUser user) {
-        mListener.loginProgressDismiss();
-        if (user != null) {
-            mListener.uiSignInSuccess(new User(user));
-        } else {
-            signOut();
-            mListener.uiSignOutSuccess();
-        }
     }
 }

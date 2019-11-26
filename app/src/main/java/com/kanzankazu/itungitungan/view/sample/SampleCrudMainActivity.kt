@@ -11,22 +11,22 @@ import kotlinx.android.synthetic.main.activity_sample_crud_main.*
 
 class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginListener {
 
-    private lateinit var firebaseLoginGoogleUtil: FirebaseLoginUtil
+    private lateinit var firebaseLoginUtil: FirebaseLoginUtil
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample_crud_main)
 
-        firebaseLoginGoogleUtil = FirebaseLoginUtil(this, this)
+        firebaseLoginUtil = FirebaseLoginUtil(this, this)
 
         bt_createdata.setOnClickListener { startActivity(Intent(this, SampleCrudCreateActivity::class.java)) }
         bt_viewdata.setOnClickListener { startActivity(Intent(this, SampleCrudReadActivity::class.java)) }
-        bt_logout.setOnClickListener {firebaseLoginGoogleUtil.signOut()}
+        bt_logout.setOnClickListener {firebaseLoginUtil.signOut()}
     }
 
     override fun onStart() {
         super.onStart()
-        if (!firebaseLoginGoogleUtil.isSignIn) {
+        if (!firebaseLoginUtil.isSignIn) {
             moveToLogin()
         }
     }
@@ -45,6 +45,9 @@ class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginLi
     }
 
     override fun uiSignInSuccess(user: User) {
+    }
+
+    override fun uiSignInFailed(errorMessage: String?) {
     }
 
     override fun uiSignOutSuccess() {

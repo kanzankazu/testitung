@@ -289,7 +289,7 @@ public class Utils {
     }
 
     public static void showSnackBar(Activity activity, String message) {
-        Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
 
     }
 

@@ -154,14 +154,4 @@ public class FirebaseLoginFacebookUtil {
         // If the access token is available already assign it.
         //accessToken = AccessToken.getCurrentAccessToken();
     }
-
-    public interface FirebaseLoginFacebookListener {
-        void uiSignInSuccess(FirebaseUser user);
-
-        void uiSignOutSuccess();
-
-        void loginProgressShow();
-
-        void loginProgressDismiss();
-    }
 }

@@ -16,21 +16,51 @@
 
 package com.kanzankazu.itungitungan.util.Firebase;
 
+import android.util.Log;
+
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.kanzankazu.itungitungan.Constants;
+import com.kanzankazu.itungitungan.UserPreference;
+import com.kanzankazu.itungitungan.model.User;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
+    private FirebaseDatabaseUtil databaseUtil;
 
     @Override
     public void onTokenRefresh() {
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        sendRegistrationToServer(refreshedToken);
+
+        databaseUtil = new FirebaseDatabaseUtil();
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        System.out.println("FCM_Token: " + token);
+        Log.d(TAG, "FCM_Token: " + token);
+
+        UserPreference.getInstance().setFCMToken(token);
+
+        if (UserPreference.getInstance().isContainKey(Constants.SharedPreference.UID)) {
+            sendRegistrationToServer(token);
+
+        }
     }
 
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+        DatabaseReference rootRef = databaseUtil.getRootRef();
+        String uid = UserPreference.getInstance().getUid();
+        User.setFCMTokenUser(rootRef, uid, token, new FirebaseDatabaseUtil.valueListener() {
+            @Override
+            public void onSuccess(String message) {
+                Log.d("Lihat", "onSuccess MyFirebaseInstanceIDService : " + message);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.d("Lihat", "onFailure MyFirebaseInstanceIDService : " + message);
+            }
+        });
     }
 }
