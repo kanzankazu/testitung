@@ -160,7 +160,9 @@ public class FirebaseLoginGoogleUtil
                 .addOnCompleteListener(mActivity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        mListener.uiSignInSuccess(new User(user));
+                        User user1 = new User(user);
+                        user1.setByLogin("Google");
+                        mListener.uiSignInSuccess(user1);
                     } else {
                         Snackbar.make(mActivity.findViewById(android.R.id.content), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                         mListenerGoogle.uiSignInGoogleFailed("");

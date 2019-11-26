@@ -1,40 +1,36 @@
 package com.kanzankazu.itungitungan.model;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.util.Log;
+import com.google.android.gms.drive.events.CompletionListener;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.util.DateTimeUtil;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Faisal Bahri on 2019-11-18.
  */
+@IgnoreExtraProperties
 public class User {
 
     private String key;
     private String uId;
     private String level;
-
     private String tokenAccess;
     private String tokenFcm;
     private String token;
     private String name;
     private String email;
     private String phone;
-
     private String photoUrl;
     private String photoDt;
-
     private Boolean isEmailVerified;
     private Boolean isLogin;
     private String firstLogin;
@@ -45,7 +41,6 @@ public class User {
         this.name = user.getDisplayName();
         this.email = user.getEmail();
         this.phone = user.getPhoneNumber();
-        this.byLogin = user.getProviderId();
         this.uId = user.getUid();
     }
 
@@ -63,18 +58,21 @@ public class User {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            user.lastLogin = DateTimeUtil.getCurrentDate().toString();
+                            User user1 = null;
+                            for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                                user1 = userSnapshot.getValue(User.class);
+                            }
+
+                            user1.lastLogin = DateTimeUtil.getCurrentDate().toString();
 
                             database.child(Constants.DATABASE.TABLE.USER)
                                     .child(user.getuId())
-                                    .setValue(user)
-                                    .addOnSuccessListener(aVoid -> mListener.onSuccess(mActivity.getString(R.string.message_update_database_success)))
-                                    .addOnFailureListener(e -> mListener.onFailure(e.getMessage()));
+                                    .setValue(user1, (CompletionListener) completionEvent -> mListener.onSuccess(mActivity.getString(R.string.message_update_database_success)));
                         } else {
                             String primaryKey = database.child(Constants.DATABASE.TABLE.USER).push().getKey();
                             user.setKey(primaryKey);
-                            user.firstLogin = DateTimeUtil.getCurrentDate().toString();
-                            user.lastLogin = DateTimeUtil.getCurrentDate().toString();
+                            user.setFirstLogin(DateTimeUtil.getCurrentDate().toString());
+                            user.setLastLogin(DateTimeUtil.getCurrentDate().toString());
 
                             database.child(Constants.DATABASE.TABLE.USER)
                                     .child(user.getuId())
@@ -312,4 +310,28 @@ public class User {
     public void setByLogin(String byLogin) {
         this.byLogin = byLogin;
     }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("key", key);
+        result.put("uId", uId);
+        result.put("level", level);
+        result.put("tokenAccess", tokenAccess);
+        result.put("tokenFcm", tokenFcm);
+        result.put("token", token);
+        result.put("name", name);
+        result.put("email", email);
+        result.put("phone", phone);
+        result.put("photoUrl", photoUrl);
+        result.put("photoDt", photoDt);
+        result.put("isEmailVerified", isEmailVerified);
+        result.put("isLogin", isLogin);
+        result.put("firstLogin", firstLogin);
+        result.put("lastLogin", lastLogin);
+        result.put("byLogin", byLogin);
+
+        return result;
+    }
+
 }

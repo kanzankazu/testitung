@@ -27,12 +27,12 @@ import com.kanzankazu.itungitungan.view.sample.SampleCrudMainActivity
  * Created by Faisal Bahri on 2019-11-05.
  */
 class SignInUpActivity :
-    BaseActivity(),
-    SignInUpContract.View,
-    FirebaseLoginUtil.FirebaseLoginListener,
-    FirebaseLoginUtil.FirebaseLoginListener.Google,
-    FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
-    FirebaseDatabaseUtil.valueListener {
+        BaseActivity(),
+        SignInUpContract.View,
+        FirebaseLoginUtil.FirebaseLoginListener,
+        FirebaseLoginUtil.FirebaseLoginListener.Google,
+        FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
+        FirebaseDatabaseUtil.valueListener {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabaseUtil: FirebaseDatabaseUtil
@@ -154,74 +154,35 @@ class SignInUpActivity :
         viewPager = findViewById(R.id.vp_signInUp)
 
         slidePagerAdapter = fragmentUtil.setupTabLayoutViewPager(
-            null,
-            null,
-            null,
-            viewPager,
-            SignInFragment.newInstance(),
-            SignUpFragment.newInstance()
+                null,
+                null,
+                null,
+                viewPager,
+                SignInFragment.newInstance(),
+                SignUpFragment.newInstance()
         )
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         mGoogleApiClient = GoogleApiClient.Builder(this)
-            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-            .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                override fun onConnected(bundle: Bundle?) {
-                    mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
-                }
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+                    override fun onConnected(bundle: Bundle?) {
+                        mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
+                    }
 
-                override fun onConnectionSuspended(i: Int) {
+                    override fun onConnectionSuspended(i: Int) {
 
-                }
-            })
-            .build()
+                    }
+                })
+                .build()
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance()
-    }
-
-    private fun googleSignIn() {
-        if (isConnected(this)) {
-            val signInIntent = mGoogleSignInClient.signInIntent
-            //Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-
-            if (mGoogleApiClient != null && mGoogleApiClient.isConnected) {
-                mGoogleApiClient.clearDefaultAccountAndReconnect()
-            } else {
-                mGoogleApiClient.connect()
-            }
-
-            startActivityForResult(signInIntent, RC_SIGN_IN)
-        }
-    }
-
-    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
-        Log.d("Lihat", "firebaseAuthWithGoogle:" + acct?.id)
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct?.id)
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct?.idToken)
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct?.displayName)
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct?.email)
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct?.givenName)
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct?.familyName)
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct?.photoUrl)
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct?.serverAuthCode)
-
-        val credential = GoogleAuthProvider.getCredential(acct?.idToken, null)
-        mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = mAuth.currentUser
-                    uiSignInSuccess(User(user!!))
-                } else {
-                    Snackbar.make(findViewById(android.R.id.content), "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
-                    uiSignInGoogleFailed(task.exception?.message)
-                }
-            }
     }
 
     fun moveToNext() {
@@ -239,30 +200,29 @@ class SignInUpActivity :
 
     fun signInEmailPass(email: String, password: String) {
         mAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = mAuth.currentUser
-                    val user1 = User(user)
-                    uiSignInSuccess(user1)
-                } else {
-                    uiSignInGoogleFailed(task.exception?.message)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        val user = mAuth.currentUser
+                        uiSignInSuccess(User(user))
+                    } else {
+                        uiSignInGoogleFailed(task.exception?.message)
+                    }
                 }
-            }
     }
 
     fun signUpEmailPass(name: String, email: String, password: String) {
         mAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = mAuth.currentUser
-                    val user1 = User(user)
-                    user1.name = name
-                    user1.byLogin = "Manual"
-                    uiSignInSuccess(user1)
-                } else {
-                    uiSignInGoogleFailed(task.exception?.message)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        val user = mAuth.currentUser
+                        val user1 = User(user)
+                        user1.name = name
+                        user1.byLogin = "Manual"
+                        uiSignInSuccess(user1)
+                    } else {
+                        uiSignInGoogleFailed(task.exception?.message)
+                    }
                 }
-            }
     }
 
 }
