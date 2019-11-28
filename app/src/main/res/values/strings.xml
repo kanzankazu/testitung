@@ -1,39 +1,41 @@
 <resources>
     <string name="app_name">ItungItungan</string>
-    <string name="package_name" translatable="false">com.kanzankazu.itungitungan</string>
+    <string name="package_name">com.kanzankazu.itungitungan</string>
 
-    <!--Facebook-->
+    <!--SDK-->
     <string name="facebook_app_id">2506960146067219</string>
     <string name="fb_login_protocol_scheme">fb2506960146067219</string>
 
     <!--Dialog-->
     <string name="title_maintenance">Maintenance sedang berlangsung</string>
-    <string name="title_force_update">Mohon update aplikasi anda</string>
+    <string name="title_force_update">Mohon perbaharui aplikasi anda</string>
     <string name="title_suggest_update">Update telah tersedia</string>
     <string name="title_calendar">Kalender</string>
     <string name="confirm_exit">Keluar</string>
-    <string name="confirm_update">Update</string>
+    <string name="confirm_update">Perbaharui</string>
     <string name="confirm_continue">Lanjutkan</string>
     <string name="confirm_retry">Coba Lagi</string>
-    <string name="confirm_ok">Ok</string>
+    <string name="confirm_ok">Oke</string>
     <string name="confirm_yes">Iya</string>
     <string name="confirm_no">Tidak</string>
-    <string name="login">Login</string>
+    <string name="confirm_login">Masuk</string>
 
-    <!--Message Field EditText Error-->
-    <string name="message_empty_field">Data ini tidak boleh kosong</string>
-    <string name="message_email_wrong_format">Format email salah [***@***.***]</string>
-    <string name="message_login_success">Masuk Berhasil</string>
-    <string name="message_login_failed">Login Gagal</string>
-    <string name="message_logout_success">Keluar berhasil</string>
-    <string name="message_revoke_success">Revoke Berhasil</string>
+    <!--Message-->
+    <string name="message_field_empty">Data ini tidak boleh kosong</string>
+    <string name="message_field_email_wrong_format">Format email salah [***@***.***]</string>
+    <string name="message_signin_success">Masuk Berhasil</string>
+    <string name="message_signin_failed">Masuk Gagal</string>
+    <string name="message_signout_success">Keluar berhasil</string>
+    <string name="message_revoke_success">Batal Berhasil</string>
     <string name="message_no_internet_network">Tidak ada jaringan internet</string>
-    <string name="message_save_database_success">data berhasil disimpan</string>
-    <string name="message_update_database_success">data berhasil diperbaharui</string>
-    <string name="message_delete_success">data berhasil dihapus</string>
-    <string name="message_delete_failed">data gagal di hapus</string>
+    <string name="message_database_save_success">data berhasil disimpan</string>
+    <string name="message_database_update_success">data berhasil diperbaharui</string>
+    <string name="message_database_delete_success">data berhasil dihapus</string>
+    <string name="message_database_delete_failed">data gagal di hapus</string>
+    <string name="message_database_data_exist">data sudah ada</string>
     <string name="message_email_sent_success">Email verifikasi sudah terkirim ke %s</string>
     <string name="message_email_sent_failed">Email verifikasi gagal terkirim</string>
-    <string name="message_email_must_verified">Anda belum konfirmasi email dari kami</string>
+    <string name="message_email_verified_not">Anda belum konfirmasi email dari kami</string>
+    <string name="message_welcome">Selamat datang %s di Itung-itungan</string>
 
 </resources>

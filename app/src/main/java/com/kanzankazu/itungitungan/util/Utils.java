@@ -262,7 +262,7 @@ public class Utils {
         textView.setTextColor(Color.WHITE);
         textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         snackbar.setActionTextColor(Color.WHITE);
-        snackbar.setAction(mActivity.getString(R.string.login), v -> {
+        snackbar.setAction(mActivity.getString(R.string.confirm_login), v -> {
             mActivity.startActivity(new Intent(mActivity, SignInUpActivity.class));
             mActivity.finish();
         });

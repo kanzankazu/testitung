@@ -11,8 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.kanzankazu.itungitungan.R
-import com.kanzankazu.itungitungan.R.string.message_email_wrong_format
-import com.kanzankazu.itungitungan.R.string.message_empty_field
+import com.kanzankazu.itungitungan.R.string.message_field_email_wrong_format
+import com.kanzankazu.itungitungan.R.string.message_field_empty
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil
 import com.kanzankazu.itungitungan.view.base.BaseFragment
@@ -97,10 +97,10 @@ class SignUpFragment : BaseFragment(),
      * Contract*/
     override fun checkData(): Boolean {
         return when {
-            InputValidUtil.isEmptyField(getString(message_empty_field), tilSignUpName, etSignUpName, false, ibSignUpNameClear) -> false
-            InputValidUtil.isEmptyField(getString(message_empty_field), tilSignUpEmail, etSignUpEmail, false, ibSignUpEmailClear) -> false
-            InputValidUtil.isEmptyField(getString(message_empty_field), tilSignUpPassword, etSignUpPassword, false, ibSignUpPasswordClear) -> false
-            else -> InputValidUtil.isValidateEmail(getString(message_email_wrong_format), tilSignUpEmail, etSignUpEmail, false)
+            InputValidUtil.isEmptyField(getString(message_field_empty), tilSignUpName, etSignUpName, false, ibSignUpNameClear) -> false
+            InputValidUtil.isEmptyField(getString(message_field_empty), tilSignUpEmail, etSignUpEmail, false, ibSignUpEmailClear) -> false
+            InputValidUtil.isEmptyField(getString(message_field_empty), tilSignUpPassword, etSignUpPassword, false, ibSignUpPasswordClear) -> false
+            else -> InputValidUtil.isValidateEmail(getString(message_field_email_wrong_format), tilSignUpEmail, etSignUpEmail, false)
         }
     }
 

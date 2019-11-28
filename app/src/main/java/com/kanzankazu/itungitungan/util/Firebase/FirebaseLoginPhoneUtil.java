@@ -16,10 +16,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.kanzankazu.itungitungan.model.User;
-import com.kanzankazu.itungitungan.util.NetworkUtil;
-
-import org.apache.http.util.NetUtils;
+import com.kanzankazu.itungitungan.R;
 
 import java.util.concurrent.TimeUnit;
 
@@ -221,7 +218,7 @@ public class FirebaseLoginPhoneUtil {
         updateUI(uiState, null, cred, message);
     }
 
-    private void updateUI(int uiState, FirebaseUser user, PhoneAuthCredential cred, String message) {
+    private void updateUI(int uiState, FirebaseUser firebaseUser, PhoneAuthCredential cred, String message) {
         switch (uiState) {
             case STATE_INITIALIZED:
                 // Initialized state, show only the phone number field and start button
@@ -269,7 +266,7 @@ public class FirebaseLoginPhoneUtil {
                 break;
         }
 
-        if (user != null) {
+        if (firebaseUser != null) {
             // Signed in
             //mPhoneNumberViews.setVisibility(View.GONE);
             //mSignedInViews.setVisibility(View.VISIBLE);
@@ -281,7 +278,7 @@ public class FirebaseLoginPhoneUtil {
             //mStatusText.setText(R.string.signed_in);
             //mDetailText.setText(getString(R.string.firebase_status_fmt, USER.getUid()));
 
-            mListener.uiSignInSuccess(new User(user));
+            mListener.uiSignInSuccess(firebaseUser);
 
         } else {
             // Signed out
@@ -290,7 +287,7 @@ public class FirebaseLoginPhoneUtil {
 
             //mStatusText.setText(R.string.signed_out);
 
-            mListener.uiSignOutSuccess();
+            mListener.uiSignInFailed(activity.getString(R.string.message_signin_failed));
         }
     }
 }

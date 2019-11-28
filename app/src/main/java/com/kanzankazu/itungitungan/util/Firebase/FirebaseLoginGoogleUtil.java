@@ -2,11 +2,10 @@ package com.kanzankazu.itungitungan.util.Firebase;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -20,23 +19,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.model.User;
 
-public class FirebaseLoginGoogleUtil
-        extends FirebaseConnectionUtil
-        implements FirebaseConnectionUtil.FirebaseConnectionListener {
+public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements FirebaseConnectionUtil.FirebaseConnectionListener {
+
     public static final int RC_SIGN_IN = 120;
     private static final String TAG = "LoginGoogleUtil";
     private final GoogleSignInClient mGoogleSignInClient;
     private final GoogleApiClient mGoogleApiClient;
-    private final Activity mActivity;
     private final FirebaseAuth mAuth;
     private FirebaseLoginUtil.FirebaseLoginListener mListener;
     private FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle;
 
     public FirebaseLoginGoogleUtil(Activity mActivity, FirebaseLoginUtil.FirebaseLoginListener mListener, FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle) {
-        this.mActivity = mActivity;
-        this.mListener = mListener;
+        super(mActivity, mListener);
         this.mListenerGoogle = mListenerGoogle;
 
         // Configure Google Sign In
@@ -87,19 +82,6 @@ public class FirebaseLoginGoogleUtil
      */
     public Intent signInFromFragment() {
         return Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-    }
-
-    public void signOut() {
-        if (isConnected(mActivity, this)) {
-            // Firebase sign out
-            mAuth.signOut();
-
-            // Google sign out
-            mGoogleSignInClient.signOut().addOnCompleteListener(mActivity, task -> {
-                //updateUI(null);
-                mListener.uiSignOutSuccess();
-            });
-        }
     }
 
     public void revokeAccess() {
@@ -159,41 +141,12 @@ public class FirebaseLoginGoogleUtil
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(mActivity, task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        User user1 = new User(user);
-                        user1.setByLogin("Google");
-                        mListener.uiSignInSuccess(user1);
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        mListener.uiSignInSuccess(firebaseUser);
                     } else {
-                        Snackbar.make(mActivity.findViewById(android.R.id.content), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                        mListenerGoogle.uiSignInGoogleFailed("");
+                        mListener.uiSignInFailed(task.getException().getMessage());
                     }
                 });
-    }
-
-    public boolean isSignIn() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        return user != null;
-    }
-
-    public FirebaseUser getUserProfile() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-            Uri photoUrl = user.getPhotoUrl();
-
-            // Check if USER's email is verified
-            boolean emailVerified = user.isEmailVerified();
-
-            // The USER's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            String uid = user.getUid();
-
-            return user;
-        }
-        return null;
     }
 
     @Override

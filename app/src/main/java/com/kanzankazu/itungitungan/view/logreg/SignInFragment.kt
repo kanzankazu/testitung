@@ -92,9 +92,9 @@ class SignInFragment :
     /**/
     override fun checkData(): Boolean {
         return when {
-            InputValidUtil.isEmptyField(getString(R.string.message_empty_field), tilSignInEmail, etSignInEmail, false, ibSignInEmailClear) -> false
-            InputValidUtil.isEmptyField(getString(R.string.message_empty_field), tilSignInPassword, etSignInPassword, false, ibSignInPasswordClear) -> false
-            else -> InputValidUtil.isValidateEmail(getString(R.string.message_email_wrong_format), tilSignInEmail, etSignInEmail, false)
+            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), tilSignInEmail, etSignInEmail, false, ibSignInEmailClear) -> false
+            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), tilSignInPassword, etSignInPassword, false, ibSignInPasswordClear) -> false
+            else -> InputValidUtil.isValidateEmail(getString(R.string.message_field_email_wrong_format), tilSignInEmail, etSignInEmail, false)
         }
     }
 

@@ -5,14 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class Constants {
 
-    public static final long TIMEOUT_CONNECTION = 30;
-    //public static final int FETCH_FIREBASE = BuildConfig.FETCH_FIREBASE;
-    public static final int SPLASH = 2000;
-    public static final int REQUEST_INVITE = 2008;
-    @NotNull
-    public static final Class<?> kanzankazu = null;
-    //public static final String DYNAMIC_LINK_DOMAIN = BuildConfig.DYNAMIC_LINK_DOMAIN;
-    //public static final String DYNAMIC_LINK_PARAM = BuildConfig.DYNAMIC_LINK_PARAM;
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String PACKAGE_FACEBOOK = "com.facebook.katana";
     public static final String PACKAGE_TWITTER = "com.twitter.android";

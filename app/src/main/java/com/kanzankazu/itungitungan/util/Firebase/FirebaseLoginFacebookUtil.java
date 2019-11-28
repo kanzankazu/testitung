@@ -4,37 +4,42 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import com.facebook.*;
+
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.*;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.model.User;
 
-public class FirebaseLoginFacebookUtil {
+public class FirebaseLoginFacebookUtil extends FirebaseLoginUtil {
     private static final String TAG = "LoginGoogleUtil";
 
-    private final Activity mActivity;
     private final FirebaseAuth mAuth;
     private final CallbackManager mCallbackManager;
-    private final FirebaseLoginUtil.FirebaseLoginListener mListener;
     private final FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle;
 
     public FirebaseLoginFacebookUtil(Activity mActivity, FirebaseLoginUtil.FirebaseLoginListener mListener, FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle) {
-        this.mActivity = mActivity;
-        this.mListener = mListener;
+        super(mActivity, mListener);
         this.mListenerGoogle = mListenerGoogle;
 
         mCallbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public FirebaseLoginFacebookUtil(Activity activity, FirebaseLoginUtil.FirebaseLoginListener mListener, FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle, LoginButton loginButton) {
-        this.mActivity = activity;
-        this.mListener = mListener;
+    public FirebaseLoginFacebookUtil(Activity mActivity, FirebaseLoginUtil.FirebaseLoginListener mListener, FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle, LoginButton loginButton) {
+        super(mActivity, mListener);
         this.mListenerGoogle = mListenerGoogle;
 
         // Initialize Firebase Auth
@@ -59,7 +64,7 @@ public class FirebaseLoginFacebookUtil {
 
             @Override
             public void onCancel() {
-                mListenerGoogle.uiSignInGoogleFailed(mActivity.getString(R.string.message_login_failed));
+                mListenerGoogle.uiSignInGoogleFailed(mActivity.getString(R.string.message_signin_failed));
             }
 
             @Override
@@ -87,7 +92,7 @@ public class FirebaseLoginFacebookUtil {
 
                     @Override
                     public void onCancel() {
-                        mListenerGoogle.uiSignInGoogleFailed(mActivity.getString(R.string.message_login_failed));
+                        mListenerGoogle.uiSignInGoogleFailed(mActivity.getString(R.string.message_signin_failed));
                     }
 
                     @Override
@@ -95,22 +100,6 @@ public class FirebaseLoginFacebookUtil {
                         mListenerGoogle.uiSignInGoogleFailure(exception.getMessage());
                     }
                 });
-    }
-
-    public void signOut() {
-        mAuth.signOut();
-        LoginManager.getInstance().logOut();
-
-        mListener.uiSignOutSuccess();
-    }
-
-    /**
-     * call onStart
-     */
-    public void isSignIn() {
-        // Check if USER is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        mListener.uiSignInSuccess(new User(currentUser));
     }
 
     /**
@@ -133,13 +122,11 @@ public class FirebaseLoginFacebookUtil {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    mListener.uiSignInSuccess(new User(user));
+                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                    mListener.uiSignInSuccess(firebaseUser);
                 } else {
                     mListenerGoogle.uiSignInGoogleFailed(task.getException().getMessage());
                 }
-
-                mListener.loginProgressDismiss();
             }
         });
     }
