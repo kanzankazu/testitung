@@ -16,7 +16,7 @@ public class Hutang {
     String dueDt;
     String desc;
 
-    String CreateDt;
+    String CreateAt;
     String CreateBy;
     String UpdateAt;
     String UpdateBy;

@@ -12,7 +12,7 @@ public class HutangSub {
     Boolean approvalGiver;
     Boolean approvalReceiver;
 
-    String createDt;
+    String createAt;
     String createBy;
-    String UpdateDt;
+    String UpdateAt;
 }

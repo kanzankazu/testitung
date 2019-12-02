@@ -12,7 +12,7 @@ public class Itungan {
     String desc;
     String makeDt;
 
-    String updateDt;
+    String updateAt;
     String updateBy;
     String updateByNm;
 }

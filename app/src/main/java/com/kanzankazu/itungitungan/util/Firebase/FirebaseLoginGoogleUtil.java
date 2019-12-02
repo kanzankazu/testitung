@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.model.User;
 
 public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements FirebaseConnectionUtil.FirebaseConnectionListener {
 
@@ -26,8 +27,7 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
     private static final String TAG = "LoginGoogleUtil";
     private final GoogleSignInClient mGoogleSignInClient;
     private final GoogleApiClient mGoogleApiClient;
-    private final FirebaseAuth mAuth;
-    private FirebaseLoginUtil.FirebaseLoginListener mListener;
+    private FirebaseAuth mAuth;
     private FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle;
 
     public FirebaseLoginGoogleUtil(Activity mActivity, FirebaseLoginUtil.FirebaseLoginListener mListener, FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle) {
@@ -61,8 +61,11 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
 
     /**
      * call startActivityForResult
+     *
+     * @param mAuth
      */
-    public void signIn() {
+    public void signIn(FirebaseAuth mAuth) {
+        if (mAuth != null) this.mAuth = mAuth;
         if (isConnected(mActivity, this)) {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             //Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -87,7 +90,7 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
     public void revokeAccess() {
         if (isConnected(mActivity, this)) {
             // Firebase sign out
-            mAuth.signOut();
+            signOut();
 
             // Google revoke access
             mGoogleSignInClient.revokeAccess().addOnCompleteListener(mActivity, task -> {
@@ -142,7 +145,7 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
                 .addOnCompleteListener(mActivity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        mListener.uiSignInSuccess(firebaseUser);
+                        mListener.uiSignInSuccess(new User(firebaseUser));
                     } else {
                         mListener.uiSignInFailed(task.getException().getMessage());
                     }

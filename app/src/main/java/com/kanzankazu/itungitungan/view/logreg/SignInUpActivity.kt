@@ -35,10 +35,10 @@ class SignInUpActivity :
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabaseUtil: FirebaseDatabaseUtil
+    private lateinit var loginUtil: FirebaseLoginUtil
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var loginFacebookUtil: FirebaseLoginFacebookUtil
     private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
-    private lateinit var connectionUtil: FirebaseConnectionUtil
     private lateinit var mGoogleApiClient: GoogleApiClient
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var name: String
@@ -57,7 +57,6 @@ class SignInUpActivity :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
-            showProgressDialog()
             loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
         } else {
             loginFacebookUtil.signInActivityResult(requestCode, resultCode, data)
@@ -65,22 +64,16 @@ class SignInUpActivity :
     }
 
     /*LOGREG*/
-    override fun loginProgressShow() {
-        showProgressDialog()
-    }
-
-    override fun loginProgressDismiss() {
-        dismissProgressDialog()
-    }
-
-    override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
+    override fun uiSignInSuccess(user: User) {
         showProgressDialog()
 
-        User.getUser(mDatabaseUtil.rootRef, firebaseUser.uid, true);
-        val user = User(firebaseUser)
-        user.lastLogin = DateTimeUtil.getCurrentDate().toString()
-
-        User.setUser(mDatabaseUtil.rootRef, this, user, this)
+        val mUser = User.getUser(mDatabaseUtil.rootRef, user.getuId(), true)
+        if (mUser != null) {
+            mUser.lastLogin = DateTimeUtil.getCurrentDate().toString()
+            User.setUser(mDatabaseUtil.rootRef, this, mUser, this)
+        } else {
+            showSnackbar(getString(R.string.message_database_save_failed))
+        }
     }
 
     override fun uiSignInFailed(errorMessage: String?) {
@@ -113,17 +106,17 @@ class SignInUpActivity :
     }
 
     /**/
-    override fun uiSignUpSuccess(firebaseUser: FirebaseUser) {
+    override fun uiSignUpSuccess(user: User) {
         showProgressDialog()
 
         etSignUpName.setText("")
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        if (User.isUserDataExist(mDatabaseUtil.rootRef, User(firebaseUser))) {
+        if (User.isUserDataExist(mDatabaseUtil.rootRef, user)) {
+            dismissProgressDialog()
             showSnackbar(getString(R.string.message_database_data_exist))
         } else {
-            val user = User(firebaseUser)
             user.name = name
             user.firstLogin = DateTimeUtil.getCurrentDate().toString()
             user.lastLogin = DateTimeUtil.getCurrentDate().toString()
@@ -169,10 +162,10 @@ class SignInUpActivity :
     private fun initContent() {
         mAuth = FirebaseAuth.getInstance()
         mDatabaseUtil = FirebaseDatabaseUtil()
+        loginUtil = FirebaseLoginUtil(this, this)
         loginGoogleUtil = FirebaseLoginGoogleUtil(this, this, this)
         loginFacebookUtil = FirebaseLoginFacebookUtil(this, this, this)
         loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(this, this, this)
-        connectionUtil = FirebaseConnectionUtil()
 
         fragmentUtil = FragmentUtil(this, -1)
         viewPager = findViewById(R.id.vp_signInUp)
@@ -218,7 +211,7 @@ class SignInUpActivity :
     }
 
     fun signInByGoogle() {
-        loginGoogleUtil.signIn()
+        loginGoogleUtil.signIn(mAuth)
     }
 
     fun signInByFacebook() {

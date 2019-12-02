@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.google.firebase.auth.FirebaseUser
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.model.User
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.logreg.SignInUpActivity
@@ -40,7 +41,7 @@ class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginLi
         dismissProgressDialog()
     }
 
-    override fun uiSignInSuccess(user: FirebaseUser) {
+    override fun uiSignInSuccess(user: User) {
     }
 
     override fun uiSignInFailed(errorMessage: String?) {

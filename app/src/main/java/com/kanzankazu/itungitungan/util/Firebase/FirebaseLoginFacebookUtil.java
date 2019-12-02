@@ -123,7 +123,7 @@ public class FirebaseLoginFacebookUtil extends FirebaseLoginUtil {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                    mListener.uiSignInSuccess(firebaseUser);
+                    mListener.uiSignInSuccess(new User(firebaseUser));
                 } else {
                     mListenerGoogle.uiSignInGoogleFailed(task.getException().getMessage());
                 }

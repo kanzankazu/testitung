@@ -29,6 +29,7 @@
     <string name="message_revoke_success">Batal Berhasil</string>
     <string name="message_no_internet_network">Tidak ada jaringan internet</string>
     <string name="message_database_save_success">data berhasil disimpan</string>
+    <string name="message_database_save_failed">data gagal disimpan</string>
     <string name="message_database_update_success">data berhasil diperbaharui</string>
     <string name="message_database_delete_success">data berhasil dihapus</string>
     <string name="message_database_delete_failed">data gagal di hapus</string>

@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.model.User;
 
 import java.util.concurrent.TimeUnit;
 
@@ -278,7 +279,7 @@ public class FirebaseLoginPhoneUtil {
             //mStatusText.setText(R.string.signed_in);
             //mDetailText.setText(getString(R.string.firebase_status_fmt, USER.getUid()));
 
-            mListener.uiSignInSuccess(firebaseUser);
+            mListener.uiSignInSuccess(new User(firebaseUser));
 
         } else {
             // Signed out

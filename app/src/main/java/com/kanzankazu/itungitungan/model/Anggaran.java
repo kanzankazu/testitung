@@ -14,6 +14,6 @@ public class Anggaran {
 
     Boolean isLoopingMonth;
 
-    String updateDt;
+    String updateAt;
     String updateBy;
 }

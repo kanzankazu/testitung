@@ -19,7 +19,7 @@ public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil {
                 .addOnCompleteListener(mActivity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        mListenerEmailPass.uiSignUpSuccess(firebaseUser);
+                        mListenerEmailPass.uiSignUpSuccess(new User(firebaseUser));
                     } else {
                         mListenerEmailPass.uiSignUpFailed(task.getException().getMessage());
                     }
@@ -33,7 +33,7 @@ public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil {
                 .addOnCompleteListener(mActivity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        mListener.uiSignInSuccess(firebaseUser);
+                        mListener.uiSignInSuccess(new User(firebaseUser));
                     } else {
                         mListener.uiSignInFailed(task.getException().getMessage());
                     }

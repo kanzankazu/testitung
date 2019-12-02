@@ -1,6 +1,7 @@
 package com.kanzankazu.itungitungan.model;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -146,7 +147,6 @@ public class User {
                             user[0] = null;
                         }
                     });
-
         }
 
 

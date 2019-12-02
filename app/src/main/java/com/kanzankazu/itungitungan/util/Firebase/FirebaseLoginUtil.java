@@ -23,6 +23,7 @@ import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.kanzankazu.itungitungan.BuildConfig;
+import com.kanzankazu.itungitungan.model.User;
 
 import java.util.List;
 
@@ -403,11 +404,7 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil {
 
     public interface FirebaseLoginListener {
 
-        void loginProgressShow();
-
-        void loginProgressDismiss();
-
-        void uiSignInSuccess(FirebaseUser user);
+        void uiSignInSuccess(User user);
 
         void uiSignInFailed(String errorMessage);
 
@@ -417,7 +414,7 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil {
 
         interface EmailPass {
             /*EMAILPASS*/
-            void uiSignUpSuccess(FirebaseUser user);
+            void uiSignUpSuccess(User user);
 
             void uiSignUpFailed(String errorMessage);
 
