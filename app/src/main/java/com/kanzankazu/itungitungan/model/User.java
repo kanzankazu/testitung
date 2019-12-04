@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.UserPreference;
+import com.kanzankazu.itungitungan.util.DateTimeUtil;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
 
 import java.util.ArrayList;
@@ -38,10 +39,11 @@ public class User {
     private String photoUrl;
     private String photoDt;
     private Boolean isEmailVerified;
-    private Boolean isLogin;
-    private String firstLogin;
-    private String lastLogin;
-    private String byLogin;
+    private Boolean isSignIn;
+    private String firstSignIn;
+    private String lastSignIn;
+    private String lastSignOut;
+    private String bySignIn;
 
     public User(FirebaseUser user) {
         this.name = user.getDisplayName();
@@ -55,7 +57,7 @@ public class User {
     }
 
     /*FIREBASE DATABASE_FIREBASE START*/
-    public static void isUserDataExist(DatabaseReference database, User user, FirebaseDatabaseUtil.ValueListenerData mListener) {
+    public static void isExistUser(DatabaseReference database, User user, FirebaseDatabaseUtil.ValueListenerData mListener) {
         database.child(Constants.DATABASE_FIREBASE.TABLE.USER)
                 .orderByChild(Constants.DATABASE_FIREBASE.ROW.UID)
                 .equalTo(user.getuId())
@@ -102,7 +104,8 @@ public class User {
         rootReference.child(Constants.DATABASE_FIREBASE.TABLE.USER)
                 .child(uid)
                 .removeValue()
-                .addOnSuccessListener(aVoid -> listener.onSuccess(mActivity.getString(R.string.message_database_delete_success)));
+                .addOnSuccessListener(aVoid -> listener.onSuccess(mActivity.getString(R.string.message_database_delete_success)))
+                .addOnFailureListener(e -> listener.onFailure(e.getMessage()));
     }
 
     public static void getUser(DatabaseReference rootReference, String uId, Boolean isSingleCall, FirebaseDatabaseUtil.ValueListenerData listener) {
@@ -135,6 +138,24 @@ public class User {
                         }
                     });
         }
+    }
+
+    public static void outUser(DatabaseReference rootReference, Activity mActivity, FirebaseDatabaseUtil.ValueListenerString listener) {
+        String uid = UserPreference.getInstance().getUid();
+        getUser(rootReference, uid, true, new FirebaseDatabaseUtil.ValueListenerData() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                user.setTokenFcm("");
+                user.setLastSignOut(DateTimeUtil.getCurrentDate().toString());
+                setUser(rootReference, mActivity, user, listener);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                listener.onFailure(message);
+            }
+        });
     }
 
     public static List<User> getUsers(DatabaseReference rootReference, Boolean isSingleCall) {
@@ -284,35 +305,43 @@ public class User {
     }
 
     public Boolean getLogin() {
-        return isLogin;
+        return isSignIn;
     }
 
     public void setLogin(Boolean login) {
-        isLogin = login;
+        isSignIn = login;
     }
 
-    public String getFirstLogin() {
-        return firstLogin;
+    public String getFirstSignIn() {
+        return firstSignIn;
     }
 
-    public void setFirstLogin(String firstLogin) {
-        this.firstLogin = firstLogin;
+    public void setFirstSignIn(String firstSignIn) {
+        this.firstSignIn = firstSignIn;
     }
 
-    public String getLastLogin() {
-        return lastLogin;
+    public String getLastSignIn() {
+        return lastSignIn;
     }
 
-    public void setLastLogin(String lastLogin) {
-        this.lastLogin = lastLogin;
+    public void setLastSignIn(String lastSignIn) {
+        this.lastSignIn = lastSignIn;
     }
 
-    public String getByLogin() {
-        return byLogin;
+    public String getLastSignOut() {
+        return lastSignOut;
     }
 
-    public void setByLogin(String byLogin) {
-        this.byLogin = byLogin;
+    public void setLastSignOut(String lastSignOut) {
+        this.lastSignOut = lastSignOut;
+    }
+
+    public String getBySignIn() {
+        return bySignIn;
+    }
+
+    public void setBySignIn(String bySignIn) {
+        this.bySignIn = bySignIn;
     }
 
     @Exclude
@@ -330,10 +359,11 @@ public class User {
         result.put("photoUrl", photoUrl);
         result.put("photoDt", photoDt);
         result.put("isEmailVerified", isEmailVerified);
-        result.put("isLogin", isLogin);
-        result.put("firstLogin", firstLogin);
-        result.put("lastLogin", lastLogin);
-        result.put("byLogin", byLogin);
+        result.put("isSignIn", isSignIn);
+        result.put("firstSignIn", firstSignIn);
+        result.put("lastSignIn", lastSignIn);
+        result.put("lastSignOut", lastSignOut);
+        result.put("bySignIn", bySignIn);
 
         return result;
     }

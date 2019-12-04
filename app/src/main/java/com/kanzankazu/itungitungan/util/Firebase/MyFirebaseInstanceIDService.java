@@ -28,7 +28,6 @@ import com.kanzankazu.itungitungan.model.User;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
-    private static final String TAG = "MyFirebaseIIDService";
     private FirebaseDatabaseUtil databaseUtil;
 
     @Override
@@ -37,14 +36,12 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         databaseUtil = new FirebaseDatabaseUtil();
 
         String token = FirebaseInstanceId.getInstance().getToken();
-        System.out.println("FCM_Token: " + token);
-        Log.d(TAG, "FCM_Token: " + token);
+        Log.d("Lihat", "onTokenRefresh MyFirebaseInstanceIDService : " + token);
 
         UserPreference.getInstance().setFCMToken(token);
 
         if (UserPreference.getInstance().isContainKey(Constants.SharedPreference.UID)) {
             sendRegistrationToServer(token);
-
         }
     }
 

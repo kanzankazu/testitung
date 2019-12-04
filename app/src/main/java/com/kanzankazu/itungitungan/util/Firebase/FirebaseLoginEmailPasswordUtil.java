@@ -1,11 +1,16 @@
 package com.kanzankazu.itungitungan.util.Firebase;
 
 import android.app.Activity;
+import android.util.Log;
 
+import com.google.firebase.auth.ActionCodeSettings;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kanzankazu.itungitungan.BuildConfig;
+import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.model.User;
 
-public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil {
+public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil implements FirebaseConnectionUtil.FirebaseConnectionListener {
 
     private final FirebaseLoginListener.EmailPass mListenerEmailPass;
 
@@ -14,8 +19,8 @@ public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil {
         this.mListenerEmailPass = mListenerEmailPass;
     }
 
-    public boolean createAccount(String email, String password) {
-        mAuth.createUserWithEmailAndPassword(email, password)
+    public void createAccount(String email, String password) {
+        if (isConnected(mActivity, this)) mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(mActivity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
@@ -24,12 +29,10 @@ public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil {
                         mListenerEmailPass.uiSignUpFailed(task.getException().getMessage());
                     }
                 });
-
-        return true;
     }
 
     public void signIn(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
+        if (isConnected(mActivity, this)) mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(mActivity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
@@ -41,19 +44,47 @@ public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil {
     }
 
     public void sendEmailVerification() {
-        mListenerEmailPass.uiDisableEmailPassSubmitButton();
+        if (isConnected(mActivity,this)){
+            mListenerEmailPass.uiDisableEmailPassSubmitButton();
 
-        final FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        firebaseUser.sendEmailVerification()
-                .addOnCompleteListener(mActivity, task -> {
-                    // Re-enable button
-                    mListenerEmailPass.uiEnableEmailPassSubmitButton();
+            final FirebaseUser firebaseUser = mAuth.getCurrentUser();
+            firebaseUser.sendEmailVerification()
+                    .addOnCompleteListener(mActivity, task -> {
+                        // Re-enable button
+                        mListenerEmailPass.uiEnableEmailPassSubmitButton();
 
+                        if (task.isSuccessful()) {
+                            mListenerEmailPass.uiEmailVerifySentSuccess(firebaseUser);
+                        } else {
+                            mListenerEmailPass.uiEmailVerifySentFailed();
+                        }
+                    });
+        }
+    }
+
+    public void sendEmailVerificationWithContinueUrl() {
+        FirebaseAuth auth = mAuth;
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+
+        String url = "http://www.example.com/verify?uid=" + firebaseUser.getUid();
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl(url)
+                .setIOSBundleId("com.example.ios")
+                // The default for this is populated with the current android package name.
+                .setAndroidPackageName(BuildConfig.APPLICATION_ID, false, null)
+                .build();
+
+        firebaseUser.sendEmailVerification(actionCodeSettings)
+                .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        mListenerEmailPass.uiEmailVerifySentSuccess(firebaseUser);
+                        Log.d(TAG, "Email sent.");
                     } else {
-                        mListenerEmailPass.uiEmailVerifySentFailed();
+
                     }
                 });
+
+        // auth.setLanguageCode("fr");
+        // To apply the default app language instead of explicitly setting it.
+        // auth.useAppLanguage();
     }
 }

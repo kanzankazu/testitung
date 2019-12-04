@@ -115,6 +115,12 @@ public class UserPreference {
         return values;
     }
 
+    public void setIsFromNotification(Boolean isFromNotification) { putSharedPrefBoolean(SharedPreferenceConstants.PreferenceKey.FROM_NOTIFICATION, isFromNotification); }
+
+    public Boolean getIsFromNotification() {
+        return getSharedPrefBoolean(SharedPreferenceConstants.PreferenceKey.FROM_NOTIFICATION);
+    }
+
     /**
      * Preference Dictionary
      */

@@ -6,14 +6,17 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.UserPreference;
 import com.kanzankazu.itungitungan.util.NetworkUtil;
 import com.kanzankazu.itungitungan.util.SystemUtil;
 import com.kanzankazu.itungitungan.util.Utils;
 import com.kanzankazu.itungitungan.util.dialog.ProgressDialogConnection;
+import com.kanzankazu.itungitungan.view.main.MainActivity;
 
 public class BaseActivity extends AppCompatActivity implements BaseView {
 
@@ -30,6 +33,15 @@ public class BaseActivity extends AppCompatActivity implements BaseView {
     protected void onDestroy() {
         super.onDestroy();
         progressDialogConnection.dismissProgressDialog();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (UserPreference.getInstance().getIsFromNotification()) {
+            Utils.intentWithClearTask(this, MainActivity.class);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void showRetryDialog(Utils.DialogButtonListener listener) {
@@ -136,7 +148,6 @@ public class BaseActivity extends AppCompatActivity implements BaseView {
             }
         });
     }
-
 
 
 }

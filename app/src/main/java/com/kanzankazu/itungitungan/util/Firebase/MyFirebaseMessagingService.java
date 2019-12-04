@@ -31,8 +31,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData().size() > 0) {
             Map<String, String> m = remoteMessage.getData();
-            List<String> list1 = new ArrayList<String>(m.keySet());
-            List<String> list21 = new ArrayList<String>(m.values());
+            List<String> list1 = new ArrayList<>(m.keySet());
+            List<String> list21 = new ArrayList<>(m.values());
             JSONObject mapToObject = new JSONObject(m);
         }
 

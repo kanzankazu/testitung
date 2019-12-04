@@ -87,7 +87,7 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
     public void revokeAccess() {
         if (isConnected(mActivity, this)) {
             // Firebase sign out
-            signOut();
+            signOut(databaseUtil);
 
             // Google revoke access
             mGoogleSignInClient.revokeAccess().addOnCompleteListener(mActivity, task -> {
@@ -127,30 +127,27 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getId());
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getIdToken());
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getDisplayName());
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getEmail());
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getGivenName());
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getFamilyName());
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getPhotoUrl());
-        Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getServerAuthCode());
+        if (isConnected(mActivity,this)){
+            Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+            Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getId());
+            Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getIdToken());
+            Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getDisplayName());
+            Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getEmail());
+            Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getGivenName());
+            Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getFamilyName());
+            Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getPhotoUrl());
+            Log.d("Lihat", "firebaseAuthWithGoogle FirebaseLoginGoogleUtil : " + acct.getServerAuthCode());
 
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(mActivity, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        mListener.uiSignInSuccess(new User(firebaseUser));
-                    } else {
-                        mListener.uiSignInFailed(task.getException().getMessage());
-                    }
-                });
-    }
-
-    @Override
-    public void noInternet() {
-        mListener.uiConnectionError(mActivity.getString(R.string.message_no_internet_network), checkException(7));
+            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(mActivity, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            mListener.uiSignInSuccess(new User(firebaseUser));
+                        } else {
+                            mListener.uiSignInFailed(task.getException().getMessage());
+                        }
+                    });
+        }
     }
 }

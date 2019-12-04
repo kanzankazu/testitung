@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,16 +24,19 @@ import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.kanzankazu.itungitungan.BuildConfig;
+import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.UserPreference;
 import com.kanzankazu.itungitungan.model.User;
 
 import java.util.List;
 
-public class FirebaseLoginUtil extends FirebaseConnectionUtil {
+public class FirebaseLoginUtil extends FirebaseConnectionUtil implements FirebaseConnectionUtil.FirebaseConnectionListener {
 
     public String TAG = "LoginUtil";
     public Activity mActivity;
     public FirebaseAuth mAuth;
     public FirebaseLoginListener mListener;
+    public FirebaseDatabaseUtil databaseUtil;
 
     public FirebaseLoginUtil(Activity mActivity, FirebaseLoginUtil.FirebaseLoginListener mListener) {
         this.mActivity = mActivity;
@@ -40,6 +44,7 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        databaseUtil = new FirebaseDatabaseUtil();
     }
 
     public boolean isSignIn() {
@@ -118,46 +123,6 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil {
                         Log.d(TAG, "User password failed.");
                     }
                 });
-    }
-
-    public void sendEmailVerification() {
-        FirebaseAuth auth = mAuth;
-        FirebaseUser firebaseUser = auth.getCurrentUser();
-
-        firebaseUser.sendEmailVerification()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "Email sent.");
-                    } else {
-                        Log.d(TAG, "Email not sent.");
-                    }
-                });
-    }
-
-    public void sendEmailVerificationWithContinueUrl() {
-        FirebaseAuth auth = mAuth;
-        FirebaseUser firebaseUser = auth.getCurrentUser();
-
-        String url = "http://www.example.com/verify?uid=" + firebaseUser.getUid();
-        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
-                .setUrl(url)
-                .setIOSBundleId("com.example.ios")
-                // The default for this is populated with the current android package name.
-                .setAndroidPackageName(BuildConfig.APPLICATION_ID, false, null)
-                .build();
-
-        firebaseUser.sendEmailVerification(actionCodeSettings)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "Email sent.");
-                    } else {
-
-                    }
-                });
-
-        // auth.setLanguageCode("fr");
-        // To apply the default app language instead of explicitly setting it.
-        // auth.useAppLanguage();
     }
 
     public boolean isEmailVerfied(FirebaseUser firebaseUser) {
@@ -397,9 +362,27 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil {
         // [END auth_email_cred]
     }
 
-    public void signOut() {
-        mAuth.signOut();
-        mListener.uiSignOutSuccess();
+    public void signOut(@Nullable FirebaseDatabaseUtil databaseUtil) {
+        if (isConnected(mActivity, this)) {
+            User.outUser(databaseUtil.getRootRef(), mActivity, new FirebaseDatabaseUtil.ValueListenerString() {
+                @Override
+                public void onSuccess(String message) {
+                    mAuth.signOut();
+                    UserPreference.getInstance().signout();
+                    mListener.uiSignOutSuccess();
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    mListener.uiSignOutFailed(message);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void noInternet() {
+        mListener.uiConnectionError(mActivity.getString(R.string.message_no_internet_network), checkException(7));
     }
 
     public interface FirebaseLoginListener {
@@ -409,6 +392,8 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil {
         void uiSignInFailed(String errorMessage);
 
         void uiSignOutSuccess();
+
+        void uiSignOutFailed(String message);
 
         void uiConnectionError(String messageError, String typeError);
 

@@ -12,7 +12,9 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.iid.FirebaseInstanceId
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.User
 import com.kanzankazu.itungitungan.util.DateTimeUtil
 import com.kanzankazu.itungitungan.util.Firebase.*
@@ -72,8 +74,8 @@ class SignInUpActivity :
         User.getUser(mDatabaseUtil.rootRef, user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    val user1 = dataSnapshot.getValue(User::class.java)
-                    signInUpControl(false, false, user1!!)
+                    val user1 = dataSnapshot.getValue(User::class.java) as User
+                    signInUpControl(false, false, user1)
                 } else {
                     signInUpControl(false, true, user)
                 }
@@ -93,6 +95,10 @@ class SignInUpActivity :
     override fun uiSignOutSuccess() {
         dismissProgressDialog()
         showSnackbar(getString(R.string.message_signout_success))
+    }
+
+    override fun uiSignOutFailed(message: String) {
+
     }
 
     override fun uiConnectionError(messageError: String?, typeError: String?) {
@@ -124,7 +130,7 @@ class SignInUpActivity :
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        User.isUserDataExist(mDatabaseUtil.rootRef, user, object : FirebaseDatabaseUtil.ValueListenerData {
+        User.isExistUser(mDatabaseUtil.rootRef, user, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     showSnackbar(getString(R.string.message_database_data_exist))
@@ -250,9 +256,15 @@ class SignInUpActivity :
 
     fun signInUpControl(isSignUp: Boolean, isFirst: Boolean, user: User) {
         showProgressDialog()
+        if (!UserPreference.getInstance().fcmToken.isNullOrEmpty()) {
+            user.tokenFcm = UserPreference.getInstance().fcmToken
+        }else{
+            user.tokenFcm = FirebaseInstanceId.getInstance().token
+            UserPreference.getInstance().fcmToken = user.tokenFcm
+        }
         if (isSignUp) user.name = name
-        if (isFirst) user.firstLogin = DateTimeUtil.getCurrentDate().toString()
-        user.lastLogin = DateTimeUtil.getCurrentDate().toString()
+        if (isFirst) user.firstSignIn = DateTimeUtil.getCurrentDate().toString()
+        user.lastSignIn = DateTimeUtil.getCurrentDate().toString()
         User.setUser(mDatabaseUtil.rootRef, this, user, this)
     }
 
