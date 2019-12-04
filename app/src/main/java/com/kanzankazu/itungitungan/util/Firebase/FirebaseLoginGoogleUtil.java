@@ -27,7 +27,6 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
     private static final String TAG = "LoginGoogleUtil";
     private final GoogleSignInClient mGoogleSignInClient;
     private final GoogleApiClient mGoogleApiClient;
-    private FirebaseAuth mAuth;
     private FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle;
 
     public FirebaseLoginGoogleUtil(Activity mActivity, FirebaseLoginUtil.FirebaseLoginListener mListener, FirebaseLoginUtil.FirebaseLoginListener.Google mListenerGoogle) {
@@ -62,10 +61,8 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
     /**
      * call startActivityForResult
      *
-     * @param mAuth
      */
-    public void signIn(FirebaseAuth mAuth) {
-        if (mAuth != null) this.mAuth = mAuth;
+    public void signIn() {
         if (isConnected(mActivity, this)) {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             //Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);

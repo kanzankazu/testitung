@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.google.firebase.auth.FirebaseUser
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.User
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.view.base.BaseActivity
@@ -33,14 +34,6 @@ class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginLi
         }
     }
 
-    override fun loginProgressShow() {
-        showProgressDialog()
-    }
-
-    override fun loginProgressDismiss() {
-        dismissProgressDialog()
-    }
-
     override fun uiSignInSuccess(user: User) {
     }
 
@@ -48,6 +41,7 @@ class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginLi
     }
 
     override fun uiSignOutSuccess() {
+        UserPreference.getInstance().signout()
         showSnackbar(getString(R.string.message_signout_success))
         moveToLogin()
     }
@@ -59,5 +53,4 @@ class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginLi
         startActivity(Intent(this, SignInUpActivity::class.java))
         finish()
     }
-
 }

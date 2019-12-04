@@ -55,6 +55,7 @@ public class Constants {
         interface ROW {
             String EMAIL = "email";
             String TOKEN_FCM = "tokenFcm";
+            String UID = "uid";
         }
     }
 }

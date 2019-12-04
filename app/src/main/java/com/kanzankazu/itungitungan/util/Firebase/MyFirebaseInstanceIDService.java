@@ -51,7 +51,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private void sendRegistrationToServer(String token) {
         DatabaseReference rootRef = databaseUtil.getRootRef();
         String uid = UserPreference.getInstance().getUid();
-        User.setFCMTokenUser(rootRef, uid, token, new FirebaseDatabaseUtil.valueListener() {
+        User.setFCMTokenUser(rootRef, uid, token, new FirebaseDatabaseUtil.ValueListenerString() {
             @Override
             public void onSuccess(String message) {
                 Log.d("Lihat", "onSuccess MyFirebaseInstanceIDService : " + message);

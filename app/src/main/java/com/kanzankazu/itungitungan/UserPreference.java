@@ -49,16 +49,12 @@ public class UserPreference {
         this.sharedPreferences.edit().remove(key).apply();
     }
 
-    public void clearSharedPrefs() {
-        this.sharedPreferences.edit().clear().apply();
-    }
-
     public boolean isContainKey(String key) {
         return this.sharedPreferences.contains(key);
     }
 
-    public void signout(){
-        clearSharedPrefs();
+    public void signout() {
+        this.sharedPreferences.edit().clear().apply();
     }
 
     /**
@@ -165,6 +161,7 @@ public class UserPreference {
     public String getLoginStatus() {
         return getSharedPrefString(Constants.SharedPreference.LOGIN_STATUS);
     }
+
     public void setLoginStatus(String loginStatus) {
         putSharedPrefString(Constants.SharedPreference.LOGIN_STATUS, loginStatus);
     }

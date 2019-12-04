@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.User
 import com.kanzankazu.itungitungan.util.DateTimeUtil
@@ -31,7 +32,7 @@ class SignInUpActivity :
     FirebaseLoginUtil.FirebaseLoginListener,
     FirebaseLoginUtil.FirebaseLoginListener.Google,
     FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
-    FirebaseDatabaseUtil.valueListener {
+    FirebaseDatabaseUtil.ValueListenerString {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabaseUtil: FirebaseDatabaseUtil
@@ -57,34 +58,45 @@ class SignInUpActivity :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
+            showProgressDialog()
             loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
         } else {
+
             loginFacebookUtil.signInActivityResult(requestCode, resultCode, data)
         }
     }
 
     /*LOGREG*/
     override fun uiSignInSuccess(user: User) {
-        showProgressDialog()
+        dismissProgressDialog()
+        User.getUser(mDatabaseUtil.rootRef, user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
+            override fun onSuccess(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    val user1 = dataSnapshot.getValue(User::class.java)
+                    signInUpControl(false, false, user1!!)
+                } else {
+                    signInUpControl(false, true, user)
+                }
+            }
 
-        val mUser = User.getUser(mDatabaseUtil.rootRef, user.getuId(), true)
-        if (mUser != null) {
-            mUser.lastLogin = DateTimeUtil.getCurrentDate().toString()
-            User.setUser(mDatabaseUtil.rootRef, this, mUser, this)
-        } else {
-            showSnackbar(getString(R.string.message_database_save_failed))
-        }
+            override fun onFailure(message: String?) {
+                showSnackbar(message)
+            }
+        })
     }
 
     override fun uiSignInFailed(errorMessage: String?) {
+        dismissProgressDialog()
         showSnackbar(errorMessage)
     }
 
     override fun uiSignOutSuccess() {
+        dismissProgressDialog()
         showSnackbar(getString(R.string.message_signout_success))
     }
 
     override fun uiConnectionError(messageError: String?, typeError: String?) {
+        dismissProgressDialog()
         showSnackbar("$typeError, $messageError")
     }
 
@@ -107,24 +119,28 @@ class SignInUpActivity :
 
     /**/
     override fun uiSignUpSuccess(user: User) {
-        showProgressDialog()
-
+        dismissProgressDialog()
         etSignUpName.setText("")
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        if (User.isUserDataExist(mDatabaseUtil.rootRef, user)) {
-            dismissProgressDialog()
-            showSnackbar(getString(R.string.message_database_data_exist))
-        } else {
-            user.name = name
-            user.firstLogin = DateTimeUtil.getCurrentDate().toString()
-            user.lastLogin = DateTimeUtil.getCurrentDate().toString()
-            User.setUser(mDatabaseUtil.rootRef, this, user, this)
-        }
+        User.isUserDataExist(mDatabaseUtil.rootRef, user, object : FirebaseDatabaseUtil.ValueListenerData {
+            override fun onSuccess(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    showSnackbar(getString(R.string.message_database_data_exist))
+                } else {
+                    signInUpControl(true, true, user)
+                }
+            }
+
+            override fun onFailure(message: String?) {
+                showSnackbar(message)
+            }
+        })
     }
 
     override fun uiSignUpFailed(errorMessage: String?) {
+        dismissProgressDialog()
         showSnackbar(errorMessage)
     }
 
@@ -145,7 +161,6 @@ class SignInUpActivity :
     /*DATABASE_FIREBASE*/
     override fun onSuccess(message: String) {
         dismissProgressDialog()
-
         if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser)) {
             showSnackbar(message)
             moveToNext()
@@ -211,7 +226,7 @@ class SignInUpActivity :
     }
 
     fun signInByGoogle() {
-        loginGoogleUtil.signIn(mAuth)
+        loginGoogleUtil.signIn()
     }
 
     fun signInByFacebook() {
@@ -219,16 +234,26 @@ class SignInUpActivity :
     }
 
     fun signInEmailPass(email: String, password: String) {
+        showProgressDialog()
         loginEmailPasswordUtil.signIn(email, password)
     }
 
     fun signUpEmailPass(name: String, email: String, password: String) {
+        showProgressDialog()
         this.name = name
         loginEmailPasswordUtil.createAccount(email, password)
     }
 
     fun signUpEmailSendVerify() {
         loginEmailPasswordUtil.sendEmailVerification()
+    }
+
+    fun signInUpControl(isSignUp: Boolean, isFirst: Boolean, user: User) {
+        showProgressDialog()
+        if (isSignUp) user.name = name
+        if (isFirst) user.firstLogin = DateTimeUtil.getCurrentDate().toString()
+        user.lastLogin = DateTimeUtil.getCurrentDate().toString()
+        User.setUser(mDatabaseUtil.rootRef, this, user, this)
     }
 
 }
