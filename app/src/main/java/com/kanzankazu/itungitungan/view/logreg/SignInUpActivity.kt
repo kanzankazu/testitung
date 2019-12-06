@@ -21,7 +21,7 @@ import com.kanzankazu.itungitungan.util.Firebase.*
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginGoogleUtil.RC_SIGN_IN
 import com.kanzankazu.itungitungan.util.FragmentUtil
 import com.kanzankazu.itungitungan.view.base.BaseActivity
-import com.kanzankazu.itungitungan.view.sample.SampleCrudMainActivity
+import com.kanzankazu.itungitungan.view.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_signup.*
 
 
@@ -69,15 +69,16 @@ class SignInUpActivity :
     }
 
     /*LOGREG*/
-    override fun uiSignInSuccess(user: User) {
+    override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
         dismissProgressDialog()
+        val user = User(firebaseUser)
         User.getUser(mDatabaseUtil.rootRef, user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val user1 = dataSnapshot.getValue(User::class.java) as User
-                    signInUpControl(false, false, user1)
+                    signInUpControl(isSignUp = false, isFirst = false, user = user1)
                 } else {
-                    signInUpControl(false, true, user)
+                    signInUpControl(isSignUp = false, isFirst = true, user = user)
                 }
             }
 
@@ -98,7 +99,7 @@ class SignInUpActivity :
     }
 
     override fun uiSignOutFailed(message: String) {
-
+        dismissProgressDialog()
     }
 
     override fun uiConnectionError(messageError: String?, typeError: String?) {
@@ -135,7 +136,7 @@ class SignInUpActivity :
                 if (dataSnapshot.exists()) {
                     showSnackbar(getString(R.string.message_database_data_exist))
                 } else {
-                    signInUpControl(true, true, user)
+                    signInUpControl(isSignUp = true, isFirst = true, user = user)
                 }
             }
 
@@ -180,7 +181,7 @@ class SignInUpActivity :
         showSnackbar(message)
     }
 
-    private fun initContent() {
+    fun initContent() {
         mAuth = FirebaseAuth.getInstance()
         mDatabaseUtil = FirebaseDatabaseUtil()
         loginUtil = FirebaseLoginUtil(this, this)
@@ -227,7 +228,7 @@ class SignInUpActivity :
     }
 
     fun moveToNext() {
-        startActivity(Intent(this, SampleCrudMainActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 
@@ -250,20 +251,31 @@ class SignInUpActivity :
         loginEmailPasswordUtil.createAccount(email, password)
     }
 
-    fun signUpEmailSendVerify() {
+    private fun signUpEmailSendVerify() {
         loginEmailPasswordUtil.sendEmailVerification()
     }
 
     fun signInUpControl(isSignUp: Boolean, isFirst: Boolean, user: User) {
         showProgressDialog()
+
         if (!UserPreference.getInstance().fcmToken.isNullOrEmpty()) {
             user.tokenFcm = UserPreference.getInstance().fcmToken
-        }else{
+        } else {
             user.tokenFcm = FirebaseInstanceId.getInstance().token
             UserPreference.getInstance().fcmToken = user.tokenFcm
         }
-        if (isSignUp) user.name = name
-        if (isFirst) user.firstSignIn = DateTimeUtil.getCurrentDate().toString()
+
+        if (isSignUp) {
+            user.name = name
+            user.signIn = false
+        } else {
+            user.signIn = true
+        }
+
+        if (isFirst) {
+            user.firstSignIn = DateTimeUtil.getCurrentDate().toString()
+        }
+
         user.lastSignIn = DateTimeUtil.getCurrentDate().toString()
         User.setUser(mDatabaseUtil.rootRef, this, user, this)
     }

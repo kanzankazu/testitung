@@ -20,4 +20,6 @@ public interface BaseView {
     void showSnackbar(String message, int snackbarLenght);
 
     void showSnackbar(String message, View.OnClickListener listener);
+
+    void showSnackbarNoConnection();
 }

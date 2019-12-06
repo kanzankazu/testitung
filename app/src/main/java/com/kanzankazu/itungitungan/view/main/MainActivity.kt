@@ -1,13 +1,15 @@
 package com.kanzankazu.itungitungan.view.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.FragmentUtil
+import com.kanzankazu.itungitungan.view.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var fragmentUtil: FragmentUtil
     private lateinit var arrayOfMenuId: IntArray
@@ -19,6 +21,12 @@ class MainActivity : AppCompatActivity() {
 
         initContent()
         initListener()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d("Lihat", "onActivityResult MainActivity1 $requestCode , $resultCode")
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("Lihat", "onActivityResult MainActivity2 $requestCode , $resultCode")
     }
 
     private fun initContent() {

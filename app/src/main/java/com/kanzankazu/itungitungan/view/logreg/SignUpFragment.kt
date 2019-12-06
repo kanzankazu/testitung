@@ -123,7 +123,7 @@ class SignUpFragment : BaseFragment(),
         etSignUpName.addTextChangedListener(this)
         etSignUpEmail.addTextChangedListener(this)
         etSignUpPassword.addTextChangedListener(this)
-        etSignUpPassword.setOnEditorActionListener { v, actionId, event ->
+        etSignUpPassword.setOnEditorActionListener { _, actionId, _ ->
             val handled = false
             if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE) {
                 submitManualLogin()

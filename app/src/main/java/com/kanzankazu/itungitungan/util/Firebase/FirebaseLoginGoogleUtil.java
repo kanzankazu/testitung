@@ -143,7 +143,7 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
                     .addOnCompleteListener(mActivity, task -> {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            mListener.uiSignInSuccess(new User(firebaseUser));
+                            mListener.uiSignInSuccess(firebaseUser);
                         } else {
                             mListener.uiSignInFailed(task.getException().getMessage());
                         }

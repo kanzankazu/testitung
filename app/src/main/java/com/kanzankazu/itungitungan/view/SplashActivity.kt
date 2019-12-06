@@ -1,18 +1,23 @@
 package com.kanzankazu.itungitungan.view
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.iid.FirebaseInstanceId
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
+import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.logreg.SignInUpActivity
+import com.kanzankazu.itungitungan.view.sample.SampleCrudMainActivity
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity :
+    BaseActivity(),
+    FirebaseLoginUtil.FirebaseLoginListener {
 
-    @SuppressLint("WrongThread")
+    private lateinit var loginUtil: FirebaseLoginUtil
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -23,8 +28,31 @@ class SplashActivity : AppCompatActivity() {
         UserPreference.getInstance().fcmToken = FirebaseInstanceId.getInstance().token
     }
 
+    override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
+
+    }
+
+    override fun uiSignInFailed(errorMessage: String?) {
+    }
+
+    override fun uiSignOutSuccess() {
+    }
+
+    override fun uiSignOutFailed(message: String?) {
+    }
+
+    override fun uiConnectionError(messageError: String?, typeError: String?) {
+    }
+
     private fun initContent() {
-        startActivity(Intent(this, SignInUpActivity::class.java))
-        finish()
+        loginUtil = FirebaseLoginUtil(this, this)
+
+        if (loginUtil.isSignIn) {
+            startActivity(Intent(this, SignInUpActivity::class.java))
+            finish()
+        } else {
+            startActivity(Intent(this, SampleCrudMainActivity::class.java))
+            finish()
+        }
     }
 }

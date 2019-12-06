@@ -26,6 +26,7 @@
     <string name="message_signin_success">Masuk Berhasil</string>
     <string name="message_signin_failed">Masuk Gagal</string>
     <string name="message_signout_success">Keluar berhasil</string>
+    <string name="message_signout_failed">Keluar gagal</string>
     <string name="message_revoke_success">Batal Berhasil</string>
     <string name="message_no_internet_network">Tidak ada jaringan internet</string>
     <string name="message_database_save_success">data berhasil disimpan</string>
@@ -38,5 +39,21 @@
     <string name="message_email_sent_failed">Email verifikasi gagal terkirim</string>
     <string name="message_email_verified_not">Anda belum konfirmasi email dari kami</string>
     <string name="message_welcome">Selamat datang %s di Itung-itungan</string>
+
+    <!--Profile-->
+    <string name="sign_in">Masuk</string>
+    <string name="sign_up">Daftar</string>
+    <string name="sign_out">Keluar</string>
+    <string name="save">Simpan</string>
+    <string name="account">Akun</string>
+    <string name="share_friend_family">Bagikan ke teman dan keluarga</string>
+    <string name="help">Bantuan</string>
+    <string name="profile">Profil</string>
+    <string name="inbox">Pesan</string>
+    <string name="dashboard">Dasbor</string>
+    <string name="idea">Beri masukan ide</string>
+    <string name="donate">Donasi</string>
+    <string name="give_star">Beri Bintang</string>
+    <string name="about">Tentang Aplikasi</string>
 
 </resources>

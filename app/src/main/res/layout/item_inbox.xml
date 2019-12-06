@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -13,6 +14,7 @@
         android:background="@drawable/round">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_item_inbox_photo"
             android:layout_width="@dimen/padding_margin_40dp"
             android:layout_height="@dimen/padding_margin_50dp"
             android:layout_gravity="center"
@@ -38,32 +40,38 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
                 android:animateLayoutChanges="true"
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tv_item_inbox_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/padding_margin_10dp"
                     android:fontFamily="@font/avenir_next_ltpro_demi"
-                    android:text="TextView" />
+                    android:textStyle="bold"
+                    tools:text="@tools:sample/first_names" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/avenir_next_ltpro_demi"
-                    android:text="TextView"
-                    android:textColor="@color/gray_light" />
+                    android:text="1 min"
+                    android:textColor="@color/gray_light"
+                    android:visibility="invisible" />
 
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_item_inbox_isi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="@font/avenir_next_ltpro_demi"
                 android:singleLine="true"
-                android:text="TextView" />
+                android:text=""
+                tools:text="@tools:sample/lorem/random" />
 
         </LinearLayout>
 
@@ -75,16 +83,22 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_item_inbox_time"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
                 android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:text="TextView" />
+                android:gravity="center_horizontal"
+                android:text="6 m" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_item_inbox_new"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:text="TextView" />
+                android:gravity="right"
+                android:text="1"
+                android:textColor="@color/red" />
 
         </LinearLayout>
     </LinearLayout>

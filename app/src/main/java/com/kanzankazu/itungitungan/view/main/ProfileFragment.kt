@@ -1,17 +1,35 @@
 package com.kanzankazu.itungitungan.view.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.UserPreference
+import com.kanzankazu.itungitungan.model.User
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
+import com.kanzankazu.itungitungan.util.PictureUtil
+import com.kanzankazu.itungitungan.view.base.BaseFragment
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 /**
  * Created by Faisal Bahri on 2019-11-05.
  */
-class ProfileFragment : Fragment() {
+class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
 
+    private lateinit var loginUtil: FirebaseLoginUtil
+    private lateinit var mPresenter: ProfileFragmentPresenter
+    private lateinit var profileListAdapter: ProfileListAdapter
+    private var uid: String? = ""
     private var mParam1: String? = null
     private var mParam2: String? = null
 
@@ -19,14 +37,14 @@ class ProfileFragment : Fragment() {
         private const val ARG_PARAM1 = "param1"
         private const val ARG_PARAM2 = "param2"
 
-        fun newInstance(param1: String, param2: String): ProfileFragment {
+        /*fun newInstance(param1: String, param2: String): ProfileFragment {
             val fragment = ProfileFragment()
             val args = Bundle()
             args.putString(ARG_PARAM1, param1)
             args.putString(ARG_PARAM2, param2)
             fragment.arguments = args
             return fragment
-        }
+        }*/
 
         fun newInstance(): Fragment {
             return ProfileFragment()
@@ -48,14 +66,57 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initComponent()
         initParam()
         initSession()
         initContent()
         initListener()
     }
 
-    private fun initComponent() {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d("Lihat", "onActivityResult ProfileFragment1 $requestCode , $resultCode")
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("Lihat", "onActivityResult ProfileFragment2 $requestCode , $resultCode")
+    }
+
+    override fun setProfileOptionList() {
+        val profileModels = arrayListOf<ProfileModel>()
+        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.account), true))
+        profileModels.add(ProfileModel(R.drawable.ic_back_black, mActivity.getString(R.string.share_friend_family), true))
+        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.idea), true))
+        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.help), true))
+        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.donate), false))
+        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.give_star), false))
+        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.about), false))
+        profileListAdapter.setData(profileModels)
+    }
+
+    override fun itemClickOn(position: Int) {
+        when (position) {
+            0 -> {
+                showSnackbar("0")
+            }
+            1 -> {
+                showSnackbar("1")
+            }
+            2 -> {
+                showSnackbar("2")
+            }
+            3 -> {
+                showSnackbar("3")
+            }
+            4 -> {
+                showSnackbar("4")
+            }
+            5 -> {
+                showSnackbar("5")
+            }
+            6 -> {
+                showSnackbar("6")
+            }
+        }
+    }
+
+    override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
 
     }
 
@@ -64,14 +125,47 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initSession() {
-
+        uid = UserPreference.getInstance().uid
     }
 
     private fun initContent() {
+        loginUtil = FirebaseLoginUtil(mActivity, this)
+        mPresenter = ProfileFragmentPresenter(mActivity, this)
 
+        profileListAdapter = ProfileListAdapter(mActivity, this)
+        rv_profile_settings.setRecycledViewPool(RecyclerView.RecycledViewPool())
+        rv_profile_settings.layoutManager = LinearLayoutManager(mActivity)
+        rv_profile_settings.adapter = profileListAdapter
+
+        setProfileData()
+        setProfileOptionList()
     }
 
     private fun initListener() {
+        iv_profile_settings.setOnClickListener { }
+        civ_profile_photo.setOnClickListener { }
+        civ_profile_photo_edit.setOnClickListener { PictureUtil.setupChooseImageDialog(mActivity) }
+        cv_profile_signout.setOnClickListener {
+            showProgressDialog()
+            loginUtil.signOut(databaseUtil)
+        }
+    }
 
+    private fun setProfileData() {
+        User.getUser(databaseUtil.rootRef, uid, true, object : FirebaseDatabaseUtil.ValueListenerData {
+            override fun onSuccess(dataSnapshot: DataSnapshot) {
+                val user = dataSnapshot.getValue(User::class.java)!!
+                tv_profile_name.text = UserPreference.getInstance().name
+                tv_profile_email.text = UserPreference.getInstance().email
+
+                if (!user.photoUrl.isNullOrEmpty()) {
+                    Glide.with(mActivity).load(user.photoUrl).into(civ_profile_photo)
+                }
+            }
+
+            override fun onFailure(message: String) {
+                showSnackbar(message)
+            }
+        })
     }
 }

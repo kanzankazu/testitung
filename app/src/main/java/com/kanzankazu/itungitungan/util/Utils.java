@@ -51,8 +51,8 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.kanzankazu.itungitungan.BuildConfig;
 import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.view.logreg.SignInUpActivity;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseAnalyticsUtil;
+import com.kanzankazu.itungitungan.view.logreg.SignInUpActivity;
 import com.kanzankazu.itungitungan.view_interface.SnackBarOnClick;
 
 import java.io.File;
@@ -182,6 +182,18 @@ public class Utils {
         toolbar.setNavigationOnClickListener(view -> mActivity.onBackPressed());
     }
 
+    public static void intentTo(Activity mActivity, Class<?> classDestination, Boolean isFinish) {
+        if (isFinish) {
+            if (mActivity != null) {
+                Intent intent = new Intent(mActivity, classDestination);
+                overridePendingTransition(mActivity);
+                mActivity.startActivity(intent);
+            }
+        } else {
+            intentWithClearTask(mActivity, classDestination);
+        }
+    }
+
     public static void intentWithClearTask(Activity mActivity, Class<?> classDestination) {
         if (mActivity != null) {
             Intent intent = new Intent(mActivity, classDestination);
@@ -204,10 +216,6 @@ public class Utils {
     public static void overridePendingTransition(Activity mActivity) {
         mActivity.overridePendingTransition(0, 0);
     }
-
-    public static final ButterKnife.Action<View> DISABLE = (view, index) -> view.setEnabled(false);
-
-    public static final ButterKnife.Action<View> ENABLE = (view, index) -> view.setEnabled(true);
 
     public static void showSnackBar(View view, String message) {
 

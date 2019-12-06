@@ -9,11 +9,11 @@ import static android.content.Context.CONNECTIVITY_SERVICE;
 /**
  * Created by Faisal Bahri on 2019-11-15.
  */
-public class FirebaseConnectionUtil {
-    public FirebaseConnectionUtil() {
+class FirebaseConnectionUtil {
+    FirebaseConnectionUtil() {
     }
 
-    public boolean isConnected(Context context, FirebaseConnectionListener listener) {
+    boolean isConnected(Context context, FirebaseConnectionListener listener) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
         if (info != null && info.isConnected()) {
@@ -24,7 +24,7 @@ public class FirebaseConnectionUtil {
         }
     }
 
-    public String checkException(int statusCode) {
+    String checkException(int statusCode) {
         switch (statusCode) {
             /*The operation was successful, but was used the device's cache. If this is a write, the data will be written when the device is online; errors will be written to the logs. If this is a read, the data was read from a device cache and may be stale.*/
             case -1:

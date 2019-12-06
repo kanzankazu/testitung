@@ -3,6 +3,7 @@ package com.kanzankazu.itungitungan.util.android;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,34 +21,41 @@ public class AndroidPermissionUtil {
     }; Example */
 
     private static final int RP_ACCESS = 123;
+    private final String[] permissions;
     private Activity activity;
 
     public AndroidPermissionUtil(Activity activity, String... permissions) {
         this.activity = activity;
+        this.permissions = permissions;
         checkPermission(permissions);
     }
 
-    private void checkPermission(String[] permissions) {
-        ArrayList<String> listStat = new ArrayList<>();
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED) {
-                listStat.add("1");
-            } else {
-                listStat.add("0");
+    public boolean checkPermission(String[] permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ArrayList<String> listStat = new ArrayList<>();
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED) {
+                    listStat.add("1");
+                } else {
+                    listStat.add("0");
+                }
+            }
+
+            int frequency0 = Collections.frequency(listStat, "0");
+            int frequency1 = Collections.frequency(listStat, "1");
+
+            if (frequency1 != permissions.length) {
+                ActivityCompat.requestPermissions(activity, permissions, RP_ACCESS);
+                return false;
             }
         }
-
-        int frequency0 = Collections.frequency(listStat, "0");
-        int frequency1 = Collections.frequency(listStat, "1");
-
-        if (frequency1 != permissions.length) {
-            ActivityCompat.requestPermissions(activity, permissions, RP_ACCESS);
-        }
+        return true;
     }
 
     /**
      * call when onRequestPermissionsResult
-     *  @param requestCode
+     *
+     * @param requestCode
      * @param permissions
      * @param grantResults
      */
@@ -99,5 +107,9 @@ public class AndroidPermissionUtil {
             }
         }
         return false;
+    }
+
+    public String[] getCurrentpermission(){
+        return permissions;
     }
 }

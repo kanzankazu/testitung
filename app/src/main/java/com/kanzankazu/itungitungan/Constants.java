@@ -12,6 +12,7 @@ public class Constants {
     public static final String FACEBOOK_PAGE_ID = "158637887922970";
     public static final String FACEBOOK_NEW_VERSION_BASE_URL = "fb://facewebmodal/f?href=";
     public static final String FACEBOOK_OLD_VERSION_BASE_URL = "fb://page/";
+    public static final long FETCH_FIREBASE = 3600;
 
     public interface SharedPreference {
         String EMAIL = "EMAIL";

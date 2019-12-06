@@ -10,12 +10,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil;
 import com.kanzankazu.itungitungan.util.Utils;
 import com.kanzankazu.itungitungan.util.dialog.ProgressDialogConnection;
+import com.kanzankazu.itungitungan.view.SplashActivity;
 
-public class BaseFragment extends Fragment implements BaseView {
-    public AppCompatActivity mActivity;
+public class BaseFragment extends Fragment implements BaseView, FirebaseLoginUtil.FirebaseLoginListener {
     ProgressDialogConnection progressDialogConnection = new ProgressDialogConnection();
+    public AppCompatActivity mActivity;
+
+    public FirebaseDatabaseUtil databaseUtil;
+    public FirebaseUser firebaseUser;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +50,8 @@ public class BaseFragment extends Fragment implements BaseView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        databaseUtil = new FirebaseDatabaseUtil();
     }
 
     @Override
@@ -90,4 +100,41 @@ public class BaseFragment extends Fragment implements BaseView {
         Utils.showSnackBar(mActivity, message, listener);
     }
 
+    @Override
+    public void showSnackbarNoConnection() {
+
+    }
+
+    /*FLU*/
+    @Override
+    public void uiSignInSuccess(FirebaseUser firebaseUser) {
+        dismissProgressDialog();
+        showSnackbar(getString(R.string.message_signout_success));
+        this.firebaseUser = firebaseUser;
+    }
+
+    @Override
+    public void uiSignInFailed(String errorMessage) {
+        dismissProgressDialog();
+        showSnackbar(errorMessage);
+    }
+
+    @Override
+    public void uiSignOutSuccess() {
+        dismissProgressDialog();
+        showSnackbar(getString(R.string.message_signout_success));
+        Utils.intentWithClearTask(mActivity, SplashActivity.class);
+    }
+
+    @Override
+    public void uiSignOutFailed(String message) {
+        dismissProgressDialog();
+        showSnackbar(message);
+    }
+
+    @Override
+    public void uiConnectionError(String messageError, String typeError) {
+        dismissProgressDialog();
+        showSnackbar(messageError + " , " + typeError);
+    }
 }

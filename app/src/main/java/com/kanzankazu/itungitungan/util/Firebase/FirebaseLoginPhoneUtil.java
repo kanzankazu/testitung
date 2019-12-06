@@ -279,7 +279,7 @@ public class FirebaseLoginPhoneUtil {
             //mStatusText.setText(R.string.signed_in);
             //mDetailText.setText(getString(R.string.firebase_status_fmt, USER.getUid()));
 
-            mListener.uiSignInSuccess(new User(firebaseUser));
+            mListener.uiSignInSuccess(firebaseUser);
 
         } else {
             // Signed out

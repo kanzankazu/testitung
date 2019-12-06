@@ -1,30 +1,41 @@
 package com.kanzankazu.itungitungan.view.base;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.UserPreference;
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
 import com.kanzankazu.itungitungan.util.NetworkUtil;
 import com.kanzankazu.itungitungan.util.SystemUtil;
 import com.kanzankazu.itungitungan.util.Utils;
 import com.kanzankazu.itungitungan.util.dialog.ProgressDialogConnection;
 import com.kanzankazu.itungitungan.view.main.MainActivity;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class BaseActivity extends AppCompatActivity implements BaseView {
 
     ProgressDialogConnection progressDialogConnection;
+    private Snackbar snackConnect;
+
+    public FirebaseDatabaseUtil databaseUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        databaseUtil = new FirebaseDatabaseUtil();
 
         progressDialogConnection = new ProgressDialogConnection();
     }
@@ -45,7 +56,7 @@ public class BaseActivity extends AppCompatActivity implements BaseView {
     }
 
     public void showRetryDialog(Utils.DialogButtonListener listener) {
-        Utils.showRetryDialog(BaseActivity.this, listener);
+        Utils.showRetryDialog(this, listener);
     }
 
     @Override
@@ -60,59 +71,70 @@ public class BaseActivity extends AppCompatActivity implements BaseView {
 
     @Override
     public void showToast(String message) {
-        Utils.showToast(BaseActivity.this, message);
+        Utils.showToast(this, message);
     }
 
     @Override
     public void showSnackbar(String message) {
-        Utils.showSnackBar(BaseActivity.this, message);
+        Utils.showSnackBar(this, message);
     }
 
     @Override
     public void showSnackbar(String message, int snackbarLeght) {
-        Utils.showSnackBar(BaseActivity.this, message, snackbarLeght);
+        Utils.showSnackBar(this, message, snackbarLeght);
     }
 
     @Override
     public void showSnackbar(String message, View.OnClickListener listener) {
-        Utils.showSnackBar(BaseActivity.this, message, listener);
+        Utils.showSnackBar(this, message, listener);
     }
 
-    public void checkNoInternet(Utils.IntroductionButtonListener listener) {
-        boolean b = new Handler().postAtTime(() -> {
-            if (NetworkUtil.isConnected(BaseActivity.this)) {
-                listener.onFirstButtonClick();
-            } else {
-                listener.onSecondButtonClick();
-            }
-        }, 1000);
+    @Override
+    public void showSnackbarNoConnection() {
+        snackConnect = Snackbar.make(findViewById(android.R.id.content), getString(R.string.message_no_internet_network), Snackbar.LENGTH_INDEFINITE);
+
+        View view = snackConnect.getView();
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+
+        /*// calculate actionbar height
+        TypedValue tv = new TypedValue();
+        int actionBarHeight = 0;
+        if (getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+
+        // set margin
+        params.setMargins(0, actionBarHeight, 0, 0);*/
+
+        view.setLayoutParams(params);
+    }
+
+    private void showSnackbarNoConnectionToggle(Boolean isShow) {
+        if (isShow) {
+            snackConnect.show();
+        } else {
+            snackConnect.dismiss();
+        }
+    }
+
+    public void isConnectInet() {
+
     }
 
     public void hideKeyboard() {
         Utils.closeSoftKeyboard(this);
     }
 
-    public void goneView(@Nullable View... views) {
+    public void visibleView(Boolean isVisible, View... views) {
         for (View view : views) {
-            view.setVisibility(View.GONE);
+            view.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         }
     }
 
-    public void visibleView(View... views) {
+    public void enableView(Boolean isEnable, View... views) {
         for (View view : views) {
-            view.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void enableView(View... views) {
-        for (View view : views) {
-            view.setEnabled(true);
-        }
-    }
-
-    public void disableView(View... views) {
-        for (View view : views) {
-            view.setEnabled(false);
+            view.setEnabled(isEnable);
         }
     }
 

@@ -36,7 +36,7 @@ public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil implements
                 .addOnCompleteListener(mActivity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        mListener.uiSignInSuccess(new User(firebaseUser));
+                        mListener.uiSignInSuccess(firebaseUser);
                     } else {
                         mListener.uiSignInFailed(task.getException().getMessage());
                     }

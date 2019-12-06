@@ -23,7 +23,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.kanzankazu.itungitungan.BuildConfig;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.UserPreference;
 import com.kanzankazu.itungitungan.model.User;
@@ -48,9 +47,14 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
     }
 
     public boolean isSignIn() {
-        // Check if USER is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        return currentUser != null;
+        if (currentUser != null && currentUser.isEmailVerified()) {
+            return true;
+        } else if (currentUser != null && !currentUser.isEmailVerified()) {
+            return false;
+        } else {
+            return false;
+        }
     }
 
     public FirebaseUser getUserProfile() {
@@ -387,7 +391,7 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
 
     public interface FirebaseLoginListener {
 
-        void uiSignInSuccess(User user);
+        void uiSignInSuccess(FirebaseUser firebaseUser);
 
         void uiSignInFailed(String errorMessage);
 

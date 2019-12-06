@@ -179,4 +179,10 @@ public class FirebaseDatabaseUtil {
 
         void onFailure(String message);
     }
+
+    public interface ValueListenerDatas {
+        void onSuccess(Iterable<DataSnapshot> objects);
+
+        void onFailure(String message);
+    }
 }

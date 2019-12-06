@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil.*
+import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_signin.*
 

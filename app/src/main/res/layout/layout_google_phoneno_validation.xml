@@ -104,7 +104,7 @@
         android:padding="10dp"
         android:text="RE-SEND VERIFICATION CODE"
         android:textAllCaps="true"
-        android:textColor="@color/blue"
+        android:textColor="@color/gray_light"
         android:textStyle="" />
 
     <LinearLayout
