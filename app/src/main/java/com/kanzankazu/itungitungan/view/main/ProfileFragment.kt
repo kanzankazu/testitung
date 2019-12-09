@@ -92,7 +92,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         profileListAdapter.setData(profileModels)
     }
 
-    override fun itemClickOn(position: Int) {
+    override fun itemAdapterClick(position: Int) {
         when (position) {
             0 -> {
                 Utils.intentTo(mActivity, AccountActivity::class.java, false)
@@ -131,7 +131,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         mPresenter = ProfileFragmentPresenter(mActivity, this)
 
         profileListAdapter = ProfileListAdapter(mActivity, this)
-        rv_profile_settings.setRecycledViewPool(RecyclerView.RecycledViewPool())
+        //rv_profile_settings.setRecycledViewPool(RecyclerView.RecycledViewPool())
         rv_profile_settings.layoutManager = LinearLayoutManager(mActivity)
         rv_profile_settings.adapter = profileListAdapter
 
@@ -155,20 +155,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     }
 
     private fun setProfileData() {
-        User.getUser(databaseUtil.rootRef, uid, true, object : FirebaseDatabaseUtil.ValueListenerData {
-            override fun onSuccess(dataSnapshot: DataSnapshot) {
-                val user = dataSnapshot.getValue(User::class.java)!!
-                tv_profile_name.text = UserPreference.getInstance().name
-                tv_profile_email.text = UserPreference.getInstance().email
-
-                if (!user.photoUrl.isNullOrEmpty()) {
-                    Glide.with(mActivity).load(user.photoUrl).into(civ_profile_photo)
-                }
-            }
-
-            override fun onFailure(message: String) {
-                showSnackbar(message)
-            }
-        })
+        tv_profile_name.setText(UserPreference.getInstance().name)
+        tv_profile_email.setText(UserPreference.getInstance().email)
     }
 }

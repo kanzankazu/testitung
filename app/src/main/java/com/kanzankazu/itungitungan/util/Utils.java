@@ -10,7 +10,12 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -35,8 +40,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
-import butterknife.ButterKnife;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.kanzankazu.itungitungan.BuildConfig;
@@ -45,13 +55,20 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseAnalyticsUtil;
 import com.kanzankazu.itungitungan.view.logreg.SignInUpActivity;
 import com.kanzankazu.itungitungan.view_interface.SnackBarOnClick;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by Faisal Bahri on 2019-11-05.
@@ -167,13 +184,17 @@ public class Utils {
 
     public static void intentTo(Activity mActivity, Class<?> classDestination, Boolean isFinish) {
         if (isFinish) {
-            if (mActivity != null) {
-                Intent intent = new Intent(mActivity, classDestination);
-                overridePendingTransition(mActivity);
-                mActivity.startActivity(intent);
-            }
-        } else {
             intentWithClearTask(mActivity, classDestination);
+        } else {
+            intentTo(mActivity, classDestination);
+        }
+    }
+
+    public static void intentTo(Activity mActivity, Class<?> classDestination) {
+        if (mActivity != null) {
+            Intent intent = new Intent(mActivity, classDestination);
+            overridePendingTransition(mActivity);
+            mActivity.startActivity(intent);
         }
     }
 
@@ -359,302 +380,6 @@ public class Utils {
         }
     }
 
-    public static double roundToHalf(double d) { // Result : 2.1 -> 2, 2,2 -> 2, 2.3 -> 2.5, 2.4 -> 2.5
-        return Math.round(d * 2) / 2.0;
-    }
-
-    public static float roundToUp(float newValue) { // Result : 2.1 -> 2.5 , 2,2 -> 2.5 , 2.3 -> 2.5, 2.4 -> 2.5
-
-        if (newValue != 0.00 && newValue != 5.00) { //Validate if the input either 0.00 or 5.00 the output will still the same
-            newValue = (float) (Math.round(newValue - 0.5) + 0.5);
-        }
-
-        return newValue;
-    }
-
-    public static boolean isGpsEnabled(Activity activity) {
-        final LocationManager manager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-
-        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
-    public static void printJsonObject(String tag, Object object) {
-        Gson gson = new Gson();
-        String jsonObject = gson.toJson(object);
-        System.out.println(tag + jsonObject);
-    }
-
-    public static void openDeviceSetting(Activity activity) {
-        activity.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
-    }
-
-    public static void openLocationMode(Activity activity) {
-        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        activity.startActivity(intent);
-    }
-
-    public static void goToSumoAppSetting(Activity activity) {
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-        intent.setData(uri);
-        activity.startActivity(intent);
-    }
-
-    public static String setRupiah(String inputCredit) {
-        String sCredit = null;
-        int credit;
-        try {
-            if (inputCredit.contains(".")) {
-                sCredit = inputCredit.substring(0, inputCredit.indexOf("."));
-                credit = Integer.parseInt(sCredit);
-                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(',', '.');
-            } else {
-                credit = Integer.parseInt(inputCredit);
-                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(',', '.');
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return sCredit;
-    }
-
-    public static void showRetryDialog(Activity mActivity, final DialogButtonListener dialogButtonListener) {
-        if (!mActivity.isFinishing()) {
-            android.app.Dialog dialog = new AlertDialog.Builder(mActivity)
-                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_error_dialog, null))
-                    .setCancelable(false)
-                    .show();
-
-            ImageView ivDialog = ButterKnife.findById(dialog, R.id.image_booking_complete);
-            TextView tvDescDialog = ButterKnife.findById(dialog, R.id.tv_booking_complete);
-            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
-
-            ivDialog.setImageResource(R.drawable.ic_no_internet);
-            tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
-            tvCloseDialog.setTextColor(ContextCompat.getColor(mActivity, R.color.cyan));
-            tvCloseDialog.setText(mActivity.getResources().getString(R.string.confirm_retry));
-            tvCloseDialog.setOnClickListener(v -> {
-                dialogButtonListener.onDialogButtonClick();
-                dialog.dismiss();
-            });
-        }
-    }
-
-    public static void showConfirmationDialog(Activity mActivity, final DialogButtonListener dialogButtonListener, String dialogTitle, String dialogDescription) {
-        if (!mActivity.isFinishing()) {
-            android.app.Dialog dialog = new AlertDialog.Builder(mActivity)
-                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_confirmation_dialog, null))
-                    .show();
-
-            TextView tvConfirmationDialogTitle = ButterKnife.findById(dialog, R.id.tv_confirmation_text);
-            TextView tvConfirmationDialogDescription = ButterKnife.findById(dialog, R.id.tv_confirmation_description);
-            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
-            TextView tvCloseDialogOk = ButterKnife.findById(dialog, R.id.btn_close_dialog_OK);
-
-            tvConfirmationDialogTitle.setText(dialogTitle);
-            if (dialogDescription.isEmpty()) {
-                tvConfirmationDialogDescription.setVisibility(View.GONE);
-            } else {
-                tvConfirmationDialogDescription.setVisibility(View.VISIBLE);
-                tvConfirmationDialogDescription.setText(dialogDescription);
-            }
-            tvCloseDialog.setOnClickListener(v -> dialog.dismiss());
-            tvCloseDialogOk.setOnClickListener(view -> {
-                dialogButtonListener.onDialogButtonClick();
-                dialog.dismiss();
-            });
-        }
-    }
-
-    public static void goToSumoPlayStore(Activity mActivity) {
-        Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=" + mActivity.getPackageName());
-        Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
-        try {
-            mActivity.startActivity(myAppLinkToMarket);
-            FirebaseAnalyticsUtil.getInstance().firebaseAppRateClickedEvent();
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(mActivity, " unable to find market app", Toast.LENGTH_LONG).show();
-            FirebaseAnalyticsUtil.getInstance().firebaseAppOpenPlayStoreErrorEvent();
-        }
-    }
-
-    public static String getRootDirPath(Context context) {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            File file = ContextCompat.getExternalFilesDirs(context.getApplicationContext(),
-                    null)[0];
-            return file.getAbsolutePath();
-        } else {
-            return context.getApplicationContext().getFilesDir().getAbsolutePath();
-        }
-    }
-
-    public static String getProgressDisplayLine(Long currentBytes, Long totalBytes) {
-        return getBytesToMBString(currentBytes) + "/" + getBytesToMBString(totalBytes);
-    }
-
-    public static String getBytesToMBString(Long bytes) {
-        return String.format(Locale.ENGLISH, "%.2fMb", bytes / (1024.00 * 1024.00));
-    }
-
-    public static boolean fileExists(Context context, String fileName) {
-        File file = new File(getRootDirPath(context), fileName);
-        return (file.exists());
-    }
-
-    public static String getFileName(String url) {
-        return url.substring(url.lastIndexOf("/") + 1, url.length());
-    }
-
-    public static String getDocumentIdNumber(String documentId) {
-        String[] split = documentId.split("IMC");
-        return split[1];
-    }
-
-    public static CharSequence[] convertToCharSequenceArray(List<CharSequence> radioButtonData) {
-        return radioButtonData.toArray(new
-                CharSequence[radioButtonData.size()]);
-    }
-
-    public static String convertToKm(String km) {
-        //  ex : 12.345,6 replace all "." with "" and "," with ".", enable parsing to double
-        String sKm = km.replaceAll("\\.", "").replaceAll("\\,", ".");
-        // ex : 12500.6 parse to double -> 12.500.6 replace all "." with "," and replace first found char of "." with ","
-        return String.format("%s KM", String.valueOf(NumberFormat.getNumberInstance(Locale.UK).format(Double.parseDouble(sKm))).replace(".", ",").replaceFirst(",", "."));
-    }
-
-    public static String convertToKmWithNumberOnly(String km) {
-        //  ex : 12.345,6 replace all "." with "" and "," with ".", enable parsing to double
-        String sKm = km.replaceAll("\\.", "").replaceAll("\\,", ".");
-        // ex : 12500.6 parse to double -> 12.500.6 replace all "." with "," and replace first found char of "." with ","
-        return String.format("%s", String.valueOf(NumberFormat.getNumberInstance(Locale.UK).format(Double.parseDouble(sKm))).replace(".", ",").replaceFirst(",", "."));
-    }
-
-    public static Double convertToKmDouble(String km) {
-        String res = km.replaceAll("\\.", "").replaceAll("\\,", ".");
-        return Double.parseDouble(res);
-    }
-
-    public static void requestWriteExternalStoragePermission(Activity activity) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                Log.i("Permission", "Permission to Write External Storage Granted");
-            } else {
-                Log.i("Permission", "Permission to Write External Storage Revoked");
-                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 11);
-            }
-        } else {
-            Log.i("Permission", "Permission Write External Storage Granted");
-        }
-    }
-
-    public static void requestReadExternalStoragePermission(Activity activity) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                Log.i("Permission", "Permission to Read External Storage Granted");
-            } else {
-                Log.i("Permission", "Permission to Read External Storage Revoked");
-                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 12);
-            }
-        } else {
-            Log.i("Permission", "Permissions are granted");
-        }
-    }
-
-    public static void requestCameraPermission(Activity activity) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                Log.i("Permission", "Permission to Access Camera Granted");
-            } else {
-                Log.i("Permission", "Permission to Access Camera Revoked");
-                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, 13);
-            }
-        } else {
-            Log.i("Permission", "Permission to Access Camera Granted");
-        }
-    }
-
-    public static void compressImage(String mCurrentPhotoPath) {
-        File file = new File(Uri.parse(mCurrentPhotoPath).getPath());
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Bitmap original = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(is), 1440, 1440, true);
-
-        try {
-            ExifInterface ei = new ExifInterface(Uri.parse(mCurrentPhotoPath).getPath());
-            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_UNDEFINED);
-
-            switch (orientation) {
-
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    original = rotateImage(original, 90);
-                    break;
-
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    original = rotateImage(original, 180);
-                    break;
-
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    original = rotateImage(original, 270);
-                    break;
-
-                case ExifInterface.ORIENTATION_NORMAL:
-                default:
-                    //original = original;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            FileOutputStream stream = new FileOutputStream(file);
-            original.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-            stream.flush();
-            stream.close();
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
-    }
-
-    public static Bitmap rotateImage(Bitmap source, float angle) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-                matrix, true);
-    }
-
-    public static String getRealPathFromURIPath(Uri contentURI, Activity activity) {
-        Cursor cursor = activity.getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) {
-            return contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            return cursor.getString(idx);
-        }
-    }
-
-    public static File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        //create temp file bakal generate unique ID dibelakang (setelah timestamp_) (source:https://stackoverflow.com/questions/17150597/file-createtempfile-vs-new-file)
-        return File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-    }
-
     public static void showIntroductionDialog(Activity mActivity, final IntroductionButtonListener introductionButtonListener, String imageUrl, String title, String message, String titleButton1, String titleButton2,
                                               boolean isCancelable, int assetHardCode) {
         if (!mActivity.isFinishing()) {
@@ -733,6 +458,183 @@ public class Utils {
                 introductionButtonListener.onSecondButtonClick();
             });
         }
+    }
+
+    public static void showRetryDialog(Activity mActivity, final DialogButtonListener dialogButtonListener) {
+        if (!mActivity.isFinishing()) {
+            android.app.Dialog dialog = new AlertDialog.Builder(mActivity)
+                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_error_dialog, null))
+                    .setCancelable(false)
+                    .show();
+
+            ImageView ivDialog = ButterKnife.findById(dialog, R.id.image_booking_complete);
+            TextView tvDescDialog = ButterKnife.findById(dialog, R.id.tv_booking_complete);
+            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
+
+            ivDialog.setImageResource(R.drawable.ic_no_internet);
+            tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
+            tvCloseDialog.setTextColor(ContextCompat.getColor(mActivity, R.color.cyan));
+            tvCloseDialog.setText(mActivity.getResources().getString(R.string.confirm_retry));
+            tvCloseDialog.setOnClickListener(v -> {
+                dialogButtonListener.onDialogButtonClick();
+                dialog.dismiss();
+            });
+        }
+    }
+
+    public static void showConfirmationDialog(Activity mActivity, final DialogButtonListener dialogButtonListener, String dialogTitle, String dialogDescription) {
+        if (!mActivity.isFinishing()) {
+            android.app.Dialog dialog = new AlertDialog.Builder(mActivity)
+                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_confirmation_dialog, null))
+                    .show();
+
+            TextView tvConfirmationDialogTitle = ButterKnife.findById(dialog, R.id.tv_confirmation_text);
+            TextView tvConfirmationDialogDescription = ButterKnife.findById(dialog, R.id.tv_confirmation_description);
+            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
+            TextView tvCloseDialogOk = ButterKnife.findById(dialog, R.id.btn_close_dialog_OK);
+
+            tvConfirmationDialogTitle.setText(dialogTitle);
+            if (dialogDescription.isEmpty()) {
+                tvConfirmationDialogDescription.setVisibility(View.GONE);
+            } else {
+                tvConfirmationDialogDescription.setVisibility(View.VISIBLE);
+                tvConfirmationDialogDescription.setText(dialogDescription);
+            }
+            tvCloseDialog.setOnClickListener(v -> dialog.dismiss());
+            tvCloseDialogOk.setOnClickListener(view -> {
+                dialogButtonListener.onDialogButtonClick();
+                dialog.dismiss();
+            });
+        }
+    }
+
+    public static double roundToHalf(double d) { // Result : 2.1 -> 2, 2,2 -> 2, 2.3 -> 2.5, 2.4 -> 2.5
+        return Math.round(d * 2) / 2.0;
+    }
+
+    public static float roundToUp(float newValue) { // Result : 2.1 -> 2.5 , 2,2 -> 2.5 , 2.3 -> 2.5, 2.4 -> 2.5
+
+        if (newValue != 0.00 && newValue != 5.00) { //Validate if the input either 0.00 or 5.00 the output will still the same
+            newValue = (float) (Math.round(newValue - 0.5) + 0.5);
+        }
+
+        return newValue;
+    }
+
+    public static boolean isGpsEnabled(Activity activity) {
+        final LocationManager manager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+
+        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    public static void printJsonObject(String tag, Object object) {
+        Gson gson = new Gson();
+        String jsonObject = gson.toJson(object);
+        System.out.println(tag + jsonObject);
+    }
+
+    public static void openDeviceSetting(Activity activity) {
+        activity.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
+    }
+
+    public static void openLocationMode(Activity activity) {
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        activity.startActivity(intent);
+    }
+
+    public static void goToSumoAppSetting(Activity activity) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+        intent.setData(uri);
+        activity.startActivity(intent);
+    }
+
+    public static String setRupiah(String inputCredit) {
+        String sCredit = null;
+        int credit;
+        try {
+            if (inputCredit.contains(".")) {
+                sCredit = inputCredit.substring(0, inputCredit.indexOf("."));
+                credit = Integer.parseInt(sCredit);
+                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(',', '.');
+            } else {
+                credit = Integer.parseInt(inputCredit);
+                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(',', '.');
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return sCredit;
+    }
+
+    public static void goToSumoPlayStore(Activity mActivity) {
+        Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=" + mActivity.getPackageName());
+        Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        try {
+            mActivity.startActivity(myAppLinkToMarket);
+            FirebaseAnalyticsUtil.getInstance().firebaseAppRateClickedEvent();
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(mActivity, " unable to find market app", Toast.LENGTH_LONG).show();
+            FirebaseAnalyticsUtil.getInstance().firebaseAppOpenPlayStoreErrorEvent();
+        }
+    }
+
+    public static String getRootDirPath(Context context) {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            File file = ContextCompat.getExternalFilesDirs(context.getApplicationContext(),
+                    null)[0];
+            return file.getAbsolutePath();
+        } else {
+            return context.getApplicationContext().getFilesDir().getAbsolutePath();
+        }
+    }
+
+    public static String getProgressDisplayLine(Long currentBytes, Long totalBytes) {
+        return getBytesToMBString(currentBytes) + "/" + getBytesToMBString(totalBytes);
+    }
+
+    public static String getBytesToMBString(Long bytes) {
+        return String.format(Locale.ENGLISH, "%.2fMb", bytes / (1024.00 * 1024.00));
+    }
+
+    public static boolean fileExists(Context context, String fileName) {
+        File file = new File(getRootDirPath(context), fileName);
+        return (file.exists());
+    }
+
+    public static String getFileName(String url) {
+        return url.substring(url.lastIndexOf("/") + 1, url.length());
+    }
+
+    public static String getDocumentIdNumber(String documentId) {
+        String[] split = documentId.split("IMC");
+        return split[1];
+    }
+
+    public static CharSequence[] convertToCharSequenceArray(List<CharSequence> radioButtonData) {
+        return radioButtonData.toArray(new
+                CharSequence[radioButtonData.size()]);
+    }
+
+    public static String convertToKm(String km) {
+        //  ex : 12.345,6 replace all "." with "" and "," with ".", enable parsing to double
+        String sKm = km.replaceAll("\\.", "").replaceAll("\\,", ".");
+        // ex : 12500.6 parse to double -> 12.500.6 replace all "." with "," and replace first found char of "." with ","
+        return String.format("%s KM", String.valueOf(NumberFormat.getNumberInstance(Locale.UK).format(Double.parseDouble(sKm))).replace(".", ",").replaceFirst(",", "."));
+    }
+
+    public static String convertToKmWithNumberOnly(String km) {
+        //  ex : 12.345,6 replace all "." with "" and "," with ".", enable parsing to double
+        String sKm = km.replaceAll("\\.", "").replaceAll("\\,", ".");
+        // ex : 12500.6 parse to double -> 12.500.6 replace all "." with "," and replace first found char of "." with ","
+        return String.format("%s", String.valueOf(NumberFormat.getNumberInstance(Locale.UK).format(Double.parseDouble(sKm))).replace(".", ",").replaceFirst(",", "."));
+    }
+
+    public static Double convertToKmDouble(String km) {
+        String res = km.replaceAll("\\.", "").replaceAll("\\,", ".");
+        return Double.parseDouble(res);
     }
 
     @SuppressWarnings("deprecation")

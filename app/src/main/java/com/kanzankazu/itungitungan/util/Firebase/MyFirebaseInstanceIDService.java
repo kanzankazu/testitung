@@ -46,7 +46,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     }
 
     private void sendRegistrationToServer(String token) {
-        DatabaseReference rootRef = databaseUtil.getRootRef();
+        DatabaseReference rootRef = databaseUtil.getRootRef(false, false);
         String uid = UserPreference.getInstance().getUid();
         User.setFCMTokenUser(rootRef, uid, token, new FirebaseDatabaseUtil.ValueListenerString() {
             @Override

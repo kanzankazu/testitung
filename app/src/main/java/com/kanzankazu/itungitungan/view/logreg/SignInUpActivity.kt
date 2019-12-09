@@ -9,7 +9,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.iid.FirebaseInstanceId
@@ -70,7 +69,7 @@ class SignInUpActivity :
     override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
         dismissProgressDialog()
         val user = User(firebaseUser)
-        User.getUser(databaseUtil.rootRef, user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
+        User.getUser(databaseUtil.getRootRef(false,false), user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val user1 = dataSnapshot.getValue(User::class.java) as User
@@ -110,7 +109,7 @@ class SignInUpActivity :
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        User.isExistUser(databaseUtil.rootRef, user, object : FirebaseDatabaseUtil.ValueListenerData {
+        User.isExistUser(databaseUtil.getRootRef(false,false), user, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     showSnackbar(getString(R.string.message_database_data_exist))
@@ -253,7 +252,7 @@ class SignInUpActivity :
         }
 
         user.lastSignIn = DateTimeUtil.getCurrentDate().toString()
-        User.setUser(databaseUtil.rootRef, this, user, this)
+        User.setUser(databaseUtil.getRootRef(false,false), this, user, this)
     }
 
 }

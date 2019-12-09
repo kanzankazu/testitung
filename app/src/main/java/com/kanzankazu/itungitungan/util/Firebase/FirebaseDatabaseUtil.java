@@ -20,17 +20,25 @@ public class FirebaseDatabaseUtil {
     public FirebaseDatabaseUtil() {
     }
 
-    public DatabaseReference getRootRef() {
-        return FirebaseDatabase.getInstance().getReference();
+    public DatabaseReference getRootRef(Boolean isPersistance, Boolean isKeepSync) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        if (isPersistance)
+            firebaseDatabase.setPersistenceEnabled(isPersistance);
+
+        DatabaseReference reference = firebaseDatabase.getReference();
+        if (isKeepSync)
+            reference.keepSynced(isKeepSync);
+
+        return reference;
     }
 
     public DatabaseReference getDataPrimaryKeyParent(String parent) {
-        DatabaseReference rootRef = getRootRef();
+        DatabaseReference rootRef = getRootRef(false, false);
         return rootRef.child(parent);
     }
 
     public DatabaseReference getDataPrimaryKeyChild(String parent, String key) {
-        DatabaseReference rootRef = getRootRef();
+        DatabaseReference rootRef = getRootRef(false, false);
         return rootRef.child(parent).child(key);
     }
 
@@ -124,7 +132,7 @@ public class FirebaseDatabaseUtil {
     }
 
     public void removeValue(DatabaseReference databaseReference, ValueEventListener listener) {
-        DatabaseReference rootRef = getRootRef();
+        DatabaseReference rootRef = getRootRef(false, false);
         rootRef.removeEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -139,7 +147,7 @@ public class FirebaseDatabaseUtil {
     }
 
     public void removeValue(DatabaseReference databaseReference, ChildEventListener listener) {
-        DatabaseReference rootRef = getRootRef();
+        DatabaseReference rootRef = getRootRef(false, false);
         rootRef.removeEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

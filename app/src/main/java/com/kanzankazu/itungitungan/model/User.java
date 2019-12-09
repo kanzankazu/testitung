@@ -88,6 +88,8 @@ public class User {
                     UserPreference.getInstance().setName(user.getName());
                     UserPreference.getInstance().setLoginStatus(Constants.LogInStatus.LOGIN);
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getUid());
+                    Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getEmail());
+                    Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getName());
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getFCMToken());
                 })
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));

@@ -1,34 +1,32 @@
 package com.kanzankazu.itungitungan.view.main
 
-import android.app.Activity
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.R
-import kotlinx.android.synthetic.main.item_profile.view.*
+import kotlinx.android.synthetic.main.item_home.view.*
 
-/**
- * Created by Faisal Bahri on 2019-12-05.
- */
-class ProfileListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private lateinit var mActivity: Activity
-    private lateinit var mView: ProfileFragmentContract.View
-    private lateinit var datas: MutableList<ProfileModel>
+class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+     private lateinit var mActivity: AppCompatActivity
+     private lateinit var mView: HomeContract.View
+     private lateinit var datas: MutableList<HomeModel>
 
-    constructor(mActivity: Activity, mView: ProfileFragmentContract.View) : this() {
+    constructor(mActivity: AppCompatActivity, mView: HomeContract.View) : this() {
         this.mActivity = mActivity
         this.mView = mView
         this.datas = arrayListOf()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(mActivity).inflate(R.layout.item_profile, parent, false)
+        val view = LayoutInflater.from(mActivity).inflate(R.layout.item_home, parent, false)
         return ProfileListAdapterAdapterHolder(view)
     }
 
     override fun getItemCount(): Int {
-        val list = arrayListOf<ProfileModel>()
+        val list = arrayListOf<HomeModel>()
         for (model in datas) {
             if (model.isShow) list.add(model)
         }
@@ -43,43 +41,43 @@ class ProfileListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     inner class ProfileListAdapterAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        fun setView(model: ProfileModel) {
+        fun setView(model: HomeModel) {
             if (model.isShow) {
-                itemView.ib_item_profile_icon.setImageDrawable(mActivity.resources.getDrawable(model.icon))
-                itemView.tv_item_profile_title.text = model.title
+                Glide.with(mActivity).load(model.image).placeholder(R.drawable.ic_profile_picture).into(itemView.iv_item_home_image)
+                itemView.tv_item_home_title.text = model.title
             } else {
                 itemView.visibility = View.GONE
             }
 
         }
 
-        fun setListener(model: ProfileModel, position: Int) {
-            itemView.setOnClickListener { mView.itemAdapterClick(position) }
+        fun setListener(model: HomeModel, position: Int) {
+            itemView.setOnClickListener { mView.itemAdapterClick(model) }
         }
     }
 
-    fun setData(datas: List<ProfileModel>) {
+    fun setData(datas: List<HomeModel>) {
         if (datas.isNotEmpty()) {
             this.datas.clear()
-            this.datas = datas as ArrayList<ProfileModel>
+            this.datas = datas as ArrayList<HomeModel>
         } else {
-            this.datas = datas as ArrayList<ProfileModel>
+            this.datas = datas as ArrayList<HomeModel>
         }
         notifyDataSetChanged()
     }
 
-    fun replaceData(datas: List<ProfileModel>) {
+    fun replaceData(datas: List<HomeModel>) {
         this.datas.clear()
         this.datas.addAll(datas)
         notifyDataSetChanged()
     }
 
-    fun addDatas(datas: List<ProfileModel>) {
+    fun addDatas(datas: List<HomeModel>) {
         this.datas.addAll(datas)
         notifyItemRangeInserted(this.datas.size, datas.size)
     }
 
-    fun addDataFirst(data: ProfileModel) {
+    fun addDataFirst(data: HomeModel) {
         val position = 0
         this.datas.add(position, data)
         notifyItemInserted(position)
@@ -98,12 +96,12 @@ class ProfileListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemRangeChanged(position, this.datas.size)
     }
 
-    fun restoreData(data: ProfileModel, position: Int) {
+    fun restoreData(data: HomeModel, position: Int) {
         this.datas.add(position, data)
         notifyItemInserted(position)
     }
 
-    fun updateSingleData(data: ProfileModel, position: Int) {
+    fun updateSingleData(data: HomeModel, position: Int) {
         this.datas.set(position, data)
         notifyDataSetChanged()
     }

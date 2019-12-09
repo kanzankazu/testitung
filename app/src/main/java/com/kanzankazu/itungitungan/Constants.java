@@ -59,4 +59,12 @@ public class Constants {
             String UID = "uid";
         }
     }
+
+    public interface HOME {
+        String Anggaran = "Anggaran";
+        String Banding = "Banding harga";
+        String Keuangan = "Keuangan";
+        String Hutang = "Hutang";
+        String Stok  = "Stok Barang";
+    }
 }
