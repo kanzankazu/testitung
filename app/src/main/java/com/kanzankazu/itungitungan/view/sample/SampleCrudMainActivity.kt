@@ -12,14 +12,9 @@ import kotlinx.android.synthetic.main.activity_sample_crud_main.*
 
 class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginListener {
 
-    private lateinit var loginUtil: FirebaseLoginUtil
-    private var firebaseUser: FirebaseUser? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample_crud_main)
-
-        loginUtil = FirebaseLoginUtil(this, this)
 
         initContent()
         initListener()
@@ -46,27 +41,6 @@ class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginLi
 
     override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
         dismissProgressDialog()
-    }
-
-    override fun uiSignInFailed(errorMessage: String?) {
-        dismissProgressDialog()
-        showSnackbar(errorMessage)
-    }
-
-    override fun uiSignOutSuccess() {
-        dismissProgressDialog()
-        showSnackbar(getString(R.string.message_signout_success))
-        moveToLogin()
-    }
-
-    override fun uiSignOutFailed(message: String?) {
-        dismissProgressDialog()
-        showSnackbar(message)
-    }
-
-    override fun uiConnectionError(messageError: String?, typeError: String?) {
-        dismissProgressDialog()
-        showSnackbar("$messageError , $typeError")
     }
 
     private fun moveToLogin() {

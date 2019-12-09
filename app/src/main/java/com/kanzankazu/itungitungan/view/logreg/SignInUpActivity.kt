@@ -36,8 +36,6 @@ class SignInUpActivity :
     FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
     FirebaseDatabaseUtil.ValueListenerString {
 
-    private lateinit var mAuth: FirebaseAuth
-    private lateinit var mDatabaseUtil: FirebaseDatabaseUtil
     private lateinit var loginUtil: FirebaseLoginUtil
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var loginFacebookUtil: FirebaseLoginFacebookUtil
@@ -72,7 +70,7 @@ class SignInUpActivity :
     override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
         dismissProgressDialog()
         val user = User(firebaseUser)
-        User.getUser(mDatabaseUtil.rootRef, user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
+        User.getUser(databaseUtil.rootRef, user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val user1 = dataSnapshot.getValue(User::class.java) as User
@@ -86,25 +84,6 @@ class SignInUpActivity :
                 showSnackbar(message)
             }
         })
-    }
-
-    override fun uiSignInFailed(errorMessage: String?) {
-        dismissProgressDialog()
-        showSnackbar(errorMessage)
-    }
-
-    override fun uiSignOutSuccess() {
-        dismissProgressDialog()
-        showSnackbar(getString(R.string.message_signout_success))
-    }
-
-    override fun uiSignOutFailed(message: String) {
-        dismissProgressDialog()
-    }
-
-    override fun uiConnectionError(messageError: String?, typeError: String?) {
-        dismissProgressDialog()
-        showSnackbar("$typeError, $messageError")
     }
 
     /**/
@@ -131,7 +110,7 @@ class SignInUpActivity :
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        User.isExistUser(mDatabaseUtil.rootRef, user, object : FirebaseDatabaseUtil.ValueListenerData {
+        User.isExistUser(databaseUtil.rootRef, user, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     showSnackbar(getString(R.string.message_database_data_exist))
@@ -182,9 +161,6 @@ class SignInUpActivity :
     }
 
     fun initContent() {
-        mAuth = FirebaseAuth.getInstance()
-        mDatabaseUtil = FirebaseDatabaseUtil()
-        loginUtil = FirebaseLoginUtil(this, this)
         loginGoogleUtil = FirebaseLoginGoogleUtil(this, this, this)
         loginFacebookUtil = FirebaseLoginFacebookUtil(this, this, this)
         loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(this, this, this)
@@ -277,7 +253,7 @@ class SignInUpActivity :
         }
 
         user.lastSignIn = DateTimeUtil.getCurrentDate().toString()
-        User.setUser(mDatabaseUtil.rootRef, this, user, this)
+        User.setUser(databaseUtil.rootRef, this, user, this)
     }
 
 }

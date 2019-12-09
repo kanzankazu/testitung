@@ -10,12 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Point;
-import android.graphics.Typeface;
+import android.graphics.*;
 import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -40,13 +35,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
+import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.kanzankazu.itungitungan.BuildConfig;
@@ -55,20 +45,13 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseAnalyticsUtil;
 import com.kanzankazu.itungitungan.view.logreg.SignInUpActivity;
 import com.kanzankazu.itungitungan.view_interface.SnackBarOnClick;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import butterknife.ButterKnife;
 
 /**
  * Created by Faisal Bahri on 2019-11-05.
@@ -194,7 +177,7 @@ public class Utils {
         }
     }
 
-    public static void intentWithClearTask(Activity mActivity, Class<?> classDestination) {
+    private static void intentWithClearTask(Activity mActivity, Class<?> classDestination) {
         if (mActivity != null) {
             Intent intent = new Intent(mActivity, classDestination);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -313,10 +296,6 @@ public class Utils {
 
     public static void showToast(Activity activity, String message) {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-    }
-
-    public interface DialogButtonListener {
-        void onDialogButtonClick();
     }
 
     public static void showFetchErrorDialog(Activity activity) {
@@ -676,12 +655,6 @@ public class Utils {
         );
     }
 
-    public interface IntroductionButtonListener {
-        void onFirstButtonClick();
-
-        void onSecondButtonClick();
-    }
-
     public static void showIntroductionDialog(Activity mActivity, final IntroductionButtonListener introductionButtonListener, String imageUrl, String title, String message, String titleButton1, String titleButton2,
                                               boolean isCancelable, int assetHardCode) {
         if (!mActivity.isFinishing()) {
@@ -833,6 +806,16 @@ public class Utils {
     public static String convertListStringToString(List<String> stringList, String demiliter) {
         String[] myStringList = stringList.toArray(new String[stringList.size()]);
         return TextUtils.join(demiliter, myStringList);
+    }
+
+    public interface DialogButtonListener {
+        void onDialogButtonClick();
+    }
+
+    public interface IntroductionButtonListener {
+        void onFirstButtonClick();
+
+        void onSecondButtonClick();
     }
 
        /* public static String convertListObjToListString(List<CategoryType> categoryTypes, Boolean isSc) {

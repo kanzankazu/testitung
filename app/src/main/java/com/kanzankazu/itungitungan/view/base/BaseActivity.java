@@ -3,41 +3,40 @@ package com.kanzankazu.itungitungan.view.base;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
-
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.UserPreference;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
-import com.kanzankazu.itungitungan.util.NetworkUtil;
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil;
 import com.kanzankazu.itungitungan.util.SystemUtil;
 import com.kanzankazu.itungitungan.util.Utils;
 import com.kanzankazu.itungitungan.util.dialog.ProgressDialogConnection;
+import com.kanzankazu.itungitungan.view.SplashActivity;
 import com.kanzankazu.itungitungan.view.main.MainActivity;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-public class BaseActivity extends AppCompatActivity implements BaseView {
-
-    ProgressDialogConnection progressDialogConnection;
-    private Snackbar snackConnect;
+public class BaseActivity extends AppCompatActivity implements BaseView, FirebaseLoginUtil.FirebaseLoginListener {
 
     public FirebaseDatabaseUtil databaseUtil;
+    public FirebaseLoginUtil loginUtil;
+    public FirebaseAuth mAuth;
+    public FirebaseUser firebaseUser;
+
+    ProgressDialogConnection progressDialogConnection = new ProgressDialogConnection();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         databaseUtil = new FirebaseDatabaseUtil();
+        mAuth = FirebaseAuth.getInstance();
+        loginUtil = new FirebaseLoginUtil(this, this);
 
-        progressDialogConnection = new ProgressDialogConnection();
     }
 
     @Override
@@ -49,7 +48,7 @@ public class BaseActivity extends AppCompatActivity implements BaseView {
     @Override
     public void onBackPressed() {
         if (UserPreference.getInstance().getIsFromNotification()) {
-            Utils.intentWithClearTask(this, MainActivity.class);
+            Utils.intentTo(this, MainActivity.class,true);
         } else {
             super.onBackPressed();
         }
@@ -91,35 +90,38 @@ public class BaseActivity extends AppCompatActivity implements BaseView {
 
     @Override
     public void showSnackbarNoConnection() {
-        snackConnect = Snackbar.make(findViewById(android.R.id.content), getString(R.string.message_no_internet_network), Snackbar.LENGTH_INDEFINITE);
-
-        View view = snackConnect.getView();
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
-        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-
-        /*// calculate actionbar height
-        TypedValue tv = new TypedValue();
-        int actionBarHeight = 0;
-        if (getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-
-        // set margin
-        params.setMargins(0, actionBarHeight, 0, 0);*/
-
-        view.setLayoutParams(params);
     }
 
-    private void showSnackbarNoConnectionToggle(Boolean isShow) {
-        if (isShow) {
-            snackConnect.show();
-        } else {
-            snackConnect.dismiss();
-        }
+    @Override
+    public void uiSignInSuccess(FirebaseUser firebaseUser) {
+        dismissProgressDialog();
+        showSnackbar(getString(R.string.message_signin_success));
+        this.firebaseUser = firebaseUser;
     }
 
-    public void isConnectInet() {
+    @Override
+    public void uiSignInFailed(String errorMessage) {
+        dismissProgressDialog();
+        showSnackbar(errorMessage);
+    }
 
+    @Override
+    public void uiSignOutSuccess() {
+        dismissProgressDialog();
+        showSnackbar(getString(R.string.message_signout_success));
+        Utils.intentTo(this, SplashActivity.class, true);
+    }
+
+    @Override
+    public void uiSignOutFailed(String message) {
+        dismissProgressDialog();
+        showSnackbar(message);
+    }
+
+    @Override
+    public void uiConnectionError(String messageError, String typeError) {
+        dismissProgressDialog();
+        showSnackbar(messageError + " , " + typeError);
     }
 
     public void hideKeyboard() {
@@ -170,6 +172,4 @@ public class BaseActivity extends AppCompatActivity implements BaseView {
             }
         });
     }
-
-
 }

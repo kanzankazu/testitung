@@ -1,6 +1,7 @@
 package com.kanzankazu.itungitungan.view.main
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -10,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
@@ -18,7 +18,9 @@ import com.kanzankazu.itungitungan.model.User
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.PictureUtil
+import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
+import com.kanzankazu.itungitungan.view.main.ProfileSub.AccountActivity
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 /**
@@ -26,9 +28,9 @@ import kotlinx.android.synthetic.main.fragment_profile.*
  */
 class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
 
-    private lateinit var loginUtil: FirebaseLoginUtil
     private lateinit var mPresenter: ProfileFragmentPresenter
     private lateinit var profileListAdapter: ProfileListAdapter
+
     private var uid: String? = ""
     private var mParam1: String? = null
     private var mParam2: String? = null
@@ -84,16 +86,16 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         profileModels.add(ProfileModel(R.drawable.ic_back_black, mActivity.getString(R.string.share_friend_family), true))
         profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.idea), true))
         profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.help), true))
-        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.donate), false))
-        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.give_star), false))
-        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.about), false))
+        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.donate), true))
+        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.give_star), true))
+        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.about), true))
         profileListAdapter.setData(profileModels)
     }
 
     override fun itemClickOn(position: Int) {
         when (position) {
             0 -> {
-                showSnackbar("0")
+                Utils.intentTo(mActivity, AccountActivity::class.java, false)
             }
             1 -> {
                 showSnackbar("1")
@@ -114,10 +116,6 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
                 showSnackbar("6")
             }
         }
-    }
-
-    override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
-
     }
 
     private fun initParam() {
@@ -148,6 +146,11 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         cv_profile_signout.setOnClickListener {
             showProgressDialog()
             loginUtil.signOut(databaseUtil)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            sv_profile_settings.setOnScrollChangeListener { _, _, _, _, _ ->
+                fl_profile_header.isSelected = sv_profile_settings.canScrollVertically(-1)
+            }
         }
     }
 

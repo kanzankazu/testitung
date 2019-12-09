@@ -16,8 +16,6 @@ class SplashActivity :
     BaseActivity(),
     FirebaseLoginUtil.FirebaseLoginListener {
 
-    private lateinit var loginUtil: FirebaseLoginUtil
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -28,25 +26,7 @@ class SplashActivity :
         UserPreference.getInstance().fcmToken = FirebaseInstanceId.getInstance().token
     }
 
-    override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
-
-    }
-
-    override fun uiSignInFailed(errorMessage: String?) {
-    }
-
-    override fun uiSignOutSuccess() {
-    }
-
-    override fun uiSignOutFailed(message: String?) {
-    }
-
-    override fun uiConnectionError(messageError: String?, typeError: String?) {
-    }
-
     private fun initContent() {
-        loginUtil = FirebaseLoginUtil(this, this)
-
         if (loginUtil.isSignIn) {
             startActivity(Intent(this, SignInUpActivity::class.java))
             finish()
