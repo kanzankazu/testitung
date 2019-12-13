@@ -218,35 +218,27 @@
         android:orientation="vertical"
         android:padding="@dimen/padding_margin_20dp">
 
-        <android.support.v7.widget.CardView
+        <LinearLayout
             android:id="@+id/cvSignInGoogle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/padding_margin_40dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp">
+            android:background="@drawable/google_button_selector"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_google_account" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_google_account" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_margin_16dp"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:text="Masuk dengan google" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_margin_16dp"
-                    android:fontFamily="@font/avenir_next_ltpro_demi"
-                    android:text="Masuk dengan google" />
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
+        </LinearLayout>
 
         <android.support.v7.widget.CardView
             android:id="@+id/cvSignInFacebook"

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_single_button_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_margin_16dp"
+        android:paddingTop="@dimen/padding_margin_24dp"
+        android:src="@drawable/ic_no_internet" />
+
+    <TextView
+        android:id="@+id/tv_single_button_dialog"
+        style="@style/TextDescriptionStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/padding_margin_16dp"
+        android:gravity="left"
+        android:text="@string/fs_code"
+        android:textSize="@dimen/normal_medium_font_size" />
+
+    <TextView
+        android:id="@+id/btn_close_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/padding_margin_8dp"
+        android:layout_marginRight="@dimen/padding_margin_8dp"
+        android:layout_marginBottom="@dimen/padding_margin_8dp"
+        android:clickable="true"
+        android:paddingLeft="@dimen/padding_margin_10dp"
+        android:paddingTop="@dimen/padding_margin_10dp"
+        android:paddingRight="@dimen/padding_margin_10dp"
+        android:paddingBottom="@dimen/padding_margin_10dp"
+        android:text="OK"
+        android:textColor="@color/color_blue_A400" />
+
+</LinearLayout>

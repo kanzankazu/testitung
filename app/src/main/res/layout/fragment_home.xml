@@ -5,20 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_home"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_home"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:nestedScrollingEnabled="true"
-            tools:layoutManager="GridLayoutManager"
-            tools:spanCount="3"
-            tools:itemCount="10"
-            tools:listitem="@layout/item_home" />
-
-    </android.support.v4.widget.NestedScrollView>
+        android:layout_height="match_parent"
+        tools:itemCount="10"
+        tools:layoutManager="GridLayoutManager"
+        tools:listitem="@layout/item_home"
+        tools:spanCount="3" />
 
 </LinearLayout>

@@ -1,7 +1,6 @@
 package com.kanzankazu.itungitungan.util;
 
 import android.graphics.Typeface;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -12,6 +11,8 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.kanzankazu.itungitungan.R;
@@ -24,6 +25,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 public class InputValidUtil {
 
@@ -59,11 +62,11 @@ public class InputValidUtil {
         return editTexts.length != frequency1;
     }
 
-    public static boolean isEmptyField(@NotNull String messageError, @Nullable TextInputLayout textInputLayout, @Nullable TextInputEditText editText, Boolean isFocus) {
+    public static boolean isEmptyField(@NotNull String messageError, @Nullable TextInputLayout textInputLayout, @Nullable EditText editText, Boolean isFocus) {
         return isEmptyField(messageError, textInputLayout, editText, isFocus, (ActionTrueFalseListener) null);
     }
 
-    public static boolean isEmptyField(@NotNull String messageError, @Nullable TextInputLayout textInputLayout, @Nullable TextInputEditText editText, Boolean isFocus, @Nullable ImageButton clearButton) {
+    public static boolean isEmptyField(@NotNull String messageError, @Nullable TextInputLayout textInputLayout, @Nullable EditText editText, Boolean isFocus, @Nullable ImageButton clearButton) {
         if (isEmptyField(messageError, textInputLayout, editText, isFocus, (ActionTrueFalseListener) null)) {
             clearButton.setVisibility(View.GONE);
             return true;
@@ -73,7 +76,7 @@ public class InputValidUtil {
         }
     }
 
-    public static boolean isEmptyField(@NotNull String messageError, @Nullable TextInputLayout textInputLayout, @Nullable TextInputEditText editText, Boolean isFocus, ActionTrueFalseListener listener) {
+    public static boolean isEmptyField(@NotNull String messageError, @Nullable TextInputLayout textInputLayout, @Nullable EditText editText, Boolean isFocus, ActionTrueFalseListener listener) {
         if (isEmptyField(editText.getText().toString())) {
             textInputLayout.setError(messageError);
             textInputLayout.setErrorEnabled(true);
@@ -122,12 +125,12 @@ public class InputValidUtil {
         return editTexts.length != frequency1;//true jika tidak cocok
     }
 
-    public static boolean isValidateEmail(String s1) {
+    public static boolean isEmail(String s1) {
         return Patterns.EMAIL_ADDRESS.matcher(s1).matches();
     }
 
-    public static boolean isValidateEmail(String message, TextInputLayout textInputLayout, EditText editText, Boolean isFocus) {
-        if (!isValidateEmail(editText.getText().toString())) {
+    public static boolean isEmail(String message, TextInputLayout textInputLayout, EditText editText, Boolean isFocus) {
+        if (!isEmail(editText.getText().toString())) {
             textInputLayout.setError(message);
             textInputLayout.setErrorEnabled(true);
             editText.requestFocus();
@@ -170,7 +173,7 @@ public class InputValidUtil {
         return !matcher.matches();
     }
 
-    public static boolean isValidatePhoneNumber(final String num) {
+    public static boolean isPhoneNumber(final String num) {
         String PHONE_NUMBER_PATTERN = "^[+]?[0-9]{10,15}$";
         Pattern pattern = Pattern.compile(PHONE_NUMBER_PATTERN);
         Matcher matcher = pattern.matcher(num);
@@ -218,27 +221,31 @@ public class InputValidUtil {
         return stringValue.length() >= minChar;
     }
 
-    public static void setEditTextMaxLength(int length, EditText editText) {
-        InputFilter[] filterArray = new InputFilter[1];
-        filterArray[0] = new InputFilter.LengthFilter(length);
-        editText.setFilters(filterArray);
-    }
-
-    public static void errorET(EditText editText, CharSequence messageError) {
-        editText.setError(messageError);
-        editText.requestFocus();
-    }
-
-    public static void showHidePassword(EditText editText, ImageButton imageButton) {
-        if (passwordShown) {//tidak terlihat
-            passwordShown = false;
-            editText.setInputType(129);//edittest
-            editText.setTypeface(Typeface.SANS_SERIF);
-            imageButton.setImageResource(R.drawable.ic_visibility_off);
-        } else {//terlihat
-            passwordShown = true;
-            editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            imageButton.setImageResource(R.drawable.ic_visibility);
+    public static boolean isRadioGroupChecked(RadioGroup radioGroup, String errorMessage) {
+        if (radioGroup.getCheckedRadioButtonId() == -1) {
+            int groupChildCount = radioGroup.getChildCount();
+            ArrayList<RadioButton> listOfRadioButtons = new ArrayList<>();
+            for (int i = 0; i < groupChildCount; i++) {
+                View view = radioGroup.getChildAt(i);
+                if (view instanceof RadioButton) {
+                    //listOfRadioButtons.add((RadioButton) view);
+                    RadioButton radioButton = (RadioButton) view;
+                    radioButton.setError(errorMessage);
+                }
+            }
+            Timber.tag("Lihat").d("isRadioGroupChecked InputValidUtil : " + listOfRadioButtons.size() + " radio buttons");
+            return false;
+        } else {
+            int groupChildCount = radioGroup.getChildCount();
+            ArrayList<RadioButton> listOfRadioButtons = new ArrayList<>();
+            for (int i = 0; i < groupChildCount; i++) {
+                View view = radioGroup.getChildAt(i);
+                if (view instanceof RadioButton) {
+                    //listOfRadioButtons.add((RadioButton) view);
+                }
+            }
+            Timber.tag("Lihat").d("isRadioGroupChecked InputValidUtil : " + listOfRadioButtons.size() + " radio buttons");
+            return true;
         }
     }
 
@@ -280,6 +287,30 @@ public class InputValidUtil {
 
     public static float getPercent(long number, long total) {
         return (float) number / (float) total * 100;
+    }
+
+    public static void setEditTextMaxLength(int length, EditText editText) {
+        InputFilter[] filterArray = new InputFilter[1];
+        filterArray[0] = new InputFilter.LengthFilter(length);
+        editText.setFilters(filterArray);
+    }
+
+    public static void errorET(EditText editText, CharSequence messageError) {
+        editText.setError(messageError);
+        editText.requestFocus();
+    }
+
+    public static void showHidePassword(EditText editText, ImageButton imageButton) {
+        if (passwordShown) {//tidak terlihat
+            passwordShown = false;
+            editText.setInputType(129);//edittest
+            editText.setTypeface(Typeface.SANS_SERIF);
+            imageButton.setImageResource(R.drawable.ic_visibility_off);
+        } else {//terlihat
+            passwordShown = true;
+            editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imageButton.setImageResource(R.drawable.ic_visibility);
+        }
     }
 
     public static void editTextActionGO(EditText editText, editTextActionListener listener) {

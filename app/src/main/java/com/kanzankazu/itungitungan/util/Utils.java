@@ -1,31 +1,22 @@
 package com.kanzankazu.itungitungan.util;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.location.LocationManager;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,7 +24,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
@@ -56,14 +46,7 @@ import com.kanzankazu.itungitungan.view.logreg.SignInUpActivity;
 import com.kanzankazu.itungitungan.view_interface.SnackBarOnClick;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -173,13 +156,6 @@ public class Utils {
         mActivity.getSupportActionBar().setTitle("");
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         toolbar.setNavigationOnClickListener(view1 -> mActivity.onBackPressed());
-    }
-
-    public static void setupToolbarTransparentWithoutTitle(final AppCompatActivity mActivity, Toolbar toolbar) {
-        mActivity.setSupportActionBar(toolbar);
-        mActivity.getSupportActionBar().setTitle("");
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(view -> mActivity.onBackPressed());
     }
 
     public static void intentTo(Activity mActivity, Class<?> classDestination, Boolean isFinish) {
@@ -550,25 +526,6 @@ public class Utils {
         activity.startActivity(intent);
     }
 
-    public static String setRupiah(String inputCredit) {
-        String sCredit = null;
-        int credit;
-        try {
-            if (inputCredit.contains(".")) {
-                sCredit = inputCredit.substring(0, inputCredit.indexOf("."));
-                credit = Integer.parseInt(sCredit);
-                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(',', '.');
-            } else {
-                credit = Integer.parseInt(inputCredit);
-                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(',', '.');
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return sCredit;
-    }
-
     public static void goToSumoPlayStore(Activity mActivity) {
         Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=" + mActivity.getPackageName());
         Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
@@ -710,26 +667,38 @@ public class Utils {
         return TextUtils.join(demiliter, myStringList);
     }
 
+    public static String setRupiah(String inputCredit) {
+        String sCredit = null;
+        int credit;
+        try {
+            if (inputCredit.contains(".")) {
+                sCredit = inputCredit.substring(0, inputCredit.indexOf("."));
+                credit = Integer.parseInt(sCredit);
+                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(",", ".");
+            } else {
+                credit = Integer.parseInt(inputCredit);
+                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(",", ".");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sCredit;
+    }
+
+    public static String setNoRupiah(String inputCredit) {
+        return inputCredit.replace("Rp ", "").replace("\\.", "");
+    }
+
     public interface DialogButtonListener {
         void onDialogButtonClick();
+
     }
 
     public interface IntroductionButtonListener {
+
         void onFirstButtonClick();
 
         void onSecondButtonClick();
+
     }
-
-       /* public static String convertListObjToListString(List<CategoryType> categoryTypes, Boolean isSc) {
-            List<String> list = new ArrayList<>();
-            for (int i = 0; i < categoryTypes.size(); i++) {
-                if (isSc) {
-                    list.add(categoryTypes.get(i).getScName().replace(",","|"));
-                } else {
-                    list.add(categoryTypes.get(i).getStName().replace(",","|"));
-                }
-            }
-
-            return Utils.convertListStringToString(list, "|");
-        }*/
 }

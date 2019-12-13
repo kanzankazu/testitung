@@ -13,9 +13,10 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.view.base.BaseActivity
 import timber.log.Timber
 
-class AccountActivity : AppCompatActivity() {
+class AccountActivity : BaseActivity() {
 
     private lateinit var ivAvatar: ImageView
     private lateinit var toolbar: Toolbar

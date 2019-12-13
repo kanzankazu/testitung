@@ -1,9 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context="com.kanzankazu.itungitungan.view.main.Hutang.HutangPayActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center|top"
+        android:layout_marginBottom="@dimen/padding_margin_5dp"
+        android:background="@drawable/round">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_hutang_add_bukti1"
+            android:layout_width="@dimen/padding_margin_90dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_profile_picture" />
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp"
+        android:fontFamily="@font/avenir_next_ltpro_demi"
+        android:text="Jumlah Bayar" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_hutang_add_nominal"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_hutang_add_nominal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_next_ltpro_demi"
+            android:hint="Nominal Pembayaran Rp. :"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:selectAllOnFocus="true"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray_very_light" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            tools:itemCount="4"
+            tools:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/item_estimation_text" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/padding_margin_10dp"
+            android:background="@color/gray_very_light" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/padding_margin_30dp"
+            android:layout_margin="@dimen/padding_margin_2dp"
+            app:cardBackgroundColor="@color/gray_very_light"
+            app:cardCornerRadius="@dimen/padding_margin_15dp"
+            app:cardElevation="5dp">
+
+            <ImageView
+                android:id="@+id/iv"
+                android:layout_width="@dimen/padding_margin_30dp"
+                android:layout_height="@dimen/padding_margin_30dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_clear"
+                android:tint="@color/white" />
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_hutang_add_note"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_hutang_add_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_next_ltpro_demi"
+            android:hint="Catatan"
+            android:imeOptions="actionNext"
+            android:inputType="textImeMultiLine" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_hutang_add_date"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_hutang_add_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:drawableRight="@drawable/ic_calendar"
+            android:focusable="false"
+            android:fontFamily="@font/avenir_next_ltpro_demi"
+            android:hint="Tanggal Pembayaran"
+            android:selectAllOnFocus="true"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:cardBackgroundColor="@color/colorPrimaryDark"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/avenir_next_ltpro_demi"
+            android:gravity="center"
+            android:text="Bayar"
+            android:textSize="@dimen/padding_margin_20dp" />
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

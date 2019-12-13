@@ -4,16 +4,16 @@
 
     <item
         android:state_enabled="false"
-        android:drawable="@drawable/grey_rectangle_shape"></item>
+        android:drawable="@drawable/button_shape_disable"/>
 
     <item
         android:state_enabled="true"
         android:state_pressed="false"
-        android:drawable="@drawable/cyan_rect_shape"></item>
+        android:drawable="@drawable/button_shape"/>
 
     <item
         android:state_enabled="true"
         android:state_pressed="true"
-        android:drawable="@drawable/light_cyan_rect_shape"></item>
+        android:drawable="@drawable/button_shape_pressed"/>
 
 </selector>

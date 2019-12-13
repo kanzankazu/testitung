@@ -3,14 +3,14 @@ package com.kanzankazu.itungitungan.view.main
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import com.kanzankazu.itungitungan.view.main.Hutang.HutangAddActivity
+import com.kanzankazu.itungitungan.view.main.Hutang.HutangListActivity
+import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment(), HomeContract.View {
@@ -59,18 +59,18 @@ class HomeFragment : BaseFragment(), HomeContract.View {
         initListener()
     }
 
-    override fun itemAdapterClick(model: HomeModel) {
+    override fun itemAdapterClick(position: HomeModel) {
         when {
-            model.title.equals(Constants.HOME.Anggaran, true) -> {
+            position.title.equals(Constants.HOME.Anggaran, true) -> {
             }
-            model.title.equals(Constants.HOME.Banding, true) -> {
+            position.title.equals(Constants.HOME.Banding, true) -> {
             }
-            model.title.equals(Constants.HOME.Keuangan, true) -> {
+            position.title.equals(Constants.HOME.Keuangan, true) -> {
             }
-            model.title.equals(Constants.HOME.Hutang, true) -> {
-                Utils.intentTo(mActivity, HutangAddActivity::class.java, true)
+            position.title.equals(Constants.HOME.Hutang, true) -> {
+                Utils.intentTo(mActivity, HutangListActivity::class.java, false)
             }
-            model.title.equals(Constants.HOME.Stok, true) -> {
+            position.title.equals(Constants.HOME.Stok, true) -> {
             }
         }
     }

@@ -55,5 +55,7 @@
     <string name="donate">Donasi</string>
     <string name="give_star">Beri Bintang</string>
     <string name="about">Tentang Aplikasi</string>
+    <string name="fs_code">FS Code</string>
+    <string name="t_message">Your message</string>
 
 </resources>

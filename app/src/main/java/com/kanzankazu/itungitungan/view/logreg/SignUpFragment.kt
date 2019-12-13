@@ -100,7 +100,7 @@ class SignUpFragment : BaseFragment(),
             InputValidUtil.isEmptyField(getString(message_field_empty), tilSignUpName, etSignUpName, false, ibSignUpNameClear) -> false
             InputValidUtil.isEmptyField(getString(message_field_empty), tilSignUpEmail, etSignUpEmail, false, ibSignUpEmailClear) -> false
             InputValidUtil.isEmptyField(getString(message_field_empty), tilSignUpPassword, etSignUpPassword, false, ibSignUpPasswordClear) -> false
-            else -> InputValidUtil.isValidateEmail(getString(message_field_email_wrong_format), tilSignUpEmail, etSignUpEmail, false)
+            else -> InputValidUtil.isEmail(getString(message_field_email_wrong_format), tilSignUpEmail, etSignUpEmail, false)
         }
     }
 

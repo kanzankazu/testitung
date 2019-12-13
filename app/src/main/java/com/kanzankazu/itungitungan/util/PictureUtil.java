@@ -434,18 +434,6 @@ public class PictureUtil {
             try {
                 compressImage();
 
-                /*documentDataList.get(currentIndex).setPhotoPath(mCurrentPhotoPath);
-                preApprovalUploadAdapter.addToList(currentIndex, mCurrentPhotoPath);
-
-                for (int i = 0; i < documentDataList.size(); i++) {
-                    if (documentDataList.get(i).getPhotoPath().isEmpty()) {
-                        submitBtn.setEnabled(false);
-                        break;
-                    } else {
-                        submitBtn.setEnabled(true);
-                    }
-                }*/
-
                 return mCurrentPhotoPath;
 
             } catch (Exception e) {
@@ -458,18 +446,6 @@ public class PictureUtil {
                 CompressBitmap cb = new CompressBitmap(mActivity);
                 String filepath = cb.getRealPathFromURI(mActivity, data.getData());
                 Bitmap bitmap = cb.compressImage(cb.getRealPathFromURI(mActivity, data.getData()), filepath);
-
-                /*documentDataList.get(currentIndex).setPhotoPath(String.valueOf(uri));
-                preApprovalUploadAdapter.addToList(currentIndex, String.valueOf(uri));
-
-                for (int i = 0; i < documentDataList.size(); i++) {
-                    if (documentDataList.get(i).getPhotoPath().isEmpty()) {
-                        submitBtn.setEnabled(false);
-                        break;
-                    } else {
-                        submitBtn.setEnabled(true);
-                    }
-                }*/
 
                 return mCurrentPhotoPath;
 

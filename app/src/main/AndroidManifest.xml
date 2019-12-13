@@ -5,6 +5,10 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".MyApplication"
@@ -16,13 +20,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:label">
-        <activity android:name=".view.main.PerhitunganAnggaran.AnggaranPerhitunganGroupActivity"></activity>
-        <activity android:name=".view.main.PerhitunganAnggaran.AnggaranPerhitunganAddActivity" />
-        <activity android:name=".view.main.PerhitunganAnggaran.PerhitunganListActivity" />
-        <activity android:name=".view.main.PerhitunganAnggaran.AnggaranListActivity" />
-        <activity android:name=".view.main.Hutang.HutangDetailActivity" />
-        <activity android:name=".view.main.Hutang.HutangPayActivity" />
-        <activity android:name=".view.main.Hutang.HutangListActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -60,8 +57,12 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity> <!-- FACEBOOK END -->
-        <activity android:name=".util.google.GooglePhoneNumberValidation" />
-        <activity android:name=".view.SplashActivity">
+        <activity
+            android:name=".util.google.GooglePhoneNumberValidation"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -74,8 +75,47 @@
         <activity
             android:name=".view.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".view.main.Hutang.HutangAddActivity" />
-        <activity android:name=".view.main.ProfileSub.AccountActivity" /> <!-- Sample -->
+        <activity
+            android:name=".view.main.ProfileSub.AccountActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.ProfileSub.AccountBankActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.ProfileSub.KategoriActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.Stock.StockInOutActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.Stock.StockAddActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.PerhitunganAnggaran.AnggaranPerhitunganGroupActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.PerhitunganAnggaran.AnggaranPerhitunganAddActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.PerhitunganAnggaran.PerhitunganListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.PerhitunganAnggaran.AnggaranListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.Hutang.HutangAddActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.Hutang.HutangDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.Hutang.HutangPayActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.Hutang.HutangListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- Sample -->
         <activity android:name=".view.sample.SampleCrudMainActivity" />
         <activity android:name=".view.sample.SampleCrudCreateActivity" />
         <activity android:name=".view.sample.SampleCrudReadActivity" />

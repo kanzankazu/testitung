@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/padding_margin_8dp"
     android:paddingBottom="@dimen/padding_margin_8dp"
     style="@style/TextSubtitleStyle"
-    android:background="@drawable/white_grey_stroke_rectangle_shape"/>
+    android:background="@drawable/button_grey_shape"/>
 
 
 

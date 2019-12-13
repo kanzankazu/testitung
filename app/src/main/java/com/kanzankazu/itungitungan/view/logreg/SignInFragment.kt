@@ -13,7 +13,6 @@ import android.view.inputmethod.EditorInfo
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil.*
-import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_signin.*
 
@@ -21,9 +20,9 @@ import kotlinx.android.synthetic.main.fragment_signin.*
  * Created by Faisal Bahri on 2019-11-08.
  */
 class SignInFragment :
-        BaseFragment(),
-        SignInContract.View,
-        TextWatcher {
+    BaseFragment(),
+    SignInContract.View,
+    TextWatcher {
 
     private lateinit var mContext: SignInUpActivity
 
@@ -95,7 +94,7 @@ class SignInFragment :
         return when {
             InputValidUtil.isEmptyField(getString(R.string.message_field_empty), tilSignInEmail, etSignInEmail, false, ibSignInEmailClear) -> false
             InputValidUtil.isEmptyField(getString(R.string.message_field_empty), tilSignInPassword, etSignInPassword, false, ibSignInPasswordClear) -> false
-            else -> InputValidUtil.isValidateEmail(getString(R.string.message_field_email_wrong_format), tilSignInEmail, etSignInEmail, false)
+            else -> InputValidUtil.isEmail(getString(R.string.message_field_email_wrong_format), tilSignInEmail, etSignInEmail, false)
         }
     }
 

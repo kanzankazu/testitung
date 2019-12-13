@@ -10,9 +10,9 @@ import com.kanzankazu.itungitungan.R
 import kotlinx.android.synthetic.main.item_home.view.*
 
 class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-     private lateinit var mActivity: AppCompatActivity
-     private lateinit var mView: HomeContract.View
-     private lateinit var datas: MutableList<HomeModel>
+    private lateinit var mActivity: AppCompatActivity
+    private lateinit var mView: HomeContract.View
+    private lateinit var datas: MutableList<HomeModel>
 
     constructor(mActivity: AppCompatActivity, mView: HomeContract.View) : this() {
         this.mActivity = mActivity
@@ -21,7 +21,7 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(mActivity).inflate(R.layout.item_home, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_home, parent, false)
         return ProfileListAdapterAdapterHolder(view)
     }
 
@@ -36,22 +36,20 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val h = holder as ProfileListAdapterAdapterHolder
         h.setView(datas[position])
-        h.setListener(datas[position], position)
+        h.setListener(datas[position])
 
     }
 
     inner class ProfileListAdapterAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         fun setView(model: HomeModel) {
-            if (model.isShow) {
-                Glide.with(mActivity).load(model.image).placeholder(R.drawable.ic_profile_picture).into(itemView.iv_item_home_image)
-                itemView.tv_item_home_title.text = model.title
-            } else {
-                itemView.visibility = View.GONE
-            }
-
+            Glide.with(mActivity)
+                .load(model.image)
+                .placeholder(R.drawable.ic_profile_picture)
+                .into(itemView.iv_item_home_image)
+            itemView.tv_item_home_title.text = model.title
         }
 
-        fun setListener(model: HomeModel, position: Int) {
+        fun setListener(model: HomeModel) {
             itemView.setOnClickListener { mView.itemAdapterClick(model) }
         }
     }

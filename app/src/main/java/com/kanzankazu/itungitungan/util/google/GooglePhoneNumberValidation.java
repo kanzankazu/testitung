@@ -191,7 +191,7 @@ import java.util.regex.Pattern;
  */
 public class GooglePhoneNumberValidation extends AppCompatActivity {
     public static final int REQ_CODE_G_PHONE_VALIDATION = 123;
-    public static final long timeoutDuration = 60L;
+    private static final long timeoutDuration = 60L;
     private static final int UI_LOGIN = 0;
     private static final int UI_VERIFY = 1;
     /**
@@ -548,7 +548,7 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
         return matcher.matches();
     }
 
-    interface Param {
+    public interface Param {
         String param0 = "kanzankazu";
     }
 

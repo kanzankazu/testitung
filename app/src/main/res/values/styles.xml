@@ -71,7 +71,7 @@
         <item name="android:textSize">16dp</item>
         <item name="android:textColor">@color/navy_blue</item>
         <item name="android:fontFamily">@font/avenir_next_ltpro_medium</item>
-        <item name="android:background">@drawable/button_selector_grey</item>
+        <item name="android:background">@drawable/button_grey_selector</item>
         <item name="android:padding">16dp</item>
         <item name="android:gravity">center</item>
     </style>
@@ -80,6 +80,79 @@
         <item name="android:textSize">14dp</item>
         <item name="android:textColor">@color/color_desc_guideline_otomoto</item>
         <item name="android:fontFamily">@font/avenir_next_ltpro_regular</item>
+    </style>
+
+    <!--Kanzan-->
+    <style name="TvBottomButtonPrimary">
+        <item name="android:background">@drawable/button_selector</item>
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/padding_margin_20dp</item>
+    </style>
+
+    <style name="TvButtonGoogle">
+        <item name="android:background">@drawable/google_button_selector</item>
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/padding_margin_20dp</item>
+    </style>
+
+    <style name="TvButtonFacebook">
+        <item name="android:background">@drawable/facebook_button_selector</item>
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/padding_margin_20dp</item>
+    </style>
+
+    <style name="TvStandart">
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+    </style>
+
+    <style name="TvStandartCenter" parent="TvStandart">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="TvStandartCenterSingle" parent="TvStandartCenter">
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="EtText">
+        <item name="android:inputType">text</item>
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="EtTextDisable">
+        <item name="android:enabled">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:inputType">text</item>
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:focusable">false</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="EtNumber">
+        <item name="android:inputType">number</item>
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="EtClickable">
+        <item name="android:inputType">none</item>
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:focusable">false</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="EtMultiline">
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
     </style>
 
 </resources>

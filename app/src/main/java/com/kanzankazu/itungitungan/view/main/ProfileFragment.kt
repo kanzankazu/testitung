@@ -5,17 +5,12 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
-import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
-import com.kanzankazu.itungitungan.model.User
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.PictureUtil
 import com.kanzankazu.itungitungan.util.Utils
@@ -142,7 +137,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     private fun initListener() {
         iv_profile_settings.setOnClickListener { }
         civ_profile_photo.setOnClickListener { }
-        civ_profile_photo_edit.setOnClickListener { PictureUtil.setupChooseImageDialog(mActivity) }
+        civ_profile_photo_edit.setOnClickListener { PictureUtil.chooseImageDialog(mActivity) }
         cv_profile_signout.setOnClickListener {
             showProgressDialog()
             loginUtil.signOut(databaseUtil)

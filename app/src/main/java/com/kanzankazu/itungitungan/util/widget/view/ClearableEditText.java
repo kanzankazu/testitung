@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.kanzankazu.itungitungan.R;
+
 /**
  * Created by Nando on 9/13/18
  */
@@ -37,7 +39,7 @@ public class ClearableEditText extends AppCompatEditText implements View.OnTouch
 
     private void init(final Context context) {
         setSingleLine(true);
-        final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_close);
+        final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_clear);
         if (drawable != null) {
             mClearTextIcon = DrawableCompat.wrap(drawable);
         }

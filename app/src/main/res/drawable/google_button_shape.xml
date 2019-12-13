@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:shape="rectangle"
     android:thickness="0dp">
-    <corners android:radius="@dimen/padding_margin_8dp" />
+    <corners android:radius="@dimen/padding_margin_10dp" />
     <stroke
         android:width="@dimen/padding_margin_1dp"
         android:color="@color/colorPrimary" />
