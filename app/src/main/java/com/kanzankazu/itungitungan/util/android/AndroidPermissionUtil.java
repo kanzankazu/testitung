@@ -1,10 +1,12 @@
 package com.kanzankazu.itungitungan.util.android;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -20,9 +22,19 @@ public class AndroidPermissionUtil {
             Manifest.permission.READ_PHONE_STATE
     }; Example */
 
-    private static final int RP_ACCESS = 123;
+    public static String[] permCameraGallery = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+    };
+    public static String[] permLocation = {
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    public final int RP_ACCESS = 123;
     private final String[] permissions;
     private Activity activity;
+
 
     public AndroidPermissionUtil(Activity activity, String... permissions) {
         this.activity = activity;
@@ -30,7 +42,7 @@ public class AndroidPermissionUtil {
         checkPermission(permissions);
     }
 
-    public boolean checkPermission(String[] permissions) {
+    public boolean checkPermission(String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ArrayList<String> listStat = new ArrayList<>();
             for (String permission : permissions) {
@@ -54,12 +66,12 @@ public class AndroidPermissionUtil {
 
     /**
      * call when onRequestPermissionsResult
-     *
-     * @param requestCode
+     *  @param requestCode
      * @param permissions
      * @param grantResults
+     * @param isFinish
      */
-    public boolean checkResultPermission(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, boolean isFinish) {
         if (requestCode == RP_ACCESS) {
             Log.d("Lihat", "checkResultPermission AndroidPermissionUtil : " + grantResults.length);
             Log.d("Lihat", "checkResultPermission AndroidPermissionUtil : " + permissions.length);
@@ -95,8 +107,8 @@ public class AndroidPermissionUtil {
                 alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        activity.finish();
-                        //SystemUtil.showToast(activity, "Izin tidak di berikan", Toast.LENGTH_LONG, Gravity.TOP);
+                        Snackbar.make(activity.findViewById(android.R.id.content), "Izin tidak di berikan", Snackbar.LENGTH_SHORT).show();
+                        if (isFinish)activity.finish();
                     }
                 });
                 AlertDialog alertDialog = alertDialogBuilder.create();
@@ -109,7 +121,7 @@ public class AndroidPermissionUtil {
         return false;
     }
 
-    public String[] getCurrentpermission(){
+    public String[] getCurrentpermission() {
         return permissions;
     }
 }

@@ -457,26 +457,6 @@ object Utility {
         }
     }
 
-    fun showSuccessDialog(activity: Activity, title: String, message: String, dialogButtonListener: DialogButtonListener) {
-        if (!activity.isFinishing) {
-            val dialog = AlertDialog.Builder(activity)
-                .setView(activity.layoutInflater.inflate(R.layout.layout_dialog_success, null))
-                .setCancelable(false)
-                .show()
-
-            val tvTitleDialog = dialog.findViewById<TextView>(R.id.tv_success_dialog_title)
-            val tvDescDialog = dialog.findViewById<TextView>(R.id.tv_success_dialog_description)
-            val btnDialog = dialog.findViewById<TextView>(R.id.btn_close_dialog)
-
-            tvTitleDialog!!.text = title
-            tvDescDialog!!.text = message
-            btnDialog!!.setOnClickListener {
-                dialogButtonListener.onDialogButtonClick()
-                dialog.dismiss()
-            }
-        }
-    }
-
     fun showSnackbar(view: View, message: String) {
         try {
             val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)

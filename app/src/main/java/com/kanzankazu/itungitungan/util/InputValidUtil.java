@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -25,8 +24,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import timber.log.Timber;
 
 public class InputValidUtil {
 
@@ -221,30 +218,10 @@ public class InputValidUtil {
         return stringValue.length() >= minChar;
     }
 
-    public static boolean isRadioGroupChecked(RadioGroup radioGroup, String errorMessage) {
+    public static boolean isRadioGroupChecked(RadioGroup radioGroup) {
         if (radioGroup.getCheckedRadioButtonId() == -1) {
-            int groupChildCount = radioGroup.getChildCount();
-            ArrayList<RadioButton> listOfRadioButtons = new ArrayList<>();
-            for (int i = 0; i < groupChildCount; i++) {
-                View view = radioGroup.getChildAt(i);
-                if (view instanceof RadioButton) {
-                    //listOfRadioButtons.add((RadioButton) view);
-                    RadioButton radioButton = (RadioButton) view;
-                    radioButton.setError(errorMessage);
-                }
-            }
-            Timber.tag("Lihat").d("isRadioGroupChecked InputValidUtil : " + listOfRadioButtons.size() + " radio buttons");
             return false;
         } else {
-            int groupChildCount = radioGroup.getChildCount();
-            ArrayList<RadioButton> listOfRadioButtons = new ArrayList<>();
-            for (int i = 0; i < groupChildCount; i++) {
-                View view = radioGroup.getChildAt(i);
-                if (view instanceof RadioButton) {
-                    //listOfRadioButtons.add((RadioButton) view);
-                }
-            }
-            Timber.tag("Lihat").d("isRadioGroupChecked InputValidUtil : " + listOfRadioButtons.size() + " radio buttons");
             return true;
         }
     }

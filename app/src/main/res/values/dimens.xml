@@ -30,4 +30,5 @@
     <dimen name="padding_margin_200dp">200dp</dimen>
     <dimen name="normal_medium_font_size">16sp</dimen>
     <dimen name="medium_large_font_size">20sp</dimen>
+    <dimen name="normal_font_size">15sp</dimen>
 </resources>

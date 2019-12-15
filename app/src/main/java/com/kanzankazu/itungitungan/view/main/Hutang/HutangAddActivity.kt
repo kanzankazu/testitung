@@ -3,14 +3,17 @@ package com.kanzankazu.itungitungan.view.main.Hutang
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.ImageView
 import android.widget.RadioButton
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.PictureUtil
 import com.kanzankazu.itungitungan.util.Utils
+import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil
 import com.kanzankazu.itungitungan.util.google.GooglePhoneNumberValidation
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
@@ -18,6 +21,9 @@ import kotlinx.android.synthetic.main.activity_hutang_add.*
 import kotlinx.android.synthetic.main.app_toolbar.*
 
 class HutangAddActivity : BaseActivity() {
+
+    private lateinit var pictureUtil: PictureUtil
+    private lateinit var permissionUtil: AndroidPermissionUtil
 
     private lateinit var validateWatcher: TextWatcher
 
@@ -34,12 +40,26 @@ class HutangAddActivity : BaseActivity() {
         if (requestCode == GooglePhoneNumberValidation.REQ_CODE_G_PHONE_VALIDATION && resultCode == Activity.RESULT_OK) {
             val s = GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data)
             actv_hutang_add_user.setText(s)
+        } else if (requestCode == pictureUtil.REQUEST_IMAGE_CAMERA|| requestCode == pictureUtil.REQUEST_IMAGE_GALLERY) {
+            Handler().postDelayed({
+                val mCurrentPhotoPath = pictureUtil.onActivityResult(requestCode, resultCode, data)
+            },500)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == permissionUtil.RP_ACCESS) {
+            permissionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults, false)
         }
     }
 
     private fun checkData(): Boolean {
         return when {
-            !InputValidUtil.isRadioGroupChecked(rg_hutang_add_user, getString(R.string.message_field_empty)) -> false
+            !InputValidUtil.isRadioGroupChecked(rg_hutang_add_user) -> {
+                showSnackbar(getString(R.string.message_radio_empty))
+                false
+            }
             InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, actv_hutang_add_user, false) -> false
             InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false) -> false
             InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false) -> false
@@ -51,6 +71,9 @@ class HutangAddActivity : BaseActivity() {
 
     private fun setView() {
         Utils.setupAppToolbarForActivity(this, toolbar)
+
+        permissionUtil = AndroidPermissionUtil(this, *AndroidPermissionUtil.permCameraGallery)
+        pictureUtil = PictureUtil(this)
     }
 
     private fun setListener() {
@@ -79,12 +102,18 @@ class HutangAddActivity : BaseActivity() {
         et_hutang_add_date.addTextChangedListener(validateWatcher)
 
         et_hutang_add_date.setOnClickListener { Utility.showCalendarDialog(this, et_hutang_add_date) }
-        et_hutang_add_due_date.setOnClickListener { Utility.showCalendarDialog(this,et_hutang_add_due_date) }
+        et_hutang_add_due_date.setOnClickListener { Utility.showCalendarDialog(this, et_hutang_add_due_date) }
 
         iv_hutang_add_user.setOnClickListener { GooglePhoneNumberValidation.startPhoneNumberValidation(this) }
-        civ_hutang_add_bukti1.setOnClickListener { PictureUtil.chooseImageDialog(this) }
-        civ_hutang_add_bukti2.setOnClickListener { PictureUtil.chooseImageDialog(this) }
-        civ_hutang_add_bukti3.setOnClickListener { PictureUtil.chooseImageDialog(this) }
+        civ_hutang_add_bukti1.setOnClickListener { getImage(civ_hutang_add_bukti1) }
+        civ_hutang_add_bukti2.setOnClickListener { getImage(civ_hutang_add_bukti2) }
+        civ_hutang_add_bukti3.setOnClickListener { getImage(civ_hutang_add_bukti3) }
         tv_hutang_add_simpan.setOnClickListener { checkData() }
+    }
+
+    private fun getImage(imageView: ImageView) {
+        if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
+            pictureUtil.chooseGetImageDialog(imageView)
+        }
     }
 }

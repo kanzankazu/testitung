@@ -22,6 +22,7 @@
 
     <!--Message-->
     <string name="message_field_empty">Data ini tidak boleh kosong</string>
+    <string name="message_radio_empty">Anda belum memilih!!!</string>
     <string name="message_field_email_wrong_format">Format email salah [***@***.***]</string>
     <string name="message_signin_success">Masuk Berhasil</string>
     <string name="message_signin_failed">Masuk Gagal</string>

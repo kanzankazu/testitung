@@ -22,6 +22,43 @@
             android:padding="@dimen/padding_margin_16dp">
 
             <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_10dp"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical">
+
+                <RadioGroup
+                        android:id="@+id/rg_perhutungan_add_user"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                    <RadioButton
+                            android:id="@+id/rb_perhutungan_add_keluar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:buttonTint="@color/red"
+                            android:fontFamily="@font/avenir_next_ltpro_demi"
+                            android:text="Pengeluaran"
+                            android:textColor="@color/red" />
+
+                    <RadioButton
+                            android:id="@+id/rb_perhutungan_add_masuk"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:buttonTint="@color/green"
+                            android:fontFamily="@font/avenir_next_ltpro_demi"
+                            android:text="Pemasukan"
+                            android:textColor="@color/green" />
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_margin_10dp"
@@ -50,22 +87,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/ic_calendar"
-                        android:hint="Tanggal Sekarang" />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/til_perhitungan_add_type"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_margin_5dp">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/et_perhitungan_add_type"
-                        style="@style/EtClickable"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_dropdown"
                         android:hint="Tanggal Sekarang" />
                 </android.support.design.widget.TextInputLayout>
 

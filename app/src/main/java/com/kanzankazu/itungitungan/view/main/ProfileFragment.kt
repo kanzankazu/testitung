@@ -137,7 +137,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     private fun initListener() {
         iv_profile_settings.setOnClickListener { }
         civ_profile_photo.setOnClickListener { }
-        civ_profile_photo_edit.setOnClickListener { PictureUtil.chooseImageDialog(mActivity) }
+        civ_profile_photo_edit.setOnClickListener { }
         cv_profile_signout.setOnClickListener {
             showProgressDialog()
             loginUtil.signOut(databaseUtil)
@@ -150,7 +150,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     }
 
     private fun setProfileData() {
-        tv_profile_name.setText(UserPreference.getInstance().name)
-        tv_profile_email.setText(UserPreference.getInstance().email)
+        tv_profile_name.text = UserPreference.getInstance().name
+        tv_profile_email.text = UserPreference.getInstance().email
     }
 }
