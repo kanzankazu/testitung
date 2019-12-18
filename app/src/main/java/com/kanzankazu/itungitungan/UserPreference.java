@@ -45,7 +45,7 @@ public class UserPreference {
     /**
      * Preference Helper
      */
-    private void removeSharedPrefByKey(String key) {
+    public void removeSharedPrefByKey(String key) {
         this.sharedPreferences.edit().remove(key).apply();
     }
 
@@ -115,10 +115,10 @@ public class UserPreference {
         return values;
     }
 
-    public void setIsFromNotification(Boolean isFromNotification) { putSharedPrefBoolean(SharedPreferenceConstants.PreferenceKey.FROM_NOTIFICATION, isFromNotification); }
+    public void setIsFromNotification(Boolean isFromNotification) { putSharedPrefBoolean(Constants.SharedPreference.FROM_NOTIFICATION, isFromNotification); }
 
     public Boolean getIsFromNotification() {
-        return getSharedPrefBoolean(SharedPreferenceConstants.PreferenceKey.FROM_NOTIFICATION);
+        return getSharedPrefBoolean(Constants.SharedPreference.FROM_NOTIFICATION);
     }
 
     /**

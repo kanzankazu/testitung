@@ -21,6 +21,7 @@ public class Constants {
         String LOGIN_STATUS = "LOGIN_STATUS";
         String FCM_TOKEN = "FCM_TOKEN";
         String UID = "UID";
+        String FROM_NOTIFICATION = "FROM_NOTIFICATION";
     }
 
     public interface LogInStatus {

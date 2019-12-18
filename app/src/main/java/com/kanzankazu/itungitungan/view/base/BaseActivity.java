@@ -10,6 +10,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.UserPreference;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
@@ -49,6 +50,7 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
     public void onBackPressed() {
         if (UserPreference.getInstance().getIsFromNotification()) {
             Utils.intentTo(this, MainActivity.class,true);
+            UserPreference.getInstance().removeSharedPrefByKey(Constants.SharedPreference.FROM_NOTIFICATION);
         } else {
             super.onBackPressed();
         }
