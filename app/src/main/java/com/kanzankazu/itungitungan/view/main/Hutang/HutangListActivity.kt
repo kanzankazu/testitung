@@ -3,6 +3,7 @@ package com.kanzankazu.itungitungan.view.main.Hutang
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
@@ -14,6 +15,8 @@ import kotlinx.android.synthetic.main.activity_hutang_list.*
 import kotlinx.android.synthetic.main.app_toolbar.*
 
 class HutangListActivity : BaseActivity(), HutangListContract.View {
+
+    private lateinit var hutangListAdapter: HutangListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +42,17 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     private fun setView() {
+        setRecyclerView()
+    }
+
+    private fun setRecyclerView() {
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rv_hutang_list.layoutManager = linearLayoutManager
+        toggleEmptyDataLayout(false)
+        hutangListAdapter = HutangListAdapter(this, this)
+        rv_hutang_list.adapter = hutangListAdapter
+        //swipe_refresh.setColorSchemeResources(R.color.cyan)
+        //swipe_refresh.setOnRefreshListener(this)
     }
 
     private fun setListener() {
@@ -54,5 +68,8 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 }
             })
         }
+    }
+
+    private fun toggleEmptyDataLayout(isVisible: Boolean) {
     }
 }

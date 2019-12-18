@@ -1,6 +1,6 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
-interface HutangListContract {
+interface HutangDetailContract {
     interface View {
 
     }
@@ -12,5 +12,4 @@ interface HutangListContract {
     interface Interactor {
 
     }
-
 }
