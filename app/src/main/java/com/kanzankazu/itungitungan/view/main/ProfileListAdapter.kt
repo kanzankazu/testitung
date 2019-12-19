@@ -11,19 +11,11 @@ import kotlinx.android.synthetic.main.item_profile.view.*
 /**
  * Created by Faisal Bahri on 2019-12-05.
  */
-class ProfileListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private lateinit var mActivity: Activity
-    private lateinit var mView: ProfileFragmentContract.View
-    private lateinit var datas: MutableList<ProfileModel>
-
-    constructor(mActivity: Activity, mView: ProfileFragmentContract.View) : this() {
-        this.mActivity = mActivity
-        this.mView = mView
-        this.datas = arrayListOf()
-    }
+class ProfileListAdapter(private val mActivity: Activity, private val mView: ProfileFragmentContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var datas: MutableList<ProfileModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(mActivity).inflate(R.layout.item_profile, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_profile, parent, false)
         return ProfileListAdapterAdapterHolder(view)
     }
 
@@ -106,5 +98,9 @@ class ProfileListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun updateSingleData(data: ProfileModel, position: Int) {
         this.datas.set(position, data)
         notifyDataSetChanged()
+    }
+
+    init {
+        this.datas = arrayListOf()
     }
 }

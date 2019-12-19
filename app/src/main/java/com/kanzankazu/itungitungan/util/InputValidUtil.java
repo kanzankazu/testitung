@@ -177,6 +177,17 @@ public class InputValidUtil {
         return matcher.matches();
     }
 
+    public static boolean isEmailOrPhone(final String errorMessage, TextInputLayout textInputLayout, EditText editText) {
+        if (isEmail(errorMessage) || isPhoneNumber(errorMessage)) {
+            textInputLayout.setErrorEnabled(false);
+            return false;
+        } else {
+            textInputLayout.setError(errorMessage);
+            textInputLayout.setErrorEnabled(true);
+            return true;
+        }
+    }
+
     public static boolean isNumeric(String str) {
         if (str == null) {
             return false;

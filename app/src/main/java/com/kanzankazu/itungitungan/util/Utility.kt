@@ -340,7 +340,7 @@ object Utility {
         datePickerDialog = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             DatePickerDialog(activity, myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
         } else {
-            DatePickerDialog(activity, android.app.AlertDialog.THEME_HOLO_LIGHT, myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+            DatePickerDialog(activity, android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK, myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
         }
         datePickerDialog.datePicker.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
         datePickerDialog.datePicker.tag = viewTarget.id

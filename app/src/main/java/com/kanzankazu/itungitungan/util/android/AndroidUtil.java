@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
-import android.view.View;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
@@ -39,7 +38,7 @@ public class AndroidUtil {
         return AccountPicker.newChooseAccountIntent(null, null, new String[]{GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE}, false, null, null, null, null);
     }
 
-    public static String pickContactResult(Activity activity, int requestCode, int resultCode, Intent data, boolean isPhoneNoElseName, View view) {
+    public static String pickContactResult(int requestCode, int resultCode, Intent data, Activity activity, boolean isPhoneNoElseName) {
         if (requestCode == REQ_CODE_PICK_CONTACT && resultCode == Activity.RESULT_OK) {
             Cursor cursor;
             try {

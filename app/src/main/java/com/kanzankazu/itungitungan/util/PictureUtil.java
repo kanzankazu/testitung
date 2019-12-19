@@ -1,7 +1,6 @@
 package com.kanzankazu.itungitungan.util;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -11,19 +10,27 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+
 import com.bumptech.glide.Glide;
 import com.kanzankazu.itungitungan.BuildConfig;
-import id.zelory.compressor.Compressor;
+import com.kanzankazu.itungitungan.R;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import id.zelory.compressor.Compressor;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -66,10 +73,7 @@ public class PictureUtil {
         if (requestCode == REQUEST_IMAGE_CAMERA && resultCode == RESULT_OK && mCurrentPhotoPath != null) { //FROM CAMERA
             try {
                 compressImage();
-                new Handler().postDelayed(() -> {
-                    //code here
-                    Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
-                }, 500);//interval
+                Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
 
                 /*documentDataList.get(currentIndex).setPhotoPath(mCurrentPhotoPath);
                 preApprovalUploadAdapter.addToList(currentIndex, mCurrentPhotoPath);
@@ -86,16 +90,18 @@ public class PictureUtil {
                 return mCurrentPhotoPath;
 
             } catch (Exception e) {
+                Snackbar.make(mActivity.findViewById(android.R.id.content), mActivity.getString(R.string.message_picture_failed), Snackbar.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) { //FROM GALLERY
             try {
                 Uri uri = data.getData();
-
                 String galleryPath = getRealPathFromURIPath(uri);
                 File file = new File(Uri.parse(galleryPath).getPath());
                 try {
-                    File compressedImage = new Compressor(mActivity).setQuality(50).setCompressFormat(Bitmap.CompressFormat.JPEG).compressToFile(file);
+                    File compressedImage = new Compressor(mActivity).setQuality(50)
+                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                            .compressToFile(file);
                     mCurrentPhotoPath = getRealPathFromURIPath(Uri.parse(compressedImage.getAbsolutePath()));
                     Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
 
@@ -127,40 +133,35 @@ public class PictureUtil {
     }
 
     private void openCamera() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                // Ensure that there's a camera activity to handle the intent
-                if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
-                    // Create the File where the photo should go
-                    File photoFile = null;
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+                mCurrentPhotoPath = photoFile.getAbsolutePath();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    // only for nougat and above camera
                     try {
-                        photoFile = createImageFile();
-                        mCurrentPhotoPath = photoFile.getAbsolutePath();
-                    } catch (IOException ex) {
-                        // Error occurred while creating the File
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mActivity,
+                                BuildConfig.APPLICATION_ID + ".provider", createImageFile()));
+                        mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            // only for nougat and above camera
-                            try {
-                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mActivity,
-                                        BuildConfig.APPLICATION_ID + ".provider", createImageFile()));
-                                mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                            mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
-                        }
-                    }
+                } else {
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                    mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
                 }
             }
-        },500);
+        }
     }
 
     private void openGallery() {
@@ -195,12 +196,21 @@ public class PictureUtil {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        Bitmap original = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(is), 1440, 1440, true);
+
+
+        Bitmap realImage = BitmapFactory.decodeStream(is);
+        int realWidth = (int) (realImage.getWidth() * 0.8);
+        int realHeight = (int) (realImage.getHeight() * 0.8);
+        float ratio = Math.min((float) realWidth / realImage.getWidth(), (float) realHeight / realImage.getHeight());
+        int width = Math.round(ratio * realImage.getWidth());
+        int height = Math.round(ratio * realImage.getHeight());
+
+        Bitmap original = Bitmap.createScaledBitmap(realImage, width, height, true);
+        //Bitmap original = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(is), 1440, 1440, true);
 
         try {
             ExifInterface ei = new ExifInterface(Uri.parse(mCurrentPhotoPath).getPath());
-            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_UNDEFINED);
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
 
             System.out.println("photo orientation : " + orientation);
 
