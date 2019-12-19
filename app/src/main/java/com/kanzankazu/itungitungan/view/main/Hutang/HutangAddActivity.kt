@@ -102,11 +102,9 @@ class HutangAddActivity : BaseActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
-                    til_hutang_add_price_installment.visibility = View.GONE
-                    til_hutang_add_installment.visibility = View.GONE
+                    ll_hutang_add_installment.visibility = View.GONE
                 } else {
-                    til_hutang_add_price_installment.visibility = View.VISIBLE
-                    til_hutang_add_installment.visibility = View.VISIBLE
+                    ll_hutang_add_installment.visibility = View.VISIBLE
                 }
             }
         }

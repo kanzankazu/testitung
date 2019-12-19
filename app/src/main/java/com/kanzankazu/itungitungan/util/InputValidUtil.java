@@ -178,7 +178,8 @@ public class InputValidUtil {
     }
 
     public static boolean isEmailOrPhone(final String errorMessage, TextInputLayout textInputLayout, EditText editText) {
-        if (isEmail(errorMessage) || isPhoneNumber(errorMessage)) {
+        String s = editText.getText().toString();
+        if (isEmail(s) || isPhoneNumber(s)) {
             textInputLayout.setErrorEnabled(false);
             return false;
         } else {
