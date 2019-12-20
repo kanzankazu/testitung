@@ -63,8 +63,7 @@ class SignInUpActivity :
             loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
         } else if (requestCode == GooglePhoneNumberValidation.REQ_CODE_G_PHONE_VALIDATION && resultCode == Activity.RESULT_OK) {
             if (GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data, true)) {
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+                moveToMain()
             } else {
                 showSnackbar(getString(R.string.message_phone_failed))
             }
@@ -77,12 +76,13 @@ class SignInUpActivity :
     override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
         dismissProgressDialog()
         val user = User(firebaseUser)
-        User.getUser(databaseUtil.getRootRef(false, false), user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
+        User.getUserByUid(databaseUtil.getRootRef(false, false), user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     val user1 = dataSnapshot.getValue(User::class.java) as User
                     signInUpControl(isSignUp = false, isFirst = false, user = user1)
                 } else {
+                    user.emailVerified = true
                     signInUpControl(isSignUp = false, isFirst = true, user = user)
                 }
             }
@@ -156,7 +156,7 @@ class SignInUpActivity :
         dismissProgressDialog()
         if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser)) {
             showSnackbar(message)
-            moveToNext()
+            moveToPhoneValidation()
         } else {
             signUpEmailSendVerify()
         }
@@ -206,12 +206,17 @@ class SignInUpActivity :
                 .build()
 
         if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser)) {
-            moveToNext()
+            moveToMain()
         }
     }
 
-    fun moveToNext() {
+    fun moveToPhoneValidation() {
         GooglePhoneNumberValidation.startPhoneNumberValidation(this)
+    }
+
+    fun moveToMain(){
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     fun signInByGoogle() {

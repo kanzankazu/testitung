@@ -104,10 +104,6 @@ class SignUpFragment : BaseFragment(),
         }
     }
 
-    override fun moveToNext() {
-        mContext.moveToNext()
-    }
-
     private fun initContent() {}
 
     private fun initListener() {

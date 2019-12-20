@@ -8,7 +8,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.UserPreference;
+import com.kanzankazu.itungitungan.util.DateTimeUtil;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
+import com.kanzankazu.itungitungan.util.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,16 +27,34 @@ public class Hutang {
     Boolean approvalGiver;
     Boolean approvalReceiver;
 
+    String desc;
+    String dueDt;
     String installmentPrice;
     String installmentTime;
-    String dueDt;
-    String desc;
 
     String Notes;
     String CreateAt;
     String CreateBy;
     String UpdateAt;
     String UpdateBy;
+
+    public Hutang() {
+    }
+
+    public Hutang(String hId, String giverId, String giverNm, String receiverId, String receiverNm, Boolean approvalGiver, Boolean approvalReceiver, String desc, String dueDt, String installmentPrice, String installmentTime, String notes) {
+        this.hId = hId;
+        this.GiverId = giverId;
+        this.GiverNm = giverNm;
+        this.ReceiverId = receiverId;
+        this.ReceiverNm = receiverNm;
+        this.approvalGiver = approvalGiver;
+        this.approvalReceiver = approvalReceiver;
+        this.desc = desc;
+        this.dueDt = dueDt;
+        this.installmentPrice = installmentPrice;
+        this.installmentTime = installmentTime;
+        this.Notes = notes;
+    }
 
     public static void isExistHutang(DatabaseReference database, Hutang hutang, FirebaseDatabaseUtil.ValueListenerData listenerData) {
         database.child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
@@ -56,6 +77,9 @@ public class Hutang {
         String primaryKey = rootReference.child(Constants.DATABASE_FIREBASE.TABLE.HUTANG).push().getKey();
         hutang.sethId(primaryKey);
 
+        hutang.setCreateAt(DateTimeUtils.getCurrentDate());
+        hutang.setCreateBy(UserPreference.getInstance().getUid());
+
         rootReference.child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
                 .child(hutang.gethId())
                 .setValue(hutang)
@@ -64,6 +88,10 @@ public class Hutang {
     }
 
     public static void updateHutang(DatabaseReference rootReference, Activity mActivity, Hutang hutang, FirebaseDatabaseUtil.ValueListenerString listenerString) {
+
+        hutang.setUpdateAt(DateTimeUtils.getCurrentDate());
+        hutang.setUpdateBy(UserPreference.getInstance().getUid());
+
         rootReference.child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
                 .child(hutang.gethId())
                 .setValue(hutang)

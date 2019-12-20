@@ -176,6 +176,31 @@ public class FirebaseDatabaseUtil {
         });
     }
 
+    /**
+     * getWhereData
+     *
+     * @param key
+     * @param whereData
+     * @return
+     */
+    public DatabaseReference getWhereData(String key, String whereData) {
+        DatabaseReference parentRef = getDataPrimaryKeyParent(key);
+        return getDataByEqualTo(parentRef, whereData).getRef();
+    }
+
+    /**
+     * getLimitData
+     *
+     * @param key
+     * @param limitData
+     * @param isFirst
+     * @return
+     */
+    public DatabaseReference getLimitData(String key, int limitData, boolean isFirst) {
+        DatabaseReference parentRef = getDataPrimaryKeyParent(key);
+        return getDataByLimit(parentRef, limitData,isFirst).getRef();
+    }
+
     public interface ValueListenerString {
         void onSuccess(String message);
 

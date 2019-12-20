@@ -3,7 +3,6 @@ package com.kanzankazu.itungitungan.util.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.util.widget.DateTimeUtils;
+import com.kanzankazu.itungitungan.util.DateTimeUtils;
 import com.kanzankazu.itungitungan.view_interface.CalendarOnClick;
 
 import java.text.SimpleDateFormat;

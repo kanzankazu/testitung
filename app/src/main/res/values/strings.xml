@@ -24,6 +24,7 @@
     <string name="message_field_empty">Data ini tidak boleh kosong</string>
     <string name="message_radio_empty">Anda belum memilih!!!</string>
     <string name="message_field_email_wrong_format">Format email salah [***@***.***]</string>
+    <string name="message_validation_failed">Tolong Lengkapi data - data yang ada tanda *</string>
     <string name="message_signin_success">Masuk Berhasil</string>
     <string name="message_signin_failed">Masuk Gagal</string>
     <string name="message_signout_success">Keluar berhasil</string>
@@ -40,6 +41,8 @@
     <string name="message_email_sent_failed">Email verifikasi gagal terkirim</string>
     <string name="message_email_verified_not">Anda belum konfirmasi email dari kami</string>
     <string name="message_welcome">Selamat datang %s di Itung-itungan</string>
+    <string name="message_picture_failed">Terjadi kesalahan saat memproses gambar Anda</string>
+    <string name="message_phone_failed">gagal untuk validasi no Hp</string>
 
     <!--Profile-->
     <string name="sign_in">Masuk</string>
@@ -58,7 +61,5 @@
     <string name="about">Tentang Aplikasi</string>
     <string name="fs_code">FS Code</string>
     <string name="t_message">Your message</string>
-    <string name="message_picture_failed">Terjadi kesalahan saat memproses gambar Anda</string>
-    <string name="message_phone_failed">gagal untuk validasi no Hp</string>
 
 </resources>

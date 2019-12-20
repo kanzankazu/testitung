@@ -269,7 +269,7 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Successfully signed in with email link!");
                             AuthResult result = task.getResult();
-                            // You can access the new USER via result.getUser()
+                            // You can access the new USER via result.getUserByUid()
                             // Additional USER info profile *not* available via:
                             // result.getAdditionalUserInfo().getProfile() == null
                             // You can check if the USER is new or existing:
@@ -293,7 +293,7 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
                     if (task.isSuccessful()) {
                         Log.d(TAG, "Successfully linked emailLink credential!");
                         AuthResult result = task.getResult();
-                        // You can access the new USER via result.getUser()
+                        // You can access the new USER via result.getUserByUid()
                         // Additional USER info profile *not* available via:
                         // result.getAdditionalUserInfo().getProfile() == null
                         // You can check if the USER is new or existing:

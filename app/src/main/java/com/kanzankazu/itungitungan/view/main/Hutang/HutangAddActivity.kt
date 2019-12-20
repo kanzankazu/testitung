@@ -11,6 +11,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RadioButton
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.UserPreference
+import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.PictureUtil
 import com.kanzankazu.itungitungan.util.Utils
@@ -65,15 +68,6 @@ class HutangAddActivity : BaseActivity() {
         }
     }
 
-    private fun checkData(): Boolean {
-        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, actv_hutang_add_user, false)) return false
-        if (!InputValidUtil.isEmailOrPhone(actv_hutang_add_user.text.toString(), til_hutang_add_user, actv_hutang_add_user)) return false
-        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false)) return false
-        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false)) return false
-        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, false)) return false
-        return true
-    }
-
     private fun setView() {
         Utils.setupAppToolbarForActivity(this, toolbar)
 
@@ -102,16 +96,6 @@ class HutangAddActivity : BaseActivity() {
             }
         }
 
-        rg_hutang_add_user.setOnCheckedChangeListener { group, _ ->
-            val radioButtonID = group.checkedRadioButtonId
-            val view = group.findViewById<View>(radioButtonID)
-            val index = group.indexOfChild(view)
-            val radioButton = group.getChildAt(index) as RadioButton
-            val selectedtext = radioButton.text.toString()
-
-            checkData()
-        }
-
         actv_hutang_add_user.addTextChangedListener(watcherValidate)
         et_hutang_add_nominal.addTextChangedListener(watcherValidate)
         et_hutang_add_desc.addTextChangedListener(watcherValidate)
@@ -122,24 +106,29 @@ class HutangAddActivity : BaseActivity() {
         et_hutang_add_date.setOnClickListener { Utility.showCalendarDialog(this, et_hutang_add_date) }
         et_hutang_add_due_date.setOnClickListener { Utility.showCalendarDialog(this, et_hutang_add_due_date) }
 
-        iv_hutang_add_user.setOnClickListener { chooseDialog() }
-        civ_hutang_add_bukti1.setOnClickListener { getImage(civ_hutang_add_bukti1) }
-        civ_hutang_add_bukti2.setOnClickListener { getImage(civ_hutang_add_bukti2) }
-        civ_hutang_add_bukti3.setOnClickListener { getImage(civ_hutang_add_bukti3) }
-        tv_hutang_add_simpan.setOnClickListener {
-            if (checkData()) {
-            } else {
-            }
-        }
+        iv_hutang_add_user.setOnClickListener { chooseDialogPickUserData() }
+        civ_hutang_add_bukti1.setOnClickListener { chooseDialogPickImage(civ_hutang_add_bukti1) }
+        civ_hutang_add_bukti2.setOnClickListener { chooseDialogPickImage(civ_hutang_add_bukti2) }
+        civ_hutang_add_bukti3.setOnClickListener { chooseDialogPickImage(civ_hutang_add_bukti3) }
+        tv_hutang_add_simpan.setOnClickListener { saveHutang() }
     }
 
-    private fun getImage(imageView: ImageView) {
+    private fun checkData(): Boolean {
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, actv_hutang_add_user, false)) return false
+        if (!InputValidUtil.isEmailOrPhone(actv_hutang_add_user.text.toString(), til_hutang_add_user, actv_hutang_add_user)) return false
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false)) return false
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false)) return false
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, false)) return false
+        return true
+    }
+
+    private fun chooseDialogPickImage(imageView: ImageView) {
         if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
             pictureUtil.chooseGetImageDialog(imageView)
         }
     }
 
-    private fun chooseDialog() {
+    private fun chooseDialogPickUserData() {
         val items = arrayOf("Pilih Kontak", "Pilih Email")
 
         val chooseImageDialog = AlertDialog.Builder(this)
@@ -154,12 +143,53 @@ class HutangAddActivity : BaseActivity() {
         chooseImageDialog.show()
     }
 
-    private fun getRadioGroupButtonText(): String {
+    private fun getRadioGroupIndex(): Int {
         val radioButtonID = rg_hutang_add_user.checkedRadioButtonId
         val view = rg_hutang_add_user.findViewById<View>(radioButtonID)
         val index = rg_hutang_add_user.indexOfChild(view)
         val radioButton = rg_hutang_add_user.getChildAt(index) as RadioButton
-        return radioButton.text.toString()
+        val toString = radioButton.text.toString()
+        return index
+    }
+
+    private fun saveHutang() {
+        if (checkData()) {
+            val hutang = Hutang()
+            if (getRadioGroupIndex() == 0) {
+                hutang.receiverId = UserPreference.getInstance().uid
+                hutang.receiverNm = UserPreference.getInstance().name
+                hutang.approvalReceiver = true
+                hutang.approvalGiver = false
+            } else {
+                hutang.giverId = UserPreference.getInstance().uid
+                hutang.giverNm = UserPreference.getInstance().name
+                hutang.approvalReceiver = false
+                hutang.approvalGiver = true
+            }
+
+            hutang.desc = et_hutang_add_desc.text.toString().trim()
+            hutang.notes = et_hutang_add_note.text.toString().trim()
+
+            hutang.dueDt = et_hutang_add_due_date.text.toString().trim()
+            hutang.installmentPrice = et_hutang_add_price_installment.text.toString().trim()
+            hutang.installmentTime = et_hutang_add_installment.text.toString().trim()
+
+            showProgressDialog()
+
+            Hutang.setHutang(databaseUtil.getRootRef(false, false), this, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+                override fun onSuccess(message: String?) {
+                    dismissProgressDialog()
+                    showSnackbar(message)
+                }
+
+                override fun onFailure(message: String?) {
+                    dismissProgressDialog()
+                    showSnackbar(message)
+                }
+            })
+        } else {
+            showSnackbar(getString(R.string.message_validation_failed))
+        }
     }
 
 }

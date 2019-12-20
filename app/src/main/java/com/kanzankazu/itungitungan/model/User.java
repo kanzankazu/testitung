@@ -119,7 +119,7 @@ public class User {
 
     public static void outUser(DatabaseReference rootReference, Activity mActivity, FirebaseDatabaseUtil.ValueListenerString listenerString) {
         String uid = UserPreference.getInstance().getUid();
-        getUser(rootReference, uid, true, new FirebaseDatabaseUtil.ValueListenerData() {
+        getUserByUid(rootReference, uid, true, new FirebaseDatabaseUtil.ValueListenerData() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -136,7 +136,7 @@ public class User {
         });
     }
 
-    public static void getUser(DatabaseReference rootReference, String uId, Boolean isSingleCall, FirebaseDatabaseUtil.ValueListenerData listenerData) {
+    public static void getUserByUid(DatabaseReference rootReference, String uId, Boolean isSingleCall, FirebaseDatabaseUtil.ValueListenerData listenerData) {
         if (isSingleCall) {
             rootReference.child(Constants.DATABASE_FIREBASE.TABLE.USER)
                     .child(uId)

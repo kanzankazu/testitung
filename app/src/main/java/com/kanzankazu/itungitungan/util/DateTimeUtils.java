@@ -1,4 +1,4 @@
-package com.kanzankazu.itungitungan.util.widget;
+package com.kanzankazu.itungitungan.util;
 
 import android.widget.TextView;
 
