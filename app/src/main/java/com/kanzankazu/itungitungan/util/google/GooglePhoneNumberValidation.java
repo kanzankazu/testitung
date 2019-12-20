@@ -20,11 +20,17 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
-import com.google.firebase.auth.*;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.hbb20.CountryCodePicker;
 import com.kanzankazu.itungitungan.R;
 
@@ -232,6 +238,10 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
         } else {
             return "";
         }
+    }
+
+    public static Boolean onActivityResults(int requestCode, int resultCode, Intent data, Boolean isVerify) {
+        return requestCode == REQ_CODE_G_PHONE_VALIDATION && resultCode == Activity.RESULT_OK;
     }
 
     @Override

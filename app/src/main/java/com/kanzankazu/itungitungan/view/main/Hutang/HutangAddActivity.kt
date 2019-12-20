@@ -7,7 +7,6 @@ import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.RadioButton
@@ -67,18 +66,12 @@ class HutangAddActivity : BaseActivity() {
     }
 
     private fun checkData(): Boolean {
-        return when {
-            /*!InputValidUtil.isRadioGroupChecked(rg_hutang_add_user) -> {
-                showSnackbar(getString(R.string.message_radio_empty))
-                false
-            }*/
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, actv_hutang_add_user, false) -> false
-            !InputValidUtil.isEmailOrPhone(actv_hutang_add_user.text.toString(), til_hutang_add_user, actv_hutang_add_user) -> false
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false) -> false
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false) -> false
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, false) -> false
-            else -> true
-        }
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, actv_hutang_add_user, false)) return false
+        if (!InputValidUtil.isEmailOrPhone(actv_hutang_add_user.text.toString(), til_hutang_add_user, actv_hutang_add_user)) return false
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false)) return false
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false)) return false
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, false)) return false
+        return true
     }
 
     private fun setView() {

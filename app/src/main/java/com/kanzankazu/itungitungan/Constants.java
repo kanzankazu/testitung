@@ -2,6 +2,7 @@ package com.kanzankazu.itungitungan;
 
 import android.Manifest;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Constants {
 
@@ -52,12 +53,14 @@ public class Constants {
     public interface DATABASE_FIREBASE {
         interface TABLE {
             String USER = "user";
+            String HUTANG = "hutang";
         }
 
         interface ROW {
             String EMAIL = "email";
             String TOKEN_FCM = "tokenFcm";
             String UID = "uid";
+            String HID = "hid";
         }
     }
 
@@ -65,7 +68,7 @@ public class Constants {
         String Anggaran = "Anggaran";
         String Banding = "Banding harga";
         String Keuangan = "Keuangan";
-        String Hutang = "Hutang";
+        String Hutang = "HutangModel";
         String Stok  = "Stok Barang";
     }
 }

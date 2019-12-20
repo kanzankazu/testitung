@@ -59,5 +59,6 @@
     <string name="fs_code">FS Code</string>
     <string name="t_message">Your message</string>
     <string name="message_picture_failed">Terjadi kesalahan saat memproses gambar Anda</string>
+    <string name="message_phone_failed">gagal untuk validasi no Hp</string>
 
 </resources>

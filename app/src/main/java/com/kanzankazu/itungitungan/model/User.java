@@ -29,17 +29,22 @@ public class User {
 
     private String key;
     private String uId;
+
     private String level;
+
     private String tokenAccess;
     private String tokenFcm;
     private String token;
+
     private String name;
     private String email;
     private String phone;
     private String photoUrl;
     private String photoDt;
+
     private Boolean isEmailVerified;
     private Boolean isSignIn;
+
     private String firstSignIn;
     private String lastSignIn;
     private String lastSignOut;
@@ -50,6 +55,7 @@ public class User {
         this.email = user.getEmail();
         this.phone = user.getPhoneNumber();
         this.uId = user.getUid();
+        this.photoUrl = user.getPhotoUrl().getPath();
     }
 
     public User() {
