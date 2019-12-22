@@ -1,6 +1,8 @@
 package com.kanzankazu.itungitungan.util;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -72,7 +75,7 @@ public class PictureUtil {
         System.out.println("data on activity result : " + data);
         if (requestCode == REQUEST_IMAGE_CAMERA && resultCode == RESULT_OK && mCurrentPhotoPath != null) { //FROM CAMERA
             try {
-                compressImage();
+                //compressImage();
                 Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
 
                 /*documentDataList.get(currentIndex).setPhotoPath(mCurrentPhotoPath);
@@ -150,8 +153,7 @@ public class PictureUtil {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     // only for nougat and above camera
                     try {
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mActivity,
-                                BuildConfig.APPLICATION_ID + ".provider", createImageFile()));
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", createImageFile()));
                         mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -313,5 +315,10 @@ public class PictureUtil {
         }
     }
 
+    public static String getFileExtension(Activity activity, Uri uri) {
+        ContentResolver cR = activity.getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
 
 }

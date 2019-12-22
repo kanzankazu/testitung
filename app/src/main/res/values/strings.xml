@@ -61,5 +61,8 @@
     <string name="about">Tentang Aplikasi</string>
     <string name="fs_code">FS Code</string>
     <string name="t_message">Your message</string>
+    <string name="invite_piutang">Undang Piutang *</string>
+    <string name="invite_penghutang">Undang Penghutang *</string>
+    <string name="invite_keluarga">Undang Keluarga</string>
 
 </resources>

@@ -9,51 +9,43 @@ import com.google.firebase.database.ValueEventListener;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.UserPreference;
-import com.kanzankazu.itungitungan.util.DateTimeUtil;
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
 import com.kanzankazu.itungitungan.util.DateTimeUtils;
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Hutang {
     String hId;
+    int hutangRadioIndex;
 
-    String GiverId;
-    String GiverNm;
-    String ReceiverId;
-    String ReceiverNm;
+    String piutangId;
+    String piutangNama;
+    String piutangEmail;
+    Boolean piutangPersetujuan;
+    String penghutangId;
+    String penghutangNama;
+    String penghutangEmail;
+    Boolean penghutangPersetujuan;
 
-    Boolean approvalGiver;
-    Boolean approvalReceiver;
+    String hutangKeluargaId;
+    String hutangKeluargaName;
 
-    String desc;
-    String dueDt;
-    String installmentPrice;
-    String installmentTime;
+    String hutangKeterangan;
+    String hutangCatatan;
+    String hutangBuktiGambar0;
+    String hutangBuktiGambar1;
 
-    String Notes;
+    String hutangCicilanTanggalAkhir;
+    String hutangCicilanHarga;
+    String hutangCicilanWaktu;
+
     String CreateAt;
     String CreateBy;
     String UpdateAt;
     String UpdateBy;
 
     public Hutang() {
-    }
-
-    public Hutang(String hId, String giverId, String giverNm, String receiverId, String receiverNm, Boolean approvalGiver, Boolean approvalReceiver, String desc, String dueDt, String installmentPrice, String installmentTime, String notes) {
-        this.hId = hId;
-        this.GiverId = giverId;
-        this.GiverNm = giverNm;
-        this.ReceiverId = receiverId;
-        this.ReceiverNm = receiverNm;
-        this.approvalGiver = approvalGiver;
-        this.approvalReceiver = approvalReceiver;
-        this.desc = desc;
-        this.dueDt = dueDt;
-        this.installmentPrice = installmentPrice;
-        this.installmentTime = installmentTime;
-        this.Notes = notes;
     }
 
     public static void isExistHutang(DatabaseReference database, Hutang hutang, FirebaseDatabaseUtil.ValueListenerData listenerData) {
@@ -165,10 +157,10 @@ public class Hutang {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             List<Hutang> hutangs = new ArrayList<>();
-                            /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 Hutang hutang = snapshot.getValue(Hutang.class);
                                 hutangs.add(hutang);
-                            }*/
+                            }
 
                             listenerDatas.onSuccess(dataSnapshot.getChildren());
                         }
@@ -191,6 +183,21 @@ public class Hutang {
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
     }
 
+    public String getHutangKeluargaId() {
+        return hutangKeluargaId;
+    }
+
+    public void setHutangKeluargaId(String hutangKeluargaId) {
+        this.hutangKeluargaId = hutangKeluargaId;
+    }
+
+    public String getHutangKeluargaName() {
+        return hutangKeluargaName;
+    }
+
+    public void setHutangKeluargaName(String hutangKeluargaName) {
+        this.hutangKeluargaName = hutangKeluargaName;
+    }
 
     public String gethId() {
         return hId;
@@ -200,92 +207,132 @@ public class Hutang {
         this.hId = hId;
     }
 
-    public String getGiverId() {
-        return GiverId;
+    public int getHutangRadioIndex() {
+        return hutangRadioIndex;
     }
 
-    public void setGiverId(String giverId) {
-        GiverId = giverId;
+    public void setHutangRadioIndex(int hutangRadioIndex) {
+        this.hutangRadioIndex = hutangRadioIndex;
     }
 
-    public String getGiverNm() {
-        return GiverNm;
+    public String getPiutangId() {
+        return piutangId;
     }
 
-    public void setGiverNm(String giverNm) {
-        GiverNm = giverNm;
+    public void setPiutangId(String piutangId) {
+        this.piutangId = piutangId;
     }
 
-    public String getReceiverId() {
-        return ReceiverId;
+    public String getPiutangNama() {
+        return piutangNama;
     }
 
-    public void setReceiverId(String receiverId) {
-        ReceiverId = receiverId;
+    public void setPiutangNama(String piutangNama) {
+        this.piutangNama = piutangNama;
     }
 
-    public String getReceiverNm() {
-        return ReceiverNm;
+    public String getPenghutangId() {
+        return penghutangId;
     }
 
-    public void setReceiverNm(String receiverNm) {
-        ReceiverNm = receiverNm;
+    public void setPenghutangId(String penghutangId) {
+        this.penghutangId = penghutangId;
     }
 
-    public Boolean getApprovalGiver() {
-        return approvalGiver;
+    public String getPenghutangNama() {
+        return penghutangNama;
     }
 
-    public void setApprovalGiver(Boolean approvalGiver) {
-        this.approvalGiver = approvalGiver;
+    public void setPenghutangNama(String penghutangNama) {
+        this.penghutangNama = penghutangNama;
     }
 
-    public Boolean getApprovalReceiver() {
-        return approvalReceiver;
+    public String getPiutangEmail() {
+        return piutangEmail;
     }
 
-    public void setApprovalReceiver(Boolean approvalReceiver) {
-        this.approvalReceiver = approvalReceiver;
+    public void setPiutangEmail(String piutangEmail) {
+        this.piutangEmail = piutangEmail;
     }
 
-    public String getInstallmentPrice() {
-        return installmentPrice;
+    public String getPenghutangEmail() {
+        return penghutangEmail;
     }
 
-    public void setInstallmentPrice(String installmentPrice) {
-        this.installmentPrice = installmentPrice;
+    public void setPenghutangEmail(String penghutangEmail) {
+        this.penghutangEmail = penghutangEmail;
     }
 
-    public String getInstallmentTime() {
-        return installmentTime;
+    public Boolean getPiutangPersetujuan() {
+        return piutangPersetujuan;
     }
 
-    public void setInstallmentTime(String installmentTime) {
-        this.installmentTime = installmentTime;
+    public void setPiutangPersetujuan(Boolean piutangPersetujuan) {
+        this.piutangPersetujuan = piutangPersetujuan;
     }
 
-    public String getDueDt() {
-        return dueDt;
+    public Boolean getPenghutangPersetujuan() {
+        return penghutangPersetujuan;
     }
 
-    public void setDueDt(String dueDt) {
-        this.dueDt = dueDt;
+    public void setPenghutangPersetujuan(Boolean penghutangPersetujuan) {
+        this.penghutangPersetujuan = penghutangPersetujuan;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getHutangCicilanHarga() {
+        return hutangCicilanHarga;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setHutangCicilanHarga(String hutangCicilanHarga) {
+        this.hutangCicilanHarga = hutangCicilanHarga;
     }
 
-    public String getNotes() {
-        return Notes;
+    public String getHutangCicilanWaktu() {
+        return hutangCicilanWaktu;
     }
 
-    public void setNotes(String notes) {
-        Notes = notes;
+    public void setHutangCicilanWaktu(String hutangCicilanWaktu) {
+        this.hutangCicilanWaktu = hutangCicilanWaktu;
+    }
+
+    public String getHutangCicilanTanggalAkhir() {
+        return hutangCicilanTanggalAkhir;
+    }
+
+    public void setHutangCicilanTanggalAkhir(String hutangCicilanTanggalAkhir) {
+        this.hutangCicilanTanggalAkhir = hutangCicilanTanggalAkhir;
+    }
+
+    public String getHutangKeterangan() {
+        return hutangKeterangan;
+    }
+
+    public void setHutangKeterangan(String hutangKeterangan) {
+        this.hutangKeterangan = hutangKeterangan;
+    }
+
+    public String getHutangCatatan() {
+        return hutangCatatan;
+    }
+
+    public void setHutangCatatan(String hutangCatatan) {
+        this.hutangCatatan = hutangCatatan;
+    }
+
+    public String getHutangBuktiGambar0() {
+        return hutangBuktiGambar0;
+    }
+
+    public void setHutangBuktiGambar0(String hutangBuktiGambar0) {
+        this.hutangBuktiGambar0 = hutangBuktiGambar0;
+    }
+
+    public String getHutangBuktiGambar1() {
+        return hutangBuktiGambar1;
+    }
+
+    public void setHutangBuktiGambar1(String hutangBuktiGambar1) {
+        this.hutangBuktiGambar1 = hutangBuktiGambar1;
     }
 
     public String getCreateAt() {

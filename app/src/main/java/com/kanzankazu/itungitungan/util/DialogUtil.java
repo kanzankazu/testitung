@@ -21,7 +21,6 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseRemoteConfigOnNext;
 public class DialogUtil {
 
     public static void generateCustomAlertDialog(Context context, View view, String title, Boolean twoButton, @Nullable DialogInterface.OnClickListener positiveListener) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(view);
         builder.setTitle(title);

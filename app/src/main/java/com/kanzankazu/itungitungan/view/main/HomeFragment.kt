@@ -8,9 +8,7 @@ import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
-import com.kanzankazu.itungitungan.view.main.Hutang.HutangAddActivity
 import com.kanzankazu.itungitungan.view.main.Hutang.HutangListActivity
-import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment(), HomeContract.View {

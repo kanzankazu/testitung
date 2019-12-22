@@ -63,7 +63,23 @@ class SignInUpActivity :
             loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
         } else if (requestCode == GooglePhoneNumberValidation.REQ_CODE_G_PHONE_VALIDATION && resultCode == Activity.RESULT_OK) {
             if (GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data, true)) {
-                moveToMain()
+                showProgressDialog()
+                User.setPhoneNumberUser(
+                        databaseUtil.getRootRef(false, false),
+                        UserPreference.getInstance().uid,
+                        GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data),
+                        object : FirebaseDatabaseUtil.ValueListenerString {
+                            override fun onSuccess(message: String?) {
+                                dismissProgressDialog()
+                                moveToMain()
+                            }
+
+                            override fun onFailure(message: String?) {
+                                dismissProgressDialog()
+                                showSnackbar(message)
+                            }
+                        }
+                )
             } else {
                 showSnackbar(getString(R.string.message_phone_failed))
             }
@@ -72,18 +88,17 @@ class SignInUpActivity :
         }
     }
 
-    /*LOGREG*/
     override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
         dismissProgressDialog()
-        val user = User(firebaseUser)
-        User.getUserByUid(databaseUtil.getRootRef(false, false), user.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
+        val userFirebaseSignIn = User(firebaseUser)
+        User.getUserByUid(databaseUtil.getRootRef(false, false), userFirebaseSignIn.getuId(), true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    val user1 = dataSnapshot.getValue(User::class.java) as User
-                    signInUpControl(isSignUp = false, isFirst = false, user = user1)
+                    val userDatabase = dataSnapshot.getValue(User::class.java) as User
+                    signInUpControl(isSignUp = false, isFirst = false, user = userDatabase)
                 } else {
-                    user.emailVerified = true
-                    signInUpControl(isSignUp = false, isFirst = true, user = user)
+                    userFirebaseSignIn.emailVerified = true
+                    signInUpControl(isSignUp = false, isFirst = true, user = userFirebaseSignIn)
                 }
             }
 
@@ -111,18 +126,18 @@ class SignInUpActivity :
     }
 
     /**/
-    override fun uiSignUpSuccess(user: User) {
+    override fun uiSignUpSuccess(userFirebaseSignUp: User) {
         dismissProgressDialog()
         etSignUpName.setText("")
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        User.isExistUser(databaseUtil.getRootRef(false, false), user, object : FirebaseDatabaseUtil.ValueListenerData {
+        User.isExistUser(databaseUtil.getRootRef(false, false), userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     showSnackbar(getString(R.string.message_database_data_exist))
                 } else {
-                    signInUpControl(isSignUp = true, isFirst = true, user = user)
+                    signInUpControl(isSignUp = true, isFirst = true, user = userFirebaseSignUp)
                 }
             }
 
@@ -214,7 +229,7 @@ class SignInUpActivity :
         GooglePhoneNumberValidation.startPhoneNumberValidation(this)
     }
 
-    fun moveToMain(){
+    fun moveToMain() {
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }

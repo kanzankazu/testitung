@@ -31,8 +31,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.google.android.gms.fido.fido2.api.common.RequestOptions
 import com.google.gson.Gson
 import com.kanzankazu.itungitungan.R
 import kotlinx.android.synthetic.main.layout_confirmation_dialog.*
@@ -90,13 +88,13 @@ object Utility {
         }
 
         var original =
-            Bitmap.createScaledBitmap(BitmapFactory.decodeStream(inputStream), 1440, 1440, true)
+                Bitmap.createScaledBitmap(BitmapFactory.decodeStream(inputStream), 1440, 1440, true)
 
         try {
             val ei = ExifInterface(Uri.parse(mCurrentPhotoPath).path)
             val orientation = ei.getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED
             )
 
             when (orientation) {
@@ -147,7 +145,7 @@ object Utility {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_"
         val storageDir = Environment.getExternalStoragePublicDirectory(
-            Environment.DIRECTORY_PICTURES
+                Environment.DIRECTORY_PICTURES
         )
         return File.createTempFile(imageFileName, ".jpg", storageDir)
     }
@@ -179,7 +177,6 @@ object Utility {
             return cursor.getString(idx)
         }
     }
-
 
 
     fun intentWithClearTask(activity: AppCompatActivity?, classDestination: Class<*>) {
@@ -223,8 +220,8 @@ object Utility {
         val matrix = Matrix()
         matrix.postRotate(angle)
         return Bitmap.createBitmap(
-            source, 0, 0, source.width, source.height,
-            matrix, true
+                source, 0, 0, source.width, source.height,
+                matrix, true
         )
     }
 
@@ -232,9 +229,9 @@ object Utility {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val REQUEST_CODE = 11
             val appPermission = arrayListOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
 
             val neededPermission: ArrayList<String> = ArrayList()
             for (permission in appPermission) {
@@ -246,9 +243,9 @@ object Utility {
             if (neededPermission.isNotEmpty()) {
                 val array = arrayOfNulls<String>(neededPermission.size)
                 ActivityCompat.requestPermissions(
-                    activity,
-                    neededPermission.toArray(array),
-                    REQUEST_CODE
+                        activity,
+                        neededPermission.toArray(array),
+                        REQUEST_CODE
                 )
                 return false
             }
@@ -259,17 +256,17 @@ object Utility {
     fun requestWriteExternalStoragePermission(activity: Activity) {
         if (Build.VERSION.SDK_INT >= 23) {
             if (ActivityCompat.checkSelfPermission(
-                    activity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED
+                            activity,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
             ) {
                 Log.i("Permission", "Permission to Write External Storage Granted")
             } else {
                 Log.i("Permission", "Permission to Write External Storage Revoked")
                 ActivityCompat.requestPermissions(
-                    activity,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    11
+                        activity,
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        11
                 )
             }
         } else {
@@ -280,15 +277,15 @@ object Utility {
     fun requestReadExternalStoragePermission(activity: Activity) {
         if (Build.VERSION.SDK_INT >= 23) {
             if (ActivityCompat.checkSelfPermission(
-                    activity,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            activity,
+                            Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Log.i("Permission", "Permission to Read External Storage Granted")
             } else {
                 Log.i("Permission", "Permission to Read External Storage Revoked")
                 ActivityCompat.requestPermissions(
-                    activity,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    12
+                        activity,
+                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                        12
                 )
             }
         } else {
@@ -299,15 +296,15 @@ object Utility {
     fun requestCameraPermission(activity: Activity) {
         if (Build.VERSION.SDK_INT >= 23) {
             if (ActivityCompat.checkSelfPermission(
-                    activity,
-                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                            activity,
+                            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 Log.i("Permission", "Permission to Access Camera Granted")
             } else {
                 Log.i("Permission", "Permission to Access Camera Revoked")
                 ActivityCompat.requestPermissions(
-                    activity,
-                    arrayOf(Manifest.permission.CAMERA),
-                    13
+                        activity,
+                        arrayOf(Manifest.permission.CAMERA),
+                        13
                 )
             }
         } else {
@@ -351,8 +348,8 @@ object Utility {
     fun showConfirmationDialog(activity: Activity, dialogButtonListener: DialogButtonListener, dialogTitle: String, dialogDescription: String) {
         if (!activity.isFinishing) {
             val dialog = AlertDialog.Builder(activity)
-                .setView(activity.layoutInflater.inflate(R.layout.layout_confirmation_dialog, null))
-                .show()
+                    .setView(activity.layoutInflater.inflate(R.layout.layout_confirmation_dialog, null))
+                    .show()
             val tvConfirmationDialogTitle = dialog.tv_confirmation_text
             val tvConfirmationDialogDescription = dialog.tv_confirmation_description
             val tvCloseDialog = dialog.btn_close_dialog
@@ -375,9 +372,9 @@ object Utility {
     fun showDisclaimerDialog(activity: Activity, title: String, content: String) {
         if (!activity.isFinishing) {
             val dialog = AlertDialog.Builder(activity)
-                .setView(activity.layoutInflater.inflate(R.layout.layout_dialog_disclaimer, null))
-                .setCancelable(false)
-                .show()
+                    .setView(activity.layoutInflater.inflate(R.layout.layout_dialog_disclaimer, null))
+                    .setCancelable(false)
+                    .show()
 
             val tvTitleDialog = dialog.findViewById<TextView>(R.id.tv_disclaimer_title)
             val tvDescDialog = dialog.findViewById<TextView>(R.id.tv_disclaimer_description)
@@ -396,9 +393,9 @@ object Utility {
     fun showDisclaimerDialog(activity: Activity, title: String, content: String, dialogButtonListener: DialogButtonListener) {
         if (!activity.isFinishing) {
             val dialog = AlertDialog.Builder(activity)
-                .setView(activity.layoutInflater.inflate(R.layout.layout_dialog_disclaimer, null))
-                .setCancelable(false)
-                .show()
+                    .setView(activity.layoutInflater.inflate(R.layout.layout_dialog_disclaimer, null))
+                    .setCancelable(false)
+                    .show()
 
             val tvTitleDialog = dialog.findViewById<TextView>(R.id.tv_disclaimer_title)
             val tvDescDialog = dialog.findViewById<TextView>(R.id.tv_disclaimer_description)
@@ -418,9 +415,9 @@ object Utility {
     fun showRetryDialog(activity: Activity, dialogButtonListener: DialogButtonListener) {
         if (!activity.isFinishing) {
             val dialog = AlertDialog.Builder(activity)
-                .setView(activity.layoutInflater.inflate(R.layout.layout_dialog_single_button, null))
-                .setCancelable(false)
-                .show()
+                    .setView(activity.layoutInflater.inflate(R.layout.layout_dialog_single_button, null))
+                    .setCancelable(false)
+                    .show()
 
             val ivDialog = dialog.findViewById<ImageView>(R.id.iv_single_button_dialog)
             val tvDescDialog = dialog.findViewById<TextView>(R.id.tv_single_button_dialog)
@@ -439,9 +436,9 @@ object Utility {
     fun showRetryDialog(activity: Activity, message: String, image: Int, btnMessage: String, dialogButtonListener: DialogButtonListener) {
         if (!activity.isFinishing) {
             val dialog = AlertDialog.Builder(activity)
-                .setView(activity.layoutInflater.inflate(R.layout.layout_dialog_single_button, null))
-                .setCancelable(false)
-                .show()
+                    .setView(activity.layoutInflater.inflate(R.layout.layout_dialog_single_button, null))
+                    .setCancelable(false)
+                    .show()
 
             val ivDialog = dialog.findViewById<ImageView>(R.id.iv_single_button_dialog)
             val tvDescDialog = dialog.findViewById<TextView>(R.id.tv_single_button_dialog)
@@ -462,7 +459,7 @@ object Utility {
             val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
             val sbView = snackbar.view
             val textView =
-                sbView.findViewById<TextView>(R.id.snackbar_text)
+                    sbView.findViewById<TextView>(R.id.snackbar_text)
             textView.setTextColor(Color.WHITE)
             textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
             snackbar.show()
@@ -479,11 +476,11 @@ object Utility {
                 sCredit = inputCredit.substring(0, inputCredit.indexOf("."))
                 credit = Integer.parseInt(sCredit)
                 sCredit =
-                    "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit.toLong()).replace(',', '.')
+                        "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit.toLong()).replace(',', '.')
             } else {
                 credit = Integer.parseInt(inputCredit)
                 sCredit =
-                    "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit.toLong()).replace(',', '.')
+                        "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit.toLong()).replace(',', '.')
             }
         } catch (e: Exception) {
             e.printStackTrace()

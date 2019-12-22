@@ -2,17 +2,19 @@ package com.kanzankazu.itungitungan.view.main.Hutang
 
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_hutang_list.*
 import kotlinx.android.synthetic.main.app_toolbar.*
+import java.util.*
 
 class HutangListActivity : BaseActivity(), HutangListContract.View {
 
@@ -36,19 +38,20 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.menuHutangListAdd) {
-            Utils.intentTo(this, HutangAddActivity::class.java)
+            Utils.intentTo(this, HutangAddEditActivity::class.java)
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun setView() {
         setRecyclerView()
+        getHutang()
     }
 
     private fun setRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rv_hutang_list.layoutManager = linearLayoutManager
-        toggleEmptyDataLayout(false)
+        //toggleEmptyDataLayout(false)
         hutangListAdapter = HutangListAdapter(this, this)
         rv_hutang_list.adapter = hutangListAdapter
         //swipe_refresh.setColorSchemeResources(R.color.cyan)
@@ -70,6 +73,23 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         }
     }
 
-    private fun toggleEmptyDataLayout(isVisible: Boolean) {
+    private fun getHutang() {
+        showProgressDialog()
+        Hutang.getHutangs(databaseUtil.getRootRef(false, false), false, object : FirebaseDatabaseUtil.ValueListenerDatas {
+            override fun onSuccess(objects: MutableIterable<DataSnapshot>) {
+                dismissProgressDialog()
+                val hutangs = ArrayList<Hutang>()
+                for (snapshot in objects) {
+                    val hutang = snapshot.getValue(Hutang::class.java)
+                    hutangs.add(hutang!!)
+                }
+                hutangListAdapter.setData(hutangs)
+            }
+
+            override fun onFailure(message: String?) {
+                dismissProgressDialog()
+                showSnackbar(message)
+            }
+        })
     }
 }

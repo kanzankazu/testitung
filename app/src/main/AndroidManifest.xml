@@ -144,11 +144,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.main.Hutang.HutangAddActivity"
+            android:name=".view.main.Hutang.HutangAddEditActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan|adjustResize" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.main.Hutang.HutangDetailActivity"
             android:configChanges="orientation|screenSize"

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
-import com.kanzankazu.itungitungan.view.main.ProfileModel
 
 class HutangListAdapter(private val activity: Activity, private val view: HutangListContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var datas: MutableList<Hutang> = arrayListOf()
@@ -26,5 +25,59 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
 
     inner class HutangListAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
 
+    }
+
+    fun setData(datas: List<Hutang>) {
+        if (datas.isNotEmpty()) {
+            this.datas.clear()
+            this.datas = datas as ArrayList<Hutang>
+        } else {
+            this.datas = datas as ArrayList<Hutang>
+        }
+        notifyDataSetChanged()
+    }
+
+    fun replaceData(datas: List<Hutang>) {
+        this.datas.clear()
+        this.datas.addAll(datas)
+        notifyDataSetChanged()
+    }
+
+    fun addDatas(datas: List<Hutang>) {
+        this.datas.addAll(datas)
+        notifyItemRangeInserted(this.datas.size, datas.size)
+    }
+
+    fun addDataFirst(data: Hutang) {
+        val position = 0
+        this.datas.add(position, data)
+        notifyItemInserted(position)
+    }
+
+    fun removeAt(position: Int) {
+        this.datas.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, this.datas.size)
+    }
+
+    fun removeDataFirst() {
+        val position = 0
+        this.datas.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, this.datas.size)
+    }
+
+    fun restoreData(data: Hutang, position: Int) {
+        this.datas.add(position, data)
+        notifyItemInserted(position)
+    }
+
+    fun updateSingleData(data: Hutang, position: Int) {
+        this.datas.set(position, data)
+        notifyDataSetChanged()
+    }
+
+    init {
+        this.datas = arrayListOf()
     }
 }

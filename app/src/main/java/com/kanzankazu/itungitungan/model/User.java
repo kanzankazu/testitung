@@ -53,9 +53,7 @@ public class User {
     public User(FirebaseUser user) {
         this.name = user.getDisplayName();
         this.email = user.getEmail();
-        this.phone = user.getPhoneNumber();
         this.uId = user.getUid();
-        this.photoUrl = user.getPhotoUrl().getPath();
     }
 
     public User() {
@@ -217,6 +215,15 @@ public class User {
                 .child(Constants.DATABASE_FIREBASE.ROW.TOKEN_FCM)
                 .setValue(fcmToken)
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess("FCM data berhasil disimpan"))
+                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+    }
+
+    public static void setPhoneNumberUser(DatabaseReference rootReference, String uid, String phone, FirebaseDatabaseUtil.ValueListenerString listenerString) {
+        rootReference.child(Constants.DATABASE_FIREBASE.TABLE.USER)
+                .child(uid)
+                .child(Constants.DATABASE_FIREBASE.ROW.PHONE)
+                .setValue(phone)
+                .addOnSuccessListener(aVoid -> listenerString.onSuccess("No Hp data berhasil disimpan"))
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
     }
 

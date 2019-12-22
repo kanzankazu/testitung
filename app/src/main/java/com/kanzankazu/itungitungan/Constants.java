@@ -59,6 +59,7 @@ public class Constants {
         interface ROW {
             String EMAIL = "email";
             String TOKEN_FCM = "tokenFcm";
+            String PHONE = "phone";
             String UID = "uid";
             String HID = "hid";
         }
@@ -68,7 +69,7 @@ public class Constants {
         String Anggaran = "Anggaran";
         String Banding = "Banding harga";
         String Keuangan = "Keuangan";
-        String Hutang = "HutangModel";
+        String Hutang = "Hutang";
         String Stok  = "Stok Barang";
     }
 }
