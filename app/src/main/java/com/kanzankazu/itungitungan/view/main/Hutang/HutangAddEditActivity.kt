@@ -25,6 +25,7 @@ import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
 import kotlinx.android.synthetic.main.activity_hutang_add.*
 import kotlinx.android.synthetic.main.app_toolbar.*
+import java.io.File
 import java.util.*
 
 class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
@@ -53,11 +54,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         if (requestCode == pictureUtil.REQUEST_IMAGE_CAMERA || requestCode == pictureUtil.REQUEST_IMAGE_GALLERY) {
             val mCurrentPhotoPath = pictureUtil.onActivityResult(requestCode, resultCode, data)
             if (positionImage == 0) {
-                mCurrentPhotoPath0Uri = data!!.data
                 mCurrentPhotoPath0 = mCurrentPhotoPath
+                mCurrentPhotoPath0Uri = Uri.fromFile(File(mCurrentPhotoPath0!!))
             } else {
-                mCurrentPhotoPath1Uri = data!!.data
                 mCurrentPhotoPath1 = mCurrentPhotoPath
+                mCurrentPhotoPath1Uri = Uri.fromFile(File(mCurrentPhotoPath1!!))
             }
         } else if (requestCode == AndroidUtil.REQ_CODE_PICK_EMAIL_ACCOUNT) {
             val emailAccountResult = AndroidUtil.pickEmailAccountResult(requestCode, resultCode, data)
