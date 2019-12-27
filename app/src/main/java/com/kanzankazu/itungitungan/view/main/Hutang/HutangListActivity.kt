@@ -43,6 +43,9 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun itemViewOnClick(hutang: Hutang) {
+    }
+
     private fun setView() {
         setRecyclerView()
         getHutang()

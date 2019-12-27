@@ -31,15 +31,20 @@ public class Hutang {
     String hutangKeluargaId;
     String hutangKeluargaNama;
 
+    String hutangNominal;
     String hutangKeterangan;
     String hutangCatatan;
     String hutangBuktiGambar0;
     String hutangBuktiGambar1;
     List<String> hutangBuktiGambar;
 
+    Boolean isTanggalAkhir;
     String hutangCicilanTanggalAkhir;
-    String hutangCicilanHarga;
-    String hutangCicilanWaktu;
+    String hutangCicilanNominal;
+    String hutangCicilanBerapaKali;
+
+    Boolean isLunas;
+    List<HutangCicilan> subList;
 
     String CreateAt;
     String CreateBy;
@@ -280,20 +285,20 @@ public class Hutang {
         this.penghutangPersetujuan = penghutangPersetujuan;
     }
 
-    public String getHutangCicilanHarga() {
-        return hutangCicilanHarga;
+    public String getHutangCicilanNominal() {
+        return hutangCicilanNominal;
     }
 
-    public void setHutangCicilanHarga(String hutangCicilanHarga) {
-        this.hutangCicilanHarga = hutangCicilanHarga;
+    public void setHutangCicilanNominal(String hutangCicilanNominal) {
+        this.hutangCicilanNominal = hutangCicilanNominal;
     }
 
-    public String getHutangCicilanWaktu() {
-        return hutangCicilanWaktu;
+    public String getHutangCicilanBerapaKali() {
+        return hutangCicilanBerapaKali;
     }
 
-    public void setHutangCicilanWaktu(String hutangCicilanWaktu) {
-        this.hutangCicilanWaktu = hutangCicilanWaktu;
+    public void setHutangCicilanBerapaKali(String hutangCicilanBerapaKali) {
+        this.hutangCicilanBerapaKali = hutangCicilanBerapaKali;
     }
 
     public String getHutangCicilanTanggalAkhir() {
@@ -302,6 +307,14 @@ public class Hutang {
 
     public void setHutangCicilanTanggalAkhir(String hutangCicilanTanggalAkhir) {
         this.hutangCicilanTanggalAkhir = hutangCicilanTanggalAkhir;
+    }
+
+    public String getHutangNominal() {
+        return hutangNominal;
+    }
+
+    public void setHutangNominal(String hutangNominal) {
+        this.hutangNominal = hutangNominal;
     }
 
     public String getHutangKeterangan() {

@@ -1,10 +1,11 @@
 package com.kanzankazu.itungitungan.model;
 
-public class HutangSub {
+public class HutangCicilan {
     String hSubId;
     String hId;
 
     String paymentTo;
+    String paymentNominal;
     String paymentDesc;
     String photo1;
     String photo2;
@@ -12,7 +13,8 @@ public class HutangSub {
     Boolean approvalGiver;
     Boolean approvalReceiver;
 
-    String createAt;
-    String createBy;
+    String CreateAt;
+    String CreateBy;
     String UpdateAt;
+    String UpdateBy;
 }

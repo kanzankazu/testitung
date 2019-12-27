@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
+import kotlinx.android.synthetic.main.item_hutang_list.view.*
 
 class HutangListAdapter(private val activity: Activity, private val view: HutangListContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var datas: MutableList<Hutang> = arrayListOf()
@@ -21,9 +22,30 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
     }
 
     override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
+        val h = p0 as HutangListAdapterHolder
+        h.setView(datas[p1])
+        h.setListener(datas[p1], p1)
     }
 
     inner class HutangListAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
+        fun setView(data: Hutang) {
+            itemView.iv_item_hutang_list_user
+
+            if (data.hutangRadioIndex == 0) {
+                itemView.tv_hutang_list_name.text = data.piutangNama
+                itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.red))
+            } else {
+                itemView.tv_hutang_list_name.text = data.penghutangNama
+                itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.green))
+            }
+
+            itemView.tv_hutang_list_transaksi.text = ""
+            itemView.tv_hutang_list_nominal.text = data.hutangNominal
+        }
+
+        fun setListener(hutang: Hutang, position: Int) {
+            itemView.setOnClickListener { view.itemViewOnClick(hutang) }
+        }
 
     }
 

@@ -211,8 +211,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             hutang.hutangCatatan = et_hutang_add_note.text.toString().trim()
 
             hutang.hutangCicilanTanggalAkhir = et_hutang_add_due_date.text.toString().trim()
-            hutang.hutangCicilanHarga = et_hutang_add_price_installment.text.toString().trim()
-            hutang.hutangCicilanWaktu = et_hutang_add_installment.text.toString().trim()
+            hutang.hutangCicilanNominal = et_hutang_add_price_installment.text.toString().trim()
+            hutang.hutangCicilanBerapaKali = et_hutang_add_installment.text.toString().trim()
 
             hutang.hutangBuktiGambar0 = mCurrentPhotoPath0
             hutang.hutangBuktiGambar1 = mCurrentPhotoPath1
