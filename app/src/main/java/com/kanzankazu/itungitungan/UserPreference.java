@@ -175,4 +175,14 @@ public class UserPreference {
     public void setLoginGuestStatus() {
         putSharedPrefString(Constants.SharedPreference.LOGIN_STATUS, Constants.LogInStatus.GUEST);
     }
+
+    public Boolean getOtpStatus() {
+        return getSharedPrefBoolean(Constants.SharedPreference.OTP_STATUS);
+    }
+
+    public void setOtpStatus(Boolean otpStatus) {
+        putSharedPrefBoolean(Constants.SharedPreference.OTP_STATUS, otpStatus);
+    }
+
+
 }

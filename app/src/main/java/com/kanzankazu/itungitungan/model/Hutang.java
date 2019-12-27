@@ -29,12 +29,13 @@ public class Hutang {
     Boolean penghutangPersetujuan;
 
     String hutangKeluargaId;
-    String hutangKeluargaName;
+    String hutangKeluargaNama;
 
     String hutangKeterangan;
     String hutangCatatan;
     String hutangBuktiGambar0;
     String hutangBuktiGambar1;
+    List<String> hutangBuktiGambar;
 
     String hutangCicilanTanggalAkhir;
     String hutangCicilanHarga;
@@ -191,12 +192,12 @@ public class Hutang {
         this.hutangKeluargaId = hutangKeluargaId;
     }
 
-    public String getHutangKeluargaName() {
-        return hutangKeluargaName;
+    public String getHutangKeluargaNama() {
+        return hutangKeluargaNama;
     }
 
-    public void setHutangKeluargaName(String hutangKeluargaName) {
-        this.hutangKeluargaName = hutangKeluargaName;
+    public void setHutangKeluargaNama(String hutangKeluargaNama) {
+        this.hutangKeluargaNama = hutangKeluargaNama;
     }
 
     public String gethId() {
@@ -333,6 +334,14 @@ public class Hutang {
 
     public void setHutangBuktiGambar1(String hutangBuktiGambar1) {
         this.hutangBuktiGambar1 = hutangBuktiGambar1;
+    }
+
+    public List<String> getHutangBuktiGambar() {
+        return hutangBuktiGambar;
+    }
+
+    public void setHutangBuktiGambar(List<String> hutangBuktiGambar) {
+        this.hutangBuktiGambar = hutangBuktiGambar;
     }
 
     public String getCreateAt() {

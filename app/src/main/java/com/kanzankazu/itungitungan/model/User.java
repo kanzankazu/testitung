@@ -90,7 +90,6 @@ public class User {
                     UserPreference.getInstance().setUid(user.getuId());
                     UserPreference.getInstance().setEmail(user.getEmail());
                     UserPreference.getInstance().setName(user.getName());
-                    UserPreference.getInstance().setLoginStatus(Constants.LogInStatus.LOGIN);
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getUid());
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getEmail());
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getName());

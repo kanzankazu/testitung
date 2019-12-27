@@ -71,6 +71,7 @@ class SignInUpActivity :
                         object : FirebaseDatabaseUtil.ValueListenerString {
                             override fun onSuccess(message: String?) {
                                 dismissProgressDialog()
+                                UserPreference.getInstance().otpStatus = true
                                 moveToMain()
                             }
 
@@ -169,12 +170,8 @@ class SignInUpActivity :
     /*DATABASE_FIREBASE*/
     override fun onSuccess(message: String) {
         dismissProgressDialog()
-        if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser)) {
-            showSnackbar(message)
-            moveToPhoneValidation()
-        } else {
-            signUpEmailSendVerify()
-        }
+        showSnackbar(message)
+        moveToValidate()
     }
 
     override fun onFailure(message: String) {
@@ -220,8 +217,16 @@ class SignInUpActivity :
                 })
                 .build()
 
-        if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser)) {
+        moveToValidate()
+    }
+
+    fun moveToValidate() {
+        if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser) && UserPreference.getInstance().otpStatus == false) {
+            moveToPhoneValidation()
+        } else if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser) && UserPreference.getInstance().otpStatus == true) {
             moveToMain()
+        } else if(!loginGoogleUtil.isEmailVerfied(mAuth.currentUser) && UserPreference.getInstance().otpStatus == false){
+            signUpEmailSendVerify()
         }
     }
 

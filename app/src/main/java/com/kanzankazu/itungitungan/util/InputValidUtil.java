@@ -38,7 +38,7 @@ public class InputValidUtil {
     }
 
     public static boolean isEmptyField(EditText editText) {
-        String s1 = editText.getText().toString();
+        String s1 = editText.getText().toString().trim();
         return TextUtils.isEmpty(s1);
     }
 
@@ -74,7 +74,7 @@ public class InputValidUtil {
     }
 
     public static boolean isEmptyField(@NotNull String messageError, @Nullable TextInputLayout textInputLayout, @Nullable EditText editText, Boolean isFocus, ActionTrueFalseListener listener) {
-        if (isEmptyField(editText.getText().toString())) {
+        if (isEmptyField(editText.getText().toString().trim())) {
             textInputLayout.setError(messageError);
             textInputLayout.setErrorEnabled(true);
 
@@ -178,7 +178,7 @@ public class InputValidUtil {
     }
 
     public static boolean isEmailOrPhone(final String errorMessage, TextInputLayout textInputLayout, EditText editText) {
-        String s = editText.getText().toString();
+        String s = editText.getText().toString().trim();
         if (isEmail(s) || isPhoneNumber(s)) {
             textInputLayout.setErrorEnabled(false);
             return false;

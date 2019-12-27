@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil;
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil;
 import com.kanzankazu.itungitungan.util.SystemUtil;
 import com.kanzankazu.itungitungan.util.Utils;
 import com.kanzankazu.itungitungan.util.dialog.ProgressDialogConnection;
@@ -26,6 +27,7 @@ import com.kanzankazu.itungitungan.view.SplashActivity;
 public class BaseFragment extends Fragment implements BaseView, FirebaseLoginUtil.FirebaseLoginListener {
 
     public FirebaseDatabaseUtil databaseUtil;
+    public FirebaseStorageUtil storageUtil;
     public FirebaseLoginUtil loginUtil;
     public FirebaseAuth mAuth;
     public FirebaseUser firebaseUser;
@@ -60,6 +62,7 @@ public class BaseFragment extends Fragment implements BaseView, FirebaseLoginUti
         super.onViewCreated(view, savedInstanceState);
 
         databaseUtil = new FirebaseDatabaseUtil();
+        storageUtil = new FirebaseStorageUtil(mActivity);
         mAuth = FirebaseAuth.getInstance();
         loginUtil = new FirebaseLoginUtil(mActivity, this);
 

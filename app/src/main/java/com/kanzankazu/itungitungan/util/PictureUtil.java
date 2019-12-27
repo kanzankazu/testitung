@@ -31,6 +31,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import id.zelory.compressor.Compressor;
@@ -319,6 +321,10 @@ public class PictureUtil {
         ContentResolver cR = activity.getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    public static ArrayList<Uri> convertArrayUriToArrayListUri(Uri... uris){
+        return new ArrayList<>(Arrays.asList(uris));
     }
 
 }

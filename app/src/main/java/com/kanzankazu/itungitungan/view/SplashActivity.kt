@@ -27,12 +27,12 @@ class SplashActivity :
     }
 
     private fun initContent() {
-        if (loginUtil.isSignIn) {
+        /*if (loginUtil.isSignIn) {
             startActivity(Intent(this, SignInUpActivity::class.java))
             finish()
-        } else {
-            startActivity(Intent(this, SampleCrudMainActivity::class.java))
-            finish()
-        }
+        }*/
+
+        startActivity(Intent(this, SignInUpActivity::class.java))
+        finish()
     }
 }

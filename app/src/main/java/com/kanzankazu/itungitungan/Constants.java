@@ -23,6 +23,7 @@ public class Constants {
         String FCM_TOKEN = "FCM_TOKEN";
         String UID = "UID";
         String FROM_NOTIFICATION = "FROM_NOTIFICATION";
+        String OTP_STATUS = "OTP_STATUS";
     }
 
     public interface LogInStatus {

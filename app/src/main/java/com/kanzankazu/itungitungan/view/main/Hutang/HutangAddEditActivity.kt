@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
@@ -26,6 +25,7 @@ import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
 import kotlinx.android.synthetic.main.activity_hutang_add.*
 import kotlinx.android.synthetic.main.app_toolbar.*
+import java.util.*
 
 class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
@@ -38,7 +38,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private var mCurrentPhotoPath1: String? = ""
     private var mCurrentPhotoPath0Uri: Uri? = null
     private var mCurrentPhotoPath1Uri: Uri? = null
-    private var mCurrentPhotoPath1Uris: MutableList<Uri> = arrayListOf()
+    private var mCurrentPhotoPathUris: MutableList<Uri> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,7 +117,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             val index = radioGroup.indexOfChild(view)
             Log.d("Lihat", "setListener HutangAddEditActivity : $index")
             val radioButton = radioGroup.getChildAt(index) as RadioButton
-            val toString = radioButton.text.toString()
+            val toString = radioButton.text.toString().trim()
             Log.d("Lihat", "setListener HutangAddEditActivity : $toString")
 
             if (index == 0) {
@@ -140,7 +140,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private fun checkData(): Boolean {
         return if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, false)) {
             false
-        } else if (InputValidUtil.isEmailOrPhone(et_hutang_add_user.text.toString(), til_hutang_add_user, et_hutang_add_user)) {
+        } else if (InputValidUtil.isEmailOrPhone(getString(R.string.message_field_email_phone_wrong_format), til_hutang_add_user, et_hutang_add_user)) {
             false
         } else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false)) {
             false
@@ -183,6 +183,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private fun saveHutang() {
         if (checkData()) {
             val hutang = Hutang()
+
             if (getRadioGroupIndex() == 0) {
                 hutang.hutangRadioIndex = 0
                 hutang.penghutangId = UserPreference.getInstance().uid
@@ -217,19 +218,35 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
             showProgressDialog()
 
-            Hutang.setHutang(databaseUtil.getRootRef(false, false), this, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
-                override fun onSuccess(message: String?) {
-                    dismissProgressDialog()
-                    showSnackbar(message)
-                }
+            if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
+                val listUri = PictureUtil.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
+                storageUtil.uploadImages("Hutang", listUri, object : FirebaseStorageUtil.DoneListener {
+                    override fun isFinised(imageDonwloadUrls: ArrayList<String>?) {
+                        hutang.hutangBuktiGambar = imageDonwloadUrls
+                        saveHutang1(hutang)
+                    }
 
-                override fun onFailure(message: String?) {
-                    dismissProgressDialog()
-                    showSnackbar(message)
-                }
-            })
+                    override fun isFailed() {
+                        showSnackbar(getString(R.string.message_database_save_failed))
+                    }
+                })
+            }
         } else {
             showSnackbar(getString(R.string.message_validation_failed))
         }
+    }
+
+    private fun saveHutang1(hutang: Hutang) {
+        Hutang.setHutang(databaseUtil.getRootRef(false, false), this, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+            override fun onSuccess(message: String?) {
+                dismissProgressDialog()
+                showSnackbar(message)
+            }
+
+            override fun onFailure(message: String?) {
+                dismissProgressDialog()
+                showSnackbar(message)
+            }
+        })
     }
 }

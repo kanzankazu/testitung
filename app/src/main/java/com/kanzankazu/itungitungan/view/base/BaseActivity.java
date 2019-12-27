@@ -37,7 +37,7 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
         super.onCreate(savedInstanceState);
 
         databaseUtil = new FirebaseDatabaseUtil();
-        storageUtil = new FirebaseStorageUtil();
+        storageUtil = new FirebaseStorageUtil(this);
         mAuth = FirebaseAuth.getInstance();
         loginUtil = new FirebaseLoginUtil(this, this);
 
