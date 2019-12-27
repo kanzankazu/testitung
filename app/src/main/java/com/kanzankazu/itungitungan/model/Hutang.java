@@ -38,10 +38,11 @@ public class Hutang {
     String hutangBuktiGambar1;
     List<String> hutangBuktiGambar;
 
-    Boolean isTanggalAkhir;
-    String hutangCicilanTanggalAkhir;
+    Boolean isCicilan;
     String hutangCicilanNominal;
     String hutangCicilanBerapaKali;
+    Boolean isFreeTimeToPay;
+    String hutangCicilanTanggalAkhir;
 
     Boolean isLunas;
     List<HutangCicilan> subList;
@@ -387,5 +388,37 @@ public class Hutang {
 
     public void setUpdateBy(String updateBy) {
         UpdateBy = updateBy;
+    }
+
+    public Boolean getCicilan() {
+        return isCicilan;
+    }
+
+    public void setCicilan(Boolean cicilan) {
+        isCicilan = cicilan;
+    }
+
+    public Boolean getFreeTimeToPay() {
+        return isFreeTimeToPay;
+    }
+
+    public void setFreeTimeToPay(Boolean freeTimeToPay) {
+        isFreeTimeToPay = freeTimeToPay;
+    }
+
+    public Boolean getLunas() {
+        return isLunas;
+    }
+
+    public void setLunas(Boolean lunas) {
+        isLunas = lunas;
+    }
+
+    public List<HutangCicilan> getSubList() {
+        return subList;
+    }
+
+    public void setSubList(List<HutangCicilan> subList) {
+        this.subList = subList;
     }
 }

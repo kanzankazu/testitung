@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.util.Utils
 import kotlinx.android.synthetic.main.item_hutang_list.view.*
 
 class HutangListAdapter(private val activity: Activity, private val view: HutangListContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -21,26 +22,54 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
         return datas.size
     }
 
-    override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
+    override fun onBindViewHolder(p0: RecyclerView.ViewHolder, position: Int) {
         val h = p0 as HutangListAdapterHolder
-        h.setView(datas[p1])
-        h.setListener(datas[p1], p1)
+        h.setView(datas[position], position)
     }
 
     inner class HutangListAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        fun setView(data: Hutang) {
-            itemView.iv_item_hutang_list_user
+        fun setView(data: Hutang, position: Int) {
 
+            if (data.piutangPersetujuan || data.penghutangPersetujuan) {
+                itemView.ll_item_hutang_list.alpha = 1F
+                itemView.ll_item_hutang_list.isEnabled = true
+                setListener(data, position)
+            } else {
+                itemView.ll_item_hutang_list.alpha = 0.5F
+                itemView.ll_item_hutang_list.isEnabled = false
+                itemView.setOnClickListener(null)
+            }
+
+            var name = ""
             if (data.hutangRadioIndex == 0) {
-                itemView.tv_hutang_list_name.text = data.piutangNama
+                if (data.piutangNama.isNullOrEmpty()) {
+                    if (!data.piutangEmail.isNullOrEmpty()) {
+                        name = data.piutangEmail
+                    }
+                } else {
+                    name = data.piutangNama
+                }
+
+                itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.red))
             } else {
-                itemView.tv_hutang_list_name.text = data.penghutangNama
+                if (data.penghutangNama.isNullOrEmpty()) {
+                    if (!data.penghutangEmail.isNullOrEmpty()) {
+                        name = data.penghutangEmail
+                    }
+                } else {
+                    name = data.penghutangNama
+                }
+
+                itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.green))
             }
 
+            if (data.piutangPersetujuan) itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE else itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
+            if (data.penghutangPersetujuan) itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE else itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
+
             itemView.tv_hutang_list_transaksi.text = ""
-            itemView.tv_hutang_list_nominal.text = data.hutangNominal
+            itemView.tv_hutang_list_nominal.text = Utils.setRupiah(data.hutangNominal)
         }
 
         fun setListener(hutang: Hutang, position: Int) {

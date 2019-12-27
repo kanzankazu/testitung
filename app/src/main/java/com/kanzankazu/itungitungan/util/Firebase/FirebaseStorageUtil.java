@@ -130,15 +130,15 @@ public class FirebaseStorageUtil {
             progressDialog.setTitle("Menyimpan Gambar");
             progressDialog.show();
 
-            StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + PictureUtil.getFileExtension(mActivity, uri));
-            reference
-                    .putFile(uri)
+            StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + "jpg" /*PictureUtil.getFileExtension(mActivity, uri)*/);
+            reference.putFile(uri)
                     .addOnSuccessListener(taskSnapshot -> {
                         progressDialog.dismiss();
                         String imageDownloadUrl = taskSnapshot.getDownloadUrl().toString();
                         imageDonwloadUrls.add(imageDownloadUrl);
                         listStat.add("1");
 
+                        int frequency0 = Collections.frequency(listStat, "0");
                         int frequency1 = Collections.frequency(listStat, "1");
 
                         if (frequency1 == uris.size()) {

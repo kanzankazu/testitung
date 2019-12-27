@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -674,19 +675,25 @@ public class Utils {
             if (inputCredit.contains(".")) {
                 sCredit = inputCredit.substring(0, inputCredit.indexOf("."));
                 credit = Integer.parseInt(sCredit);
-                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(",", ".");
+                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(',', '.');
             } else {
                 credit = Integer.parseInt(inputCredit);
-                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(",", ".");
+                sCredit = "Rp " + NumberFormat.getNumberInstance(Locale.US).format(credit).replace(',', '.');
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return sCredit;
     }
 
-    public static String setNoRupiah(String inputCredit) {
-        return inputCredit.replace("Rp ", "").replace("\\.", "");
+    public static String getRupiahToString(TextView textView) {
+        String s = textView.getText().toString().trim();
+        return getRupiahToString(s);
+    }
+
+    public static String getRupiahToString(String rupiah) {
+        return rupiah.replaceAll("Rp ", "").replaceAll("\\.", "");
     }
 
     public interface DialogButtonListener {

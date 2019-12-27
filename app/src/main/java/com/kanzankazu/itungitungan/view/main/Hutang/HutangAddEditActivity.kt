@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.RadioButton
+import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
@@ -23,7 +24,7 @@ import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
-import kotlinx.android.synthetic.main.activity_hutang_add.*
+import kotlinx.android.synthetic.main.activity_hutang_add_edit.*
 import kotlinx.android.synthetic.main.app_toolbar.*
 import java.io.File
 import java.util.*
@@ -33,17 +34,15 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private lateinit var pictureUtil: PictureUtil
     private lateinit var permissionUtil: AndroidPermissionUtil
     private lateinit var watcherValidate: TextWatcher
-    private lateinit var watcherInstallment: TextWatcher
     private var positionImage: Int = -1
     private var mCurrentPhotoPath0: String? = ""
     private var mCurrentPhotoPath1: String? = ""
     private var mCurrentPhotoPath0Uri: Uri? = null
     private var mCurrentPhotoPath1Uri: Uri? = null
-    private var mCurrentPhotoPathUris: MutableList<Uri> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_hutang_add)
+        setContentView(R.layout.activity_hutang_add_edit)
 
         setView()
         setListener()
@@ -55,10 +54,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             val mCurrentPhotoPath = pictureUtil.onActivityResult(requestCode, resultCode, data)
             if (positionImage == 0) {
                 mCurrentPhotoPath0 = mCurrentPhotoPath
-                mCurrentPhotoPath0Uri = Uri.fromFile(File(mCurrentPhotoPath0!!))
+                mCurrentPhotoPath0Uri = Uri.fromFile(File(mCurrentPhotoPath0))
             } else {
                 mCurrentPhotoPath1 = mCurrentPhotoPath
-                mCurrentPhotoPath1Uri = Uri.fromFile(File(mCurrentPhotoPath1!!))
+                mCurrentPhotoPath1Uri = Uri.fromFile(File(mCurrentPhotoPath1))
             }
         } else if (requestCode == AndroidUtil.REQ_CODE_PICK_EMAIL_ACCOUNT) {
             val emailAccountResult = AndroidUtil.pickEmailAccountResult(requestCode, resultCode, data)
@@ -93,24 +92,28 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             }
         }
 
-        watcherInstallment = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    ll_hutang_add_installment.visibility = View.GONE
-                } else {
-                    ll_hutang_add_installment.visibility = View.VISIBLE
-                }
-            }
-        }
-
         et_hutang_add_user.addTextChangedListener(watcherValidate)
         et_hutang_add_nominal.addTextChangedListener(watcherValidate)
         et_hutang_add_desc.addTextChangedListener(watcherValidate)
         et_hutang_add_date.addTextChangedListener(watcherValidate)
 
-        et_hutang_add_due_date.addTextChangedListener(watcherInstallment)
+        sw_hutang_add_installment.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                ll_hutang_add_installment.visibility = View.VISIBLE
+            } else {
+                ll_hutang_add_installment.visibility = View.GONE
+            }
+        }
+
+        cb_hutang_add_installment_free_to_pay.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                til_hutang_add_installment_count.visibility = View.VISIBLE
+                til_hutang_add_installment_due_date.visibility = View.VISIBLE
+            } else {
+                til_hutang_add_installment_count.visibility = View.GONE
+                til_hutang_add_installment_due_date.visibility = View.GONE
+            }
+        }
 
         rg_hutang_add_user.setOnCheckedChangeListener { radioGroup, _ ->
             val radioButtonID = radioGroup.checkedRadioButtonId
@@ -129,13 +132,23 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
 
         et_hutang_add_date.setOnClickListener { Utility.showCalendarDialog(this, et_hutang_add_date) }
-        et_hutang_add_due_date.setOnClickListener { Utility.showCalendarDialog(this, et_hutang_add_due_date) }
+        et_hutang_add_installment_due_date.setOnClickListener { Utility.showCalendarDialog(this, et_hutang_add_installment_due_date) }
 
         iv_hutang_add_user.setOnClickListener { chooseDialogPickUserData() }
-        tv_hutang_add_simpan.setOnClickListener { saveHutang() }
+        tv_hutang_add_simpan.setOnClickListener { saveHutangValidate() }
 
         civ_hutang_add_image_0.setOnClickListener { chooseDialogPickImage(civ_hutang_add_image_0, 0) }
+        civ_hutang_remove_image_0.setOnClickListener {
+            mCurrentPhotoPath0 = ""
+            mCurrentPhotoPath0Uri = null
+            Glide.with(this).load(File(mCurrentPhotoPath0)).placeholder(R.drawable.ic_profile_picture).into(civ_hutang_add_image_0)
+        }
         civ_hutang_add_image_1.setOnClickListener { chooseDialogPickImage(civ_hutang_add_image_1, 1) }
+        civ_hutang_remove_image_1.setOnClickListener {
+            mCurrentPhotoPath1 = ""
+            mCurrentPhotoPath1Uri = null
+            Glide.with(this).load(File(mCurrentPhotoPath1)).placeholder(R.drawable.ic_profile_picture).into(civ_hutang_add_image_1)
+        }
     }
 
     private fun checkData(): Boolean {
@@ -181,7 +194,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         return index
     }
 
-    private fun saveHutang() {
+    private fun saveHutangValidate() {
         if (checkData()) {
             val hutang = Hutang()
 
@@ -192,14 +205,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.penghutangEmail = UserPreference.getInstance().email
                 hutang.piutangId = ""
                 hutang.piutangNama = ""
-                hutang.piutangEmail = ""
+                hutang.piutangEmail = et_hutang_add_user.text.toString().trim()
                 hutang.penghutangPersetujuan = true
                 hutang.piutangPersetujuan = false
             } else {
                 hutang.hutangRadioIndex = 1
                 hutang.penghutangId = ""
                 hutang.penghutangNama = ""
-                hutang.penghutangEmail = ""
+                hutang.penghutangEmail = et_hutang_add_user.text.toString().trim()
                 hutang.piutangId = UserPreference.getInstance().uid
                 hutang.piutangNama = UserPreference.getInstance().name
                 hutang.piutangEmail = UserPreference.getInstance().email
@@ -207,41 +220,46 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.piutangPersetujuan = true
             }
 
+            hutang.hutangNominal = Utils.getRupiahToString(et_hutang_add_nominal.text.toString().trim())
             hutang.hutangKeterangan = et_hutang_add_desc.text.toString().trim()
             hutang.hutangCatatan = et_hutang_add_note.text.toString().trim()
 
-            hutang.hutangCicilanTanggalAkhir = et_hutang_add_due_date.text.toString().trim()
-            hutang.hutangCicilanNominal = et_hutang_add_price_installment.text.toString().trim()
-            hutang.hutangCicilanBerapaKali = et_hutang_add_installment.text.toString().trim()
+            hutang.hutangCicilanTanggalAkhir = et_hutang_add_installment_due_date.text.toString().trim()
+            hutang.hutangCicilanNominal = et_hutang_add_installment_price.text.toString().trim()
+            hutang.hutangCicilanBerapaKali = et_hutang_add_installment_count.text.toString().trim()
 
             hutang.hutangBuktiGambar0 = mCurrentPhotoPath0
             hutang.hutangBuktiGambar1 = mCurrentPhotoPath1
-
-            showProgressDialog()
 
             if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
                 val listUri = PictureUtil.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
                 storageUtil.uploadImages("Hutang", listUri, object : FirebaseStorageUtil.DoneListener {
                     override fun isFinised(imageDonwloadUrls: ArrayList<String>?) {
                         hutang.hutangBuktiGambar = imageDonwloadUrls
-                        saveHutang1(hutang)
+                        saveHutang(hutang)
                     }
 
                     override fun isFailed() {
                         showSnackbar(getString(R.string.message_database_save_failed))
                     }
                 })
+            } else {
+                saveHutang(hutang)
             }
         } else {
             showSnackbar(getString(R.string.message_validation_failed))
         }
     }
 
-    private fun saveHutang1(hutang: Hutang) {
+    private fun saveHutang(hutang: Hutang) {
+        showProgressDialog()
+
         Hutang.setHutang(databaseUtil.getRootRef(false, false), this, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
             override fun onSuccess(message: String?) {
                 dismissProgressDialog()
                 showSnackbar(message)
+
+                finish()
             }
 
             override fun onFailure(message: String?) {

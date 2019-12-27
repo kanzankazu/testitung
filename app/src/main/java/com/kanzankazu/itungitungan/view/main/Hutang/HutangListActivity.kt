@@ -19,6 +19,8 @@ import java.util.*
 class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private lateinit var hutangListAdapter: HutangListAdapter
+    private var hutangNominal: Int = 0
+    private var piutangNominal: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,9 +84,23 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             override fun onSuccess(objects: MutableIterable<DataSnapshot>) {
                 dismissProgressDialog()
                 val hutangs = ArrayList<Hutang>()
+                hutangNominal = 0
+                piutangNominal = 0
+
                 for (snapshot in objects) {
                     val hutang = snapshot.getValue(Hutang::class.java)
                     hutangs.add(hutang!!)
+
+                    if (!hutang.hutangNominal.isNullOrEmpty()){
+                        if (hutang.hutangRadioIndex == 0) {
+                            hutangNominal = hutangNominal + hutang.hutangNominal.toInt()
+                        } else {
+                            piutangNominal = piutangNominal + hutang.hutangNominal.toInt()
+                        }
+                    }
+
+                    tv_hutang_list_hutang.text = Utils.setRupiah(hutangNominal.toString())
+                    tv_hutang_list_piutang.text = Utils.setRupiah(piutangNominal.toString())
                 }
                 hutangListAdapter.setData(hutangs)
             }

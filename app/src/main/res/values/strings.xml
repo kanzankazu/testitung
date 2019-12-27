@@ -42,9 +42,10 @@
     <string name="message_email_sent_success">Email verifikasi sudah terkirim ke %s</string>
     <string name="message_email_sent_failed">Email verifikasi gagal terkirim</string>
     <string name="message_email_verified_not">Anda belum konfirmasi email dari kami</string>
+    <string name="message_phone_number_exist">No Hp sudah di gunakan</string>
+    <string name="message_phone_failed">gagal untuk validasi no Hp</string>
     <string name="message_welcome">Selamat datang %s di Itung-itungan</string>
     <string name="message_picture_failed">Terjadi kesalahan saat memproses gambar Anda</string>
-    <string name="message_phone_failed">gagal untuk validasi no Hp</string>
 
     <!--Profile-->
     <string name="sign_in">Masuk</string>
