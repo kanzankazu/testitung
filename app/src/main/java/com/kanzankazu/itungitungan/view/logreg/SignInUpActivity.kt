@@ -30,14 +30,13 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * Created by Faisal Bahri on 2019-11-05.
  */
 class SignInUpActivity :
-    BaseActivity(),
-    SignInUpContract.View,
-    FirebaseLoginUtil.FirebaseLoginListener,
-    FirebaseLoginUtil.FirebaseLoginListener.Google,
-    FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
-    FirebaseDatabaseUtil.ValueListenerString {
+        BaseActivity(),
+        SignInUpContract.View,
+        FirebaseLoginUtil.FirebaseLoginListener,
+        FirebaseLoginUtil.FirebaseLoginListener.Google,
+        FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
+        FirebaseDatabaseUtil.ValueListenerString {
 
-    private lateinit var loginUtil: FirebaseLoginUtil
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var loginFacebookUtil: FirebaseLoginFacebookUtil
     private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
@@ -63,8 +62,9 @@ class SignInUpActivity :
             loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
         } else if (requestCode == GooglePhoneNumberValidation.REQ_CODE_G_PHONE_VALIDATION && resultCode == Activity.RESULT_OK) {
             if (GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data, true)) {
+
                 showProgressDialog()
-                User.setPhoneNumberUser(databaseUtil.getRootRef(false, false), UserPreference.getInstance().uid, GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data), object : FirebaseDatabaseUtil.ValueListenerString {
+                User.setPhoneNumberUserValidate(this, databaseUtil.getRootRef(false, false), UserPreference.getInstance().uid, GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data), object : FirebaseDatabaseUtil.ValueListenerString {
                     override fun onSuccess(message: String?) {
                         dismissProgressDialog()
                         UserPreference.getInstance().otpStatus = true
@@ -73,6 +73,7 @@ class SignInUpActivity :
 
                     override fun onFailure(message: String?) {
                         dismissProgressDialog()
+                        loginUtil.signOut(databaseUtil)
                         showSnackbar(message)
                     }
                 })
@@ -128,9 +129,9 @@ class SignInUpActivity :
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        User.isExistUser(databaseUtil.getRootRef(false, false), userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerData {
-            override fun onSuccess(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
+        User.isExistUser(databaseUtil.getRootRef(false, false), userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerTrueFalse {
+            override fun isExist(isExists: Boolean?) {
+                if (isExists!!) {
                     showSnackbar(getString(R.string.message_database_data_exist))
                 } else {
                     signInUpControl(isSignUp = true, isFirst = true, user = userFirebaseSignUp)
@@ -186,12 +187,12 @@ class SignInUpActivity :
         fragmentUtil = FragmentUtil(this, -1)
         viewPager = findViewById(R.id.vp_signInUp)
         slidePagerAdapter = fragmentUtil.setupTabLayoutViewPager(
-            null,
-            null,
-            null,
-            viewPager,
-            SignInFragment.newInstance(),
-            SignUpFragment.newInstance()
+                null,
+                null,
+                null,
+                viewPager,
+                SignInFragment.newInstance(),
+                SignUpFragment.newInstance()
         )
 
         Log.d("Lihat", "initContent SignInUpActivity " + viewPager.currentItem)
@@ -199,22 +200,22 @@ class SignInUpActivity :
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         mGoogleApiClient = GoogleApiClient.Builder(this)
-            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-            .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                override fun onConnected(bundle: Bundle?) {
-                    mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
-                }
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+                    override fun onConnected(bundle: Bundle?) {
+                        mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
+                    }
 
-                override fun onConnectionSuspended(i: Int) {
+                    override fun onConnectionSuspended(i: Int) {
 
-                }
-            })
-            .build()
+                    }
+                })
+                .build()
 
         moveToValidate()
     }

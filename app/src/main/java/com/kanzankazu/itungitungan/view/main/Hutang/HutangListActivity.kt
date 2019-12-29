@@ -81,13 +81,13 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     private fun getHutang() {
         showProgressDialog()
         Hutang.getHutangs(databaseUtil.getRootRef(false, false), false, object : FirebaseDatabaseUtil.ValueListenerDatas {
-            override fun onSuccess(objects: MutableIterable<DataSnapshot>) {
+            override fun onSuccess(dataSnapshot: DataSnapshot) {
                 dismissProgressDialog()
                 val hutangs = ArrayList<Hutang>()
                 hutangNominal = 0
                 piutangNominal = 0
 
-                for (snapshot in objects) {
+                for (snapshot in dataSnapshot.children) {
                     val hutang = snapshot.getValue(Hutang::class.java)
                     hutangs.add(hutang!!)
 
@@ -102,6 +102,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                     tv_hutang_list_hutang.text = Utils.setRupiah(hutangNominal.toString())
                     tv_hutang_list_piutang.text = Utils.setRupiah(piutangNominal.toString())
                 }
+
                 hutangListAdapter.setData(hutangs)
             }
 

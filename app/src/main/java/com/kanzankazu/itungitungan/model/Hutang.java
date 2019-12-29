@@ -19,6 +19,7 @@ public class Hutang {
     String hId;
     int hutangRadioIndex;
 
+    String piutang_penghutang;
     String piutangId;
     String piutangNama;
     String piutangEmail;
@@ -140,7 +141,10 @@ public class Hutang {
 
     public static void getHutangs(DatabaseReference rootReference, Boolean isSingleCall, FirebaseDatabaseUtil.ValueListenerDatas listenerDatas) {
         if (isSingleCall) {
-            rootReference.child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+            rootReference
+                    .child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+                    .orderByChild(Constants.DATABASE_FIREBASE.ROW.HID)
+                    .equalTo(UserPreference.getInstance().getUid())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -150,7 +154,7 @@ public class Hutang {
                                 hutangs.add(hutang);
                             }*/
 
-                            listenerDatas.onSuccess(dataSnapshot.getChildren());
+                            listenerDatas.onSuccess(dataSnapshot);
                         }
 
                         @Override
@@ -159,17 +163,18 @@ public class Hutang {
                         }
                     });
         } else {
-            rootReference.child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+            rootReference
+                    .child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             List<Hutang> hutangs = new ArrayList<>();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 Hutang hutang = snapshot.getValue(Hutang.class);
                                 hutangs.add(hutang);
-                            }
+                            }*/
 
-                            listenerDatas.onSuccess(dataSnapshot.getChildren());
+                            listenerDatas.onSuccess(dataSnapshot);
                         }
 
                         @Override
@@ -179,15 +184,6 @@ public class Hutang {
                     });
 
         }
-    }
-
-    public static void setFCMTokenHutang(DatabaseReference rootReference, String uid, String fcmToken, FirebaseDatabaseUtil.ValueListenerString listenerString) {
-        rootReference.child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
-                .child(uid)
-                .child(Constants.DATABASE_FIREBASE.ROW.TOKEN_FCM)
-                .setValue(fcmToken)
-                .addOnSuccessListener(aVoid -> listenerString.onSuccess("FCM data berhasil disimpan"))
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
     }
 
     public String getHutangKeluargaId() {
@@ -204,6 +200,14 @@ public class Hutang {
 
     public void setHutangKeluargaNama(String hutangKeluargaNama) {
         this.hutangKeluargaNama = hutangKeluargaNama;
+    }
+
+    public String getPiutang_penghutang() {
+        return piutang_penghutang;
+    }
+
+    public void setPiutang_penghutang(String piutang_penghutang) {
+        this.piutang_penghutang = piutang_penghutang;
     }
 
     public String gethId() {

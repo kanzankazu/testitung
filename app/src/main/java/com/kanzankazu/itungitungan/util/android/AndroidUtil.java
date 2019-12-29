@@ -16,12 +16,12 @@ public class AndroidUtil {
     public static final int REQ_CODE_PICK_CONTACT = 11;
     public static final int REQ_CODE_PICK_EMAIL_ACCOUNT = 22;
 
-    public static void pickContact(Activity activity) {
+    public static void pickPhoneAccount(Activity activity) {
         Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
         activity.startActivityForResult(contactPickerIntent, REQ_CODE_PICK_CONTACT);
     }
 
-    public static Intent pickContactFromFragment(Activity activity) {
+    public static Intent pickPhoneAccountFromFragment(Activity activity) {
         return new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
     }
 
@@ -38,14 +38,14 @@ public class AndroidUtil {
         return AccountPicker.newChooseAccountIntent(null, null, new String[]{GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE}, false, null, null, null, null);
     }
 
-    public static String pickContactResult(int requestCode, int resultCode, Intent data, Activity activity, boolean isPhoneNoElseName) {
+    public static String pickPhoneAccountResult(int requestCode, int resultCode, Intent data, Activity activity, boolean isPhoneNoElseName) {
         if (requestCode == REQ_CODE_PICK_CONTACT && resultCode == Activity.RESULT_OK) {
             Cursor cursor;
             try {
                 Uri uri = data.getData();
                 cursor = activity.getContentResolver().query(uri, null, null, null, null);
                 cursor.moveToFirst();
-                Log.d("Lihat", "pickContactResult AndroidUtil : " + cursor);
+                Log.d("Lihat", "pickPhoneAccountResult AndroidUtil : " + cursor);
                 int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 
@@ -83,6 +83,6 @@ public class AndroidUtil {
         } else {
             sVal = "62" + string;
         }
-        return sVal.replace("-", "");
+        return sVal.replace("-", "").replace(" ","");
     }
 }

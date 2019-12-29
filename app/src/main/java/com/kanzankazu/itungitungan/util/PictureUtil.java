@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.kanzankazu.itungitungan.BuildConfig;
 import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.util.widget.CompressBitmap;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,7 +78,7 @@ public class PictureUtil {
         System.out.println("data on activity result : " + data);
         if (requestCode == REQUEST_IMAGE_CAMERA && resultCode == RESULT_OK && mCurrentPhotoPath != null) { //FROM CAMERA
             try {
-                //compressImage();
+                compressImage();
                 Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
 
                 /*documentDataList.get(currentIndex).setPhotoPath(mCurrentPhotoPath);
@@ -179,17 +180,16 @@ public class PictureUtil {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File file = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                ".jpg",  /* suffix */
                 storageDir      /* directory */
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
+        mCurrentPhotoPath = "file:" + file.getAbsolutePath();
+        return file;
     }
 
     private void compressImage() {

@@ -12,9 +12,11 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RadioButton
 import com.bumptech.glide.Glide
+import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.model.User
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
@@ -22,6 +24,7 @@ import com.kanzankazu.itungitungan.util.PictureUtil
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil
+import com.kanzankazu.itungitungan.view.adapter.UserSuggestAdapter
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
 import kotlinx.android.synthetic.main.activity_hutang_add_edit.*
@@ -31,14 +34,19 @@ import java.util.*
 
 class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
+    private lateinit var userSuggestAdapter: UserSuggestAdapter
     private lateinit var pictureUtil: PictureUtil
     private lateinit var permissionUtil: AndroidPermissionUtil
     private lateinit var watcherValidate: TextWatcher
+    private var userInvite: User? = null
     private var positionImage: Int = -1
+    private var pickAccount: Int = -1
     private var mCurrentPhotoPath0: String? = ""
     private var mCurrentPhotoPath1: String? = ""
     private var mCurrentPhotoPath0Uri: Uri? = null
     private var mCurrentPhotoPath1Uri: Uri? = null
+
+    var mList: MutableList<User> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,10 +69,41 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             }
         } else if (requestCode == AndroidUtil.REQ_CODE_PICK_EMAIL_ACCOUNT) {
             val emailAccountResult = AndroidUtil.pickEmailAccountResult(requestCode, resultCode, data)
-            et_hutang_add_user.setText(emailAccountResult)
+            getSuggestInviteUser(emailAccountResult, pickAccount)
         } else if (requestCode == AndroidUtil.REQ_CODE_PICK_CONTACT) {
-            val phoneAccountResult = AndroidUtil.pickContactResult(requestCode, resultCode, data, this, true)
-            et_hutang_add_user.setText(phoneAccountResult)
+            val phoneAccountResult = AndroidUtil.pickPhoneAccountResult(requestCode, resultCode, data, this, true)
+            getSuggestInviteUser(phoneAccountResult, pickAccount)
+        }
+    }
+
+    private fun getSuggestInviteUser(resultAccount: String, pickAccount: Int) {
+        showProgressDialog()
+        if (pickAccount == 0) {
+            User.getUserByPhone(databaseUtil.getRootRef(false, false), resultAccount, object : FirebaseDatabaseUtil.ValueListenerData {
+                override fun onSuccess(dataSnapshot: DataSnapshot?) {
+                    dismissProgressDialog()
+                    userInvite = dataSnapshot?.getValue(User::class.java)
+                    et_hutang_add_user.setText(userInvite?.name)
+                }
+
+                override fun onFailure(message: String?) {
+                    dismissProgressDialog()
+                    showSnackbar(message)
+                }
+            })
+        } else {
+            User.getUserByEmail(databaseUtil.getRootRef(false, false), resultAccount, object : FirebaseDatabaseUtil.ValueListenerData {
+                override fun onSuccess(dataSnapshot: DataSnapshot?) {
+                    dismissProgressDialog()
+                    userInvite = dataSnapshot?.getValue(User::class.java)
+                    et_hutang_add_user.setText(userInvite?.name)
+                }
+
+                override fun onFailure(message: String?) {
+                    dismissProgressDialog()
+                    showSnackbar(message)
+                }
+            })
         }
     }
 
@@ -80,6 +119,31 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
         permissionUtil = AndroidPermissionUtil(this, *AndroidPermissionUtil.permCameraGallery)
         pictureUtil = PictureUtil(this)
+
+        getSuggestGroupUser()
+
+    }
+
+    private fun getSuggestGroupUser() {
+        User.getUsers(databaseUtil.getRootRef(false, false), true, object : FirebaseDatabaseUtil.ValueListenerDatas {
+            override fun onSuccess(dataSnapshot: DataSnapshot?) {
+                if (dataSnapshot != null) {
+                    for (snapshot in dataSnapshot.children) {
+                        val user = snapshot.getValue(User::class.java)
+                        mList.add(user!!)
+                    }
+                    userSuggestAdapter = UserSuggestAdapter(this@HutangAddEditActivity, R.layout.activity_hutang_add_edit, R.id.et_hutang_add_desc, mList)
+                    et_hutang_add_user_family.setAdapter(userSuggestAdapter)
+
+                } else {
+                    Log.d("Lihat", "onSuccess HutangAddEditActivity : " + "datasnapshot kosong")
+                }
+            }
+
+            override fun onFailure(message: String?) {
+                Log.d("Lihat", "onFailure HutangAddEditActivity : $message");
+            }
+        })
     }
 
     @SuppressLint("LogNotTimber")
@@ -105,13 +169,13 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             }
         }
 
-        cb_hutang_add_installment_free_to_pay.setOnCheckedChangeListener { buttonView, isChecked ->
+        cb_hutang_add_installment_free_to_pay.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                til_hutang_add_installment_count.visibility = View.VISIBLE
-                til_hutang_add_installment_due_date.visibility = View.VISIBLE
-            } else {
-                til_hutang_add_installment_count.visibility = View.GONE
+                til_hutang_add_installment_price.visibility = View.GONE
                 til_hutang_add_installment_due_date.visibility = View.GONE
+            } else {
+                til_hutang_add_installment_price.visibility = View.VISIBLE
+                til_hutang_add_installment_due_date.visibility = View.VISIBLE
             }
         }
 
@@ -176,9 +240,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         val chooseImageDialog = AlertDialog.Builder(this)
         chooseImageDialog.setItems(items) { _, i ->
             if (items[i] == "Pilih Kontak") {
-                AndroidUtil.pickContact(this)
+                AndroidUtil.pickPhoneAccount(this)
+                pickAccount = 0
             } else {
                 AndroidUtil.pickEmailAccount(this)
+                pickAccount = 1
             }
         }
 
@@ -203,16 +269,16 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.penghutangId = UserPreference.getInstance().uid
                 hutang.penghutangNama = UserPreference.getInstance().name
                 hutang.penghutangEmail = UserPreference.getInstance().email
-                hutang.piutangId = ""
-                hutang.piutangNama = ""
-                hutang.piutangEmail = et_hutang_add_user.text.toString().trim()
+                hutang.piutangId = userInvite?.getuId() ?: ""
+                hutang.piutangNama = userInvite?.name ?: ""
+                hutang.piutangEmail = userInvite?.email ?: ""
                 hutang.penghutangPersetujuan = true
                 hutang.piutangPersetujuan = false
             } else {
                 hutang.hutangRadioIndex = 1
-                hutang.penghutangId = ""
-                hutang.penghutangNama = ""
-                hutang.penghutangEmail = et_hutang_add_user.text.toString().trim()
+                hutang.penghutangId = userInvite?.getuId() ?: ""
+                hutang.penghutangNama = userInvite?.name ?: ""
+                hutang.penghutangEmail = userInvite?.email ?: ""
                 hutang.piutangId = UserPreference.getInstance().uid
                 hutang.piutangNama = UserPreference.getInstance().name
                 hutang.piutangEmail = UserPreference.getInstance().email

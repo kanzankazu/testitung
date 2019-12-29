@@ -15,6 +15,7 @@ import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.UserPreference;
 import com.kanzankazu.itungitungan.util.DateTimeUtil;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
+import com.kanzankazu.itungitungan.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,14 +62,15 @@ public class User {
     }
 
     /*FIREBASE DATABASE_FIREBASE START*/
-    public static void isExistUser(DatabaseReference database, User user, FirebaseDatabaseUtil.ValueListenerData listenerData) {
+    public static void isExistUser(DatabaseReference database, User user, FirebaseDatabaseUtil.ValueListenerTrueFalse listenerData) {
         database.child(Constants.DATABASE_FIREBASE.TABLE.USER)
                 .orderByChild(Constants.DATABASE_FIREBASE.ROW.UID)
                 .equalTo(user.getuId())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        listenerData.onSuccess(dataSnapshot);
+                        Log.d("Lihat", "onDataChange User : " + dataSnapshot.getChildrenCount());
+                        listenerData.isExist(dataSnapshot.exists());
                     }
 
                     @Override
@@ -78,14 +80,33 @@ public class User {
                 });
     }
 
-    public static void isExistEmail(DatabaseReference database, String email, FirebaseDatabaseUtil.ValueListenerData listenerData) {
+    public static void isExistEmail(DatabaseReference database, String email, FirebaseDatabaseUtil.ValueListenerTrueFalse listenerTrueFalse) {
         database.child(Constants.DATABASE_FIREBASE.TABLE.USER)
                 .orderByChild(Constants.DATABASE_FIREBASE.ROW.EMAIL)
                 .equalTo(email)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        listenerData.onSuccess(dataSnapshot);
+                        Log.d("Lihat", "onDataChange User : " + dataSnapshot.getChildrenCount());
+                        listenerTrueFalse.isExist(dataSnapshot.exists());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listenerTrueFalse.onFailure(databaseError.getMessage());
+                    }
+                });
+    }
+
+    public static void isExistPhone(DatabaseReference database, String phone, FirebaseDatabaseUtil.ValueListenerTrueFalse listenerData) {
+        database.child(Constants.DATABASE_FIREBASE.TABLE.USER)
+                .orderByChild(Constants.DATABASE_FIREBASE.ROW.PHONE)
+                .equalTo(phone)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("Lihat", "onDataChange User : " + dataSnapshot.getChildrenCount());
+                        listenerData.isExist(dataSnapshot.exists());
                     }
 
                     @Override
@@ -102,6 +123,7 @@ public class User {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("Lihat", "onDataChange User : " + dataSnapshot.getChildrenCount());
                         listenerData.onSuccess(dataSnapshot);
                     }
 
@@ -173,6 +195,7 @@ public class User {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("Lihat", "onDataChange User : " + dataSnapshot.getChildrenCount());
                         listenerData.onSuccess(dataSnapshot);
                     }
 
@@ -190,6 +213,25 @@ public class User {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("Lihat", "onDataChange User : " + dataSnapshot.getChildrenCount());
+                        listenerData.onSuccess(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listenerData.onFailure(databaseError.getMessage());
+                    }
+                });
+    }
+
+    public static void getUserByPhone(DatabaseReference database, String phone, FirebaseDatabaseUtil.ValueListenerData listenerData) {
+        database.child(Constants.DATABASE_FIREBASE.TABLE.USER)
+                .orderByChild(Constants.DATABASE_FIREBASE.ROW.PHONE)
+                .equalTo(phone)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("Lihat", "onDataChange User : " + dataSnapshot.getChildrenCount());
                         listenerData.onSuccess(dataSnapshot);
                     }
 
@@ -206,13 +248,14 @@ public class User {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.d("Lihat", "onDataChange User : " + dataSnapshot.getChildrenCount());
                             List<User> users = new ArrayList<>();
-                            /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 User user = snapshot.getValue(User.class);
                                 users.add(user);
-                            }*/
+                            }
 
-                            listenerDatas.onSuccess(dataSnapshot.getChildren());
+                            listenerDatas.onSuccess(dataSnapshot);
                         }
 
                         @Override
@@ -225,13 +268,14 @@ public class User {
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.d("Lihat", "onDataChange User : " + dataSnapshot.getChildrenCount());
                             List<User> users = new ArrayList<>();
                             /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 User user = snapshot.getValue(User.class);
                                 users.add(user);
                             }*/
 
-                            listenerDatas.onSuccess(dataSnapshot.getChildren());
+                            listenerDatas.onSuccess(dataSnapshot);
                         }
 
                         @Override
@@ -239,7 +283,6 @@ public class User {
                             listenerDatas.onFailure(databaseError.getMessage());
                         }
                     });
-
         }
     }
 
@@ -252,7 +295,42 @@ public class User {
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
     }
 
-    public static void setPhoneNumberUser(DatabaseReference rootReference, String uid, String phone, FirebaseDatabaseUtil.ValueListenerString listenerString) {
+    public static void setPhoneNumberUserValidate(Activity activity, DatabaseReference rootReference, String uid, String phone, FirebaseDatabaseUtil.ValueListenerString listenerString) {
+        isExistPhone(rootReference, phone, new FirebaseDatabaseUtil.ValueListenerData() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    List<User> users = new ArrayList<>();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        User user = snapshot.getValue(User.class);
+                        users.add(user);
+                    }
+
+                    if (users.size() == 1) {
+                        if (users.get(0) != null) {
+                            if (users.get(0).getEmail().equalsIgnoreCase(UserPreference.getInstance().getEmail())) {
+                                listenerString.onSuccess(activity.getString(R.string.message_phone_number_save_success));
+                            } else {
+                                listenerString.onFailure(activity.getString(R.string.message_phone_number_exist, Utils.replace(users.get(0).email)));
+                            }
+                        }
+                    } else {
+                        listenerString.onFailure("No. Dipakai beberapa akun");
+                    }
+                } else {
+                    setPhoneNumberUser(rootReference, uid, phone, listenerString);
+                }
+
+            }
+
+            @Override
+            public void onFailure(String message) {
+                listenerString.onFailure(message);
+            }
+        });
+    }
+
+    private static void setPhoneNumberUser(DatabaseReference rootReference, String uid, String phone, FirebaseDatabaseUtil.ValueListenerString listenerString) {
         rootReference.child(Constants.DATABASE_FIREBASE.TABLE.USER)
                 .child(uid)
                 .child(Constants.DATABASE_FIREBASE.ROW.PHONE)
@@ -421,5 +499,4 @@ public class User {
 
         return result;
     }
-
 }

@@ -696,6 +696,10 @@ public class Utils {
         return rupiah.replaceAll("Rp ", "").replaceAll("\\.", "");
     }
 
+    public static String replace(String emailAddress){
+       return emailAddress.replaceAll("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)", "*");
+    }
+
     public interface DialogButtonListener {
         void onDialogButtonClick();
 

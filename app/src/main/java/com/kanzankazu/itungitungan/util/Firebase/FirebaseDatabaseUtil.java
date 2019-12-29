@@ -198,7 +198,7 @@ public class FirebaseDatabaseUtil {
      */
     public DatabaseReference getLimitData(String key, int limitData, boolean isFirst) {
         DatabaseReference parentRef = getDataPrimaryKeyParent(key);
-        return getDataByLimit(parentRef, limitData,isFirst).getRef();
+        return getDataByLimit(parentRef, limitData, isFirst).getRef();
     }
 
     public interface ValueListenerString {
@@ -214,7 +214,13 @@ public class FirebaseDatabaseUtil {
     }
 
     public interface ValueListenerDatas {
-        void onSuccess(Iterable<DataSnapshot> objects);
+        void onSuccess(DataSnapshot dataSnapshot);
+
+        void onFailure(String message);
+    }
+
+    public interface ValueListenerTrueFalse {
+        void isExist(Boolean isExists);
 
         void onFailure(String message);
     }
