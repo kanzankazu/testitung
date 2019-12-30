@@ -30,12 +30,12 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * Created by Faisal Bahri on 2019-11-05.
  */
 class SignInUpActivity :
-        BaseActivity(),
-        SignInUpContract.View,
-        FirebaseLoginUtil.FirebaseLoginListener,
-        FirebaseLoginUtil.FirebaseLoginListener.Google,
-        FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
-        FirebaseDatabaseUtil.ValueListenerString {
+    BaseActivity(),
+    SignInUpContract.View,
+    FirebaseLoginUtil.FirebaseLoginListener,
+    FirebaseLoginUtil.FirebaseLoginListener.Google,
+    FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
+    FirebaseDatabaseUtil.ValueListenerString {
 
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var loginFacebookUtil: FirebaseLoginFacebookUtil
@@ -52,7 +52,8 @@ class SignInUpActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
 
-        initContent()
+        initView()
+        initListener()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -64,16 +65,16 @@ class SignInUpActivity :
             if (GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data, true)) {
 
                 showProgressDialog()
-                User.setPhoneNumberUserValidate(this, databaseUtil.getRootRef(false, false), UserPreference.getInstance().uid, GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data), object : FirebaseDatabaseUtil.ValueListenerString {
+                User.setPhoneNumberUserValidate(this, databaseUtil.rootRef, UserPreference.getInstance().uid, GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data), object : FirebaseDatabaseUtil.ValueListenerString {
                     override fun onSuccess(message: String?) {
                         dismissProgressDialog()
-                        UserPreference.getInstance().otpStatus = true
+                        UserPreference.getInstance().isOtp = true
                         moveToMain()
                     }
 
                     override fun onFailure(message: String?) {
                         dismissProgressDialog()
-                        loginUtil.signOut(databaseUtil)
+                        loginUtil.signOut(databaseUtil, false)
                         showSnackbar(message)
                     }
                 })
@@ -88,9 +89,9 @@ class SignInUpActivity :
     override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
         dismissProgressDialog()
         val userFirebaseSignIn = User(firebaseUser)
-        User.getUserByUid(databaseUtil.getRootRef(false, false), userFirebaseSignIn.getuId(), object : FirebaseDatabaseUtil.ValueListenerData {
-            override fun onSuccess(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
+        User.getUserByUid(databaseUtil.rootRef, userFirebaseSignIn.getuId(), object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
+            override fun onSuccess(dataSnapshot: DataSnapshot, isExsist: Boolean) {
+                if (isExsist) {
                     val userDatabase = dataSnapshot.getValue(User::class.java) as User
                     signInUpControl(isSignUp = false, isFirst = false, user = userDatabase)
                 } else {
@@ -129,7 +130,7 @@ class SignInUpActivity :
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        User.isExistUser(databaseUtil.getRootRef(false, false), userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerTrueFalse {
+        User.isExistUser(databaseUtil.getRootRef(), userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerTrueFalse {
             override fun isExist(isExists: Boolean?) {
                 if (isExists!!) {
                     showSnackbar(getString(R.string.message_database_data_exist))
@@ -179,52 +180,65 @@ class SignInUpActivity :
         showSnackbar(message)
     }
 
-    fun initContent() {
+    fun initView() {
         loginGoogleUtil = FirebaseLoginGoogleUtil(this, this, this)
         loginFacebookUtil = FirebaseLoginFacebookUtil(this, this, this)
         loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(this, this, this)
 
         fragmentUtil = FragmentUtil(this, -1)
         viewPager = findViewById(R.id.vp_signInUp)
-        slidePagerAdapter = fragmentUtil.setupTabLayoutViewPager(
-                null,
-                null,
-                null,
-                viewPager,
-                SignInFragment.newInstance(),
-                SignUpFragment.newInstance()
-        )
+        slidePagerAdapter = fragmentUtil.setupTabLayoutViewPager(null, null, null, viewPager, SignInFragment.newInstance(), SignUpFragment.newInstance())
 
-        Log.d("Lihat", "initContent SignInUpActivity " + viewPager.currentItem)
-        Log.d("Lihat", "initContent SignInUpActivity " + slidePagerAdapter.count)
+        Log.d("Lihat", "initView SignInUpActivity " + viewPager.currentItem)
+        Log.d("Lihat", "initView SignInUpActivity " + slidePagerAdapter.count)
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         mGoogleApiClient = GoogleApiClient.Builder(this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                    override fun onConnected(bundle: Bundle?) {
-                        mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
-                    }
+            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+            .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+                override fun onConnected(bundle: Bundle?) {
+                    mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
+                }
 
-                    override fun onConnectionSuspended(i: Int) {
+                override fun onConnectionSuspended(i: Int) {
 
-                    }
-                })
-                .build()
+                }
+            })
+            .build()
 
         moveToValidate()
     }
 
+    fun initListener() {
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+                Log.d("Lihat", "onPageScrollStateChanged SignInUpActivity p0 : " + p0)
+            }
+
+            override fun onPageSelected(p0: Int) {
+                Log.d("Lihat", "onPageSelected SignInUpActivity p0 : " + p0)
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+                Log.d("Lihat", "onPageScrolled SignInUpActivity p0 : " + p0)
+                Log.d("Lihat", "onPageScrolled SignInUpActivity p1 : " + p1)
+                Log.d("Lihat", "onPageScrolled SignInUpActivity p2 : " + p2)
+            }
+        })
+    }
+
     fun moveToValidate() {
-        if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser) && UserPreference.getInstance().otpStatus == false) {
-            moveToPhoneValidation()
-        } else if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser) && UserPreference.getInstance().otpStatus == true) {
-            moveToMain()
+        if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser) || UserPreference.getInstance().isLogin) {
+            if (UserPreference.getInstance().isOtp) {
+                moveToMain()
+            } else {
+                moveToPhoneValidation()
+            }
         }
     }
 
@@ -256,7 +270,7 @@ class SignInUpActivity :
         loginEmailPasswordUtil.createAccount(email, password)
     }
 
-    private fun signUpEmailSendVerify() {
+    fun signUpEmailSendVerify() {
         loginEmailPasswordUtil.sendEmailVerification()
     }
 
@@ -282,7 +296,7 @@ class SignInUpActivity :
         }
 
         user.lastSignIn = DateTimeUtil.getCurrentDate().toString()
-        User.setUser(databaseUtil.getRootRef(false, false), this, user, this)
+        User.setUser(databaseUtil.getRootRef(), this, user, this)
     }
 
 }

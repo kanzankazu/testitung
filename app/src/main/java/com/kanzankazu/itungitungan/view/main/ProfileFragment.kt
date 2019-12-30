@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
-import com.kanzankazu.itungitungan.util.PictureUtil
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import com.kanzankazu.itungitungan.view.main.ProfileSub.AccountActivity
@@ -140,7 +139,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         civ_profile_photo_edit.setOnClickListener { }
         cv_profile_signout.setOnClickListener {
             showProgressDialog()
-            loginUtil.signOut(databaseUtil)
+            loginUtil.signOut(databaseUtil, true)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             sv_profile_settings.setOnScrollChangeListener { _, _, _, _, _ ->

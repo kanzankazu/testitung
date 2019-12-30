@@ -20,6 +20,7 @@ public class Constants {
         String NAME = "NAME";
         String ACCESS_TOKEN = "ACCESS_TOKEN";
         String LOGIN_STATUS = "LOGIN_STATUS";
+        String LOGIN = "LOGIN";
         String FCM_TOKEN = "FCM_TOKEN";
         String UID = "UID";
         String FROM_NOTIFICATION = "FROM_NOTIFICATION";

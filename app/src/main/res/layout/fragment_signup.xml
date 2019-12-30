@@ -323,7 +323,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/padding_margin_40dp"
             android:layout_marginTop="@dimen/padding_margin_10dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardBackgroundColor="@color/color_blue_facebook"
             app:cardCornerRadius="10dp"
             app:cardElevation="5dp">

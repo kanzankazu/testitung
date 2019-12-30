@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -134,10 +135,12 @@ public class BaseFragment extends Fragment implements BaseView, FirebaseLoginUti
     }
 
     @Override
-    public void uiSignOutSuccess() {
+    public void uiSignOutSuccess(Boolean isRefresh) {
         dismissProgressDialog();
-        showSnackbar(getString(R.string.message_signout_success));
-        Utils.intentTo(mActivity, SplashActivity.class, true);
+        if (isRefresh) {
+            showSnackbar(getString(R.string.message_signout_success));
+            Utils.intentTo(mActivity, SplashActivity.class, true);
+        }
     }
 
     @Override

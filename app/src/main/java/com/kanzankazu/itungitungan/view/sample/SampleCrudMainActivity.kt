@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.google.firebase.auth.FirebaseUser
 import com.kanzankazu.itungitungan.R
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.logreg.SignInUpActivity
@@ -35,7 +34,7 @@ class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginLi
         bt_viewdata.setOnClickListener { startActivity(Intent(this, SampleCrudReadActivity::class.java)) }
         bt_logout.setOnClickListener {
             showProgressDialog()
-            loginUtil.signOut(databaseUtil)
+            loginUtil.signOut(databaseUtil, true)
         }
     }
 

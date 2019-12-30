@@ -21,7 +21,6 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.model.User;
 
 public class FirebaseLoginFacebookUtil extends FirebaseLoginUtil {
     private static final String TAG = "LoginGoogleUtil";
@@ -57,9 +56,9 @@ public class FirebaseLoginFacebookUtil extends FirebaseLoginUtil {
 
                 if (isLoggedIn) {
                     handleFacebookAccessToken(loginResult.getAccessToken());
-                } else {
-                    mListener.uiSignOutSuccess();
-                }
+                } /*else {
+                    mListener.uiSignOutSuccess(isRefresh);
+                }*/
             }
 
             @Override
@@ -84,9 +83,9 @@ public class FirebaseLoginFacebookUtil extends FirebaseLoginUtil {
 
                         if (isLoggedIn) {
                             handleFacebookAccessToken(loginResult.getAccessToken());
-                        } else {
-                            mListener.uiSignOutSuccess();
-                        }
+                        } /*else {
+                            mListener.uiSignOutSuccess(isRefresh);
+                        }*/
 
                     }
 

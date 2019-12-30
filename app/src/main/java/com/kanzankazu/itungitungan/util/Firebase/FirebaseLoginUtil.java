@@ -150,14 +150,14 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
                 });
     }
 
-    public void deleteUser() {
+    public void deleteUser(Boolean isRefresh) {
         FirebaseUser user = mAuth.getCurrentUser();
 
         user.delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "User account deleted.");
-                        mListener.uiSignOutSuccess();
+                        mListener.uiSignOutSuccess(isRefresh);
                     } else {
                         Log.d(TAG, "User account failed deleted.");
                     }
@@ -366,14 +366,14 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
         // [END auth_email_cred]
     }
 
-    public void signOut(@Nullable FirebaseDatabaseUtil databaseUtil) {
+    public void signOut(@Nullable FirebaseDatabaseUtil databaseUtil, Boolean isRefresh) {
         if (isConnected(mActivity, this)) {
-            User.logOutUser(databaseUtil.getRootRef(false, false), mActivity, new FirebaseDatabaseUtil.ValueListenerString() {
+            User.logOutUser(databaseUtil.getRootRef(), mActivity, new FirebaseDatabaseUtil.ValueListenerString() {
                 @Override
                 public void onSuccess(String message) {
                     mAuth.signOut();
                     UserPreference.getInstance().signout();
-                    mListener.uiSignOutSuccess();
+                    mListener.uiSignOutSuccess(isRefresh);
                 }
 
                 @Override
@@ -395,7 +395,7 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
 
         void uiSignInFailed(String errorMessage);
 
-        void uiSignOutSuccess();
+        void uiSignOutSuccess(Boolean isRefresh);
 
         void uiSignOutFailed(String message);
 

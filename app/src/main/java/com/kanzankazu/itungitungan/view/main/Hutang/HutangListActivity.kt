@@ -80,7 +80,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private fun getHutang() {
         showProgressDialog()
-        Hutang.getHutangs(databaseUtil.getRootRef(false, false), false, object : FirebaseDatabaseUtil.ValueListenerDatas {
+        Hutang.getHutangs(databaseUtil.getRootRef(), false, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 dismissProgressDialog()
                 val hutangs = ArrayList<Hutang>()

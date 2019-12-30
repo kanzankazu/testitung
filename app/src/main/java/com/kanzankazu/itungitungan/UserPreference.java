@@ -54,7 +54,21 @@ public class UserPreference {
     }
 
     public void signout() {
-        this.sharedPreferences.edit().clear().apply();
+        //this.sharedPreferences.edit().clear().apply();
+        setEmail(null);
+        setName(null);
+        setUid(null);
+        setAccessToken(null);
+        setEmail(null);
+        setName(null);
+        setUid(null);
+        setAccessToken(null);
+        setFCMToken(null);
+        setLoginStatus(null);
+
+        setIsFromNotification(false);
+        setIsLogin(false);
+        setIsOtp(false);
     }
 
     /**
@@ -115,7 +129,9 @@ public class UserPreference {
         return values;
     }
 
-    public void setIsFromNotification(Boolean isFromNotification) { putSharedPrefBoolean(Constants.SharedPreference.FROM_NOTIFICATION, isFromNotification); }
+    public void setIsFromNotification(Boolean isFromNotification) {
+        putSharedPrefBoolean(Constants.SharedPreference.FROM_NOTIFICATION, isFromNotification);
+    }
 
     public Boolean getIsFromNotification() {
         return getSharedPrefBoolean(Constants.SharedPreference.FROM_NOTIFICATION);
@@ -176,11 +192,19 @@ public class UserPreference {
         putSharedPrefString(Constants.SharedPreference.LOGIN_STATUS, Constants.LogInStatus.GUEST);
     }
 
-    public Boolean getOtpStatus() {
+    public void setIsLogin(Boolean isLogin) {
+        putSharedPrefBoolean(Constants.SharedPreference.LOGIN, isLogin);
+    }
+
+    public Boolean getIsLogin() {
+        return getSharedPrefBoolean(Constants.SharedPreference.LOGIN);
+    }
+
+    public Boolean getIsOtp() {
         return getSharedPrefBoolean(Constants.SharedPreference.OTP_STATUS);
     }
 
-    public void setOtpStatus(Boolean otpStatus) {
+    public void setIsOtp(Boolean otpStatus) {
         putSharedPrefBoolean(Constants.SharedPreference.OTP_STATUS, otpStatus);
     }
 

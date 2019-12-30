@@ -20,25 +20,25 @@ public class FirebaseDatabaseUtil {
     public FirebaseDatabaseUtil() {
     }
 
-    public DatabaseReference getRootRef(Boolean isPersistance, Boolean isKeepSync) {
+    public DatabaseReference getRootRef() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        if (isPersistance)
-            firebaseDatabase.setPersistenceEnabled(isPersistance);
+        /*if (isPersistance)*/
+        /*    firebaseDatabase.setPersistenceEnabled(isPersistance);*/
 
         DatabaseReference reference = firebaseDatabase.getReference();
-        if (isKeepSync)
-            reference.keepSynced(isKeepSync);
+        /*if (isKeepSync)
+            reference.keepSynced(isKeepSync);*/
 
         return reference;
     }
 
     public DatabaseReference getDataPrimaryKeyParent(String parent) {
-        DatabaseReference rootRef = getRootRef(false, false);
+        DatabaseReference rootRef = getRootRef();
         return rootRef.child(parent);
     }
 
     public DatabaseReference getDataPrimaryKeyChild(String parent, String key) {
-        DatabaseReference rootRef = getRootRef(false, false);
+        DatabaseReference rootRef = getRootRef();
         return rootRef.child(parent).child(key);
     }
 
@@ -132,7 +132,7 @@ public class FirebaseDatabaseUtil {
     }
 
     public void removeValue(DatabaseReference databaseReference, ValueEventListener listener) {
-        DatabaseReference rootRef = getRootRef(false, false);
+        DatabaseReference rootRef = getRootRef();
         rootRef.removeEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -147,7 +147,7 @@ public class FirebaseDatabaseUtil {
     }
 
     public void removeValue(DatabaseReference databaseReference, ChildEventListener listener) {
-        DatabaseReference rootRef = getRootRef(false, false);
+        DatabaseReference rootRef = getRootRef();
         rootRef.removeEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -213,14 +213,24 @@ public class FirebaseDatabaseUtil {
         void onFailure(String message);
     }
 
-    public interface ValueListenerDatas {
-        void onSuccess(DataSnapshot dataSnapshot);
+    public interface ValueListenerObject {
+
+        void onSuccess(Object dataSnapshot);
 
         void onFailure(String message);
+
     }
 
     public interface ValueListenerTrueFalse {
+
         void isExist(Boolean isExists);
+
+        void onFailure(String message);
+
+    }
+
+    public interface ValueListenerDataTrueFalse {
+        void onSuccess(DataSnapshot dataSnapshot, Boolean isExsist);
 
         void onFailure(String message);
     }

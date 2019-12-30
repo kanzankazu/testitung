@@ -28,7 +28,7 @@ import com.kanzankazu.itungitungan.view.adapter.UserSuggestAdapter
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
 import kotlinx.android.synthetic.main.activity_hutang_add_edit.*
-import kotlinx.android.synthetic.main.app_toolbar.*
+import kotlinx.android.synthetic.main.app_toolbar.toolbar
 import java.io.File
 import java.util.*
 
@@ -46,7 +46,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private var mCurrentPhotoPath0Uri: Uri? = null
     private var mCurrentPhotoPath1Uri: Uri? = null
 
-    var mList: MutableList<User> = arrayListOf()
+    var userInviteFamily: MutableList<User> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,37 +76,6 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
     }
 
-    private fun getSuggestInviteUser(resultAccount: String, pickAccount: Int) {
-        showProgressDialog()
-        if (pickAccount == 0) {
-            User.getUserByPhone(databaseUtil.getRootRef(false, false), resultAccount, object : FirebaseDatabaseUtil.ValueListenerData {
-                override fun onSuccess(dataSnapshot: DataSnapshot?) {
-                    dismissProgressDialog()
-                    userInvite = dataSnapshot?.getValue(User::class.java)
-                    et_hutang_add_user.setText(userInvite?.name)
-                }
-
-                override fun onFailure(message: String?) {
-                    dismissProgressDialog()
-                    showSnackbar(message)
-                }
-            })
-        } else {
-            User.getUserByEmail(databaseUtil.getRootRef(false, false), resultAccount, object : FirebaseDatabaseUtil.ValueListenerData {
-                override fun onSuccess(dataSnapshot: DataSnapshot?) {
-                    dismissProgressDialog()
-                    userInvite = dataSnapshot?.getValue(User::class.java)
-                    et_hutang_add_user.setText(userInvite?.name)
-                }
-
-                override fun onFailure(message: String?) {
-                    dismissProgressDialog()
-                    showSnackbar(message)
-                }
-            })
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == permissionUtil.RP_ACCESS) {
@@ -124,28 +93,6 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     }
 
-    private fun getSuggestGroupUser() {
-        User.getUsers(databaseUtil.getRootRef(false, false), true, object : FirebaseDatabaseUtil.ValueListenerDatas {
-            override fun onSuccess(dataSnapshot: DataSnapshot?) {
-                if (dataSnapshot != null) {
-                    for (snapshot in dataSnapshot.children) {
-                        val user = snapshot.getValue(User::class.java)
-                        mList.add(user!!)
-                    }
-                    userSuggestAdapter = UserSuggestAdapter(this@HutangAddEditActivity, R.layout.activity_hutang_add_edit, R.id.et_hutang_add_desc, mList)
-                    et_hutang_add_user_family.setAdapter(userSuggestAdapter)
-
-                } else {
-                    Log.d("Lihat", "onSuccess HutangAddEditActivity : " + "datasnapshot kosong")
-                }
-            }
-
-            override fun onFailure(message: String?) {
-                Log.d("Lihat", "onFailure HutangAddEditActivity : $message");
-            }
-        })
-    }
-
     @SuppressLint("LogNotTimber")
     private fun setListener() {
         watcherValidate = object : TextWatcher {
@@ -161,24 +108,6 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         et_hutang_add_desc.addTextChangedListener(watcherValidate)
         et_hutang_add_date.addTextChangedListener(watcherValidate)
 
-        sw_hutang_add_installment.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                ll_hutang_add_installment.visibility = View.VISIBLE
-            } else {
-                ll_hutang_add_installment.visibility = View.GONE
-            }
-        }
-
-        cb_hutang_add_installment_free_to_pay.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                til_hutang_add_installment_price.visibility = View.GONE
-                til_hutang_add_installment_due_date.visibility = View.GONE
-            } else {
-                til_hutang_add_installment_price.visibility = View.VISIBLE
-                til_hutang_add_installment_due_date.visibility = View.VISIBLE
-            }
-        }
-
         rg_hutang_add_user.setOnCheckedChangeListener { radioGroup, _ ->
             val radioButtonID = radioGroup.checkedRadioButtonId
             val view = radioGroup.findViewById<View>(radioButtonID)
@@ -192,6 +121,20 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 til_hutang_add_user.hint = getString(R.string.invite_piutang)
             } else {
                 til_hutang_add_user.hint = getString(R.string.invite_penghutang)
+            }
+        }
+        sw_hutang_add_installment.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                ll_hutang_add_installment.visibility = View.VISIBLE
+            } else {
+                ll_hutang_add_installment.visibility = View.GONE
+            }
+        }
+        cb_hutang_add_installment_free_to_pay.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                til_hutang_add_installment_due_date.visibility = View.GONE
+            } else {
+                til_hutang_add_installment_due_date.visibility = View.VISIBLE
             }
         }
 
@@ -215,10 +158,70 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
     }
 
+    private fun getSuggestInviteUser(resultAccount: String, pickAccount: Int) {
+        showProgressDialog()
+        if (pickAccount == 0) {
+            User.getUserByPhone(this, databaseUtil.rootRef, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
+                override fun onSuccess(dataSnapshot: Any?) {
+                    dismissProgressDialog()
+                    userInvite = dataSnapshot as User
+                    et_hutang_add_user.setText(userInvite?.name)
+                }
+
+                override fun onFailure(message: String?) {
+                    dismissProgressDialog()
+                    showSnackbar(message)
+                    et_hutang_add_user.setText("")
+                }
+            })
+        } else {
+            User.getUserByEmail(this, databaseUtil.rootRef, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
+                override fun onSuccess(dataSnapshot: Any?) {
+                    dismissProgressDialog()
+                    userInvite = dataSnapshot as User
+                    et_hutang_add_user.setText(userInvite?.name)
+                }
+
+                override fun onFailure(message: String?) {
+                    dismissProgressDialog()
+                    showSnackbar(message)
+                    et_hutang_add_user.setText("")
+                }
+            })
+        }
+    }
+
+    private fun getSuggestGroupUser() {
+        User.getUsers(databaseUtil.rootRef, true, object : FirebaseDatabaseUtil.ValueListenerData {
+            override fun onSuccess(dataSnapshot: DataSnapshot?) {
+                if (dataSnapshot != null) {
+                    for (snapshot in dataSnapshot.children) {
+                        val user = snapshot.getValue(User::class.java)
+                        userInviteFamily.add(user!!)
+                    }
+                    userSuggestAdapter = UserSuggestAdapter(this@HutangAddEditActivity, R.layout.activity_hutang_add_edit, R.id.et_hutang_add_desc, userInviteFamily)
+                    et_hutang_add_user_family.setAdapter(userSuggestAdapter)
+                } else {
+                    Log.d("Lihat", "onSuccess HutangAddEditActivity : " + "datasnapshot kosong")
+                }
+            }
+
+            override fun onFailure(message: String?) {
+                Log.d("Lihat", "onFailure HutangAddEditActivity : $message")
+            }
+        })
+
+        et_hutang_add_user_family.setOnItemClickListener { parent, view, position, id ->
+            Log.d("Lihat", "setListener HutangAddEditActivity : " + parent)
+            Log.d("Lihat", "setListener HutangAddEditActivity : " + view)
+            Log.d("Lihat", "setListener HutangAddEditActivity : " + position)
+            Log.d("Lihat", "setListener HutangAddEditActivity : " + id)
+        }
+
+    }
+
     private fun checkData(): Boolean {
         return if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, false)) {
-            false
-        } else if (InputValidUtil.isEmailOrPhone(getString(R.string.message_field_email_phone_wrong_format), til_hutang_add_user, et_hutang_add_user)) {
             false
         } else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false)) {
             false
@@ -276,14 +279,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.piutangPersetujuan = false
             } else {
                 hutang.hutangRadioIndex = 1
-                hutang.penghutangId = userInvite?.getuId() ?: ""
-                hutang.penghutangNama = userInvite?.name ?: ""
-                hutang.penghutangEmail = userInvite?.email ?: ""
                 hutang.piutangId = UserPreference.getInstance().uid
                 hutang.piutangNama = UserPreference.getInstance().name
                 hutang.piutangEmail = UserPreference.getInstance().email
-                hutang.penghutangPersetujuan = false
+                hutang.penghutangId = userInvite?.getuId() ?: ""
+                hutang.penghutangNama = userInvite?.name ?: ""
+                hutang.penghutangEmail = userInvite?.email ?: ""
                 hutang.piutangPersetujuan = true
+                hutang.penghutangPersetujuan = false
             }
 
             hutang.hutangNominal = Utils.getRupiahToString(et_hutang_add_nominal.text.toString().trim())
@@ -320,7 +323,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private fun saveHutang(hutang: Hutang) {
         showProgressDialog()
 
-        Hutang.setHutang(databaseUtil.getRootRef(false, false), this, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+        Hutang.setHutang(databaseUtil.rootRef, this, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
             override fun onSuccess(message: String?) {
                 dismissProgressDialog()
                 showSnackbar(message)

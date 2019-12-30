@@ -339,6 +339,13 @@ public class FragmentUtil {
             super(fm);
         }
 
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            Log.d("Lihat", "getPageTitle SlidePagerAdapter : " + position);
+            return titles.get(position);
+        }
+
         @Override
         public Fragment getItem(int position) {
             Log.d("Lihat", "getItem SlidePagerAdapter : " + position);
@@ -376,14 +383,6 @@ public class FragmentUtil {
             }
             notifyDataSetChanged();
         }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Log.d("Lihat", "getPageTitle SlidePagerAdapter : " + position);
-            return titles.get(position);
-        }
-
 
     }
 

@@ -139,7 +139,7 @@ public class Hutang {
         }
     }
 
-    public static void getHutangs(DatabaseReference rootReference, Boolean isSingleCall, FirebaseDatabaseUtil.ValueListenerDatas listenerDatas) {
+    public static void getHutangs(DatabaseReference rootReference, Boolean isSingleCall, FirebaseDatabaseUtil.ValueListenerData listenerData) {
         if (isSingleCall) {
             rootReference
                     .child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
@@ -154,12 +154,12 @@ public class Hutang {
                                 hutangs.add(hutang);
                             }*/
 
-                            listenerDatas.onSuccess(dataSnapshot);
+                            listenerData.onSuccess(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerDatas.onFailure(databaseError.getMessage());
+                            listenerData.onFailure(databaseError.getMessage());
                         }
                     });
         } else {
@@ -174,12 +174,12 @@ public class Hutang {
                                 hutangs.add(hutang);
                             }*/
 
-                            listenerDatas.onSuccess(dataSnapshot);
+                            listenerData.onSuccess(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerDatas.onFailure(databaseError.getMessage());
+                            listenerData.onFailure(databaseError.getMessage());
                         }
                     });
 

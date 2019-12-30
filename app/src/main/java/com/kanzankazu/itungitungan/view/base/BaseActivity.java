@@ -5,6 +5,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -52,7 +53,7 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
     @Override
     public void onBackPressed() {
         if (UserPreference.getInstance().getIsFromNotification()) {
-            Utils.intentTo(this, MainActivity.class,true);
+            Utils.intentTo(this, MainActivity.class, true);
             UserPreference.getInstance().removeSharedPrefByKey(Constants.SharedPreference.FROM_NOTIFICATION);
         } else {
             super.onBackPressed();
@@ -111,10 +112,12 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
     }
 
     @Override
-    public void uiSignOutSuccess() {
+    public void uiSignOutSuccess(Boolean isRefresh) {
         dismissProgressDialog();
-        showSnackbar(getString(R.string.message_signout_success));
-        Utils.intentTo(this, SplashActivity.class, true);
+        if (isRefresh) {
+            showSnackbar(getString(R.string.message_signout_success));
+            Utils.intentTo(this, SplashActivity.class, true);
+        }
     }
 
     @Override

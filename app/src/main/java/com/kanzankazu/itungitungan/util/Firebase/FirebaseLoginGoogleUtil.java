@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.model.User;
 
 public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements FirebaseConnectionUtil.FirebaseConnectionListener {
 
@@ -87,7 +86,7 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
     public void revokeAccess() {
         if (isConnected(mActivity, this)) {
             // Firebase sign out
-            signOut(databaseUtil);
+            signOut(databaseUtil, false);
 
             // Google revoke access
             mGoogleSignInClient.revokeAccess().addOnCompleteListener(mActivity, task -> {

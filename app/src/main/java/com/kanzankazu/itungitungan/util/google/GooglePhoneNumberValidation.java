@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -208,7 +207,7 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
      * UI
      */
     private EditText etValidPhoneNmbrfvbi;
-    private CardView cvValidPhoneNmbrSubmitfvbi;
+    private LinearLayout llValidPhoneNmbrSubmitfvbi;
     private TextView tvValidPhoneNmbrSubmitfvbi;
     private TextView tvLoginResendCodefvbi;
     private TextView tvValidPhoneNmbrInfofvbi;
@@ -266,7 +265,7 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
         ccpValidPhoneNmbrfvbi = (CountryCodePicker) findViewById(R.id.ccpValidPhoneNmbr);
         tvValidPhoneNmbrInfofvbi = (TextView) findViewById(R.id.tvValidPhoneNmbrInfo);
         etValidPhoneNmbrfvbi = (EditText) findViewById(R.id.etValidPhoneNmbr);
-        cvValidPhoneNmbrSubmitfvbi = (CardView) findViewById(R.id.cvValidPhoneNmbrSubmit);
+        llValidPhoneNmbrSubmitfvbi = (LinearLayout) findViewById(R.id.llValidPhoneNmbrSubmit);
         tvValidPhoneNmbrSubmitfvbi = (TextView) findViewById(R.id.tvValidPhoneNmbrSubmit);
         tvLoginResendCodefvbi = (TextView) findViewById(R.id.tvValidPhoneNmbrResendCode);
         llValidPhoneNmbrBackfvbi = (LinearLayout) findViewById(R.id.llValidPhoneNmbrBack);
@@ -362,7 +361,7 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
             }
         });
 
-        cvValidPhoneNmbrSubmitfvbi.setOnClickListener(new View.OnClickListener() {
+        llValidPhoneNmbrSubmitfvbi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 checkData();
@@ -434,7 +433,7 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
     private void startPhoneNumberVerification(String phoneNumber) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
-                timeoutDuration,             // Timeout duration
+                timeoutDuration,    // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
                 this,       // Activity (for callback binding)
                 mCallbacks);        // OnVerificationStateChangedCallbacks
@@ -443,9 +442,9 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
     private void resendVerificationCode(String phoneNumber, PhoneAuthProvider.ForceResendingToken token) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
-                timeoutDuration,                 // Timeout duration
+                timeoutDuration,    // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
-                this,               // Activity (for callback binding)
+                this,       // Activity (for callback binding)
                 mCallbacks,         // OnVerificationStateChangedCallbacks
                 token);             // ForceResendingToken from callbacks
     }
