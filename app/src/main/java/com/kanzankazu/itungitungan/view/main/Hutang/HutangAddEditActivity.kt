@@ -27,6 +27,7 @@ import com.kanzankazu.itungitungan.util.android.AndroidUtil
 import com.kanzankazu.itungitungan.view.adapter.UserSuggestAdapter
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
+import kotlinx.android.synthetic.main.activity_anggaran_perhitungan_add.*
 import kotlinx.android.synthetic.main.activity_hutang_add_edit.*
 import kotlinx.android.synthetic.main.app_toolbar.toolbar
 import java.io.File
@@ -128,11 +129,15 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 ll_hutang_add_installment.visibility = View.VISIBLE
             } else {
                 ll_hutang_add_installment.visibility = View.GONE
+                et_hutang_add_installment_count.setText("")
+                et_hutang_add_installment_price.setText("")
+                cb_hutang_add_installment_free_to_pay.isChecked = false
             }
         }
         cb_hutang_add_installment_free_to_pay.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 til_hutang_add_installment_due_date.visibility = View.GONE
+                et_perhitungan_add_due_date.setText("")
             } else {
                 til_hutang_add_installment_due_date.visibility = View.VISIBLE
             }
@@ -293,9 +298,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             hutang.hutangKeterangan = et_hutang_add_desc.text.toString().trim()
             hutang.hutangCatatan = et_hutang_add_note.text.toString().trim()
 
-            hutang.hutangCicilanTanggalAkhir = et_hutang_add_installment_due_date.text.toString().trim()
-            hutang.hutangCicilanNominal = et_hutang_add_installment_price.text.toString().trim()
+            hutang.cicilan = sw_hutang_add_installment.isChecked
+            hutang.freeTimeToPay = cb_hutang_add_installment_free_to_pay.isChecked
             hutang.hutangCicilanBerapaKali = et_hutang_add_installment_count.text.toString().trim()
+            hutang.hutangCicilanNominal = et_hutang_add_installment_price.text.toString().trim()
+            hutang.hutangCicilanTanggalAkhir = et_hutang_add_installment_due_date.text.toString().trim()
 
             hutang.hutangBuktiGambar0 = mCurrentPhotoPath0
             hutang.hutangBuktiGambar1 = mCurrentPhotoPath1

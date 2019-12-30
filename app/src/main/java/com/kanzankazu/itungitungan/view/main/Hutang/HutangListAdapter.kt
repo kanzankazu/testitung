@@ -70,6 +70,19 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
 
             itemView.tv_hutang_list_transaksi.text = ""
             itemView.tv_hutang_list_nominal.text = Utils.setRupiah(data.hutangNominal)
+
+            if (!data.hutangCicilanBerapaKali.isNullOrEmpty()) {
+                itemView.tv_hutang_list_nominal_installment_count.visibility = View.VISIBLE
+                itemView.tv_hutang_list_nominal_installment_count.text = activity.getString(R.string.installment_count, data.hutangCicilanBerapaKali)
+            }
+            if (!data.hutangCicilanNominal.isNullOrEmpty()) {
+                itemView.tv_hutang_list_nominal_installment_nominal.visibility = View.VISIBLE
+                itemView.tv_hutang_list_nominal_installment_nominal.text = Utils.setRupiah(data.hutangCicilanNominal)
+            }
+            if (!data.hutangCicilanTanggalAkhir.isNullOrEmpty()) {
+                itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.VISIBLE
+                itemView.tv_hutang_list_nominal_installment_due_date.text = activity.getString(R.string.installment_duedate, data.hutangCicilanTanggalAkhir)
+            }
         }
 
         fun setListener(hutang: Hutang, position: Int) {

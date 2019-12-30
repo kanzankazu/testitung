@@ -72,5 +72,10 @@
     <string name="invite_piutang">Undang Piutang *</string>
     <string name="invite_penghutang">Undang Penghutang *</string>
     <string name="invite_keluarga">Undang Keluarga</string>
+    <string name="installment_count">%s x Cicilan</string>
+    <string name="installment_duedate">tanggal jatuh tempo : %s</string>
+
+    <!--HutangList-->
+
 
 </resources>

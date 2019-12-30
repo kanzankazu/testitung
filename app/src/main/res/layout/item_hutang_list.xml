@@ -111,15 +111,57 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_hutang_list_nominal"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:fontFamily="@font/avenir_next_ltpro_bold"
-                    android:gravity="center"
-                    android:text="Rp 0"
-                    android:textColor="@color/green" />
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_hutang_list_nominal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/avenir_next_ltpro_bold"
+                        android:gravity="center"
+                        android:text="Rp 0"
+                        android:textColor="@color/green" />
+
+                    <TextView
+                        android:id="@+id/tv_hutang_list_nominal_installment_count"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/avenir_next_ltpro_bold"
+                        android:gravity="center"
+                        android:text="1 x Cicilan"
+                        android:textColor="@color/green"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tv_hutang_list_nominal_installment_nominal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/avenir_next_ltpro_bold"
+                        android:gravity="center"
+                        android:text="Cicilan Rp 0"
+                        android:textColor="@color/green"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_hutang_list_nominal_installment_due_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/avenir_next_ltpro_bold"
+                        android:gravity="center"
+                        android:text="Cicilan Rp 0"
+                        android:textColor="@color/green"
+                        android:visibility="gone" />
+                </LinearLayout>
+
 
             </LinearLayout>
 
