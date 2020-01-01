@@ -41,7 +41,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
             }
 
             var name = ""
-            if (data.hutangRadioIndex == 0) {
+            if (data.hutangRadioIndex == 0) {//saya berhutang
                 if (data.piutangNama.isNullOrEmpty()) {
                     if (!data.piutangEmail.isNullOrEmpty()) {
                         name = data.piutangEmail
@@ -50,10 +50,12 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                     name = data.piutangNama
                 }
 
-                if (!data.piutangId.isNullOrEmpty()) itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.colorPrimaryDark))
+                if (data.piutangId.isNullOrEmpty()) {
+                    itemView.tv_hutang_list_name.setTextColor(activity.resources.getColor(R.color.colorPrimaryDark))
+                }
                 itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.red))
-            } else {
+            } else {// saya pemberi hutang
                 if (data.penghutangNama.isNullOrEmpty()) {
                     if (!data.penghutangEmail.isNullOrEmpty()) {
                         name = data.penghutangEmail
@@ -62,7 +64,9 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                     name = data.penghutangNama
                 }
 
-                if (!data.penghutangId.isNullOrEmpty()) itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.colorPrimaryDark))
+                if (data.penghutangId.isNullOrEmpty()) {
+                    itemView.tv_hutang_list_name.setTextColor(activity.resources.getColor(R.color.colorPrimaryDark))
+                }
                 itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.green))
             }
