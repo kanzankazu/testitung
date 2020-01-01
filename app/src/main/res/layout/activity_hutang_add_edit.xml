@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
     <View
@@ -92,11 +92,22 @@
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/et_hutang_add_user"
-                        style="@style/EtTextDisable"
+                        style="@style/EtText"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:imeOptions="actionNext" />
                 </android.support.design.widget.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/iv_hutang_add_user_clear"
+                    style="@style/TvBottomButtonPrimary"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/padding_margin_5dp"
+                    android:padding="@dimen/padding_margin_16dp"
+                    android:src="@drawable/ic_clear"
+                    android:tint="@color/Black"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/iv_hutang_add_user"
@@ -228,34 +239,49 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/til_hutang_add_installment_count"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/padding_margin_5dp"
-                    android:layout_weight="1"
-                    android:visibility="visible">
+                    android:orientation="horizontal">
 
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/et_hutang_add_installment_count"
-                        style="@style/EtNumber"
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/til_hutang_add_installment_count"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Berapa x Cicilan"
-                        android:imeOptions="actionDone"
-                        android:maxLength="2" />
-                </android.support.design.widget.TextInputLayout>
+                        android:layout_weight="1"
+                        android:visibility="visible">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_hutang_add_installment_count"
+                            style="@style/EtNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Berapa x Cicilan"
+                            android:imeOptions="actionDone"
+                            android:maxLength="2" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <Spinner
+                        android:id="@+id/sp_hutang_add_installment_count"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/til_hutang_add_installment_price"
+                    android:id="@+id/til_hutang_add_installment_nominal"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
                     <com.kanzankazu.itungitungan.util.widget.view.CurrencyEditText
-                        android:id="@+id/et_hutang_add_installment_price"
+                        android:id="@+id/et_hutang_add_installment_nominal"
                         style="@style/EtNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

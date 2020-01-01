@@ -83,8 +83,9 @@ public class UserSuggestAdapter extends ArrayAdapter<User> {
         User people = items.get(position);
         if (people != null) {
             TextView lblName = view.findViewById(R.id.lbl_name);
+            TextView lblEmail = view.findViewById(R.id.lbl_email);
             lblName.setText(people.getName());
-
+            lblEmail.setText(people.getEmail());
         }
 
         return view;

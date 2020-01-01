@@ -217,7 +217,7 @@ public class User {
                         Log.d("Lihat", "onDataChange User getUserByEmail : " + dataSnapshot.getChildrenCount());
 
                         if (dataSnapshot.getChildrenCount() < 1) {
-                            listenerData.onFailure(activity.getString(R.string.message_database_data_empty));
+                            listenerData.onFailure(activity.getString(R.string.message_database_data_cant_find));
                         } else if (dataSnapshot.getChildrenCount() > 1) {
                             listenerData.onFailure(activity.getString(R.string.message_database_data_over));
                         } else {
@@ -253,7 +253,7 @@ public class User {
                         Log.d("Lihat", "onDataChange User getUserByPhone : " + dataSnapshot.getChildrenCount());
 
                         if (dataSnapshot.getChildrenCount() < 1) {
-                            listenerData.onFailure(activity.getString(R.string.message_database_data_empty));
+                            listenerData.onFailure(activity.getString(R.string.message_database_data_cant_find));
                         } else if (dataSnapshot.getChildrenCount() > 1) {
                             listenerData.onFailure(activity.getString(R.string.message_database_data_over));
                         } else {

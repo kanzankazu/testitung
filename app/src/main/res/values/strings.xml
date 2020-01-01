@@ -39,8 +39,9 @@
     <string name="message_database_delete_success">Data berhasil dihapus</string>
     <string name="message_database_delete_failed">Data gagal di hapus</string>
     <string name="message_database_data_exist">Data sudah ada</string>
-    <string name="message_database_data_over" >Data berlebih</string>
-    <string name="message_database_data_empty" >Data kosong</string>
+    <string name="message_database_data_over">Data berlebih</string>
+    <string name="message_database_data_empty">Data kosong</string>
+    <string name="message_database_data_cant_find">Data tidak di temukan</string>
     <string name="message_email_sent_success">Email verifikasi sudah terkirim ke %s</string>
     <string name="message_email_sent_failed">Email verifikasi gagal terkirim</string>
     <string name="message_email_verified_not">Anda belum konfirmasi email dari kami</string>
@@ -50,7 +51,7 @@
     <string name="message_phone_number_exist_used_another_account">No. Dipakai beberapa akun</string>
     <string name="message_welcome">Selamat datang %s di Itung-itungan</string>
     <string name="message_picture_failed">Terjadi kesalahan saat memproses gambar Anda</string>
-    <string name="message_its_you">Ini data anda</string>
+    <string name="message_its_you">Ini anda</string>
 
     <!--Profile-->
     <string name="sign_in">Masuk</string>

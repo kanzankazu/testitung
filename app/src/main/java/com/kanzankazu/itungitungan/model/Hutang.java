@@ -40,8 +40,9 @@ public class Hutang {
     List<String> hutangBuktiGambar;
 
     Boolean isCicilan;
-    String hutangCicilanNominal;
     String hutangCicilanBerapaKali;
+    String hutangCicilanBerapaKaliType;
+    String hutangCicilanNominal;
     Boolean isFreeTimeToPay;
     String hutangCicilanTanggalAkhir;
 
@@ -304,6 +305,14 @@ public class Hutang {
 
     public void setHutangCicilanBerapaKali(String hutangCicilanBerapaKali) {
         this.hutangCicilanBerapaKali = hutangCicilanBerapaKali;
+    }
+
+    public String getHutangCicilanBerapaKaliTipe() {
+        return hutangCicilanBerapaKaliType;
+    }
+
+    public void setHutangCicilanBerapaKaliTipe(String hutangCicilanBerapaKaliType) {
+        this.hutangCicilanBerapaKaliType = hutangCicilanBerapaKaliType;
     }
 
     public String getHutangCicilanTanggalAkhir() {

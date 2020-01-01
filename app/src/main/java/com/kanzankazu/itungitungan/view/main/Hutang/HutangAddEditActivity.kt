@@ -9,6 +9,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.RadioButton
 import com.bumptech.glide.Glide
@@ -27,26 +29,26 @@ import com.kanzankazu.itungitungan.util.android.AndroidUtil
 import com.kanzankazu.itungitungan.view.adapter.UserSuggestAdapter
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
-import kotlinx.android.synthetic.main.activity_anggaran_perhitungan_add.*
 import kotlinx.android.synthetic.main.activity_hutang_add_edit.*
-import kotlinx.android.synthetic.main.app_toolbar.toolbar
+import kotlinx.android.synthetic.main.app_toolbar.*
 import java.io.File
 import java.util.*
 
-class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
-
+class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, AdapterView.OnItemSelectedListener {
     private lateinit var userSuggestAdapter: UserSuggestAdapter
     private lateinit var pictureUtil: PictureUtil
     private lateinit var permissionUtil: AndroidPermissionUtil
     private lateinit var watcherValidate: TextWatcher
-    private var userInvite: User? = null
-    private var positionImage: Int = -1
+    private lateinit var watcherValidateCount: TextWatcher
     private var pickAccount: Int = -1
+    private var positionImage: Int = -1
     private var mCurrentPhotoPath0: String? = ""
     private var mCurrentPhotoPath1: String? = ""
     private var mCurrentPhotoPath0Uri: Uri? = null
     private var mCurrentPhotoPath1Uri: Uri? = null
-
+    private var listTypeInstallmentCount = ArrayList<String>()
+    private var listTypeInstallmentCountPos: Int = -1
+    private var userInvite: User? = null
     var userInviteFamily: MutableList<User> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,14 +86,21 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
     }
 
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        listTypeInstallmentCountPos = position
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+    }
+
     private fun setView() {
         Utils.setupAppToolbarForActivity(this, toolbar)
 
         permissionUtil = AndroidPermissionUtil(this, *AndroidPermissionUtil.permCameraGallery)
         pictureUtil = PictureUtil(this)
 
-        getSuggestGroupUser()
-
+        setSuggestGroupUser()
+        setListTypeInstallmentCount()
     }
 
     @SuppressLint("LogNotTimber")
@@ -104,10 +113,26 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             }
         }
 
+        watcherValidateCount = object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(p0: Editable?) {
+                if (et_hutang_add_installment_count.text.toString().trim().isNullOrEmpty()) {
+                    sp_hutang_add_installment_count.visibility = View.GONE
+                } else {
+                    sp_hutang_add_installment_count.visibility = View.VISIBLE
+                }
+            }
+        }
+
         et_hutang_add_user.addTextChangedListener(watcherValidate)
         et_hutang_add_nominal.addTextChangedListener(watcherValidate)
         et_hutang_add_desc.addTextChangedListener(watcherValidate)
         et_hutang_add_date.addTextChangedListener(watcherValidate)
+
+        et_hutang_add_installment_count.addTextChangedListener(watcherValidateCount)
 
         rg_hutang_add_user.setOnCheckedChangeListener { radioGroup, _ ->
             val radioButtonID = radioGroup.checkedRadioButtonId
@@ -129,15 +154,13 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 ll_hutang_add_installment.visibility = View.VISIBLE
             } else {
                 ll_hutang_add_installment.visibility = View.GONE
-                et_hutang_add_installment_count.setText("")
-                et_hutang_add_installment_price.setText("")
                 cb_hutang_add_installment_free_to_pay.isChecked = false
+                listTypeInstallmentCountPos = -1
             }
         }
         cb_hutang_add_installment_free_to_pay.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 til_hutang_add_installment_due_date.visibility = View.GONE
-                et_perhitungan_add_due_date.setText("")
             } else {
                 til_hutang_add_installment_due_date.visibility = View.VISIBLE
             }
@@ -146,6 +169,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         et_hutang_add_date.setOnClickListener { Utility.showCalendarDialog(this, et_hutang_add_date) }
         et_hutang_add_installment_due_date.setOnClickListener { Utility.showCalendarDialog(this, et_hutang_add_installment_due_date) }
 
+        iv_hutang_add_user_clear.setOnClickListener {
+            et_hutang_add_user.setText("")
+            iv_hutang_add_user_clear.visibility = View.GONE
+            userInvite = null
+        }
         iv_hutang_add_user.setOnClickListener { chooseDialogPickUserData() }
         tv_hutang_add_simpan.setOnClickListener { saveHutangValidate() }
 
@@ -163,6 +191,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
     }
 
+    private fun setListTypeInstallmentCount() {
+        listTypeInstallmentCount = arrayListOf("Tahun", "Bulan", "Hari")
+        val adapter = ArrayAdapter(this, R.layout.multiline_spinner_item, listTypeInstallmentCount)
+        adapter.setDropDownViewResource(R.layout.multiline_spinner_item)
+        sp_hutang_add_installment_count.adapter = adapter
+        sp_hutang_add_installment_count.onItemSelectedListener = this
+    }
+
     private fun getSuggestInviteUser(resultAccount: String, pickAccount: Int) {
         showProgressDialog()
         if (pickAccount == 0) {
@@ -170,6 +206,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 override fun onSuccess(dataSnapshot: Any?) {
                     dismissProgressDialog()
                     userInvite = dataSnapshot as User
+                    iv_hutang_add_user_clear.visibility = View.VISIBLE
                     et_hutang_add_user.setText(userInvite?.name)
                 }
 
@@ -184,6 +221,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 override fun onSuccess(dataSnapshot: Any?) {
                     dismissProgressDialog()
                     userInvite = dataSnapshot as User
+                    iv_hutang_add_user_clear.visibility = View.VISIBLE
                     et_hutang_add_user.setText(userInvite?.name)
                 }
 
@@ -196,7 +234,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
     }
 
-    private fun getSuggestGroupUser() {
+    @SuppressLint("LogNotTimber")
+    private fun setSuggestGroupUser() {
+        et_hutang_add_user_family.threshold = 3
+
         User.getUsers(databaseUtil.rootRef, true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot?) {
                 if (dataSnapshot != null) {
@@ -217,22 +258,21 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         })
 
         et_hutang_add_user_family.setOnItemClickListener { parent, view, position, id ->
-            Log.d("Lihat", "setListener HutangAddEditActivity : " + parent)
-            Log.d("Lihat", "setListener HutangAddEditActivity : " + view)
-            Log.d("Lihat", "setListener HutangAddEditActivity : " + position)
-            Log.d("Lihat", "setListener HutangAddEditActivity : " + id)
+            Log.d("Lihat", "setListener HutangAddEditActivity : $parent")
+            Log.d("Lihat", "setListener HutangAddEditActivity : $view")
+            Log.d("Lihat", "setListener HutangAddEditActivity : $position")
+            Log.d("Lihat", "setListener HutangAddEditActivity : $id")
         }
 
     }
 
     private fun checkData(): Boolean {
-        return if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, false)) {
-            false
-        } else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false)) {
-            false
-        } else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false)) {
-            false
-        } else !InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, false)
+        return when {
+            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, false) -> false
+            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false) -> false
+            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false) -> false
+            else -> !InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, false)
+        }
     }
 
     private fun chooseDialogPickImage(imageView: ImageView?, positionImage: Int) {
@@ -278,7 +318,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.penghutangNama = UserPreference.getInstance().name
                 hutang.penghutangEmail = UserPreference.getInstance().email
                 hutang.piutangId = userInvite?.getuId() ?: ""
-                hutang.piutangNama = userInvite?.name ?: ""
+                hutang.piutangNama = userInvite?.name ?: et_hutang_add_user.text.toString().trim()
                 hutang.piutangEmail = userInvite?.email ?: ""
                 hutang.penghutangPersetujuan = true
                 hutang.piutangPersetujuan = false
@@ -288,7 +328,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.piutangNama = UserPreference.getInstance().name
                 hutang.piutangEmail = UserPreference.getInstance().email
                 hutang.penghutangId = userInvite?.getuId() ?: ""
-                hutang.penghutangNama = userInvite?.name ?: ""
+                hutang.penghutangNama = userInvite?.name
+                        ?: et_hutang_add_user.text.toString().trim()
                 hutang.penghutangEmail = userInvite?.email ?: ""
                 hutang.piutangPersetujuan = true
                 hutang.penghutangPersetujuan = false
@@ -299,13 +340,17 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             hutang.hutangCatatan = et_hutang_add_note.text.toString().trim()
 
             hutang.cicilan = sw_hutang_add_installment.isChecked
-            hutang.freeTimeToPay = cb_hutang_add_installment_free_to_pay.isChecked
-            hutang.hutangCicilanBerapaKali = et_hutang_add_installment_count.text.toString().trim()
-            hutang.hutangCicilanNominal = et_hutang_add_installment_price.text.toString().trim()
-            hutang.hutangCicilanTanggalAkhir = et_hutang_add_installment_due_date.text.toString().trim()
-
-            hutang.hutangBuktiGambar0 = mCurrentPhotoPath0
-            hutang.hutangBuktiGambar1 = mCurrentPhotoPath1
+            if (hutang.cicilan) {
+                hutang.hutangCicilanBerapaKali = et_hutang_add_installment_count.text.toString().trim()
+                if (listTypeInstallmentCountPos > -1) {
+                    hutang.hutangCicilanBerapaKaliTipe = listTypeInstallmentCount[listTypeInstallmentCountPos]
+                }
+                hutang.hutangCicilanNominal = Utils.getRupiahToString(et_hutang_add_installment_nominal.text.toString().trim())
+                hutang.freeTimeToPay = cb_hutang_add_installment_free_to_pay.isChecked
+                if (hutang.freeTimeToPay) {
+                    hutang.hutangCicilanTanggalAkhir = et_hutang_add_installment_due_date.text.toString().trim()
+                }
+            }
 
             if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
                 val listUri = PictureUtil.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)

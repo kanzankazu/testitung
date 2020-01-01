@@ -50,6 +50,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                     name = data.piutangNama
                 }
 
+                if (!data.piutangId.isNullOrEmpty()) itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.colorPrimaryDark))
                 itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.red))
             } else {
@@ -61,6 +62,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                     name = data.penghutangNama
                 }
 
+                if (!data.penghutangId.isNullOrEmpty()) itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.colorPrimaryDark))
                 itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.green))
             }
@@ -74,14 +76,20 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
             if (!data.hutangCicilanBerapaKali.isNullOrEmpty()) {
                 itemView.tv_hutang_list_nominal_installment_count.visibility = View.VISIBLE
                 itemView.tv_hutang_list_nominal_installment_count.text = activity.getString(R.string.installment_count, data.hutangCicilanBerapaKali)
+            } else {
+                itemView.tv_hutang_list_nominal_installment_count.visibility = View.GONE
             }
             if (!data.hutangCicilanNominal.isNullOrEmpty()) {
                 itemView.tv_hutang_list_nominal_installment_nominal.visibility = View.VISIBLE
                 itemView.tv_hutang_list_nominal_installment_nominal.text = Utils.setRupiah(data.hutangCicilanNominal)
+            } else {
+                itemView.tv_hutang_list_nominal_installment_nominal.visibility = View.GONE
             }
             if (!data.hutangCicilanTanggalAkhir.isNullOrEmpty()) {
                 itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.VISIBLE
                 itemView.tv_hutang_list_nominal_installment_due_date.text = activity.getString(R.string.installment_duedate, data.hutangCicilanTanggalAkhir)
+            } else {
+                itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.GONE
             }
         }
 
