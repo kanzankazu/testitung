@@ -28,6 +28,7 @@ public class Hutang {
     String penghutangNama;
     String penghutangEmail;
     Boolean penghutangPersetujuan;
+    String piutang_penghutang_id;
 
     String hutangKeluargaId;
     String hutangKeluargaNama;
@@ -433,5 +434,21 @@ public class Hutang {
 
     public void setSubList(List<HutangCicilan> subList) {
         this.subList = subList;
+    }
+
+    public String getPiutang_penghutang_id() {
+        return piutang_penghutang_id;
+    }
+
+    public void setPiutang_penghutang_id(String piutang_penghutang_id) {
+        this.piutang_penghutang_id = piutang_penghutang_id;
+    }
+
+    public String getHutangCicilanBerapaKaliType() {
+        return hutangCicilanBerapaKaliType;
+    }
+
+    public void setHutangCicilanBerapaKaliType(String hutangCicilanBerapaKaliType) {
+        this.hutangCicilanBerapaKaliType = hutangCicilanBerapaKaliType;
     }
 }

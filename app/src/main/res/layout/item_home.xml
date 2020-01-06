@@ -14,27 +14,72 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="2dp">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_margin_120dp"
-            android:layout_margin="@dimen/padding_margin_10dp"
-            android:animateLayoutChanges="true"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/iv_item_home_image"
+            <LinearLayout
+                android:id="@+id/ll_item_home"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_margin_5dp"
-                android:src="@drawable/ic_profile_picture" />
+                android:layout_height="@dimen/padding_margin_120dp"
+                android:layout_margin="@dimen/padding_margin_10dp"
+                android:animateLayoutChanges="true"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_item_home_title"
-                style="@style/TvStandartCenterSingle"
-                android:text="@string/app_name"
-                android:textColor="@color/colorPrimaryDark" />
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/iv_item_home_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp"
+                    android:src="@drawable/ic_profile_picture" />
+
+                <TextView
+                    android:id="@+id/tv_item_home_title"
+                    style="@style/TvStandartCenterSingle"
+                    android:text="@string/app_name"
+                    android:textColor="@color/colorPrimaryDark" />
+            </LinearLayout>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_item_home_comming_soon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:animateLayoutChanges="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_margin_5dp">
+
+                    <TextView
+                        style="@style/TvStandart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Comming"
+                        android:textColor="@color/Black" />
+
+                    <TextView
+                        style="@style/TvStandart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Soon"
+                        android:textColor="@color/Black" />
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+
+        </FrameLayout>
+
 
     </android.support.v7.widget.CardView>
 

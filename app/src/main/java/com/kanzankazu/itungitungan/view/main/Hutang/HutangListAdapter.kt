@@ -2,16 +2,20 @@ package com.kanzankazu.itungitungan.view.main.Hutang
 
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Utils
 import kotlinx.android.synthetic.main.item_hutang_list.view.*
 
 class HutangListAdapter(private val activity: Activity, private val view: HutangListContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var datas: MutableList<Hutang> = arrayListOf()
+    private var mainModel: MutableList<Hutang> = arrayListOf()
+    private var tempModel: MutableList<Hutang> = arrayListOf()
+    private var subjectDataFilter: SubjectDataFilter? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_hutang_list, parent, false)
@@ -19,12 +23,12 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
     }
 
     override fun getItemCount(): Int {
-        return datas.size
+        return mainModel.size
     }
 
     override fun onBindViewHolder(p0: RecyclerView.ViewHolder, position: Int) {
         val h = p0 as HutangListAdapterHolder
-        h.setView(datas[position], position)
+        h.setView(mainModel[position], position)
     }
 
     inner class HutangListAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
@@ -40,6 +44,9 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                 itemView.setOnClickListener(null)
             }
 
+            if (data.piutangPersetujuan) itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE else itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
+            if (data.penghutangPersetujuan) itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE else itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
+
             var name = ""
             if (data.hutangRadioIndex == 0) {//saya berhutang
                 if (data.piutangNama.isNullOrEmpty()) {
@@ -51,8 +58,13 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                 }
 
                 if (data.piutangId.isNullOrEmpty()) {
-                    itemView.tv_hutang_list_name.setTextColor(activity.resources.getColor(R.color.colorPrimaryDark))
+                    itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
+                    itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
+                    itemView.cv_item_hutang_list_apprv_none.visibility = View.VISIBLE
+                } else {
+                    itemView.cv_item_hutang_list_apprv_none.visibility = View.GONE
                 }
+
                 itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.red))
             } else {// saya pemberi hutang
@@ -66,13 +78,17 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
 
                 if (data.penghutangId.isNullOrEmpty()) {
                     itemView.tv_hutang_list_name.setTextColor(activity.resources.getColor(R.color.colorPrimaryDark))
+
+                    itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
+                    itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
+                    itemView.cv_item_hutang_list_apprv_none.visibility = View.VISIBLE
+                } else {
+                    itemView.cv_item_hutang_list_apprv_none.visibility = View.GONE
                 }
+
                 itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.green))
             }
-
-            if (data.piutangPersetujuan) itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE else itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
-            if (data.penghutangPersetujuan) itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE else itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
 
             itemView.tv_hutang_list_transaksi.text = ""
             itemView.tv_hutang_list_nominal.text = Utils.setRupiah(data.hutangNominal)
@@ -105,55 +121,104 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
 
     fun setData(datas: List<Hutang>) {
         if (datas.isNotEmpty()) {
-            this.datas.clear()
-            this.datas = datas as ArrayList<Hutang>
+            this.mainModel.clear()
+            this.mainModel = datas as ArrayList<Hutang>
         } else {
-            this.datas = datas as ArrayList<Hutang>
+            this.mainModel = datas as ArrayList<Hutang>
         }
         notifyDataSetChanged()
     }
 
     fun replaceData(datas: List<Hutang>) {
-        this.datas.clear()
-        this.datas.addAll(datas)
+        this.mainModel.clear()
+        this.mainModel.addAll(datas)
         notifyDataSetChanged()
     }
 
     fun addDatas(datas: List<Hutang>) {
-        this.datas.addAll(datas)
-        notifyItemRangeInserted(this.datas.size, datas.size)
+        this.mainModel.addAll(datas)
+        notifyItemRangeInserted(this.mainModel.size, datas.size)
     }
 
     fun addDataFirst(data: Hutang) {
         val position = 0
-        this.datas.add(position, data)
+        this.mainModel.add(position, data)
         notifyItemInserted(position)
     }
 
     fun removeAt(position: Int) {
-        this.datas.removeAt(position)
+        this.mainModel.removeAt(position)
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position, this.datas.size)
+        notifyItemRangeChanged(position, this.mainModel.size)
     }
 
     fun removeDataFirst() {
         val position = 0
-        this.datas.removeAt(position)
+        this.mainModel.removeAt(position)
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position, this.datas.size)
+        notifyItemRangeChanged(position, this.mainModel.size)
     }
 
     fun restoreData(data: Hutang, position: Int) {
-        this.datas.add(position, data)
+        this.mainModel.add(position, data)
         notifyItemInserted(position)
     }
 
     fun updateSingleData(data: Hutang, position: Int) {
-        this.datas.set(position, data)
+        this.mainModel.set(position, data)
         notifyDataSetChanged()
     }
 
     init {
-        this.datas = arrayListOf()
+        this.mainModel = arrayListOf()
+    }
+
+    fun getFilter(): Filter {
+        if (subjectDataFilter == null) {
+            subjectDataFilter = SubjectDataFilter()
+        }
+        return subjectDataFilter as SubjectDataFilter
+    }
+
+    private inner class SubjectDataFilter : Filter() {
+        override fun performFiltering(charSequence: CharSequence): FilterResults {
+            var charSequence = charSequence
+
+            charSequence = charSequence.toString().toLowerCase()
+            val filterResults = FilterResults()
+
+            if (!TextUtils.isEmpty(charSequence)) {
+                val arrayList1 = java.util.ArrayList<Hutang>()
+
+                for (data in mainModel) {
+                    if (subject.toString().toLowerCase().contains(charSequence)) {
+                        arrayList1.add(subject)
+                    }
+                }
+
+                filterResults.count = arrayList1.size
+                filterResults.values = arrayList1
+            } else {
+                synchronized(this) {
+                    filterResults.count = modelsMain.size
+                    filterResults.values = modelsMain
+                }
+            }
+            return filterResults
+        }
+
+        override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
+
+            modelsTemp = filterResults.values as java.util.ArrayList<BoxUnegUnegModel>
+
+            notifyDataSetChanged()
+
+            /*modelsTemp.clear();
+
+            for (int i = 0, l = modelsTemp.size(); i < l; i++) {
+                modelsTemp.add(modelsTemp.get(i));
+            }
+            notifyDataSetChanged();*/
+        }
     }
 }

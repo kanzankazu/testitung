@@ -157,7 +157,7 @@
                     style="@style/EtNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nominal Rp. : *"
+                    android:hint="Nominal Rp *"
                     android:imeOptions="actionNext" />
             </android.support.design.widget.TextInputLayout>
 
@@ -258,7 +258,7 @@
                             style="@style/EtNumber"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Berapa x Cicilan"
+                            android:hint="Cicilan Berapa x"
                             android:imeOptions="actionDone"
                             android:maxLength="2" />
                     </android.support.design.widget.TextInputLayout>
@@ -280,12 +280,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <com.kanzankazu.itungitungan.util.widget.view.CurrencyEditText
+                    <android.support.design.widget.TextInputEditText
                         android:id="@+id/et_hutang_add_installment_nominal"
                         style="@style/EtNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Nominal Cicilan"
+                        android:hint="Cicilan Nominal Rp"
                         android:imeOptions="actionNext" />
                 </android.support.design.widget.TextInputLayout>
 

@@ -39,7 +39,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     private lateinit var pictureUtil: PictureUtil
     private lateinit var permissionUtil: AndroidPermissionUtil
     private lateinit var watcherValidate: TextWatcher
-    private lateinit var watcherValidateCount: TextWatcher
+    private lateinit var watcherValidateInstallmentCount: TextWatcher
+    private lateinit var watcherValidateInstallmentNominal: TextWatcher
     private var pickAccount: Int = -1
     private var positionImage: Int = -1
     private var mCurrentPhotoPath0: String? = ""
@@ -113,16 +114,37 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             }
         }
 
-        watcherValidateCount = object : TextWatcher {
+        watcherValidateInstallmentCount = object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                if (et_hutang_add_installment_count.text.toString().trim().isNullOrEmpty()) {
-                    sp_hutang_add_installment_count.visibility = View.GONE
+                val nominal: Int = if (!et_hutang_add_nominal.text.toString().isNullOrEmpty()) Utils.getRupiahToString(et_hutang_add_nominal).toInt() else "0".toInt()
+                val installmentCount: Int = if (!et_hutang_add_installment_count.text.toString().isNullOrEmpty()) et_hutang_add_installment_count.text.toString().trim().toInt() else "0".toInt()
+
+                if (nominal <= 0) {
+                    et_hutang_add_nominal.requestFocus()
                 } else {
-                    sp_hutang_add_installment_count.visibility = View.VISIBLE
+                    val i = nominal / installmentCount
+                    et_hutang_add_installment_nominal.setText(Utils.setRupiah(i.toString()))
+                }
+            }
+        }
+        watcherValidateInstallmentNominal = object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(p0: Editable?) {
+                val nominal: Int = if (!et_hutang_add_nominal.text.toString().isNullOrEmpty()) Utils.getRupiahToString(et_hutang_add_nominal).toInt() else "0".toInt()
+                val installmentNominal: Int = if (!et_hutang_add_installment_nominal.text.toString().isNullOrEmpty()) Utils.getRupiahToString(et_hutang_add_installment_nominal).toInt() else "0".toInt()
+
+                if (nominal <= 0) {
+                    et_hutang_add_nominal.requestFocus()
+                } else {
+                    val i = nominal / installmentNominal
+                    et_hutang_add_installment_count.setText(i.toString())
                 }
             }
         }
@@ -132,7 +154,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         et_hutang_add_desc.addTextChangedListener(watcherValidate)
         et_hutang_add_date.addTextChangedListener(watcherValidate)
 
-        et_hutang_add_installment_count.addTextChangedListener(watcherValidateCount)
+        et_hutang_add_installment_count.addTextChangedListener(watcherValidateInstallmentCount)
+        et_hutang_add_installment_nominal.addTextChangedListener(watcherValidateInstallmentNominal)
 
         rg_hutang_add_user.setOnCheckedChangeListener { radioGroup, _ ->
             val radioButtonID = radioGroup.checkedRadioButtonId
@@ -335,6 +358,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
                 hutang.penghutangPersetujuan = false
             }
 
+            hutang.piutang_penghutang_id = hutang.penghutangId + "_" + hutang.piutangId
             hutang.hutangNominal = Utils.getRupiahToString(et_hutang_add_nominal.text.toString().trim())
             hutang.hutangKeterangan = et_hutang_add_desc.text.toString().trim()
             hutang.hutangCatatan = et_hutang_add_note.text.toString().trim()
@@ -342,6 +366,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             hutang.cicilan = sw_hutang_add_installment.isChecked
             if (hutang.cicilan) {
                 hutang.hutangCicilanBerapaKali = et_hutang_add_installment_count.text.toString().trim()
+                hutang.hutangCicilanBerapaKaliType = listTypeInstallmentCount[listTypeInstallmentCountPos]
                 if (listTypeInstallmentCountPos > -1) {
                     hutang.hutangCicilanBerapaKaliTipe = listTypeInstallmentCount[listTypeInstallmentCountPos]
                 }
