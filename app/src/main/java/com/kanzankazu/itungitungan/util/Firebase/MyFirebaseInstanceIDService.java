@@ -21,6 +21,7 @@ import android.util.Log;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.UserPreference;
 import com.kanzankazu.itungitungan.model.User;
@@ -29,6 +30,7 @@ import com.kanzankazu.itungitungan.model.User;
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private FirebaseDatabaseUtil databaseUtil;
+    private static final String SUBSCRIBE_TO = "userABC";
 
     @Override
     public void onTokenRefresh() {
@@ -39,6 +41,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         Log.d("Lihat", "onTokenRefresh MyFirebaseInstanceIDService : " + token);
 
         UserPreference.getInstance().setFCMToken(token);
+
+        //FirebaseMessaging.getInstance().subscribeToTopic(SUBSCRIBE_TO);
 
         if (UserPreference.getInstance().isContainKey(Constants.SharedPreference.UID)) {
             sendRegistrationToServer(token);

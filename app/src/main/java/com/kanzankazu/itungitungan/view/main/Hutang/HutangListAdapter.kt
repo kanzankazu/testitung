@@ -23,12 +23,12 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
     }
 
     override fun getItemCount(): Int {
-        return mainModel.size
+        return tempModel.size
     }
 
     override fun onBindViewHolder(p0: RecyclerView.ViewHolder, position: Int) {
         val h = p0 as HutangListAdapterHolder
-        h.setView(mainModel[position], position)
+        h.setView(tempModel[position], position)
     }
 
     inner class HutangListAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
@@ -48,13 +48,22 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
             if (data.penghutangPersetujuan) itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE else itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
 
             var name = ""
+            var email = ""
             if (data.hutangRadioIndex == 0) {//saya berhutang
                 if (data.piutangNama.isNullOrEmpty()) {
-                    if (!data.piutangEmail.isNullOrEmpty()) {
-                        name = data.piutangEmail
-                    }
+                    itemView.tv_hutang_list_name.visibility = View.GONE
                 } else {
                     name = data.piutangNama
+                    itemView.tv_hutang_list_name.text = name
+                    itemView.tv_hutang_list_name.visibility = View.VISIBLE
+                }
+
+                if (data.piutangEmail.isNullOrEmpty()) {
+                    itemView.tv_hutang_list_email.visibility = View.GONE
+                } else {
+                    email = data.piutangEmail
+                    itemView.tv_hutang_list_email.text = email
+                    itemView.tv_hutang_list_email.visibility = View.VISIBLE
                 }
 
                 if (data.piutangId.isNullOrEmpty()) {
@@ -65,15 +74,22 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                     itemView.cv_item_hutang_list_apprv_none.visibility = View.GONE
                 }
 
-                itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.red))
             } else {// saya pemberi hutang
                 if (data.penghutangNama.isNullOrEmpty()) {
-                    if (!data.penghutangEmail.isNullOrEmpty()) {
-                        name = data.penghutangEmail
-                    }
+                    itemView.tv_hutang_list_name.visibility = View.GONE
                 } else {
                     name = data.penghutangNama
+                    itemView.tv_hutang_list_name.text = name
+                    itemView.tv_hutang_list_name.visibility = View.VISIBLE
+                }
+
+                if (data.penghutangEmail.isNullOrEmpty()) {
+                    itemView.tv_hutang_list_email.visibility = View.GONE
+                } else {
+                    email = data.penghutangEmail
+                    itemView.tv_hutang_list_email.text = email
+                    itemView.tv_hutang_list_email.visibility = View.VISIBLE
                 }
 
                 if (data.penghutangId.isNullOrEmpty()) {
@@ -86,11 +102,10 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                     itemView.cv_item_hutang_list_apprv_none.visibility = View.GONE
                 }
 
-                itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.green))
             }
 
-            itemView.tv_hutang_list_transaksi.text = ""
+            itemView.tv_hutang_list_keperluan.text = data.hutangKeperluan
             itemView.tv_hutang_list_nominal.text = Utils.setRupiah(data.hutangNominal)
 
             if (!data.hutangCicilanBerapaKali.isNullOrEmpty()) {
@@ -116,20 +131,23 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
         fun setListener(hutang: Hutang, position: Int) {
             itemView.setOnClickListener { view.itemViewOnClick(hutang) }
         }
-
     }
 
     fun setData(datas: List<Hutang>) {
         if (datas.isNotEmpty()) {
             this.mainModel.clear()
+            this.tempModel.clear()
+
             this.mainModel = datas as ArrayList<Hutang>
+            this.tempModel = datas as ArrayList<Hutang>
         } else {
             this.mainModel = datas as ArrayList<Hutang>
+            this.tempModel = datas as ArrayList<Hutang>
         }
         notifyDataSetChanged()
     }
 
-    fun replaceData(datas: List<Hutang>) {
+    /*fun replaceData(datas: List<Hutang>) {
         this.mainModel.clear()
         this.mainModel.addAll(datas)
         notifyDataSetChanged()
@@ -167,11 +185,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
     fun updateSingleData(data: Hutang, position: Int) {
         this.mainModel.set(position, data)
         notifyDataSetChanged()
-    }
-
-    init {
-        this.mainModel = arrayListOf()
-    }
+    }*/
 
     fun getFilter(): Filter {
         if (subjectDataFilter == null) {
@@ -190,8 +204,14 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
             if (!TextUtils.isEmpty(charSequence)) {
                 val arrayList1 = java.util.ArrayList<Hutang>()
 
-                for (data in mainModel) {
-                    if (subject.toString().toLowerCase().contains(charSequence)) {
+                for (subject in mainModel) {
+                    if (
+                        subject.piutangEmail.contains(charSequence) ||
+                        subject.piutangNama.contains(charSequence) ||
+                        subject.penghutangEmail.contains(charSequence) ||
+                        subject.penghutangNama.contains(charSequence) ||
+                        subject.hutangNominal.contains(charSequence)
+                    ) {
                         arrayList1.add(subject)
                     }
                 }
@@ -200,8 +220,8 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                 filterResults.values = arrayList1
             } else {
                 synchronized(this) {
-                    filterResults.count = modelsMain.size
-                    filterResults.values = modelsMain
+                    filterResults.count = mainModel.size
+                    filterResults.values = mainModel
                 }
             }
             return filterResults
@@ -209,16 +229,9 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
 
         override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
 
-            modelsTemp = filterResults.values as java.util.ArrayList<BoxUnegUnegModel>
+            tempModel = filterResults.values as java.util.ArrayList<Hutang>
 
             notifyDataSetChanged()
-
-            /*modelsTemp.clear();
-
-            for (int i = 0, l = modelsTemp.size(); i < l; i++) {
-                modelsTemp.add(modelsTemp.get(i));
-            }
-            notifyDataSetChanged();*/
         }
     }
 }

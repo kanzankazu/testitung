@@ -19,7 +19,6 @@ public class Hutang {
     String hId;
     int hutangRadioIndex;
 
-    String piutang_penghutang;
     String piutangId;
     String piutangNama;
     String piutangEmail;
@@ -34,7 +33,7 @@ public class Hutang {
     String hutangKeluargaNama;
 
     String hutangNominal;
-    String hutangKeterangan;
+    String hutangKeperluan;
     String hutangCatatan;
     String hutangBuktiGambar0;
     String hutangBuktiGambar1;
@@ -204,14 +203,6 @@ public class Hutang {
         this.hutangKeluargaNama = hutangKeluargaNama;
     }
 
-    public String getPiutang_penghutang() {
-        return piutang_penghutang;
-    }
-
-    public void setPiutang_penghutang(String piutang_penghutang) {
-        this.piutang_penghutang = piutang_penghutang;
-    }
-
     public String gethId() {
         return hId;
     }
@@ -332,12 +323,12 @@ public class Hutang {
         this.hutangNominal = hutangNominal;
     }
 
-    public String getHutangKeterangan() {
-        return hutangKeterangan;
+    public String getHutangKeperluan() {
+        return hutangKeperluan;
     }
 
-    public void setHutangKeterangan(String hutangKeterangan) {
-        this.hutangKeterangan = hutangKeterangan;
+    public void setHutangKeperluan(String hutangKeperluan) {
+        this.hutangKeperluan = hutangKeperluan;
     }
 
     public String getHutangCatatan() {

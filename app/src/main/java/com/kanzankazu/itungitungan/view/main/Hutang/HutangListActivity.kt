@@ -4,8 +4,11 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
@@ -76,11 +79,31 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 }
             })
         }
+
+        et_hutang_list_search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString().trim().isNotEmpty()) {
+                    ib_hutang_list_search_clear.visibility = View.VISIBLE
+                } else {
+                    ib_hutang_list_search_clear.visibility = View.GONE
+                }
+
+                hutangListAdapter.getFilter().filter(s.toString().trim())
+            }
+        })
+
+        ib_hutang_list_search_clear.setOnClickListener { et_hutang_list_search.text.clear() }
     }
 
     private fun getHutang() {
         showProgressDialog()
-        Hutang.getHutangs(databaseUtil.getRootRef(), false, object : FirebaseDatabaseUtil.ValueListenerData {
+        Hutang.getHutangs(databaseUtil.rootRef, false, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot) {
                 dismissProgressDialog()
                 val hutangs = ArrayList<Hutang>()
@@ -91,11 +114,11 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                     val hutang = snapshot.getValue(Hutang::class.java)
                     hutangs.add(hutang!!)
 
-                    if (!hutang.hutangNominal.isNullOrEmpty()){
+                    if (!hutang.hutangNominal.isNullOrEmpty()) {
                         if (hutang.hutangRadioIndex == 0) {
-                            hutangNominal = hutangNominal + hutang.hutangNominal.toInt()
+                            hutangNominal += hutang.hutangNominal.toInt()
                         } else {
-                            piutangNominal = piutangNominal + hutang.hutangNominal.toInt()
+                            piutangNominal += hutang.hutangNominal.toInt()
                         }
                     }
 
