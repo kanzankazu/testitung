@@ -49,7 +49,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
 
             var name = ""
             var email = ""
-            if (data.hutangRadioIndex == 0) {//saya berhutang
+            if (data.hutangRadioIndex == 0) {//saya berhutang(piutang)
                 if (data.piutangNama.isNullOrEmpty()) {
                     itemView.tv_hutang_list_name.visibility = View.GONE
                 } else {
@@ -75,7 +75,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                 }
 
                 itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.red))
-            } else {// saya pemberi hutang
+            } else {// saya pemberi hutang(penghutang)
                 if (data.penghutangNama.isNullOrEmpty()) {
                     itemView.tv_hutang_list_name.visibility = View.GONE
                 } else {
@@ -203,14 +203,14 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                 val arrayList1 = java.util.ArrayList<Hutang>()
 
                 for (subject in mainModel) {
-                    if (
-                        subject.piutangEmail.contains(charSequence) ||
-                        subject.piutangNama.contains(charSequence) ||
-                        subject.penghutangEmail.contains(charSequence) ||
-                        subject.penghutangNama.contains(charSequence) ||
-                        subject.hutangNominal.contains(charSequence)
-                    ) {
-                        arrayList1.add(subject)
+                    if (subject.hutangRadioIndex == 0) {//saya berhutang(piutang)
+                        if (subject.piutangEmail.contains(charSequence) || subject.piutangNama.contains(charSequence) || subject.hutangNominal.contains(charSequence)) {
+                            arrayList1.add(subject)
+                        }
+                    } else {// saya pemberi hutang(penghutang)
+                        if (subject.piutangEmail.contains(charSequence) || subject.piutangNama.contains(charSequence) || subject.hutangNominal.contains(charSequence)) {
+                            arrayList1.add(subject)
+                        }
                     }
                 }
 

@@ -41,10 +41,17 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class ProfileListAdapterAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         fun setView(model: HomeModel) {
-            Glide.with(mActivity)
+
+            if (model.image != 0) {
+                Glide.with(mActivity)
                     .load(model.image)
                     .placeholder(R.drawable.ic_profile_picture)
                     .into(itemView.iv_item_home_image)
+                itemView.iv_item_home_image.visibility = View.VISIBLE
+            } else {
+                itemView.iv_item_home_image.visibility = View.GONE
+            }
+
             itemView.tv_item_home_title.text = model.title
 
             if (model.isComingSoon) {

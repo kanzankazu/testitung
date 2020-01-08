@@ -125,6 +125,7 @@
 
     <style name="TvStandart">
         <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:imeOptions">actionNext</item>
     </style>
 
     <style name="TvStandartCenter" parent="TvStandart">
@@ -138,46 +139,50 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="EtText">
+    <style name="EtText" parent="TvStandart">
         <item name="android:inputType">text</item>
-        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="EtTextDisable">
+    <style name="EtText.Email" parent="TvStandart">
+        <item name="android:inputType">textEmailAddress</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="EtText.Password" parent="TvStandart">
+        <item name="android:inputType">textPassword</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="EtTextDisable" parent="TvStandart">
         <item name="android:enabled">false</item>
         <item name="android:clickable">false</item>
         <item name="android:inputType">text</item>
-        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
         <item name="android:focusable">false</item>
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="EtTextNonEditable">
+    <style name="EtTextNonEditable" parent="TvStandart">
         <item name="android:editable">false</item>
         <item name="android:inputType">none</item>
-        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
         <item name="android:focusable">false</item>
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="EtNumber">
+    <style name="EtNumber" parent="TvStandart">
         <item name="android:inputType">number</item>
-        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="EtClickable">
+    <style name="EtClickable" parent="TvStandart">
         <item name="android:inputType">none</item>
-        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
         <item name="android:focusable">false</item>
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="EtMultiline">
+    <style name="EtMultiline" parent="TvStandart">
         <item name="android:inputType">textMultiLine</item>
         <item name="android:lineSpacingExtra">@dimen/padding_margin_5dp</item>
-        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
     </style>
 
 </resources>

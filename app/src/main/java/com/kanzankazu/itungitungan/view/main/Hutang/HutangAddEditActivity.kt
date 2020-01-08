@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
+import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
@@ -90,6 +91,15 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         listTypeInstallmentCountPos = position
+        when (listTypeInstallmentCount[position]) {
+            Constants.Installment.Day -> InputValidUtil.setEditTextMaxLenght(et_hutang_add_installment_count, 3)
+            Constants.Installment.Month -> InputValidUtil.setEditTextMaxLenght(et_hutang_add_installment_count, 2)
+            Constants.Installment.Year -> InputValidUtil.setEditTextMaxLenght(et_hutang_add_installment_count, 4)
+        }
+
+        et_hutang_add_installment_count.setText("1")
+        et_hutang_add_installment_count.requestFocus()
+        et_hutang_add_installment_count.setSelectAllOnFocus(false)
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -111,7 +121,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                checkData()
+                checkData(false)
             }
         }
 
@@ -121,9 +131,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
+                et_hutang_add_installment_count.setSelectAllOnFocus(true)
                 val nominal: Int = if (et_hutang_add_nominal.text.toString().isNotEmpty() && !et_hutang_add_nominal.text.toString().trim().equals("Rp", true)) Utils.getRupiahToString(et_hutang_add_nominal).toInt() else "1".toInt()
                 val installmentCount: Int = if (et_hutang_add_installment_count.text.toString().isNotEmpty()) et_hutang_add_installment_count.text.toString().trim().toInt() else "1".toInt()
-                if (installmentCount <= 1) {
+                if (installmentCount < 1) {
                     til_hutang_add_installment_nominal.visibility = View.GONE
                 } else {
                     if (nominal <= 1) {
@@ -141,6 +152,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         et_hutang_add_nominal.addTextChangedListener(watcherValidate)
         et_hutang_add_desc.addTextChangedListener(watcherValidate)
         et_hutang_add_date.addTextChangedListener(watcherValidate)
+        et_hutang_add_installment_due_date.addTextChangedListener(watcherValidate)
 
         et_hutang_add_installment_count.addTextChangedListener(watcherValidateInstallmentCount)
 
@@ -202,7 +214,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     }
 
     private fun setListTypeInstallmentCount() {
-        listTypeInstallmentCount = arrayListOf("Bulan", "Tahun", "Hari")
+        listTypeInstallmentCount = arrayListOf(
+            Constants.Installment.Month,
+            Constants.Installment.Year,
+            Constants.Installment.Day
+        )
         val adapter = ArrayAdapter(this, R.layout.multiline_spinner_item, listTypeInstallmentCount)
         adapter.setDropDownViewResource(R.layout.multiline_spinner_item)
         sp_hutang_add_installment_count.adapter = adapter
@@ -276,18 +292,18 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
 
     }
 
-    private fun checkData(): Boolean {
-        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, false)) return false
-        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false)) return false
-        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false)) return false
-        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, false)) return false
+    private fun checkData(isFocus: Boolean): Boolean {
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, isFocus)) return false
+        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, isFocus)) return false
+        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, isFocus)) return false
+        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, isFocus)) return false
         else if (sw_hutang_add_installment.isChecked) {
-            if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_count, et_hutang_add_installment_count, false)) return false
-            else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_nominal, et_hutang_add_installment_nominal, false)) return false
+            if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_count, et_hutang_add_installment_count, isFocus)) return false
+            else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_nominal, et_hutang_add_installment_nominal, isFocus)) return false
             else if (cb_hutang_add_installment_free_to_pay.isChecked) {
                 return true
             } else {
-                if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_due_date, et_hutang_add_installment_due_date, false)) return false
+                if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_due_date, et_hutang_add_installment_due_date, isFocus)) return false
             }
         } else {
             return true
@@ -307,12 +323,12 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
 
         val chooseImageDialog = AlertDialog.Builder(this)
         chooseImageDialog.setItems(items) { _, i ->
-            pickAccount = if (items[i] == "Pilih Kontak") {
+            if (items[i] == "Pilih Kontak") {
                 AndroidUtil.pickPhoneAccount(this)
-                0
+                pickAccount = 0
             } else {
                 AndroidUtil.pickEmailAccount(this)
-                1
+                pickAccount = 1
             }
         }
 
@@ -329,7 +345,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     }
 
     private fun saveHutangValidate() {
-        if (checkData()) {
+        if (checkData(true)) {
             val hutang = Hutang()
 
             if (getRadioGroupIndex() == 0) {

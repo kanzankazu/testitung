@@ -57,8 +57,9 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/padding_margin_5dp"
                         android:layout_weight="1"
-                        android:ellipsize="end"
+                        android:ellipsize="marquee"
                         android:fontFamily="@font/avenir_next_ltpro_demi"
+                        android:marqueeRepeatLimit="marquee_forever"
                         android:singleLine="true"
                         android:textSize="@dimen/small_font_size"
                         tools:text="@tools:sample/cities" />
@@ -159,32 +160,36 @@
                         android:id="@+id/tv_hutang_list_nominal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/padding_margin_5dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/avenir_next_ltpro_bold"
                         android:gravity="center"
                         android:text="Rp 0"
-                        android:textColor="@color/green" />
+                        android:textColor="@color/green"
+                        android:textSize="@dimen/normal_font_size" />
 
                     <TextView
                         android:id="@+id/tv_hutang_list_nominal_installment_count"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/padding_margin_5dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/avenir_next_ltpro_bold"
                         android:gravity="center"
                         android:text="1 x Cicilan"
                         android:textColor="@color/green"
-                        android:visibility="gone" />
+                        android:textSize="@dimen/small_font_size" />
 
                     <TextView
                         android:id="@+id/tv_hutang_list_nominal_installment_nominal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/padding_margin_5dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/avenir_next_ltpro_bold"
                         android:gravity="center"
                         android:text="Cicilan Rp 0"
-                        android:visibility="gone" />
+                        android:textSize="@dimen/small_font_size" />
 
                     <TextView
                         android:id="@+id/tv_hutang_list_nominal_installment_due_date"
@@ -193,8 +198,8 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/avenir_next_ltpro_bold"
                         android:gravity="center"
-                        android:text="Cicilan Rp 0"
-                        android:visibility="gone" />
+                        android:text="Tanggal Jatuh Tempo"
+                        android:textSize="@dimen/mini_font_size" />
                 </LinearLayout>
 
 

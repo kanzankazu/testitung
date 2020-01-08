@@ -99,12 +99,15 @@ class HomeFragment : BaseFragment(), HomeContract.View {
     }
 
     private fun setHomeList() {
+
         val homeModels = arrayListOf<HomeModel>()
-        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Anggaran, true, true))
-        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Keuangan, true, true))
-        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Banding, true, true))
-        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Hutang, true, false))
-        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Stok, true, true))
+        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Anggaran, isShow = true, isComingSoon = true))
+        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Arisan, isShow = true, isComingSoon = true))
+        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Banding, isShow = true, isComingSoon = true))
+        homeModels.add(HomeModel(0, Constants.HOME.Hutang, isShow = true, isComingSoon = false))
+        homeModels.add(HomeModel(0, Constants.HOME.Keuangan, isShow = true, isComingSoon = true))
+        homeModels.add(HomeModel(0, Constants.HOME.Stok, isShow = true, isComingSoon = true))
         homeAdapter.setData(homeModels)
+
     }
 }

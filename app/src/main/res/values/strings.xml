@@ -75,6 +75,7 @@
     <string name="invite_keluarga">Undang Keluarga</string>
     <string name="installment_count">%s x Cicilan</string>
     <string name="installment_duedate">tanggal jatuh tempo : %s</string>
+    <string name="message_image_get_failed">Terjadi kesalahan saat memproses gambar Anda</string>
 
     <!--HutangList-->
 

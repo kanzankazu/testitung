@@ -1,6 +1,7 @@
 package com.kanzankazu.itungitungan;
 
 import android.Manifest;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,9 +70,16 @@ public class Constants {
 
     public interface HOME {
         String Anggaran = "Anggaran";
+        String Arisan = "Arisan";
         String Banding = "Banding harga";
-        String Keuangan = "Keuangan";
         String Hutang = "Hutang";
-        String Stok  = "Stok Barang";
+        String Keuangan = "Keuangan";
+        String Stok = "Stok Barang";
+    }
+
+    public static interface Installment {
+        String Year = "Tahun";
+        String Month = "Bulan";
+        String Day = "Hari";
     }
 }

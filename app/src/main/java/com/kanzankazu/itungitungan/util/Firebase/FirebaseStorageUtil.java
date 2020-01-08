@@ -125,41 +125,43 @@ public class FirebaseStorageUtil {
         for (int i = 0; i < uris.size(); i++) {
             Uri uri = uris.get(i);
 
-            ProgressDialog progressDialog = new ProgressDialog(mActivity);
-            progressDialog.setTitle("Menyimpan Gambar");
-            progressDialog.show();
+            if (uri != null) {
+                ProgressDialog progressDialog = new ProgressDialog(mActivity);
+                progressDialog.setTitle("Menyimpan Gambar");
+                progressDialog.show();
 
-            StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + "jpg" /*PictureUtil2.getFileExtension(mActivity, uri)*/);
-            reference.putFile(uri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        progressDialog.dismiss();
-                        String imageDownloadUrl = taskSnapshot.getDownloadUrl().toString();
-                        imageDonwloadUrls.add(imageDownloadUrl);
-                        listStat.add("1");
+                StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + "jpg" /*PictureUtil2.getFileExtension(mActivity, uri)*/);
+                reference.putFile(uri)
+                        .addOnSuccessListener(taskSnapshot -> {
+                            progressDialog.dismiss();
+                            String imageDownloadUrl = taskSnapshot.getDownloadUrl().toString();
+                            imageDonwloadUrls.add(imageDownloadUrl);
+                            listStat.add("1");
 
-                        int frequency0 = Collections.frequency(listStat, "0");
-                        int frequency1 = Collections.frequency(listStat, "1");
+                            int frequency0 = Collections.frequency(listStat, "0");
+                            int frequency1 = Collections.frequency(listStat, "1");
 
-                        if (frequency1 == uris.size()) {
-                            listener.isFinised(imageDonwloadUrls);
-                        }
-                    })
-                    .addOnFailureListener(exception -> {
-                        progressDialog.dismiss();
-                        listStat.add("0");
+                            if (frequency1 == uris.size()) {
+                                listener.isFinised(imageDonwloadUrls);
+                            }
+                        })
+                        .addOnFailureListener(exception -> {
+                            progressDialog.dismiss();
+                            listStat.add("0");
 
-                        int frequency0 = Collections.frequency(listStat, "0");
-                        int frequency1 = Collections.frequency(listStat, "1");
+                            int frequency0 = Collections.frequency(listStat, "0");
+                            int frequency1 = Collections.frequency(listStat, "1");
 
-                        if (frequency0 == uris.size()) {
-                            listener.isFailed();
-                        }
-                    })
-                    .addOnProgressListener(taskSnapshot -> {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                    })
-            ;
+                            if (frequency0 == uris.size()) {
+                                listener.isFailed();
+                            }
+                        })
+                        .addOnProgressListener(taskSnapshot -> {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                            progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                        })
+                ;
+            }
         }
     }
 

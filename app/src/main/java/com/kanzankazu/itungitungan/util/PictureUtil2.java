@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
@@ -24,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.kanzankazu.itungitungan.BuildConfig;
 import com.kanzankazu.itungitungan.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,13 +36,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 import id.zelory.compressor.Compressor;
 
 import static android.app.Activity.RESULT_OK;
-import static com.kanzankazu.itungitungan.util.PictureUtil.PATH_FILE;
 
 public class PictureUtil2 {
 
@@ -64,35 +66,146 @@ public class PictureUtil2 {
     }
 
     public static ArrayList<Uri> convertArrayUriToArrayListUri(Uri... uris) {
-        return new ArrayList<>(Arrays.asList(uris));
+        ArrayList<Uri> uriArrayList = new ArrayList<>();
+        for (Uri uri : uris) {
+            if (uri != null) {
+                uriArrayList.add(uri);
+            }
+        }
+        return uriArrayList;
     }
 
     /*OLD*/
     private static Bitmap resizeImageBitmap(Bitmap bitmap, int newSize) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+        int realWidth = bitmap.getWidth();
+        int realHeight = bitmap.getHeight();
 
         int newWidth = 0;
         int newHeight = 0;
 
-        if (width > height) {
+        if (realWidth > realHeight) {
             newWidth = newSize;
-            newHeight = (newSize * height) / width;
-        } else if (width < height) {
+            newHeight = (newSize * realHeight) / realWidth;
+        } else if (realWidth < realHeight) {
             newHeight = newSize;
-            newWidth = (newSize * width) / height;
-        } else if (width == height) {
+            newWidth = (newSize * realWidth) / realHeight;
+        } else if (realWidth == realHeight) {
             newHeight = newSize;
             newWidth = newSize;
         }
 
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
+        float scaleWidth = ((float) newWidth) / realWidth;
+        float scaleHeight = ((float) newHeight) / realHeight;
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
 
-        return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+        return Bitmap.createBitmap(bitmap, 0, 0, realWidth, realHeight, matrix, true);
+    }
+
+    public Bitmap getCompressedBitmap(String imagePath) {
+        float maxHeight = 1920.0f;
+        float maxWidth = 1080.0f;
+        Bitmap scaledBitmap = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bmp = BitmapFactory.decodeFile(imagePath, options);
+
+        int actualHeight = options.outHeight;
+        int actualWidth = options.outWidth;
+        float imgRatio = (float) actualWidth / (float) actualHeight;
+        float maxRatio = maxWidth / maxHeight;
+
+        if (actualHeight > maxHeight || actualWidth > maxWidth) {
+            if (imgRatio < maxRatio) {
+                imgRatio = maxHeight / actualHeight;
+                actualWidth = (int) (imgRatio * actualWidth);
+                actualHeight = (int) maxHeight;
+            } else if (imgRatio > maxRatio) {
+                imgRatio = maxWidth / actualWidth;
+                actualHeight = (int) (imgRatio * actualHeight);
+                actualWidth = (int) maxWidth;
+            } else {
+                actualHeight = (int) maxHeight;
+                actualWidth = (int) maxWidth;
+
+            }
+        }
+
+        options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
+        options.inJustDecodeBounds = false;
+        options.inDither = false;
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+        options.inTempStorage = new byte[16 * 1024];
+
+        try {
+            bmp = BitmapFactory.decodeFile(imagePath, options);
+        } catch (OutOfMemoryError exception) {
+            exception.printStackTrace();
+
+        }
+        try {
+            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.ARGB_8888);
+        } catch (OutOfMemoryError exception) {
+            exception.printStackTrace();
+        }
+
+        float ratioX = actualWidth / (float) options.outWidth;
+        float ratioY = actualHeight / (float) options.outHeight;
+        float middleX = actualWidth / 2.0f;
+        float middleY = actualHeight / 2.0f;
+
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.setMatrix(scaleMatrix);
+        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(imagePath);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+            Matrix matrix = new Matrix();
+            if (orientation == 6) {
+                matrix.postRotate(90);
+            } else if (orientation == 3) {
+                matrix.postRotate(180);
+            } else if (orientation == 8) {
+                matrix.postRotate(270);
+            }
+            scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 85, out);
+
+        byte[] byteArray = out.toByteArray();
+
+        Bitmap updatedBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+        return updatedBitmap;
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        final float totalPixels = width * height;
+        final float totalReqPixelsCap = reqWidth * reqHeight * 2;
+
+        while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+            inSampleSize++;
+        }
+        return inSampleSize;
     }
     /*OLD*/
 
@@ -180,30 +293,21 @@ public class PictureUtil2 {
     private void openCamera(Activity activity) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
-            // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = createImageFile(activity);
+                photoFile = createImageFile(activity, false);
                 mCurrentPhotoPath = photoFile.getAbsolutePath();
             } catch (IOException ex) {
-                // Error occurred while creating the File
+                Snackbar.make(activity.findViewById(android.R.id.content), activity.getString(R.string.message_image_get_failed), Snackbar.LENGTH_SHORT).show();
+                ex.printStackTrace();
             }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    // only for nougat and above camera
-                    try {
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", createImageFile(activity)));
-                        mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                    mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", photoFile));
+                mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
+            } else {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
             }
         }
     }
@@ -215,12 +319,12 @@ public class PictureUtil2 {
         mActivity.startActivityForResult(Intent.createChooser(intent, "Pilih foto"), REQUEST_IMAGE_GALLERY);
     }
 
-    private File createImageFile(Activity activity) throws IOException {
+    private File createImageFile(Activity activity, Boolean isUriFormat) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         //File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File storageDir = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + PATH_FILE);
+        File storageDir = activity.getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File file = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",  /* suffix */
@@ -228,7 +332,11 @@ public class PictureUtil2 {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + file.getAbsolutePath();
+        if (isUriFormat) {
+            mCurrentPhotoPath = /*"file:" + */file.getAbsolutePath();
+        } else {
+            mCurrentPhotoPath = "file:" + file.getAbsolutePath();
+        }
         return file;
     }
 
@@ -241,7 +349,6 @@ public class PictureUtil2 {
             e.printStackTrace();
         }
 
-
         Bitmap realImage = BitmapFactory.decodeStream(is);
 
         /*int realWidth = (int) (realImage.getWidth() * 0.8);
@@ -251,8 +358,9 @@ public class PictureUtil2 {
         int height = Math.round(ratio * realImage.getHeight());
 
         Bitmap original = Bitmap.createScaledBitmap(realImage, width, height, true);*/
-        //Bitmap original = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(is), 1440, 1440, true);
-        Bitmap original = resizeImageBitmap(realImage, 1080);
+        Bitmap original = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(is), 1440, 1440, true);
+//        Bitmap original = resizeImageBitmap(realImage, 720);
+//        Bitmap original = getCompressedBitmap(mCurrentPhotoPath);
 
         try {
             ExifInterface ei = new ExifInterface(Uri.parse(mCurrentPhotoPath).getPath());
@@ -284,7 +392,7 @@ public class PictureUtil2 {
 
         try {
             FileOutputStream stream = new FileOutputStream(file);
-            original.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+            original.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             stream.flush();
             stream.close();
         } catch (Exception e) {

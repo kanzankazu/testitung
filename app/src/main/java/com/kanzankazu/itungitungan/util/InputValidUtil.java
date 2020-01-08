@@ -278,12 +278,6 @@ public class InputValidUtil {
         return (float) number / (float) total * 100;
     }
 
-    public static void setEditTextMaxLength(int length, EditText editText) {
-        InputFilter[] filterArray = new InputFilter[1];
-        filterArray[0] = new InputFilter.LengthFilter(length);
-        editText.setFilters(filterArray);
-    }
-
     public static void errorET(EditText editText, CharSequence messageError) {
         editText.setError(messageError);
         editText.requestFocus();
@@ -313,6 +307,12 @@ public class InputValidUtil {
                 return handled;
             }
         });
+    }
+
+    public static void setEditTextMaxLenght(EditText editText, int maxLength) {
+        InputFilter[] fArray = new InputFilter[1];
+        fArray[0] = new InputFilter.LengthFilter(maxLength);
+        editText.setFilters(fArray);
     }
 
     public interface ActionTrueFalseListener {
