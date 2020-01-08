@@ -16,43 +16,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Hutang {
-    String hId;
-    int hutangRadioIndex;
+    private String hId;
+    private int hutangRadioIndex;
 
-    String piutangId;
-    String piutangNama;
-    String piutangEmail;
-    Boolean piutangPersetujuan;
-    String penghutangId;
-    String penghutangNama;
-    String penghutangEmail;
-    Boolean penghutangPersetujuan;
-    String piutang_penghutang_id;
+    private String piutangId;
+    private String piutangNama;
+    private String piutangEmail;
+    private Boolean piutangPersetujuan;
+    private String penghutangId;
+    private String penghutangNama;
+    private String penghutangEmail;
+    private Boolean penghutangPersetujuan;
+    private String piutang_penghutang_id;
 
-    String hutangKeluargaId;
-    String hutangKeluargaNama;
+    private String hutangKeluargaId;
+    private String hutangKeluargaNama;
 
-    String hutangNominal;
-    String hutangKeperluan;
-    String hutangCatatan;
-    String hutangBuktiGambar0;
-    String hutangBuktiGambar1;
-    List<String> hutangBuktiGambar;
+    private String hutangNominal;
+    private String hutangKeperluan;
+    private String hutangCatatan;
+    private String hutangBuktiGambar0;
+    private String hutangBuktiGambar1;
+    private List<String> hutangBuktiGambar;
 
-    Boolean isCicilan;
-    String hutangCicilanBerapaKali;
-    String hutangCicilanBerapaKaliType;
-    String hutangCicilanNominal;
-    Boolean isFreeTimeToPay;
-    String hutangCicilanTanggalAkhir;
+    private Boolean hutangIsCicilan;
+    private String hutangCicilanBerapaKali;
+    private String hutangCicilanBerapaKaliType;
+    private int hutangCicilanBerapaKaliPosisi;
+    private String hutangCicilanNominal;
+    private Boolean hutangisBayarKapanSaja;
+    private String hutangCicilanTanggalAkhir;
 
-    Boolean isLunas;
-    List<HutangCicilan> subList;
+    private Boolean isLunas;
+    private List<HutangCicilan> subList;
 
-    String CreateAt;
-    String CreateBy;
-    String UpdateAt;
-    String UpdateBy;
+    private String CreateAt;
+    private String CreateBy;
+    private String UpdateAt;
+    private String UpdateBy;
 
     public Hutang() {
     }
@@ -299,14 +300,6 @@ public class Hutang {
         this.hutangCicilanBerapaKali = hutangCicilanBerapaKali;
     }
 
-    public String getHutangCicilanBerapaKaliTipe() {
-        return hutangCicilanBerapaKaliType;
-    }
-
-    public void setHutangCicilanBerapaKaliTipe(String hutangCicilanBerapaKaliType) {
-        this.hutangCicilanBerapaKaliType = hutangCicilanBerapaKaliType;
-    }
-
     public String getHutangCicilanTanggalAkhir() {
         return hutangCicilanTanggalAkhir;
     }
@@ -395,20 +388,20 @@ public class Hutang {
         UpdateBy = updateBy;
     }
 
-    public Boolean getCicilan() {
-        return isCicilan;
+    public Boolean getHutangIsCicilan() {
+        return hutangIsCicilan;
     }
 
-    public void setCicilan(Boolean cicilan) {
-        isCicilan = cicilan;
+    public void setHutangIsCicilan(Boolean cicilan) {
+        hutangIsCicilan = cicilan;
     }
 
-    public Boolean getFreeTimeToPay() {
-        return isFreeTimeToPay;
+    public Boolean getHutangisBayarKapanSaja() {
+        return hutangisBayarKapanSaja;
     }
 
-    public void setFreeTimeToPay(Boolean freeTimeToPay) {
-        isFreeTimeToPay = freeTimeToPay;
+    public void setHutangisBayarKapanSaja(Boolean freeTimeToPay) {
+        hutangisBayarKapanSaja = freeTimeToPay;
     }
 
     public Boolean getLunas() {
@@ -441,5 +434,13 @@ public class Hutang {
 
     public void setHutangCicilanBerapaKaliType(String hutangCicilanBerapaKaliType) {
         this.hutangCicilanBerapaKaliType = hutangCicilanBerapaKaliType;
+    }
+
+    public int getHutangCicilanBerapaKaliPosisi() {
+        return hutangCicilanBerapaKaliPosisi;
+    }
+
+    public void setHutangCicilanBerapaKaliPosisi(int hutangCicilanBerapaKaliPosisi) {
+        this.hutangCicilanBerapaKaliPosisi = hutangCicilanBerapaKaliPosisi;
     }
 }

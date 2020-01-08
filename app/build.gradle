@@ -28,6 +28,7 @@ android {
             manifestPlaceholders = [appsName: "ItungItungan"]
             buildConfigField('String', 'GOOGLE_AUTH_CLIENT_ID', '"495676044825-us20n2sls9c4i163t2u9uv1c2pagn7dr.apps.googleusercontent.com"')
             buildConfigField('String', 'BASE_URL', '""')
+            buildConfigField('String', 'APP_NAME', '"ItungItungan"')
         }
         DevApp {
             applicationIdSuffix ".dev"
@@ -36,6 +37,7 @@ android {
             fetchFirebase = 3600
             manifestPlaceholders = [appsName: "ItungItunganDev"]
             buildConfigField('String', 'GOOGLE_AUTH_CLIENT_ID', '"495676044825-qlk4hem944t8ecj0ph4rsqv0sam9h3ta.apps.googleusercontent.com"')
+            buildConfigField('String', 'APP_NAME', '"ItungItungan"')
             buildConfigField('String', 'BASE_URL', '""')
         }
         DemoApp {
@@ -45,6 +47,7 @@ android {
             fetchFirebase = 3600
             manifestPlaceholders = [appsName: "ItungItunganDemo"]
             buildConfigField('String', 'GOOGLE_AUTH_CLIENT_ID', '"495676044825-qlk4hem944t8ecj0ph4rsqv0sam9h3ta.apps.googleusercontent.com"')
+            buildConfigField('String', 'APP_NAME', '"ItungItungan"')
             buildConfigField('String', 'BASE_URL', '""')
         }
     }

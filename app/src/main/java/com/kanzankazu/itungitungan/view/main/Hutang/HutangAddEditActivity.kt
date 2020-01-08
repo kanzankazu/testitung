@@ -1,6 +1,7 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -22,7 +23,7 @@ import com.kanzankazu.itungitungan.model.User
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
-import com.kanzankazu.itungitungan.util.PictureUtil
+import com.kanzankazu.itungitungan.util.PictureUtil2
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil
@@ -37,7 +38,7 @@ import java.util.*
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, AdapterView.OnItemSelectedListener {
     private lateinit var userSuggestAdapter: UserSuggestAdapter
-    private lateinit var pictureUtil: PictureUtil
+    private lateinit var pictureUtil2: PictureUtil2
     private lateinit var permissionUtil: AndroidPermissionUtil
     private lateinit var watcherValidate: TextWatcher
     private lateinit var watcherValidateInstallmentCount: TextWatcher
@@ -48,7 +49,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     private var mCurrentPhotoPath0Uri: Uri? = null
     private var mCurrentPhotoPath1Uri: Uri? = null
     private var listTypeInstallmentCount = ArrayList<String>()
-    private var listTypeInstallmentCountPos: Int = -1
+    private var listTypeInstallmentCountPos: Int = 0
     private var userInvite: User? = null
     var userInviteFamily: MutableList<User> = arrayListOf()
 
@@ -62,8 +63,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == pictureUtil.REQUEST_IMAGE_CAMERA || requestCode == pictureUtil.REQUEST_IMAGE_GALLERY) {
-            val mCurrentPhotoPath = pictureUtil.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == pictureUtil2.REQUEST_IMAGE_CAMERA || requestCode == pictureUtil2.REQUEST_IMAGE_GALLERY) {
+            val mCurrentPhotoPath = pictureUtil2.onActivityResult(requestCode, resultCode, data)
             if (positionImage == 0) {
                 mCurrentPhotoPath0 = mCurrentPhotoPath
                 mCurrentPhotoPath0Uri = Uri.fromFile(File(mCurrentPhotoPath0))
@@ -98,7 +99,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         Utils.setupAppToolbarForActivity(this, toolbar)
 
         permissionUtil = AndroidPermissionUtil(this, *AndroidPermissionUtil.permCameraGallery)
-        pictureUtil = PictureUtil(this)
+        pictureUtil2 = PictureUtil2(this)
 
         setSuggestGroupUser()
         setListTypeInstallmentCount()
@@ -164,7 +165,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             } else {
                 ll_hutang_add_installment.visibility = View.GONE
                 cb_hutang_add_installment_free_to_pay.isChecked = false
-                listTypeInstallmentCountPos = -1
+                listTypeInstallmentCountPos = 0
             }
         }
         cb_hutang_add_installment_free_to_pay.setOnCheckedChangeListener { _, isChecked ->
@@ -186,13 +187,13 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         iv_hutang_add_user.setOnClickListener { chooseDialogPickUserData() }
         tv_hutang_add_simpan.setOnClickListener { saveHutangValidate() }
 
-        civ_hutang_add_image_0.setOnClickListener { chooseDialogPickImage(civ_hutang_add_image_0, 0) }
+        civ_hutang_add_image_0.setOnClickListener { chooseDialogPickImage(this, civ_hutang_add_image_0, 0) }
         civ_hutang_remove_image_0.setOnClickListener {
             mCurrentPhotoPath0 = ""
             mCurrentPhotoPath0Uri = null
             Glide.with(this).load(File(mCurrentPhotoPath0)).placeholder(R.drawable.ic_profile_picture).into(civ_hutang_add_image_0)
         }
-        civ_hutang_add_image_1.setOnClickListener { chooseDialogPickImage(civ_hutang_add_image_1, 1) }
+        civ_hutang_add_image_1.setOnClickListener { chooseDialogPickImage(this, civ_hutang_add_image_1, 1) }
         civ_hutang_remove_image_1.setOnClickListener {
             mCurrentPhotoPath1 = ""
             mCurrentPhotoPath1Uri = null
@@ -294,10 +295,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         return true
     }
 
-    private fun chooseDialogPickImage(imageView: ImageView?, positionImage: Int) {
+    private fun chooseDialogPickImage(activity: Activity, imageView: ImageView?, positionImage: Int) {
         this.positionImage = positionImage
         if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
-            pictureUtil.chooseGetImageDialog(imageView)
+            pictureUtil2.chooseGetImageDialog(activity, imageView)
         }
     }
 
@@ -358,22 +359,22 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             hutang.hutangKeperluan = et_hutang_add_desc.text.toString().trim()
             hutang.hutangCatatan = et_hutang_add_note.text.toString().trim()
 
-            hutang.cicilan = sw_hutang_add_installment.isChecked
-            if (hutang.cicilan) {
+            hutang.hutangIsCicilan = sw_hutang_add_installment.isChecked
+            if (hutang.hutangIsCicilan) {
                 hutang.hutangCicilanBerapaKali = et_hutang_add_installment_count.text.toString().trim()
-                hutang.hutangCicilanBerapaKaliType = listTypeInstallmentCount[listTypeInstallmentCountPos]
                 if (listTypeInstallmentCountPos > -1) {
-                    hutang.hutangCicilanBerapaKaliTipe = listTypeInstallmentCount[listTypeInstallmentCountPos]
+                    hutang.hutangCicilanBerapaKaliType = listTypeInstallmentCount[listTypeInstallmentCountPos]
+                    hutang.hutangCicilanBerapaKaliPosisi = listTypeInstallmentCountPos
                 }
                 hutang.hutangCicilanNominal = Utils.getRupiahToString(et_hutang_add_installment_nominal.text.toString().trim())
-                hutang.freeTimeToPay = cb_hutang_add_installment_free_to_pay.isChecked
-                if (hutang.freeTimeToPay) {
+                hutang.hutangisBayarKapanSaja = cb_hutang_add_installment_free_to_pay.isChecked
+                if (hutang.hutangisBayarKapanSaja) {
                     hutang.hutangCicilanTanggalAkhir = et_hutang_add_installment_due_date.text.toString().trim()
                 }
             }
 
             if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
-                val listUri = PictureUtil.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
+                val listUri = PictureUtil2.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
                 storageUtil.uploadImages("Hutang", listUri, object : FirebaseStorageUtil.DoneListener {
                     override fun isFinised(imageDonwloadUrls: ArrayList<String>?) {
                         hutang.hutangBuktiGambar = imageDonwloadUrls

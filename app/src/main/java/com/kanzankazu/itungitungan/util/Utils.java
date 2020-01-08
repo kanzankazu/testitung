@@ -30,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -147,6 +146,7 @@ public class Utils {
         mActivity.setSupportActionBar(toolbar);
         mActivity.getSupportActionBar().setTitle("");
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActivity.getSupportActionBar().setElevation(0f);
         toolbar.setNavigationOnClickListener(view -> mActivity.onBackPressed());
     }
 
@@ -696,8 +696,8 @@ public class Utils {
         return rupiah.replaceAll("Rp ", "").replaceAll("\\.", "");
     }
 
-    public static String replace(String emailAddress){
-       return emailAddress.replaceAll("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)", "*");
+    public static String replace(String emailAddress) {
+        return emailAddress.replaceAll("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)", "*");
     }
 
     public interface DialogButtonListener {

@@ -3,7 +3,6 @@ package com.kanzankazu.itungitungan.util.Firebase;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -11,7 +10,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.kanzankazu.itungitungan.util.PictureUtil;
+import com.kanzankazu.itungitungan.util.PictureUtil2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +32,7 @@ public class FirebaseStorageUtil {
         //ProgressDialog progressDialog = new ProgressDialog(activity);
         //progressDialog.setTitle("Uploading");
         //progressDialog.show();
-        StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + PictureUtil.getFileExtension(mActivity, filePath));
+        StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + PictureUtil2.getFileExtension(mActivity, filePath));
         reference
                 .putFile(filePath)
                 .addOnSuccessListener(
@@ -64,7 +63,7 @@ public class FirebaseStorageUtil {
         progressDialog.setTitle("Uploading");
         progressDialog.show();
 
-        StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + PictureUtil.getFileExtension(mActivity, filePath));
+        StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + PictureUtil2.getFileExtension(mActivity, filePath));
         reference
                 .putFile(filePath)
                 .addOnSuccessListener(taskSnapshot -> {
@@ -99,7 +98,7 @@ public class FirebaseStorageUtil {
             progressDialog.setTitle("Uploading");
             progressDialog.show();
 
-            StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + PictureUtil.getFileExtension(mActivity, uri));
+            StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + PictureUtil2.getFileExtension(mActivity, uri));
             reference
                     .putFile(uri)
                     .addOnSuccessListener(taskSnapshot -> {
@@ -130,7 +129,7 @@ public class FirebaseStorageUtil {
             progressDialog.setTitle("Menyimpan Gambar");
             progressDialog.show();
 
-            StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + "jpg" /*PictureUtil.getFileExtension(mActivity, uri)*/);
+            StorageReference reference = getRootRef().child(STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + "jpg" /*PictureUtil2.getFileExtension(mActivity, uri)*/);
             reference.putFile(uri)
                     .addOnSuccessListener(taskSnapshot -> {
                         progressDialog.dismiss();

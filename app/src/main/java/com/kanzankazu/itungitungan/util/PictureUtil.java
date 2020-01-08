@@ -1,8 +1,10 @@
 package com.kanzankazu.itungitungan.util;
 
-import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,318 +15,597 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.webkit.MimeTypeMap;
-import android.widget.ImageView;
+import android.support.annotation.Nullable;
+import android.util.Base64;
+import android.util.Log;
 
-import com.bumptech.glide.Glide;
 import com.kanzankazu.itungitungan.BuildConfig;
-import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.util.widget.CompressBitmap;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-
-import id.zelory.compressor.Compressor;
-
-import static android.app.Activity.RESULT_OK;
 
 public class PictureUtil {
 
-    public final int REQUEST_IMAGE_CAMERA = 1;
-    public final int REQUEST_IMAGE_GALLERY = 2;
-    public String[] permCameraGallery = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
-    };
-    private String mCurrentPhotoPath;
-    private AppCompatActivity mActivity;
-    private ImageView imageView;
+    static String PATH_FILE = "/." + BuildConfig.APP_NAME + "/";
 
-    public PictureUtil(AppCompatActivity mActivity) {
-        this.mActivity = mActivity;
+    public static Intent getCropperIntent(Context mContext, Uri imageUri, @Nullable Integer sizex, @Nullable Integer sizey) {
+        Intent CropIntent = null;
+
+        if (sizex == null) {
+            sizex = 800;
+        }
+        if (sizey == null) {
+            sizey = 900;
+        }
+        if (sizex > 1500) {
+            sizex = 1500;
+        }
+        if (sizey > 1500) {
+            sizey = 1500;
+        }
+
+        try {
+            CropIntent = new Intent("com.android.camera.action.CROP");
+            CropIntent.setDataAndType(imageUri, "image/*");
+            CropIntent.putExtra("crop", "true");
+            CropIntent.putExtra("outputX", sizex);
+            CropIntent.putExtra("outputY", sizey);
+            CropIntent.putExtra("aspectX", 4);
+            CropIntent.putExtra("aspectY", 4);
+            CropIntent.putExtra("scaleUpIfNeeded", true);
+            CropIntent.putExtra("return-data", true);
+
+            return CropIntent;
+        } catch (ActivityNotFoundException e) {
+            return CropIntent;
+        }
     }
 
-    public void chooseGetImageDialog(ImageView imageView) {
-        this.imageView = imageView;
+    public static Bitmap resizeImageBitmap(Bitmap bitmap, int newSize) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
 
-        final String[] items = {"Pilih foto dari kamera", "Pilih foto dari galeri"};
+        int newWidth = 0;
+        int newHeight = 0;
 
-        AlertDialog.Builder chooseImageDialog = new AlertDialog.Builder(mActivity);
-        chooseImageDialog.setItems(items, (dialogInterface, i) -> {
-            if (items[i].equals("Pilih foto dari kamera")) {
-                openCamera();
-            } else {
-                openGallery();
-            }
-        });
+        if (width > height) {
+            newWidth = newSize;
+            newHeight = (newSize * height) / width;
+        } else if (width < height) {
+            newHeight = newSize;
+            newWidth = (newSize * width) / height;
+        } else if (width == height) {
+            newHeight = newSize;
+            newWidth = newSize;
+        }
 
-        chooseImageDialog.show();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
     }
 
-    public String onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("data on activity result : " + data);
-        if (requestCode == REQUEST_IMAGE_CAMERA && resultCode == RESULT_OK && mCurrentPhotoPath != null) { //FROM CAMERA
+    @TargetApi(Build.VERSION_CODES.N)
+    public static Uri getUriFromResult(Context context, int resultCode, Uri jink) {
+        InputStream inputStream = null;
+        Uri selectedImage = null;
+        if (resultCode == Activity.RESULT_OK) {
+
             try {
-                compressImage();
-                Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), jink);
+                inputStream = context.getContentResolver().openInputStream(jink);
+                ExifInterface exifInterface = new ExifInterface(inputStream);
 
-                /*documentDataList.get(currentIndex).setPhotoPath(mCurrentPhotoPath);
-                preApprovalUploadAdapter.addToList(currentIndex, mCurrentPhotoPath);
+                int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_UNDEFINED);
 
-                for (int i = 0; i < documentDataList.size(); i++) {
-                    if (documentDataList.get(i).getPhotoPath().isEmpty()) {
-                        submitBtn.setEnabled(false);
+                switch (orientation) {
+
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        selectedImage = rotateImage(bitmap, 90, context);
                         break;
-                    } else {
-                        submitBtn.setEnabled(true);
+
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        selectedImage = rotateImage(bitmap, 180, context);
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        selectedImage = rotateImage(bitmap, 270, context);
+                        break;
+
+                    case ExifInterface.ORIENTATION_NORMAL:
+                    default:
+                        selectedImage = jink;
+                        break;
+                }
+
+            } catch (IOException e) {
+                Log.e("Lihat", "getUriFromResult PictureUtil : " + e.getMessage());
+                return null;
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        Log.e("Lihat", "getUriFromResult PictureUtil : " + e.getMessage());
                     }
-                }*/
+                }
+                return selectedImage;
+            }
+        } else {
+            return selectedImage;
+        }
+    }
 
-                return mCurrentPhotoPath;
+    private static File getTempFile(Context context) {
+        File imageFile = new File(context.getExternalCacheDir(), "Tempe");
+        imageFile.getParentFile().mkdirs();
+        return imageFile;
+    }
 
+    public static String bitmapToBase64(Bitmap bitmap, Bitmap.CompressFormat format, int compression) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(format, compression, stream);
+        byte[] byteArray = stream.toByteArray();
+        try {
+            stream.close();
+            stream = null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            return "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.NO_WRAP);
+        }
+    }
+
+    public static Bitmap base64ToBitmap(String base64) {
+        byte[] decodedString = Base64.decode(base64.replace("data:image/jpeg;base64,", ""), Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return decodedByte;
+    }
+
+    public static Uri rotateImage(Bitmap source, float angle, Context mContext) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        Bitmap temp = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        temp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(mContext.getContentResolver(), temp, "Title", null);
+        return Uri.parse(path);
+
+    }
+
+    public static Bitmap rotateImage(Bitmap source, float angle, Context mContext, Bitmap.CompressFormat format, int compressionLevel) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        Bitmap temp = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        temp.compress(format, compressionLevel, bytes);
+        return temp;
+    }
+
+    public static Bitmap rotateBitmap(String src) {
+        Bitmap bitmap = BitmapFactory.decodeFile(src);
+        try {
+            ExifInterface exif = new ExifInterface(src);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+            Matrix matrix = new Matrix();
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                    matrix.setScale(-1, 1);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    matrix.setRotate(180);
+                    break;
+                case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                    matrix.setRotate(180);
+                    matrix.postScale(-1, 1);
+                    break;
+                case ExifInterface.ORIENTATION_TRANSPOSE:
+                    matrix.setRotate(90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    matrix.setRotate(90);
+                    break;
+                case ExifInterface.ORIENTATION_TRANSVERSE:
+                    matrix.setRotate(-90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    matrix.setRotate(-90);
+                    break;
+                case ExifInterface.ORIENTATION_NORMAL:
+                case ExifInterface.ORIENTATION_UNDEFINED:
+                default:
+                    return bitmap;
+            }
+
+            try {
+                Bitmap oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                bitmap.recycle();
+                return oriented;
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
+                return bitmap;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    public static String getImagePathFromUri(Activity activity, Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+
+        Cursor cursor = activity.managedQuery(uri, projection, null, null, null);
+        activity.startManagingCursor(cursor);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+    public static String getImagePathFromUri2(Activity activity, Uri uri) {
+        if (uri == null) {
+            return null;
+        }
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = activity.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        return uri.getPath();
+    }
+
+    public static Bitmap getImageBitmapFromPathFile(String imagePath) {
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+        return bitmap;
+    }
+
+    public static Bitmap getImageBitmapFromPathFile1(String mCurrentPhotoPath) {
+        Bitmap bitmap;
+        Uri imageUri = Uri.parse(mCurrentPhotoPath);
+        File file = new File(imageUri.getPath());
+        try {
+            InputStream ims = new FileInputStream(file);
+            bitmap = BitmapFactory.decodeStream(ims);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+        return bitmap;
+    }
+
+    public static Uri getImageUriFromBitmap(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public static Uri getImageUriFromPath(Activity activity, String path) {
+        Bitmap bitmapFromPathFile = getImageBitmapFromPathFile(path);
+        return getImageUriFromBitmap(activity, bitmapFromPathFile);
+    }
+
+    public static boolean removeImageFromPathFile(String pathImg) {
+        File fdelete = new File(pathImg);
+        if (fdelete.exists()) {
+            if (fdelete.delete()) {
+                Log.d("Lihat", "removeImageFromPathFile PictureUtil : " + "file Deleted :" + pathImg);
+                return true;
+            } else {
+                Log.d("Lihat", "removeImageFromPathFile PictureUtil : " + "file not Deleted :" + pathImg);
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public static boolean removeImageFromPathFile2(final Context context, final File file) {
+        final String where = MediaStore.MediaColumns.DATA + "=?";
+        final String[] selectionArgs = new String[]{
+                file.getAbsolutePath()
+        };
+        final ContentResolver contentResolver = context.getContentResolver();
+        final Uri filesUri = MediaStore.Files.getContentUri("external");
+
+        contentResolver.delete(filesUri, where, selectionArgs);
+
+        if (file.exists()) {
+
+            contentResolver.delete(filesUri, where, selectionArgs);
+        }
+        return !file.exists();
+    }
+
+    public static Bitmap flipHorizontalImage(Bitmap src) {
+        // create new matrix for transformation
+        Matrix matrix = new Matrix();
+
+        matrix.preScale(-1.0f, 1.0f);
+
+        // return transformed image
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
+    }
+
+    public static Bitmap flipVerticalImage(Bitmap src) {
+        // create new matrix for transformation
+        Matrix matrix = new Matrix();
+
+        matrix.preScale(1.0f, -1.0f);
+
+        // return transformed image
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
+    }
+
+    public static Bitmap flipHorizontally(Bitmap originalImage) {
+        // The gap we want between the flipped image and the original image
+        final int flipGap = 4;
+
+        int width = originalImage.getWidth();
+        int height = originalImage.getHeight();
+
+        // This will not scale but will flip on the Y axis
+        Matrix matrix = new Matrix();
+        matrix.preScale(-1, 1);
+
+        // Create a Bitmap with the flip matrix applied to it.
+        // We only want the bottom half of the image
+        Bitmap flipImage = Bitmap.createBitmap(originalImage, 0, 0, width, height, matrix, true);
+
+        // Create a new bitmap with same width but taller to fit reflection
+        Bitmap bitmapWithFlip = Bitmap.createBitmap((width + width + flipGap), height, Bitmap.Config.ARGB_8888);
+
+        /*// Create a new Canvas with the bitmap that's big enough for
+        Canvas canvas = new Canvas(bitmapWithFlip);
+
+        //Draw original image
+        canvas.drawBitmap(originalImage, 0, 0, null);
+
+        //Draw the Flipped Image
+        canvas.drawBitmap(flipImage, width + flipGap, 0, null);*/
+
+        return flipImage;
+    }
+
+    public static void onSelectGallery(Intent data) {
+        /*Uri selectedImageUri = data.getData();
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        @SuppressWarnings("deprecation")
+        Cursor cursor = getActivity().managedQuery(selectedImageUri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        cursor.moveToFirst();
+
+        String selectedImagePath = cursor.getString(column_index);
+
+        Bitmap bm;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(selectedImagePath, options);
+        final int REQUIRED_SIZE = 200;
+        int scale = 1;
+        while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+            scale *= 2;
+        options.inSampleSize = scale;
+        options.inJustDecodeBounds = false;
+        bm = BitmapFactory.decodeFile(selectedImagePath, options);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 10, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        base64pic = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+        Log.d("bes64 ", base64pic);*/
+    }
+
+    public static void createDirectoryAndSaveFile(Context context, Bitmap image, String idName) {
+        //File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + PATH_FILE + idName);
+        File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + PATH_FILE + idName);
+        if (storageDir.exists()) {
+            storageDir.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(storageDir);
+            image.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String saveImageWithFolder(Context context, Bitmap image, String idName, String folderName) {
+        String savedImagePath = null;
+        String imageFileName = idName + ".jpg";
+        //File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + PATH_FILE + folderName);
+        File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + PATH_FILE + folderName);
+        boolean success = true;
+        if (!storageDir.exists()) {
+            success = storageDir.mkdirs();
+        }
+        if (success) {
+            File imageFile = new File(storageDir, imageFileName);
+            savedImagePath = imageFile.getAbsolutePath();
+            try {
+                OutputStream fOut = new FileOutputStream(imageFile, false);
+                Bitmap storedata = PictureUtil.resizeImageBitmap(image, 360);
+                storedata.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
             } catch (Exception e) {
-                Snackbar.make(mActivity.findViewById(android.R.id.content), mActivity.getString(R.string.message_picture_failed), Snackbar.LENGTH_LONG).show();
                 e.printStackTrace();
             }
-        } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) { //FROM GALLERY
+        }
+        Log.d("Lihat", "saveImageWithFolder : " + savedImagePath);
+        return savedImagePath;
+    }
+
+    public static String saveImageLogoBackIcon(Context context, Bitmap image, String idName) {
+        String savedImagePath = null;
+        String imageFileName = idName + ".jpg";
+        //File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + PATH_FILE);
+        File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + PATH_FILE);
+        boolean success = true;
+        if (!storageDir.exists()) {
+            success = storageDir.mkdirs();
+        }
+        if (success) {
+            File imageFile = new File(storageDir, imageFileName);
+            savedImagePath = imageFile.getAbsolutePath();
             try {
-                Uri uri = data.getData();
-                String galleryPath = getRealPathFromURIPath(uri);
-                File file = new File(Uri.parse(galleryPath).getPath());
+                OutputStream fOut = new FileOutputStream(imageFile, false);
+                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return savedImagePath;
+    }
+
+    public static String saveImageHomeContentImage(Activity context, Bitmap image, String idName, String eventId) {
+        String savedImagePath = null;
+        String imageFileName = idName + ".jpg";
+        //File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + PATH_FILE + eventId);
+        File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + PATH_FILE + eventId);
+        boolean success = true;
+        if (!storageDir.exists()) {
+            success = storageDir.mkdirs();
+        }
+        if (success) {
+            File imageFile = new File(storageDir, imageFileName);
+            savedImagePath = imageFile.getAbsolutePath();
+            if (!imageFile.exists()) {
                 try {
-                    File compressedImage = new Compressor(mActivity).setQuality(50)
-                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                            .compressToFile(file);
-                    mCurrentPhotoPath = getRealPathFromURIPath(Uri.parse(compressedImage.getAbsolutePath()));
-                    Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
-
-                    /*CompressBitmap cb = new CompressBitmap(mActivity);
-                    String filepath = cb.getRealPathFromURI(mActivity, data.getData());
-                    Bitmap bitmap = cb.compressImage(cb.getRealPathFromURI(mActivity, data.getData()), filepath);*/
-
-                    /*documentDataList.get(currentIndex).setPhotoPath(String.valueOf(uri));
-                    preApprovalUploadAdapter.addToList(currentIndex, String.valueOf(uri));
-
-                    for (int i = 0; i < documentDataList.size(); i++) {
-                        if (documentDataList.get(i).getPhotoPath().isEmpty()) {
-                            submitBtn.setEnabled(false);
-                            break;
-                        } else {
-                            submitBtn.setEnabled(true);
-                        }
-                    }*/
-
-                    return mCurrentPhotoPath;
+                    OutputStream fOut = new FileOutputStream(imageFile, false);
+                    Bitmap resizeImageBitmap = PictureUtil.resizeImageBitmap(image, 360);
+                    resizeImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                    fOut.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        }
+        return savedImagePath;
+    }
+
+    public static String saveImageHomeContentIcon(Activity context, Bitmap image, String idName, String eventId) {
+        String savedImagePath = null;
+        String imageFileName = idName + ".jpg";
+        //File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + PATH_FILE + eventId);
+        File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + PATH_FILE + eventId);
+        boolean success = true;
+        if (!storageDir.exists()) {
+            success = storageDir.mkdirs();
+        }
+        if (success) {
+            File imageFile = new File(storageDir, imageFileName);
+            savedImagePath = imageFile.getAbsolutePath();
+            try {
+                OutputStream fOut = new FileOutputStream(imageFile, false);
+                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return "";
+        return savedImagePath;
     }
 
-    private void openCamera() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
+    public static String saveImageStaticMaps(Context context, Bitmap image, String idName) {
+        String savedImagePath = null;
+        String imageFileName = idName + ".jpg";
+        //File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + PATH_FILE + "StaticMaps");
+        File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + PATH_FILE + "StaticMaps");
+        boolean success = true;
+        if (!storageDir.exists()) {
+            success = storageDir.mkdirs();
+        }
+        if (success) {
+            File imageFile = new File(storageDir, imageFileName);
+            savedImagePath = imageFile.getAbsolutePath();
             try {
-                photoFile = createImageFile();
-                mCurrentPhotoPath = photoFile.getAbsolutePath();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
+                OutputStream fOut = new FileOutputStream(imageFile, false);
+                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    // only for nougat and above camera
-                    try {
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", createImageFile()));
-                        mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                    mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
-                }
+        }
+        Log.d("Lihat", "saveImageStaticMaps : " + savedImagePath);
+        return savedImagePath;
+    }
+
+    public static void downloadImageToPicture(Activity activity, Bitmap bitmap, String title, String id) {
+        String savedImagePath;
+        String replace = title.replace(" ", "");
+        String imageFileName = replace + "_" + id + ".jpg";
+        File imageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)/* + "/Openguide/" + id*/.toString());
+        //File imageDir = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)/* + "/Openguide/" + id*/.toString());
+        boolean success = true;
+        if (!imageDir.exists()) {
+            success = imageDir.mkdirs();
+        }
+        if (success) {
+            File imageFile = new File(imageDir, imageFileName);
+            try {
+                OutputStream fileOutputStream = new FileOutputStream(imageFile, false);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                fileOutputStream.close();
+                Utils.showToast(activity, "Save Image Success");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            savedImagePath = imageFile.getAbsolutePath();
+            Log.d("Lihat", "downloadImageToPicture PictureUtil : " + savedImagePath);
+        }
+    }
+
+    public static void deleteImageFile(Activity context, String eventIds) {
+        //db.deleleDataByKey(SQLiteHelper.TableGallery, SQLiteHelper.Key_Gallery_eventId, eventIds);
+
+        //File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + PATH_FILE + eventIds);
+        File dir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + PATH_FILE + eventIds);
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                new File(dir, children[i]).delete();
             }
         }
     }
 
-    private void openGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_PICK);
-        mActivity.startActivityForResult(Intent.createChooser(intent, "Pilih foto"), REQUEST_IMAGE_GALLERY);
+    public static boolean isFileExists(String path) {
+        File file = new File(path);
+        return file.exists();
     }
 
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File file = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",  /* suffix */
-                storageDir      /* directory */
-        );
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + file.getAbsolutePath();
-        return file;
+        String mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
-
-    private void compressImage() {
-        File file = new File(Uri.parse(mCurrentPhotoPath).getPath());
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-
-        Bitmap realImage = BitmapFactory.decodeStream(is);
-        int realWidth = (int) (realImage.getWidth() * 0.8);
-        int realHeight = (int) (realImage.getHeight() * 0.8);
-        float ratio = Math.min((float) realWidth / realImage.getWidth(), (float) realHeight / realImage.getHeight());
-        int width = Math.round(ratio * realImage.getWidth());
-        int height = Math.round(ratio * realImage.getHeight());
-
-        Bitmap original = Bitmap.createScaledBitmap(realImage, width, height, true);
-        //Bitmap original = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(is), 1440, 1440, true);
-
-        try {
-            ExifInterface ei = new ExifInterface(Uri.parse(mCurrentPhotoPath).getPath());
-            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-
-            System.out.println("photo orientation : " + orientation);
-
-            switch (orientation) {
-
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    original = rotateImage(original, 90);
-                    break;
-
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    original = rotateImage(original, 180);
-                    break;
-
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    original = rotateImage(original, 270);
-                    break;
-
-                case ExifInterface.ORIENTATION_NORMAL:
-                default:
-                    //original = original;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            FileOutputStream stream = new FileOutputStream(file);
-            original.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-            stream.flush();
-            stream.close();
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
-    }
-
-    private void compressImage(String mCurrentPhotoPath) {
-        File file = new File(Uri.parse(mCurrentPhotoPath).getPath());
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Bitmap original = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(is), 1440, 1440, true);
-
-        try {
-            ExifInterface ei = new ExifInterface(Uri.parse(mCurrentPhotoPath).getPath());
-            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_UNDEFINED);
-
-            switch (orientation) {
-
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    original = rotateImage(original, 90);
-                    break;
-
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    original = rotateImage(original, 180);
-                    break;
-
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    original = rotateImage(original, 270);
-                    break;
-
-                case ExifInterface.ORIENTATION_NORMAL:
-                default:
-                    //original = original;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            FileOutputStream stream = new FileOutputStream(file);
-            original.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-            stream.flush();
-            stream.close();
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
-    }
-
-    private Bitmap rotateImage(Bitmap source, float angle) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-                matrix, true);
-    }
-
-    private String getRealPathFromURIPath(Uri contentURI) {
-        Cursor cursor = mActivity.getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) {
-            return contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            return cursor.getString(idx);
-        }
-    }
-
-    public static String getFileExtension(Activity activity, Uri uri) {
-        ContentResolver cR = activity.getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
-    }
-
-    public static ArrayList<Uri> convertArrayUriToArrayListUri(Uri... uris){
-        return new ArrayList<>(Arrays.asList(uris));
-    }
-
 }
