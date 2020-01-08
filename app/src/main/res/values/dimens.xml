@@ -2,6 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="round_corner_radius">50dp</dimen>
 
+    <!--dimen size-->
     <dimen name="padding_margin_1dp">1dp</dimen>
     <dimen name="padding_margin_2dp">2dp</dimen>
     <dimen name="padding_margin_3dp">3dp</dimen>
@@ -28,8 +29,13 @@
     <dimen name="padding_margin_125dp">125dp</dimen>
     <dimen name="padding_margin_150dp">150dp</dimen>
     <dimen name="padding_margin_200dp">200dp</dimen>
+
+    <!--font size-->
+    <dimen name="mini_font_size">10sp</dimen>
+    <dimen name="small_font_size">12.5sp</dimen>
     <dimen name="normal_font_size">15sp</dimen>
     <dimen name="medium_font_size">17sp</dimen>
     <dimen name="large_font_size">20sp</dimen>
     <dimen name="Big_font_size">25sp</dimen>
+    <dimen name="super_mini_font_size">7sp</dimen>
 </resources>

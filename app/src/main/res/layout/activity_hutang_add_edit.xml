@@ -158,7 +158,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nominal Rp *"
-                    android:imeOptions="actionNext" />
+                    android:imeOptions="actionNext"
+                    android:selectAllOnFocus="true" />
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
@@ -260,7 +261,8 @@
                             android:layout_height="wrap_content"
                             android:hint="Cicilan Berapa x"
                             android:imeOptions="actionDone"
-                            android:maxLength="2" />
+                            android:maxLength="2"
+                            android:selectAllOnFocus="true" />
                     </android.support.design.widget.TextInputLayout>
 
                     <Spinner
@@ -268,7 +270,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                 </LinearLayout>
 
@@ -281,13 +283,14 @@
                     android:layout_weight="1"
                     android:visibility="gone">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.kanzankazu.itungitungan.util.widget.view.CurrencyEditText
                         android:id="@+id/et_hutang_add_installment_nominal"
-                        style="@style/EtNumber"
+                        style="@style/EtTextNonEditable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Cicilan Nominal Rp"
-                        android:imeOptions="actionNext" />
+                        android:imeOptions="actionNext"
+                        android:selectAllOnFocus="true" />
                 </android.support.design.widget.TextInputLayout>
 
                 <CheckBox

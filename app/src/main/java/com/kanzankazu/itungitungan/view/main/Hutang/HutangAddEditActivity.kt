@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.app_toolbar.*
 import java.io.File
 import java.util.*
 
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, AdapterView.OnItemSelectedListener {
     private lateinit var userSuggestAdapter: UserSuggestAdapter
     private lateinit var pictureUtil: PictureUtil
@@ -119,17 +120,18 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                val nominal: Int = if (!et_hutang_add_nominal.text.toString().isNullOrEmpty()) Utils.getRupiahToString(et_hutang_add_nominal).toInt() else "0".toInt()
-                val installmentCount: Int = if (!et_hutang_add_installment_count.text.toString().isNullOrEmpty()) et_hutang_add_installment_count.text.toString().trim().toInt() else "0".toInt()
-
-                if (nominal <= 0) {
-                    et_hutang_add_nominal.requestFocus()
-                    et_hutang_add_installment_count.setText("")
+                val nominal: Int = if (et_hutang_add_nominal.text.toString().isNotEmpty() && !et_hutang_add_nominal.text.toString().trim().equals("Rp", true)) Utils.getRupiahToString(et_hutang_add_nominal).toInt() else "1".toInt()
+                val installmentCount: Int = if (et_hutang_add_installment_count.text.toString().isNotEmpty()) et_hutang_add_installment_count.text.toString().trim().toInt() else "1".toInt()
+                if (installmentCount <= 1) {
                     til_hutang_add_installment_nominal.visibility = View.GONE
                 } else {
-                    val i = nominal / installmentCount
+                    if (nominal <= 1) {
+                        et_hutang_add_nominal.requestFocus()
+                    } else {
+                        val i = nominal / installmentCount
+                        et_hutang_add_installment_nominal.setText(Utils.setRupiah(i.toString()))
+                    }
                     til_hutang_add_installment_nominal.visibility = View.VISIBLE
-                    et_hutang_add_installment_nominal.setText(Utils.setRupiah(i.toString()))
                 }
             }
         }
@@ -199,7 +201,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     }
 
     private fun setListTypeInstallmentCount() {
-        listTypeInstallmentCount = arrayListOf("Tahun", "Bulan", "Hari")
+        listTypeInstallmentCount = arrayListOf("Bulan", "Tahun", "Hari")
         val adapter = ArrayAdapter(this, R.layout.multiline_spinner_item, listTypeInstallmentCount)
         adapter.setDropDownViewResource(R.layout.multiline_spinner_item)
         sp_hutang_add_installment_count.adapter = adapter
@@ -274,12 +276,22 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     }
 
     private fun checkData(): Boolean {
-        return when {
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, false) -> false
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false) -> false
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false) -> false
-            else -> !InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, false)
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, false)) return false
+        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, false)) return false
+        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, false)) return false
+        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, false)) return false
+        else if (sw_hutang_add_installment.isChecked) {
+            if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_count, et_hutang_add_installment_count, false)) return false
+            else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_nominal, et_hutang_add_installment_nominal, false)) return false
+            else if (cb_hutang_add_installment_free_to_pay.isChecked) {
+                return true
+            } else {
+                if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_due_date, et_hutang_add_installment_due_date, false)) return false
+            }
+        } else {
+            return true
         }
+        return true
     }
 
     private fun chooseDialogPickImage(imageView: ImageView?, positionImage: Int) {
@@ -294,12 +306,12 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
 
         val chooseImageDialog = AlertDialog.Builder(this)
         chooseImageDialog.setItems(items) { _, i ->
-            if (items[i] == "Pilih Kontak") {
+            pickAccount = if (items[i] == "Pilih Kontak") {
                 AndroidUtil.pickPhoneAccount(this)
-                pickAccount = 0
+                0
             } else {
                 AndroidUtil.pickEmailAccount(this)
-                pickAccount = 1
+                1
             }
         }
 

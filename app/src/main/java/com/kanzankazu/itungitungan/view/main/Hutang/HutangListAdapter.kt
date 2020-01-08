@@ -93,8 +93,6 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                 }
 
                 if (data.penghutangId.isNullOrEmpty()) {
-                    itemView.tv_hutang_list_name.setTextColor(activity.resources.getColor(R.color.colorPrimaryDark))
-
                     itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
                     itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
                     itemView.cv_item_hutang_list_apprv_none.visibility = View.VISIBLE
