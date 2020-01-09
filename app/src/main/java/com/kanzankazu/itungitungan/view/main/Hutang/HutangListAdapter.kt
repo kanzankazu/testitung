@@ -106,18 +106,14 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             itemView.tv_hutang_list_keperluan.text = data.hutangKeperluan
             itemView.tv_hutang_list_nominal.text = Utils.setRupiah(data.hutangNominal)
 
-            if (!data.hutangCicilanBerapaKali.isNullOrEmpty()) {
-                itemView.tv_hutang_list_nominal_installment_count.visibility = View.VISIBLE
-                itemView.tv_hutang_list_nominal_installment_count.text = mActivity.getString(R.string.installment_count, data.hutangCicilanBerapaKali)
-            } else {
-                itemView.tv_hutang_list_nominal_installment_count.visibility = View.GONE
-            }
-            if (!data.hutangCicilanNominal.isNullOrEmpty()) {
-                itemView.tv_hutang_list_nominal_installment_nominal.visibility = View.VISIBLE
+            if (!data.hutangCicilanBerapaKali.isNullOrEmpty()&&!data.hutangCicilanNominal.isNullOrEmpty()) {
+                itemView.cv_item_hutang_list_installment.visibility = View.VISIBLE
+                itemView.tv_hutang_list_nominal_installment_count.text = mActivity.getString(R.string.installment_count, data.hutangCicilanBerapaKali, data.hutangCicilanBerapaKaliType)
                 itemView.tv_hutang_list_nominal_installment_nominal.text = Utils.setRupiah(data.hutangCicilanNominal)
             } else {
-                itemView.tv_hutang_list_nominal_installment_nominal.visibility = View.GONE
+                itemView.cv_item_hutang_list_installment.visibility = View.GONE
             }
+
             if (!data.hutangCicilanTanggalAkhir.isNullOrEmpty()) {
                 itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.VISIBLE
                 itemView.tv_hutang_list_nominal_installment_due_date.text = mActivity.getString(R.string.installment_duedate, data.hutangCicilanTanggalAkhir)
@@ -127,19 +123,25 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         }
 
         fun setListener(hutang: Hutang, position: Int) {
-            itemView.setOnClickListener {
-                val strings = arrayOf("Ubah", "Bayar", "Hapus")
-                Utils.listDialog(mActivity, strings) { _, which ->
-                    when (which) {
-                        0 -> {
-                            mView.onHutangUbahClick(hutang)
-                        }
-                        1 -> {
-                            mView.onHutangBayarClick(hutang)
-                        }
-                        else -> {
-                            mView.onHutangHapusClick(hutang,position)
-                        }
+            itemView.setOnClickListener { clickListener(hutang) }
+            itemView.setOnLongClickListener {
+                clickListener(hutang)
+                return@setOnLongClickListener true
+            }
+        }
+
+        private fun clickListener(hutang: Hutang) {
+            val strings = arrayOf("Ubah", "Bayar", "Hapus")
+            Utils.listDialog(mActivity, strings) { _, which ->
+                when (which) {
+                    0 -> {
+                        mView.onHutangUbahClick(hutang)
+                    }
+                    1 -> {
+                        mView.onHutangBayarClick(hutang)
+                    }
+                    else -> {
+                        mView.onHutangHapusClick(hutang, position)
                     }
                 }
             }
@@ -243,6 +245,8 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
 
             tempModel = filterResults.values as java.util.ArrayList<Hutang>
+
+            mView.onHutangFilter(tempModel)
 
             notifyDataSetChanged()
         }

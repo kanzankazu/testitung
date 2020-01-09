@@ -126,7 +126,7 @@ public class FirebaseStorageUtil {
                             int frequency1 = Collections.frequency(listStat, "1");
 
                             if (frequency0 == uris.size()) {
-                                listener.isFailed();
+                                listener.isFailed(exception.getMessage());
                             }
                         })
                         .addOnProgressListener(taskSnapshot -> {
@@ -218,8 +218,7 @@ public class FirebaseStorageUtil {
         return isFinish[0];
     }
 
-    public void deleteImages1(List<String> urls, DoneListener listener) {
-        ArrayList<String> imageDonwloadUrls = new ArrayList<>();
+    public void deleteImages1(List<String> urls, DoneRemoveListener listener) {
         ArrayList<String> listStat = new ArrayList<>();
         for (int i = 0; i < urls.size(); i++) {
             String url = urls.get(i);
@@ -240,7 +239,7 @@ public class FirebaseStorageUtil {
                             int frequency1 = Collections.frequency(listStat, "1");
 
                             if (frequency1 == urls.size()) {
-                                listener.isFinised(imageDonwloadUrls);
+                                listener.isFinised();
                             }
                         })
                         .addOnFailureListener(exception -> {
@@ -251,7 +250,7 @@ public class FirebaseStorageUtil {
                             int frequency1 = Collections.frequency(listStat, "1");
 
                             if (frequency0 == urls.size()) {
-                                listener.isFailed();
+                                listener.isFailed(exception.getMessage());
                             }
                         })
                 ;
@@ -259,7 +258,7 @@ public class FirebaseStorageUtil {
         }
     }
 
-    public void deleteImages2(@NotNull List<String> urls, @NotNull DoneListener listener) {
+    public void deleteImages2(@NotNull List<String> urls, @NotNull DoneRemoveListener listener) {
         deleteImages1(urls, listener);
     }
 
@@ -300,6 +299,12 @@ public class FirebaseStorageUtil {
     public interface DoneListener {
         void isFinised(ArrayList<String> imageDonwloadUrls);
 
-        void isFailed();
+        void isFailed(String message);
+    }
+
+    public interface DoneRemoveListener {
+        void isFinised();
+
+        void isFailed(String message);
     }
 }

@@ -161,41 +161,57 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/padding_margin_5dp"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:fontFamily="@font/avenir_next_ltpro_bold"
                         android:gravity="center"
                         android:text="Rp 0"
                         android:textColor="@color/green"
                         android:textSize="@dimen/normal_font_size" />
 
-                    <TextView
-                        android:id="@+id/tv_hutang_list_nominal_installment_count"
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cv_item_hutang_list_installment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/padding_margin_5dp"
+                        android:layout_margin="5dp"
+                        android:layout_marginBottom="@dimen/padding_margin_2dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/avenir_next_ltpro_bold"
-                        android:gravity="center"
-                        android:text="1 x Cicilan"
-                        android:textColor="@color/green"
-                        android:textSize="@dimen/small_font_size" />
+                        app:cardCornerRadius="10dp">
 
-                    <TextView
-                        android:id="@+id/tv_hutang_list_nominal_installment_nominal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/padding_margin_5dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/avenir_next_ltpro_bold"
-                        android:gravity="center"
-                        android:text="Cicilan Rp 0"
-                        android:textSize="@dimen/small_font_size" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:animateLayoutChanges="true"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_hutang_list_nominal_installment_count"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/avenir_next_ltpro_bold"
+                                android:gravity="center"
+                                android:text="1 x Cicilan"
+                                android:textColor="@color/green"
+                                android:textSize="@dimen/small_font_size" />
+
+                            <TextView
+                                android:id="@+id/tv_hutang_list_nominal_installment_nominal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/avenir_next_ltpro_bold"
+                                android:gravity="center"
+                                android:text="Rp 0"
+                                android:textSize="@dimen/small_font_size" />
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
 
                     <TextView
                         android:id="@+id/tv_hutang_list_nominal_installment_due_date"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:fontFamily="@font/avenir_next_ltpro_bold"
                         android:gravity="center"
                         android:text="Tanggal Jatuh Tempo"

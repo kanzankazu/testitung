@@ -101,6 +101,8 @@ class SignInFragment :
     private fun initContent() {}
 
     private fun initListener() {
+        cvSignInMoveDaftar.setOnClickListener { mContext.changePager(1) }
+
         ibSignInEmailPick.setOnClickListener {
             val intent = pickEmailAccountFromFragment()
             startActivityForResult(intent, REQ_CODE_PICK_EMAIL_ACCOUNT)

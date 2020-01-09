@@ -107,6 +107,8 @@ class SignUpFragment : BaseFragment(),
     private fun initContent() {}
 
     private fun initListener() {
+        cvSignUpMoveMasuk.setOnClickListener { mContext.changePager(0) }
+
         ibSignUpNameClear.setOnClickListener { etSignUpName.setText("") }
         ibSignUpEmailClear.setOnClickListener { etSignUpEmail.setText("") }
         ibSignUpPasswordClear.setOnClickListener { etSignUpPassword.setText("") }

@@ -1,15 +1,14 @@
 package com.kanzankazu.itungitungan.model;
 
 import android.app.Activity;
-import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
@@ -19,37 +18,65 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil;
 import com.kanzankazu.itungitungan.util.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Faisal Bahri on 2019-11-18.
  */
-public class User {
+public class User implements Parcelable {
 
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
     private String key;
     private String uId;
-
     private String level;
-
     private String tokenAccess;
     private String tokenFcm;
     private String token;
-
     private String name;
     private String email;
     private String phone;
     private String photoUrl;
     private String photoDt;
-
     private Boolean isEmailVerified;
     private Boolean isSignIn;
-
+    private String phoneCode;
     private String firstSignIn;
     private String lastSignIn;
     private String lastSignOut;
     private String bySignIn;
+
+    protected User(Parcel in) {
+        key = in.readString();
+        uId = in.readString();
+        level = in.readString();
+        tokenAccess = in.readString();
+        tokenFcm = in.readString();
+        token = in.readString();
+        name = in.readString();
+        email = in.readString();
+        phone = in.readString();
+        photoUrl = in.readString();
+        photoDt = in.readString();
+        byte tmpIsEmailVerified = in.readByte();
+        isEmailVerified = tmpIsEmailVerified == 0 ? null : tmpIsEmailVerified == 1;
+        byte tmpIsSignIn = in.readByte();
+        isSignIn = tmpIsSignIn == 0 ? null : tmpIsSignIn == 1;
+        phoneCode = in.readString();
+        firstSignIn = in.readString();
+        lastSignIn = in.readString();
+        lastSignOut = in.readString();
+        bySignIn = in.readString();
+    }
 
     public User(FirebaseUser user) {
         this.name = user.getDisplayName();
@@ -154,6 +181,17 @@ public class User {
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
     }
 
+    private static void setUserLogout(DatabaseReference rootReference, Activity mActivity, User user, FirebaseDatabaseUtil.ValueListenerString listenerString) {
+        rootReference.child(Constants.DATABASE_FIREBASE.TABLE.USER)
+                .child(user.getuId())
+                .setValue(user)
+                .addOnSuccessListener(aVoid -> {
+                    listenerString.onSuccess(mActivity.getString(R.string.message_database_save_success));
+                })
+                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+
+    }
+
     public static void updateUser(DatabaseReference rootReference, Activity mActivity, User user, FirebaseDatabaseUtil.ValueListenerString listenerString) {
         rootReference.child(Constants.DATABASE_FIREBASE.TABLE.USER)
                 .child(user.getuId())
@@ -179,7 +217,7 @@ public class User {
                 user.setTokenFcm("");
                 user.setSignIn(false);
                 user.setLastSignOut(DateTimeUtil.getCurrentDate().toString());
-                setUser(rootReference, mActivity, user, listenerString);
+                setUserLogout(rootReference, mActivity, user, listenerString);
             }
 
             @Override
@@ -472,7 +510,33 @@ public class User {
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
     }
 
-    /*FIREBASE DATABASE_FIREBASE END*/
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(key);
+        parcel.writeString(uId);
+        parcel.writeString(level);
+        parcel.writeString(tokenAccess);
+        parcel.writeString(tokenFcm);
+        parcel.writeString(token);
+        parcel.writeString(name);
+        parcel.writeString(email);
+        parcel.writeString(phone);
+        parcel.writeString(photoUrl);
+        parcel.writeString(photoDt);
+        parcel.writeByte((byte) (isEmailVerified == null ? 0 : isEmailVerified ? 1 : 2));
+        parcel.writeByte((byte) (isSignIn == null ? 0 : isSignIn ? 1 : 2));
+        parcel.writeString(phoneCode);
+        parcel.writeString(firstSignIn);
+        parcel.writeString(lastSignIn);
+        parcel.writeString(lastSignOut);
+        parcel.writeString(bySignIn);
+    }
+
     public String getKey() {
         return key;
     }
@@ -577,6 +641,14 @@ public class User {
         isSignIn = signIn;
     }
 
+    public String getPhoneCode() {
+        return phoneCode;
+    }
+
+    public void setPhoneCode(String phoneCode) {
+        this.phoneCode = phoneCode;
+    }
+
     public String getFirstSignIn() {
         return firstSignIn;
     }
@@ -609,27 +681,4 @@ public class User {
         this.bySignIn = bySignIn;
     }
 
-    @Exclude
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("key", key);
-        result.put("uId", uId);
-        result.put("level", level);
-        result.put("tokenAccess", tokenAccess);
-        result.put("tokenFcm", tokenFcm);
-        result.put("token", token);
-        result.put("name", name);
-        result.put("email", email);
-        result.put("phone", phone);
-        result.put("photoUrl", photoUrl);
-        result.put("photoDt", photoDt);
-        result.put("isEmailVerified", isEmailVerified);
-        result.put("isSignIn", isSignIn);
-        result.put("firstSignIn", firstSignIn);
-        result.put("lastSignIn", lastSignIn);
-        result.put("lastSignOut", lastSignOut);
-        result.put("bySignIn", bySignIn);
-
-        return result;
-    }
 }

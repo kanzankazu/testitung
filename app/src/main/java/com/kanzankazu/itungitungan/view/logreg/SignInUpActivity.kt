@@ -20,6 +20,7 @@ import com.kanzankazu.itungitungan.util.DateTimeUtil
 import com.kanzankazu.itungitungan.util.Firebase.*
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginGoogleUtil.RC_SIGN_IN
 import com.kanzankazu.itungitungan.util.FragmentUtil
+import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.google.GooglePhoneNumberValidation
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.main.MainActivity
@@ -30,20 +31,20 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * Created by Faisal Bahri on 2019-11-05.
  */
 class SignInUpActivity :
-    BaseActivity(),
-    SignInUpContract.View,
-    FirebaseLoginUtil.FirebaseLoginListener,
-    FirebaseLoginUtil.FirebaseLoginListener.Google,
-    FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
-    FirebaseDatabaseUtil.ValueListenerString {
+        BaseActivity(),
+        SignInUpContract.View,
+        FirebaseLoginUtil.FirebaseLoginListener,
+        FirebaseLoginUtil.FirebaseLoginListener.Google,
+        FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
+        FirebaseDatabaseUtil.ValueListenerString {
 
+    private var viewPagerPosition: Int = 0
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var loginFacebookUtil: FirebaseLoginFacebookUtil
     private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
     private lateinit var mGoogleApiClient: GoogleApiClient
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var name: String
-
     private lateinit var fragmentUtil: FragmentUtil
     private lateinit var viewPager: ViewPager
     private lateinit var slidePagerAdapter: FragmentUtil.SlidePagerAdapter
@@ -92,8 +93,8 @@ class SignInUpActivity :
         User.getUserByUid(databaseUtil.rootRef, userFirebaseSignIn.getuId(), object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
             override fun onSuccess(dataSnapshot: DataSnapshot, isExsist: Boolean) {
                 if (isExsist) {
-                    val userDatabase = dataSnapshot.getValue(User::class.java) as User
-                    signInUpControl(isSignUp = false, isFirst = false, user = userDatabase)
+                    val userInDatabase = dataSnapshot.getValue(User::class.java) as User
+                    signInUpControl(isSignUp = false, isFirst = false, user = userInDatabase)//SignIn
                 } else {
                     userFirebaseSignIn.emailVerified = true
                     signInUpControl(isSignUp = false, isFirst = true, user = userFirebaseSignIn)
@@ -130,7 +131,7 @@ class SignInUpActivity :
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        User.isExistUser(databaseUtil.getRootRef(), userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerTrueFalse {
+        User.isExistUser(databaseUtil.rootRef, userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerTrueFalse {
             override fun isExist(isExists: Boolean?) {
                 if (isExists!!) {
                     showSnackbar(getString(R.string.message_database_data_exist))
@@ -168,6 +169,11 @@ class SignInUpActivity :
     override fun onSuccess(message: String) {
         dismissProgressDialog()
         if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser)) {
+            Log.d("Lihat", "onSuccess SignInUpActivity : " + mAuth.currentUser!!.displayName)
+            Log.d("Lihat", "onSuccess SignInUpActivity : " + mAuth.currentUser!!.phoneNumber)
+            Log.d("Lihat", "onSuccess SignInUpActivity : " + mAuth.currentUser!!.email)
+            Log.d("Lihat", "onSuccess SignInUpActivity : " + mAuth.currentUser!!.providerData)
+            Log.d("Lihat", "onSuccess SignInUpActivity : " + mAuth.currentUser!!.providerId)
             showSnackbar(message)
             moveToPhoneValidation()
         } else {
@@ -194,22 +200,22 @@ class SignInUpActivity :
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         mGoogleApiClient = GoogleApiClient.Builder(this)
-            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-            .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                override fun onConnected(bundle: Bundle?) {
-                    mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
-                }
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+                    override fun onConnected(bundle: Bundle?) {
+                        mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
+                    }
 
-                override fun onConnectionSuspended(i: Int) {
+                    override fun onConnectionSuspended(i: Int) {
 
-                }
-            })
-            .build()
+                    }
+                })
+                .build()
 
         moveToValidate()
     }
@@ -221,6 +227,7 @@ class SignInUpActivity :
             }
 
             override fun onPageSelected(p0: Int) {
+                viewPagerPosition = p0
                 Log.d("Lihat", "onPageSelected SignInUpActivity p0 : " + p0)
             }
 
@@ -249,6 +256,10 @@ class SignInUpActivity :
     fun moveToMain() {
         startActivity(Intent(this, MainActivity::class.java))
         finish()
+    }
+
+    fun changePager(pos: Int) {
+        viewPager.setCurrentItem(pos,true)
     }
 
     fun signInByGoogle() {
@@ -293,10 +304,11 @@ class SignInUpActivity :
 
         if (isFirst) {
             user.firstSignIn = DateTimeUtil.getCurrentDate().toString()
+            user.phoneCode = Utils.getUniquePsuedoID()
         }
 
         user.lastSignIn = DateTimeUtil.getCurrentDate().toString()
-        User.setUser(databaseUtil.getRootRef(), this, user, this)
+        User.setUser(databaseUtil.rootRef, this, user, this)
     }
 
 }

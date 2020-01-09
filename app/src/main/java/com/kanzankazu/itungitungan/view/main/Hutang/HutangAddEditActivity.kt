@@ -30,13 +30,7 @@ import com.kanzankazu.itungitungan.view.adapter.UserSuggestAdapter
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
 import kotlinx.android.synthetic.main.activity_hutang_add_edit.*
-import kotlinx.android.synthetic.main.activity_hutang_add_edit.et_hutang_add_date
-import kotlinx.android.synthetic.main.activity_hutang_add_edit.et_hutang_add_nominal
-import kotlinx.android.synthetic.main.activity_hutang_add_edit.et_hutang_add_note
-import kotlinx.android.synthetic.main.activity_hutang_add_edit.til_hutang_add_date
-import kotlinx.android.synthetic.main.activity_hutang_add_edit.til_hutang_add_nominal
-import kotlinx.android.synthetic.main.activity_hutang_list.*
-import kotlinx.android.synthetic.main.app_toolbar.toolbar
+import kotlinx.android.synthetic.main.app_toolbar.*
 import retrofit2.Call
 import java.io.File
 
@@ -160,31 +154,37 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     }
 
     private fun setBundleData() {
-        Handler().postDelayed({
-            mPresenter.setRadioGroupIndex(rg_hutang_add_user, hutang.hutangRadioIndex).isChecked = true
-            if (hutang.hutangIsCicilan) {
-                sw_hutang_add_installment.isChecked = hutang.hutangIsCicilan
-                et_hutang_add_installment_nominal.setText(Utils.setRupiah(hutang.hutangCicilanNominal))
-                sp_hutang_add_installment_count.setSelection(hutang.hutangCicilanBerapaKaliPosisi)
-                if (!hutang.hutangisBayarKapanSaja) {
-                    cb_hutang_add_installment_free_to_pay.isChecked = hutang.hutangisBayarKapanSaja
-                    et_hutang_add_installment_due_date.setText(hutang.hutangCicilanTanggalAkhir)
-                }
-                Handler().postDelayed({
-                    et_hutang_add_installment_count.setText(hutang.hutangCicilanBerapaKali)
-                }, 500)
-            }
-        }, 500)
         if (hutang.hutangRadioIndex == 0) {
             et_hutang_add_user.setText(hutang.piutangNama)
         } else {
             et_hutang_add_user.setText(hutang.penghutangNama)
         }
-        et_hutang_add_user_family.setText(hutang.hutangKeluargaNama)
+
         et_hutang_add_nominal.setText(Utils.setRupiah(hutang.hutangNominal))
         et_hutang_add_desc.setText(hutang.hutangKeperluan)
         et_hutang_add_note.setText(hutang.hutangCatatan)
         et_hutang_add_date.setText(hutang.hutangPinjam)
+
+        if (!hutang.hutangKeluargaId.isNullOrEmpty()) {
+            iv_hutang_add_user_clear.visibility = View.VISIBLE
+            et_hutang_add_user_family.setText(hutang.hutangKeluargaNama)
+        }
+
+        Handler().postDelayed({
+            mPresenter.setRadioGroupIndex(rg_hutang_add_user, hutang.hutangRadioIndex).isChecked = true
+            sw_hutang_add_installment.isChecked = hutang.hutangIsCicilan
+            if (hutang.hutangIsCicilan) {
+                Handler().postDelayed({
+                    et_hutang_add_installment_count.setText(hutang.hutangCicilanBerapaKali)
+                }, 500)
+                sp_hutang_add_installment_count.setSelection(hutang.hutangCicilanBerapaKaliPosisi)
+                et_hutang_add_installment_nominal.setText(Utils.setRupiah(hutang.hutangCicilanNominal))
+                cb_hutang_add_installment_free_to_pay.isChecked = hutang.hutangisBayarKapanSaja
+                if (!hutang.hutangisBayarKapanSaja) {
+                    et_hutang_add_installment_due_date.setText(hutang.hutangCicilanTanggalAkhir)
+                }
+            }
+        }, 500)
 
         if (hutang.hutangBuktiGambar != null) {
             if (hutang.hutangBuktiGambar.size == 1) {
@@ -283,13 +283,61 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
 
         civ_hutang_add_image_0.setOnClickListener { chooseDialogPickImage(this, civ_hutang_add_image_0, 0) }
         civ_hutang_remove_image_0.setOnClickListener {
+            if (isBundle) {
+                if (hutang.hutangBuktiGambar != null) {
+                    if (hutang.hutangBuktiGambar[0].isNotEmpty()) {
+                        storageUtil.deleteImage(hutang.hutangBuktiGambar[0]
+                                , {
+                            removeImage(0)
+                            hutang.hutangBuktiGambar.removeAt(0)
+                        }
+                                , {
+                            showSnackbar(it.message)
+                            it.stackTrace
+                        })
+                    } else {
+                        showSnackbar("gagal menghapus")
+                    }
+                } else {
+                    removeImage(0)
+                }
+            } else {
+                removeImage(0)
+            }
+        }
+        civ_hutang_add_image_1.setOnClickListener { chooseDialogPickImage(this, civ_hutang_add_image_1, 1) }
+        civ_hutang_remove_image_1.setOnClickListener {
+            if (isBundle) {
+                if (hutang.hutangBuktiGambar != null) {
+                    if (hutang.hutangBuktiGambar[1].isNotEmpty()) {
+                        storageUtil.deleteImage(hutang.hutangBuktiGambar[1]
+                                , {
+                            removeImage(1)
+                            hutang.hutangBuktiGambar.removeAt(1)
+                        }
+                                , {
+                            showSnackbar(it.message)
+                            it.stackTrace
+                        })
+                    } else {
+                        showSnackbar("gagal menghapus")
+                    }
+                } else {
+                    removeImage(1)
+                }
+            } else {
+                removeImage(1)
+            }
+        }
+    }
+
+    private fun removeImage(pos: Int) {
+        if (pos == 0) {
             mCurrentPhotoPath0 = ""
             mCurrentPhotoPath0Uri = null
             Glide.with(this).load(File(mCurrentPhotoPath0)).placeholder(R.drawable.ic_profile_picture).into(civ_hutang_add_image_0)
             civ_hutang_remove_image_0.visibility = View.GONE
-        }
-        civ_hutang_add_image_1.setOnClickListener { chooseDialogPickImage(this, civ_hutang_add_image_1, 1) }
-        civ_hutang_remove_image_1.setOnClickListener {
+        } else {
             mCurrentPhotoPath1 = ""
             mCurrentPhotoPath1Uri = null
             Glide.with(this).load(File(mCurrentPhotoPath1)).placeholder(R.drawable.ic_profile_picture).into(civ_hutang_add_image_1)
@@ -400,7 +448,30 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     private fun chooseDialogPickImage(activity: Activity, imageView: ImageView?, positionImage: Int) {
         this.positionImage = positionImage
         if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
-            pictureUtil2.chooseGetImageDialog(activity, imageView)
+            if (isBundle && hutang.hutangBuktiGambar != null) {
+                Utils.showIntroductionDialog(
+                        this,
+                        "",
+                        "Konfirmasi",
+                        "Anda Akan menghapus semua gambar lama menjadi baru, apakah anda setuju?",
+                        "Iya",
+                        "Tidak",
+                        false,
+                        -1, object : Utils.IntroductionButtonListener {
+                    override fun onFirstButtonClick() {
+                        pictureUtil2.chooseGetImageDialog(activity, imageView)
+
+                        removeImage(0)
+                        removeImage(1)
+                        hutang.hutangBuktiGambar.clear()
+                        hutang.hutangBuktiGambar = null
+                    }
+
+                    override fun onSecondButtonClick() {}
+                })
+            } else {
+                pictureUtil2.chooseGetImageDialog(activity, imageView)
+            }
         }
     }
 
@@ -454,27 +525,51 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             hutang.hutangIsCicilan = sw_hutang_add_installment.isChecked
             if (hutang.hutangIsCicilan) {
                 hutang.hutangCicilanBerapaKali = et_hutang_add_installment_count.text.toString().trim()
-                if (listTypeInstallmentCountPos > -1) {
-                    hutang.hutangCicilanBerapaKaliType = listTypeInstallmentCount[listTypeInstallmentCountPos]
-                    hutang.hutangCicilanBerapaKaliPosisi = listTypeInstallmentCountPos
-                }
+                hutang.hutangCicilanBerapaKaliType = listTypeInstallmentCount[listTypeInstallmentCountPos]
+                hutang.hutangCicilanBerapaKaliPosisi = listTypeInstallmentCountPos
                 hutang.hutangCicilanNominal = Utils.getRupiahToString(et_hutang_add_installment_nominal.text.toString().trim())
                 hutang.hutangisBayarKapanSaja = cb_hutang_add_installment_free_to_pay.isChecked
                 if (!hutang.hutangisBayarKapanSaja) {
                     hutang.hutangCicilanTanggalAkhir = et_hutang_add_installment_due_date.text.toString().trim()
                 }
+            } else {
+                hutang.hutangCicilanBerapaKali
+                hutang.hutangCicilanBerapaKaliType
+                hutang.hutangCicilanBerapaKaliPosisi
+                hutang.hutangCicilanNominal
+                hutang.hutangisBayarKapanSaja
+                hutang.hutangCicilanTanggalAkhir
             }
 
             if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
                 val listUri = PictureUtil2.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
                 storageUtil.uploadImages("Hutang", listUri, object : FirebaseStorageUtil.DoneListener {
                     override fun isFinised(imageDonwloadUrls: ArrayList<String>?) {
-                        hutang.hutangBuktiGambar = imageDonwloadUrls
-                        mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
+                        if (isBundle && hutang.hutangBuktiGambar != null) {
+                            if (hutang.hutangBuktiGambar.size > 0) {
+                                storageUtil.deleteImages1(hutang.hutangBuktiGambar,
+                                        object : FirebaseStorageUtil.DoneRemoveListener {
+                                            override fun isFinised() {
+                                                hutang.hutangBuktiGambar = imageDonwloadUrls
+                                                mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
+                                            }
+
+                                            override fun isFailed(message: String?) {
+                                                showSnackbar(message)
+                                            }
+                                        })
+                            } else {
+                                hutang.hutangBuktiGambar = imageDonwloadUrls
+                                mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
+                            }
+                        } else {
+                            hutang.hutangBuktiGambar = imageDonwloadUrls
+                            mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
+                        }
                     }
 
-                    override fun isFailed() {
-                        showSnackbar(getString(R.string.message_database_save_failed))
+                    override fun isFailed(message: String?) {
+                        showSnackbar(message)
                     }
                 })
             } else {
@@ -482,6 +577,24 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             }
         } else {
             showSnackbar(getString(R.string.message_validation_failed))
+        }
+    }
+
+    private fun saveImageData() {
+        if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
+            val listUri = PictureUtil2.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
+            storageUtil.uploadImages("Hutang", listUri, object : FirebaseStorageUtil.DoneListener {
+                override fun isFinised(imageDonwloadUrls: ArrayList<String>?) {
+                    hutang.hutangBuktiGambar = imageDonwloadUrls
+                    mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
+                }
+
+                override fun isFailed(message: String) {
+                    showSnackbar(getString(R.string.message_image_save_failed))
+                }
+            })
+        } else {
+            mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
         }
     }
 }

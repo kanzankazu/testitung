@@ -52,6 +52,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import butterknife.ButterKnife;
 
@@ -695,6 +696,20 @@ public class Utils {
     public static String convertListStringToString(List<String> stringList, String demiliter) {
         String[] myStringList = stringList.toArray(new String[stringList.size()]);
         return TextUtils.join(demiliter, myStringList);
+    }
+
+    public static String getUniquePsuedoID() {
+        String m_szDevIDShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.CPU_ABI.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+
+        String serial;
+        try {
+            serial = android.os.Build.class.getField("SERIAL").get(null).toString();
+
+            return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+        } catch (Exception exception) {
+            serial = "serial"; // some value
+        }
+        return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
     }
 
     public static String setRupiah(String inputCredit) {

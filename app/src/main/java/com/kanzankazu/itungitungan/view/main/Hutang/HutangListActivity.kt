@@ -65,33 +65,42 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     override fun onHutangHapusClick(hutang: Hutang, position: Int) {
         Utils.showIntroductionDialog(
-            this,
-            "",
-            "Konfirmasi",
-            "Apakah anda yakin ingin menghapus data ini?",
-            "Ya",
-            "Tidak",
-            false,
-            -1,
-            object : Utils.IntroductionButtonListener {
-                override fun onFirstButtonClick() {
-                    showProgressDialog()
-                    Hutang.removeHutang(databaseUtil.rootRef, this@HutangListActivity, hutang.gethId(), object : FirebaseDatabaseUtil.ValueListenerString {
-                        override fun onSuccess(message: String?) {
-                            dismissProgressDialog()
-                            showSnackbar(message)
-                        }
+                this,
+                "",
+                "Konfirmasi",
+                "Apakah anda yakin ingin menghapus data ini?",
+                "Ya",
+                "Tidak",
+                false,
+                -1,
+                object : Utils.IntroductionButtonListener {
+                    override fun onFirstButtonClick() {
+                        showProgressDialog()
+                        Hutang.removeHutang(databaseUtil.rootRef, this@HutangListActivity, hutang.gethId(), object : FirebaseDatabaseUtil.ValueListenerString {
+                            override fun onSuccess(message: String?) {
+                                dismissProgressDialog()
+                                showSnackbar(message)
+                            }
 
-                        override fun onFailure(message: String?) {
-                            dismissProgressDialog()
-                            showSnackbar(message)
-                        }
-                    })
+                            override fun onFailure(message: String?) {
+                                dismissProgressDialog()
+                                showSnackbar(message)
+                            }
+                        })
+                    }
+
+                    override fun onSecondButtonClick() {}
                 }
-
-                override fun onSecondButtonClick() {}
-            }
         )
+    }
+
+    override fun onHutangFilter(hutangs: MutableList<Hutang>) {
+        hutangNominal = 0
+        piutangNominal = 0
+
+        for (hutang in hutangs) {
+            totalPiuHutang(hutang)
+        }
     }
 
     private fun setView() {
@@ -159,16 +168,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                         if (hutang.piutang_penghutang_id.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
                             hutangs.add(hutang)
 
-                            if (!hutang.hutangNominal.isNullOrEmpty()) {
-                                if (hutang.hutangRadioIndex == 0) {
-                                    hutangNominal += hutang.hutangNominal.toInt()
-                                } else {
-                                    piutangNominal += hutang.hutangNominal.toInt()
-                                }
-                            }
-
-                            tv_hutang_list_hutang.text = Utils.setRupiah(hutangNominal.toString())
-                            tv_hutang_list_piutang.text = Utils.setRupiah(piutangNominal.toString())
+                            totalPiuHutang(hutang)
                         }
                     }
                 }
@@ -181,5 +181,18 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 showSnackbar(message)
             }
         })
+    }
+
+    private fun totalPiuHutang(hutang: Hutang) {
+        if (!hutang.hutangNominal.isNullOrEmpty()) {
+            if (hutang.hutangRadioIndex == 0) {
+                hutangNominal += hutang.hutangNominal.toInt()
+            } else {
+                piutangNominal += hutang.hutangNominal.toInt()
+            }
+        }
+
+        tv_hutang_list_hutang.text = Utils.setRupiah(hutangNominal.toString())
+        tv_hutang_list_piutang.text = Utils.setRupiah(piutangNominal.toString())
     }
 }

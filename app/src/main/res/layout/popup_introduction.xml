@@ -1,82 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/ll_popup">
+    android:id="@+id/ll_popup"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorAccent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/img_popup_intro"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/img_popup_intro"/>
+            android:layout_height="wrap_content" />
 
         <ImageView
+            android:id="@+id/img_popup_close"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignRight="@id/img_popup_intro"
             android:src="@drawable/ic_clear"
-            android:tint="@color/White"
-            android:id="@+id/img_popup_close"/>
+            android:tint="@color/White" />
 
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginLeft="@dimen/padding_margin_16dp"
         android:layout_marginRight="@dimen/padding_margin_16dp"
-        android:layout_marginBottom="@dimen/padding_margin_16dp">
+        android:layout_marginBottom="@dimen/padding_margin_16dp"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv_popup_intro_title"
-            android:text="Title"
             style="@style/TextFormStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:text="Title"
+            android:textStyle="bold" />
+
         <ScrollView
+            android:id="@+id/sv_intro_desc"
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/padding_margin_10dp"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/padding_margin_10dp"
             android:layout_weight="1"
-            android:paddingLeft="5dp"
             android:fadeScrollbars="false"
-            android:id="@+id/sv_intro_desc">
+            android:paddingLeft="5dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <TextView
+                    android:id="@+id/tv_popup_intro_message"
+                    style="@style/TextLabelStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="ABC"
-                    style="@style/TextLabelStyle"
-                    android:id="@+id/tv_popup_intro_message"
-                    android:autoLink="web"/>
+                    android:autoLink="web"
+                    android:text="ABC" />
             </LinearLayout>
         </ScrollView>
 
         <TextView
+            android:id="@+id/tv_popup_button"
+            style="@style/BlueButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/confirm_ok"
-            style="@style/BlueButton"
-            android:enabled="true"
             android:layout_marginTop="@dimen/padding_margin_10dp"
-            android:id="@+id/tv_popup_button"/>
+            android:enabled="true"
+            android:text="@string/confirm_ok" />
 
         <TextView
+            android:id="@+id/tv_popup_button2"
+            style="@style/WhiteButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/confirm_ok"
-            style="@style/WhiteButton"
-            android:enabled="true"
             android:layout_marginTop="@dimen/padding_margin_10dp"
-            android:id="@+id/tv_popup_button2"/>
+            android:enabled="true"
+            android:text="@string/confirm_ok" />
 
     </LinearLayout>
 
