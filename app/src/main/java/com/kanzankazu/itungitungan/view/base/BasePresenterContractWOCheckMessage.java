@@ -2,7 +2,7 @@ package com.kanzankazu.itungitungan.view.base;
 
 import retrofit2.Call;
 
-public interface BasePresenterContract {
+public interface BasePresenterContractWOCheckMessage {
 
     //PROGRESS DIALOG
     void showProgressDialoPresenter();
@@ -10,6 +10,4 @@ public interface BasePresenterContract {
     void dismissProgressDialogPresenter();
 
     void onNoConnection(Call call);
-
-    boolean checkFailedMessage(String message);
 }

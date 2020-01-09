@@ -26,7 +26,6 @@ import java.util.Map;
 /**
  * Created by Faisal Bahri on 2019-11-18.
  */
-@IgnoreExtraProperties
 public class User {
 
     private String key;

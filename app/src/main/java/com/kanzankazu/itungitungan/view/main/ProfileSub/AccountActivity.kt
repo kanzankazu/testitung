@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
 import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.Button
@@ -14,7 +15,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.view.base.BaseActivity
-import timber.log.Timber
 
 class AccountActivity : BaseActivity() {
 
@@ -164,7 +164,7 @@ class AccountActivity : BaseActivity() {
                         if (percentOffset > startAvatarAnimatePointY) {
 
                             val animateOffset = (percentOffset - startAvatarAnimatePointY) * animateWeigt
-                            Timber.d("offset for anim $animateOffset")
+                            Log.d("Lihat", "updateViews AccountActivity : " + animateOffset)
                             val avatarSize = EXPAND_AVATAR_SIZE - (EXPAND_AVATAR_SIZE - COLLAPSE_IMAGE_SIZE) * animateOffset
 
                             this.layoutParams.also {

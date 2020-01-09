@@ -47,7 +47,7 @@ public class Constants {
     }
 
     public interface BUNDLE {
-
+        String Hutang = "hutang";
     }
 
     public interface EXTRA {
@@ -65,6 +65,7 @@ public class Constants {
             String PHONE = "phone";
             String UID = "uid";
             String HID = "hid";
+            String PIUHUTANGID = "piutang_penghutang_id";
         }
     }
 

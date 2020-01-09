@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -15,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.annotation.ArrayRes;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -357,8 +359,7 @@ public class Utils {
         }
     }
 
-    public static void showIntroductionDialog(Activity mActivity, final IntroductionButtonListener introductionButtonListener, String imageUrl, String title, String message, String titleButton1, String titleButton2,
-                                              boolean isCancelable, int assetHardCode) {
+    public static void showIntroductionDialog(Activity mActivity, String imageUrl, String title, String message, String titleButton1, String titleButton2, boolean isCancelable, int assetHardCode, final IntroductionButtonListener introductionButtonListener) {
         if (!mActivity.isFinishing()) {
             AlertDialog alertDialog;
             View dialogView = mActivity.getLayoutInflater().inflate(R.layout.popup_introduction, null);
@@ -387,7 +388,11 @@ public class Utils {
             } else {
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500);
                 imgIntro.setLayoutParams(layoutParams);
-                Glide.with(mActivity).load(assetHardCode).into(imgIntro);
+                if (assetHardCode != -1) {
+                    Glide.with(mActivity).load(assetHardCode).into(imgIntro);
+                } else {
+                    Glide.with(mActivity).load(R.mipmap.ic_launcher).into(imgIntro);
+                }
             }
 
             imgClose.setVisibility(isCancelable ? View.VISIBLE : View.GONE);
@@ -459,7 +464,7 @@ public class Utils {
         }
     }
 
-    public static void showConfirmationDialog(Activity mActivity, final DialogButtonListener dialogButtonListener, String dialogTitle, String dialogDescription) {
+    public static void showConfirmationDialog(Activity mActivity, String dialogTitle, String dialogDescription, final DialogButtonListener dialogButtonListener) {
         if (!mActivity.isFinishing()) {
             android.app.Dialog dialog = new AlertDialog.Builder(mActivity)
                     .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_confirmation_dialog, null))
@@ -483,6 +488,30 @@ public class Utils {
                 dialog.dismiss();
             });
         }
+    }
+
+    public static void listDialog(Activity mActivity, @ArrayRes int i, DialogInterface.OnClickListener listener) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
+        alert.setItems(i, listener);
+        alert.show();
+    }
+
+    public static void listDialog(Activity mActivity, CharSequence[] charSequences, DialogInterface.OnClickListener listener) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
+        alert.setItems(charSequences, listener);
+        alert.show();
+    }
+
+    public static void listMultipleChoiceDialog(Activity mActivity, @ArrayRes int i, boolean[] booleans, DialogInterface.OnMultiChoiceClickListener listener) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
+        alert.setMultiChoiceItems(i, booleans, listener);
+        alert.show();
+    }
+
+    public static void listMultipleChoiceDialog(Activity mActivity, CharSequence[] charSequences, boolean[] booleans, DialogInterface.OnMultiChoiceClickListener listener) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
+        alert.setMultiChoiceItems(charSequences, booleans, listener);
+        alert.show();
     }
 
     public static double roundToHalf(double d) { // Result : 2.1 -> 2, 2,2 -> 2, 2.3 -> 2.5, 2.4 -> 2.5

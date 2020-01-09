@@ -372,7 +372,7 @@
                             android:layout_gravity="top|end"
                             android:layout_marginTop="5dp"
                             android:src="@drawable/ic_clear_black_24dp"
-                            android:visibility="visible" />
+                            android:visibility="gone" />
 
                     </FrameLayout>
 
@@ -397,7 +397,7 @@
                             android:layout_gravity="top|end"
                             android:layout_marginTop="5dp"
                             android:src="@drawable/ic_clear_black_24dp"
-                            android:visibility="visible" />
+                            android:visibility="gone" />
 
                     </FrameLayout>
                 </LinearLayout>

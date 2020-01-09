@@ -9,7 +9,7 @@ public class SettingsScreen {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Reference.getAppContext().startActivity(intent);
         } catch (Exception e) {
-            Reference.showToast(e.toString(), true);
+            Reference.showToastView(e.toString(), true);
         }
     }
 

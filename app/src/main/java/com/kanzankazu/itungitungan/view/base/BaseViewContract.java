@@ -5,13 +5,9 @@ import retrofit2.Call;
 public interface BaseViewContract {
 
     //PROGRESS DIALOG
-    void showToasts(String message);
-
-    void showSnackbars(String message);
-
-    void showRetryDialogs(Call call);
-
-    void showProgressDialogs();
-
-    void dismissProgressDialogs();
+    void showToastView(String message);
+    void showSnackbarView(String message);
+    void showRetryDialogView(Call call);
+    void showprogressDialogView();
+    void dismissProgressDialogView();
 }

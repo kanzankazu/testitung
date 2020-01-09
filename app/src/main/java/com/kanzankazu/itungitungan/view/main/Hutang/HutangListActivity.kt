@@ -1,5 +1,6 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -10,7 +11,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.google.firebase.database.DataSnapshot
+import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Utils
@@ -48,7 +51,47 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun itemViewOnClick(hutang: Hutang) {
+    override fun onHutangUbahClick(hutang: Hutang) {
+        val intent = Intent(this, HutangAddEditActivity::class.java)
+        intent.putExtra(Constants.BUNDLE.Hutang, hutang)
+        startActivity(intent)
+    }
+
+    override fun onHutangBayarClick(hutang: Hutang) {
+        val intent = Intent(this, HutangPayActivity::class.java)
+        intent.putExtra(Constants.BUNDLE.Hutang, hutang)
+        startActivity(intent)
+    }
+
+    override fun onHutangHapusClick(hutang: Hutang, position: Int) {
+        Utils.showIntroductionDialog(
+            this,
+            "",
+            "Konfirmasi",
+            "Apakah anda yakin ingin menghapus data ini?",
+            "Ya",
+            "Tidak",
+            false,
+            -1,
+            object : Utils.IntroductionButtonListener {
+                override fun onFirstButtonClick() {
+                    showProgressDialog()
+                    Hutang.removeHutang(databaseUtil.rootRef, this@HutangListActivity, hutang.gethId(), object : FirebaseDatabaseUtil.ValueListenerString {
+                        override fun onSuccess(message: String?) {
+                            dismissProgressDialog()
+                            showSnackbar(message)
+                        }
+
+                        override fun onFailure(message: String?) {
+                            dismissProgressDialog()
+                            showSnackbar(message)
+                        }
+                    })
+                }
+
+                override fun onSecondButtonClick() {}
+            }
+        )
     }
 
     private fun setView() {
@@ -112,18 +155,22 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
                 for (snapshot in dataSnapshot.children) {
                     val hutang = snapshot.getValue(Hutang::class.java)
-                    hutangs.add(hutang!!)
+                    if (hutang != null) {
+                        if (hutang.piutang_penghutang_id.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
+                            hutangs.add(hutang)
 
-                    if (!hutang.hutangNominal.isNullOrEmpty()) {
-                        if (hutang.hutangRadioIndex == 0) {
-                            hutangNominal += hutang.hutangNominal.toInt()
-                        } else {
-                            piutangNominal += hutang.hutangNominal.toInt()
+                            if (!hutang.hutangNominal.isNullOrEmpty()) {
+                                if (hutang.hutangRadioIndex == 0) {
+                                    hutangNominal += hutang.hutangNominal.toInt()
+                                } else {
+                                    piutangNominal += hutang.hutangNominal.toInt()
+                                }
+                            }
+
+                            tv_hutang_list_hutang.text = Utils.setRupiah(hutangNominal.toString())
+                            tv_hutang_list_piutang.text = Utils.setRupiah(piutangNominal.toString())
                         }
                     }
-
-                    tv_hutang_list_hutang.text = Utils.setRupiah(hutangNominal.toString())
-                    tv_hutang_list_piutang.text = Utils.setRupiah(piutangNominal.toString())
                 }
 
                 hutangListAdapter.setData(hutangs)

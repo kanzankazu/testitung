@@ -12,7 +12,7 @@ import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Utils
 import kotlinx.android.synthetic.main.item_hutang_list.view.*
 
-class HutangListAdapter(private val activity: Activity, private val view: HutangListContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class HutangListAdapter(private val mActivity: Activity, private val mView: HutangListContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mainModel: MutableList<Hutang> = arrayListOf()
     private var tempModel: MutableList<Hutang> = arrayListOf()
     private var subjectDataFilter: SubjectDataFilter? = null
@@ -74,7 +74,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                     itemView.cv_item_hutang_list_apprv_none.visibility = View.GONE
                 }
 
-                itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.red))
+                itemView.tv_hutang_list_nominal.setTextColor(mActivity.resources.getColor(R.color.red))
             } else {// saya pemberi hutang(penghutang)
                 if (data.penghutangNama.isNullOrEmpty()) {
                     itemView.tv_hutang_list_name.visibility = View.GONE
@@ -100,7 +100,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
                     itemView.cv_item_hutang_list_apprv_none.visibility = View.GONE
                 }
 
-                itemView.tv_hutang_list_nominal.setTextColor(activity.resources.getColor(R.color.green))
+                itemView.tv_hutang_list_nominal.setTextColor(mActivity.resources.getColor(R.color.green))
             }
 
             itemView.tv_hutang_list_keperluan.text = data.hutangKeperluan
@@ -108,7 +108,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
 
             if (!data.hutangCicilanBerapaKali.isNullOrEmpty()) {
                 itemView.tv_hutang_list_nominal_installment_count.visibility = View.VISIBLE
-                itemView.tv_hutang_list_nominal_installment_count.text = activity.getString(R.string.installment_count, data.hutangCicilanBerapaKali)
+                itemView.tv_hutang_list_nominal_installment_count.text = mActivity.getString(R.string.installment_count, data.hutangCicilanBerapaKali)
             } else {
                 itemView.tv_hutang_list_nominal_installment_count.visibility = View.GONE
             }
@@ -120,14 +120,29 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
             }
             if (!data.hutangCicilanTanggalAkhir.isNullOrEmpty()) {
                 itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.VISIBLE
-                itemView.tv_hutang_list_nominal_installment_due_date.text = activity.getString(R.string.installment_duedate, data.hutangCicilanTanggalAkhir)
+                itemView.tv_hutang_list_nominal_installment_due_date.text = mActivity.getString(R.string.installment_duedate, data.hutangCicilanTanggalAkhir)
             } else {
                 itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.GONE
             }
         }
 
         fun setListener(hutang: Hutang, position: Int) {
-            itemView.setOnClickListener { view.itemViewOnClick(hutang) }
+            itemView.setOnClickListener {
+                val strings = arrayOf("Ubah", "Bayar", "Hapus")
+                Utils.listDialog(mActivity, strings) { _, which ->
+                    when (which) {
+                        0 -> {
+                            mView.onHutangUbahClick(hutang)
+                        }
+                        1 -> {
+                            mView.onHutangBayarClick(hutang)
+                        }
+                        else -> {
+                            mView.onHutangHapusClick(hutang,position)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -145,7 +160,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
         notifyDataSetChanged()
     }
 
-    /*fun replaceData(datas: List<Hutang>) {
+    fun replaceData(datas: List<Hutang>) {
         this.mainModel.clear()
         this.mainModel.addAll(datas)
         notifyDataSetChanged()
@@ -183,7 +198,7 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
     fun updateSingleData(data: Hutang, position: Int) {
         this.mainModel.set(position, data)
         notifyDataSetChanged()
-    }*/
+    }
 
     fun getFilter(): Filter {
         if (subjectDataFilter == null) {
@@ -204,11 +219,11 @@ class HutangListAdapter(private val activity: Activity, private val view: Hutang
 
                 for (subject in mainModel) {
                     if (subject.hutangRadioIndex == 0) {//saya berhutang(piutang)
-                        if (subject.piutangEmail.contains(charSequence) || subject.piutangNama.contains(charSequence) || subject.hutangNominal.contains(charSequence)) {
+                        if (subject.piutangEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) || subject.piutangNama.toLowerCase().contains(charSequence.toString().toLowerCase()) || subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
                             arrayList1.add(subject)
                         }
                     } else {// saya pemberi hutang(penghutang)
-                        if (subject.piutangEmail.contains(charSequence) || subject.piutangNama.contains(charSequence) || subject.hutangNominal.contains(charSequence)) {
+                        if (subject.piutangEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) || subject.piutangNama.toLowerCase().contains(charSequence.toString().toLowerCase()) || subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
                             arrayList1.add(subject)
                         }
                     }

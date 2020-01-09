@@ -4,7 +4,9 @@ import com.kanzankazu.itungitungan.model.Hutang
 
 interface HutangListContract {
     interface View {
-        fun itemViewOnClick(hutang: Hutang)
+        fun onHutangUbahClick(hutang: Hutang)
+        fun onHutangBayarClick(hutang: Hutang)
+        fun onHutangHapusClick(hutang: Hutang, position: Int)
 
     }
 

@@ -17,6 +17,8 @@ import com.downloader.PRDownloaderConfig;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseConnectionHandler;
+
 import io.fabric.sdk.android.Fabric;
 
 import java.nio.charset.StandardCharsets;
@@ -52,6 +54,9 @@ public class MyApplication extends MultiDexApplication {
         if (!UserPreference.getInstance().getEmail().equals("")) {
             identifierCrashlytics = UserPreference.getInstance().getEmail();
         }
+
+        // Manage firebase database connection when in background and foreground
+        registerActivityLifecycleCallbacks(new FirebaseDatabaseConnectionHandler());
 
         byte[] encrpt = new byte[0];
         encrpt = identifierCrashlytics.getBytes(StandardCharsets.UTF_8);

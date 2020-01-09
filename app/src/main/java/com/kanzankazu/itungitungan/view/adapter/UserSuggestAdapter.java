@@ -1,6 +1,7 @@
 package com.kanzankazu.itungitungan.view.adapter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class UserSuggestAdapter extends ArrayAdapter<User> {
             if (constraint != null) {
                 suggestions.clear();
                 for (User people : tempItems) {
-                    if (people.getName().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                    if (people.getName().toLowerCase().contains(constraint.toString().toLowerCase()) || people.getEmail().toLowerCase().contains(constraint.toString().toLowerCase())) {
                         suggestions.add(people);
                     }
                 }
@@ -68,8 +69,8 @@ public class UserSuggestAdapter extends ArrayAdapter<User> {
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
         this.items = items;
-        tempItems = new ArrayList<User>(items); // this makes the difference.
-        suggestions = new ArrayList<User>();
+        tempItems = new ArrayList<>(items); // this makes the difference.
+        suggestions = new ArrayList<>();
     }
 
     @Override
@@ -89,6 +90,11 @@ public class UserSuggestAdapter extends ArrayAdapter<User> {
         }
 
         return view;
+    }
+
+    @Override
+    public User getItem(int position) {
+        return super.getItem(position);
     }
 
     @Override
