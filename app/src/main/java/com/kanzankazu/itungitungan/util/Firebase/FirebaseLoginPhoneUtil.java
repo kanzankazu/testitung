@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.model.User;
 
 import java.util.concurrent.TimeUnit;
 

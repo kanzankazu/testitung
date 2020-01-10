@@ -48,6 +48,7 @@ public class Constants {
 
     public interface BUNDLE {
         String Hutang = "hutang";
+        String HutangApprove = "HutangApprove";
     }
 
     public interface EXTRA {

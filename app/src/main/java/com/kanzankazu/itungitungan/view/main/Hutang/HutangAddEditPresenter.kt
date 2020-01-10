@@ -7,6 +7,7 @@ import android.widget.RadioGroup
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import retrofit2.Call
@@ -23,7 +24,7 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
         mView.dismissProgressDialogView()
 
         if (!isEdit) {
-            Hutang.setHutang(databaseUtil.rootRef, mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+            FirebaseDatabaseHandler.setHutang(databaseUtil.rootRef, mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
                 override fun onSuccess(message: String?) {
                     mView.dismissProgressDialogView()
                     mView.showSnackbarView(message)
@@ -36,7 +37,7 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
                 }
             })
         } else {
-            Hutang.updateHutang(databaseUtil.rootRef, mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+            FirebaseDatabaseHandler.updateHutang(databaseUtil.rootRef, mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
                 override fun onSuccess(message: String?) {
                     mView.dismissProgressDialogView()
                     mView.showSnackbarView(message)

@@ -31,11 +31,11 @@
     <dimen name="padding_margin_200dp">200dp</dimen>
 
     <!--font size-->
+    <dimen name="super_mini_font_size">7sp</dimen>
     <dimen name="mini_font_size">10sp</dimen>
     <dimen name="small_font_size">12.5sp</dimen>
     <dimen name="normal_font_size">15sp</dimen>
     <dimen name="medium_font_size">17sp</dimen>
     <dimen name="large_font_size">20sp</dimen>
     <dimen name="Big_font_size">25sp</dimen>
-    <dimen name="super_mini_font_size">7sp</dimen>
 </resources>

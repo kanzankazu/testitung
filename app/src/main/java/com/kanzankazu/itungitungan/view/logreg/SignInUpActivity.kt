@@ -66,7 +66,7 @@ class SignInUpActivity :
             if (GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data, true)) {
 
                 showProgressDialog()
-                User.setPhoneNumberUserValidate(this, databaseUtil.rootRef, UserPreference.getInstance().uid, GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data), object : FirebaseDatabaseUtil.ValueListenerString {
+                FirebaseDatabaseHandler.setPhoneNumberUserValidate(this, databaseUtil.rootRef, UserPreference.getInstance().uid, GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data), object : FirebaseDatabaseUtil.ValueListenerString {
                     override fun onSuccess(message: String?) {
                         dismissProgressDialog()
                         UserPreference.getInstance().isOtp = true
@@ -90,7 +90,7 @@ class SignInUpActivity :
     override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
         dismissProgressDialog()
         val userFirebaseSignIn = User(firebaseUser)
-        User.getUserByUid(databaseUtil.rootRef, userFirebaseSignIn.getuId(), object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
+        FirebaseDatabaseHandler.getUserByUid(databaseUtil.rootRef, userFirebaseSignIn.getuId(), object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
             override fun onSuccess(dataSnapshot: DataSnapshot, isExsist: Boolean) {
                 if (isExsist) {
                     val userInDatabase = dataSnapshot.getValue(User::class.java) as User
@@ -131,7 +131,7 @@ class SignInUpActivity :
         etSignUpEmail.setText("")
         etSignUpPassword.setText("")
 
-        User.isExistUser(databaseUtil.rootRef, userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerTrueFalse {
+        FirebaseDatabaseHandler.isExistUser(databaseUtil.rootRef, userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerTrueFalse {
             override fun isExist(isExists: Boolean?) {
                 if (isExists!!) {
                     showSnackbar(getString(R.string.message_database_data_exist))
@@ -308,7 +308,7 @@ class SignInUpActivity :
         }
 
         user.lastSignIn = DateTimeUtil.getCurrentDate().toString()
-        User.setUser(databaseUtil.rootRef, this, user, this)
+        FirebaseDatabaseHandler.setUser(databaseUtil.rootRef, this, user, this)
     }
 
 }

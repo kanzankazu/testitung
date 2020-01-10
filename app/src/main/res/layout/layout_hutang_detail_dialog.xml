@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorAccent"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_margin_10dp">
+
+    <TextView
+        android:id="@+id/tv_hutang_detail_dialog_Title"
+        style="@style/TvStandart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_20dp"
+        android:gravity="center"
+        android:text="Title"
+        android:textSize="@dimen/Big_font_size" />
+
+    <TextView
+        android:id="@+id/tv_hutang_detail_dialog_nominal"
+        style="@style/TvStandart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp"
+        android:text="Rp. 0"
+        android:textSize="@dimen/Big_font_size" />
+
+    <TextView
+        android:id="@+id/tv_hutang_detail_dialog_cicilan_nominal"
+        style="@style/TvStandart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp"
+        android:text="Rp. 0"
+        android:textSize="@dimen/medium_font_size" />
+
+    <TextView
+        android:id="@+id/tv_hutang_detail_dialog_pinjam_date"
+        style="@style/TvStandart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tv_hutang_detail_dialog_cicilan"
+        style="@style/TvStandart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tv_hutang_detail_dialog_cicilan_duedate"
+        style="@style/TvStandart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_margin_5dp"
+        android:text="TextView" />
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_margin_5dp">
+
+            <TextView
+                style="@style/TvStandart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
+                android:text="eperluan dan Catatan"
+                android:textColor="@color/Black" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
+                android:background="@android:color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_hutang_detail_dialog_keperluan"
+                    style="@style/TvStandart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="TextView" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimaryDark" />
+
+                <TextView
+                    android:id="@+id/tv_hutang_detail_dialog_catatan"
+                    style="@style/TvStandart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="TextView" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/colorAccent"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_margin_5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:animateLayoutChanges="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TvStandart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp"
+                    android:text="Data Piutang"
+                    android:textColor="@color/Black" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp"
+                    android:background="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/tv_hutang_detail_dialog_piutang_name"
+                    style="@style/TvStandart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/tv_hutang_detail_dialog_piutang_email"
+                    style="@style/TvStandart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:animateLayoutChanges="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TvStandart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp"
+                    android:text="Data Penghutang"
+                    android:textColor="@color/Black" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp"
+                    android:background="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/tv_hutang_detail_dialog_penghutang_name"
+                    style="@style/TvStandart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/tv_hutang_detail_dialog_penghutang_email"
+                    style="@style/TvStandart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_hutang_detail_dialog_submit_tidak"
+            style="@style/TvButtonGoogle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_margin_40dp"
+            android:layout_margin="@dimen/padding_margin_5dp"
+            android:layout_weight="1"
+            android:text="Tidak"
+            android:textSize="@dimen/medium_font_size" />
+
+        <TextView
+            android:id="@+id/tv_hutang_detail_dialog_submit_setuju"
+            style="@style/TvBottomButtonPrimaryDark"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_margin_40dp"
+            android:layout_margin="@dimen/padding_margin_5dp"
+            android:layout_weight="1"
+            android:text="Setuju"
+            android:textSize="@dimen/medium_font_size" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

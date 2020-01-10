@@ -19,6 +19,7 @@ import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.model.User
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
@@ -47,6 +48,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     private var listTypeInstallmentCount = ArrayList<String>()
     private var listTypeInstallmentCountPos: Int = 0
     private var userInvite: User? = null
+    private var isIInclude: Boolean = false
+    private var isIPenghutang: Boolean = false
+    private var isIPiutang: Boolean = false
+    private var isIFamily: Boolean = false
+    private var isDataPenghutang: Boolean = false
     private lateinit var mPresenter: HutangAddEditPresenter
     private lateinit var userSuggestAdapter: UserSuggestAdapter
     private lateinit var pictureUtil2: PictureUtil2
@@ -133,7 +139,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         permissionUtil = AndroidPermissionUtil(this, *AndroidPermissionUtil.permCameraGallery)
         pictureUtil2 = PictureUtil2(this)
 
-        setSuggestGroupUser(et_hutang_add_user_family)
+        setSuggestFamilyUser(et_hutang_add_user_family)
         setListTypeInstallmentCount(sp_hutang_add_installment_count)
 
         setBundle()
@@ -145,19 +151,121 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             isBundle = true
             if (extras.containsKey(Constants.BUNDLE.Hutang)) {
                 hutang = extras.getParcelable(Constants.BUNDLE.Hutang)
+                isIInclude = if (!hutang.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.piutang_penghutang_id, true) else false
+                isIPenghutang = if (!hutang.penghutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.penghutangId, true) else false
+                isIPiutang = if (!hutang.piutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.piutangId, true) else false
+                isIFamily = if (!hutang.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
+                isDataPenghutang = hutang.hutangRadioIndex == 0
             }
             //isFromValuationActivity = extras.getBoolean(Constants.ScreenFlag.IS_FROM_VALUATION_ACTIVITY)
         }
 
-        if (isBundle)
+        if (isBundle) {
             setBundleData()
+            setFamilyData()
+        }
+    }
+
+    private fun setFamilyData() {
+        if (isIFamily){
+            rg_hutang_add_user.isClickable = false
+            et_hutang_add_user.isClickable = false
+            iv_hutang_add_user_clear.isClickable = false
+            iv_hutang_add_user.isClickable = false
+            et_hutang_add_user_family.isClickable = false
+            et_hutang_add_nominal.isClickable = false
+            et_hutang_add_desc.isClickable = false
+            et_hutang_add_note.isClickable = false
+            et_hutang_add_date.isClickable = false
+            sw_hutang_add_installment.isClickable = false
+            ll_hutang_add_installment.isClickable = false
+            et_hutang_add_installment_nominal.isClickable = false
+            et_hutang_add_installment_count.isClickable = false
+            sp_hutang_add_installment_count.isClickable = false
+            cb_hutang_add_installment_free_to_pay.isClickable = false
+            et_hutang_add_installment_due_date.isClickable = false
+            civ_hutang_add_image_0.isClickable = false
+            civ_hutang_remove_image_0.isClickable = false
+            civ_hutang_add_image_1.isClickable = false
+            civ_hutang_remove_image_1.isClickable = false
+            tv_hutang_add_simpan.isClickable = false
+
+            rg_hutang_add_user.isEnabled= false
+            et_hutang_add_user.isEnabled= false
+            iv_hutang_add_user_clear.isEnabled= false
+            iv_hutang_add_user.isEnabled= false
+            et_hutang_add_user_family.isEnabled= false
+            et_hutang_add_nominal.isEnabled= false
+            et_hutang_add_desc.isEnabled= false
+            et_hutang_add_note.isEnabled= false
+            et_hutang_add_date.isEnabled= false
+            sw_hutang_add_installment.isEnabled= false
+            ll_hutang_add_installment.isEnabled= false
+            et_hutang_add_installment_nominal.isEnabled= false
+            et_hutang_add_installment_count.isEnabled= false
+            sp_hutang_add_installment_count.isEnabled= false
+            cb_hutang_add_installment_free_to_pay.isEnabled= false
+            et_hutang_add_installment_due_date.isEnabled= false
+            civ_hutang_add_image_0.isEnabled= false
+            civ_hutang_remove_image_0.isEnabled= false
+            civ_hutang_add_image_1.isEnabled= false
+            civ_hutang_remove_image_1.isEnabled= false
+            tv_hutang_add_simpan.isEnabled= false
+        }else{
+            rg_hutang_add_user.isClickable = true
+            et_hutang_add_user.isClickable = true
+            iv_hutang_add_user_clear.isClickable = true
+            iv_hutang_add_user.isClickable = true
+            et_hutang_add_user_family.isClickable = true
+            et_hutang_add_nominal.isClickable = true
+            et_hutang_add_desc.isClickable = true
+            et_hutang_add_note.isClickable = true
+            et_hutang_add_date.isClickable = true
+            sw_hutang_add_installment.isClickable = true
+            ll_hutang_add_installment.isClickable = true
+            et_hutang_add_installment_nominal.isClickable = true
+            et_hutang_add_installment_count.isClickable = true
+            sp_hutang_add_installment_count.isClickable = true
+            cb_hutang_add_installment_free_to_pay.isClickable = true
+            et_hutang_add_installment_due_date.isClickable = true
+            civ_hutang_add_image_0.isClickable = true
+            civ_hutang_remove_image_0.isClickable = true
+            civ_hutang_add_image_1.isClickable = true
+            civ_hutang_remove_image_1.isClickable = true
+            tv_hutang_add_simpan.isClickable = true
+
+            rg_hutang_add_user.isEnabled= true
+            et_hutang_add_user.isEnabled= true
+            iv_hutang_add_user_clear.isEnabled= true
+            iv_hutang_add_user.isEnabled= true
+            et_hutang_add_user_family.isEnabled= true
+            et_hutang_add_nominal.isEnabled= true
+            et_hutang_add_desc.isEnabled= true
+            et_hutang_add_note.isEnabled= true
+            et_hutang_add_date.isEnabled= true
+            sw_hutang_add_installment.isEnabled= true
+            ll_hutang_add_installment.isEnabled= true
+            et_hutang_add_installment_nominal.isEnabled= true
+            et_hutang_add_installment_count.isEnabled= true
+            sp_hutang_add_installment_count.isEnabled= true
+            cb_hutang_add_installment_free_to_pay.isEnabled= true
+            et_hutang_add_installment_due_date.isEnabled= true
+            civ_hutang_add_image_0.isEnabled= true
+            civ_hutang_remove_image_0.isEnabled= true
+            civ_hutang_add_image_1.isEnabled= true
+            civ_hutang_remove_image_1.isEnabled= true
+            tv_hutang_add_simpan.isEnabled= true
+
+        }
     }
 
     private fun setBundleData() {
         if (hutang.hutangRadioIndex == 0) {
             et_hutang_add_user.setText(hutang.piutangNama)
+            iv_hutang_add_user_clear.visibility = View.VISIBLE
         } else {
             et_hutang_add_user.setText(hutang.penghutangNama)
+            iv_hutang_add_user_clear.visibility = View.VISIBLE
         }
 
         et_hutang_add_nominal.setText(Utils.setRupiah(hutang.hutangNominal))
@@ -166,7 +274,6 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         et_hutang_add_date.setText(hutang.hutangPinjam)
 
         if (!hutang.hutangKeluargaId.isNullOrEmpty()) {
-            iv_hutang_add_user_clear.visibility = View.VISIBLE
             et_hutang_add_user_family.setText(hutang.hutangKeluargaNama)
         }
 
@@ -277,6 +384,16 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
             et_hutang_add_user.setText("")
             iv_hutang_add_user_clear.visibility = View.GONE
             userInvite = null
+
+            if (isBundle && hutang.hutangRadioIndex == 0) {
+                hutang.piutangNama = ""
+                hutang.piutangId = ""
+                hutang.piutangEmail = ""
+            } else {
+                hutang.penghutangNama = ""
+                hutang.penghutangId = ""
+                hutang.penghutangEmail = ""
+            }
         }
         iv_hutang_add_user.setOnClickListener { chooseDialogPickUserData() }
         tv_hutang_add_simpan.setOnClickListener { saveHutangValidate() }
@@ -287,14 +404,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
                 if (hutang.hutangBuktiGambar != null) {
                     if (hutang.hutangBuktiGambar[0].isNotEmpty()) {
                         storageUtil.deleteImage(hutang.hutangBuktiGambar[0]
-                                , {
-                            removeImage(0)
-                            hutang.hutangBuktiGambar.removeAt(0)
-                        }
-                                , {
-                            showSnackbar(it.message)
-                            it.stackTrace
-                        })
+                            , {
+                                removeImage(0)
+                                hutang.hutangBuktiGambar.removeAt(0)
+                            }
+                            , {
+                                showSnackbar(it.message)
+                                it.stackTrace
+                            })
                     } else {
                         showSnackbar("gagal menghapus")
                     }
@@ -311,14 +428,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
                 if (hutang.hutangBuktiGambar != null) {
                     if (hutang.hutangBuktiGambar[1].isNotEmpty()) {
                         storageUtil.deleteImage(hutang.hutangBuktiGambar[1]
-                                , {
-                            removeImage(1)
-                            hutang.hutangBuktiGambar.removeAt(1)
-                        }
-                                , {
-                            showSnackbar(it.message)
-                            it.stackTrace
-                        })
+                            , {
+                                removeImage(1)
+                                hutang.hutangBuktiGambar.removeAt(1)
+                            }
+                            , {
+                                showSnackbar(it.message)
+                                it.stackTrace
+                            })
                     } else {
                         showSnackbar("gagal menghapus")
                     }
@@ -356,7 +473,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
     private fun setSuggestInviteUser(resultAccount: String, pickAccount: Int) {
         showProgressDialog()
         if (pickAccount == 0) {
-            User.getUserByPhone(this, databaseUtil.rootRef, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
+            FirebaseDatabaseHandler.getUserByPhone(this, databaseUtil.rootRef, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
                 override fun onSuccess(dataSnapshot: Any?) {
                     dismissProgressDialog()
                     userInvite = dataSnapshot as User
@@ -371,7 +488,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
                 }
             })
         } else {
-            User.getUserByEmail(this, databaseUtil.rootRef, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
+            FirebaseDatabaseHandler.getUserByEmail(this, databaseUtil.rootRef, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
                 override fun onSuccess(dataSnapshot: Any?) {
                     dismissProgressDialog()
                     userInvite = dataSnapshot as User
@@ -388,8 +505,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         }
     }
 
-    private fun setSuggestGroupUser(completeTextView: AutoCompleteTextView) {
-        User.getUsers(databaseUtil.rootRef, true, object : FirebaseDatabaseUtil.ValueListenerData {
+    private fun setSuggestFamilyUser(completeTextView: AutoCompleteTextView) {
+        FirebaseDatabaseHandler.getUsers(databaseUtil.rootRef, true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot?) {
                 if (dataSnapshot != null) {
 
@@ -411,14 +528,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         })
         completeTextView.threshold = 3
         completeTextView.setOnItemClickListener { parent, view, position, id ->
-            Log.d("Lihat", "setSuggestGroupUser HutangAddEditActivity : $parent")
-            Log.d("Lihat", "setSuggestGroupUser HutangAddEditActivity : $view")
-            Log.d("Lihat", "setSuggestGroupUser HutangAddEditActivity : $position")
-            Log.d("Lihat", "setSuggestGroupUser HutangAddEditActivity : $id")
+            Log.d("Lihat", "setSuggestFamilyUser HutangAddEditActivity : $parent")
+            Log.d("Lihat", "setSuggestFamilyUser HutangAddEditActivity : $view")
+            Log.d("Lihat", "setSuggestFamilyUser HutangAddEditActivity : $position")
+            Log.d("Lihat", "setSuggestFamilyUser HutangAddEditActivity : $id")
 
-            Log.d("Lihat", "setSuggestGroupUser HutangAddEditActivity : " + (parent.adapter.getItem(position) as User).name)
-            Log.d("Lihat", "setSuggestGroupUser HutangAddEditActivity : " + (parent.adapter.getItem(position) as User).getuId())
-            Log.d("Lihat", "setSuggestGroupUser HutangAddEditActivity : " + userSuggest[position])
+            Log.d("Lihat", "setSuggestFamilyUser HutangAddEditActivity : " + (parent.adapter.getItem(position) as User).name)
+            Log.d("Lihat", "setSuggestFamilyUser HutangAddEditActivity : " + (parent.adapter.getItem(position) as User).getuId())
+            Log.d("Lihat", "setSuggestFamilyUser HutangAddEditActivity : " + userSuggest[position])
 
             hutang.hutangKeluargaNama = (parent.adapter.getItem(position) as User).name
             hutang.hutangKeluargaId = (parent.adapter.getItem(position) as User).getuId()
@@ -450,25 +567,25 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
             if (isBundle && hutang.hutangBuktiGambar != null) {
                 Utils.showIntroductionDialog(
-                        this,
-                        "",
-                        "Konfirmasi",
-                        "Anda Akan menghapus semua gambar lama menjadi baru, apakah anda setuju?",
-                        "Iya",
-                        "Tidak",
-                        false,
-                        -1, object : Utils.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        pictureUtil2.chooseGetImageDialog(activity, imageView)
+                    this,
+                    "",
+                    "Konfirmasi",
+                    "Anda Akan menghapus semua gambar lama menjadi baru, apakah anda setuju?",
+                    "Iya",
+                    "Tidak",
+                    false,
+                    -1, object : Utils.IntroductionButtonListener {
+                        override fun onFirstButtonClick() {
+                            pictureUtil2.chooseGetImageDialog(activity, imageView)
 
-                        removeImage(0)
-                        removeImage(1)
-                        hutang.hutangBuktiGambar.clear()
-                        hutang.hutangBuktiGambar = null
-                    }
+                            removeImage(0)
+                            removeImage(1)
+                            hutang.hutangBuktiGambar.clear()
+                            hutang.hutangBuktiGambar = null
+                        }
 
-                    override fun onSecondButtonClick() {}
-                })
+                        override fun onSecondButtonClick() {}
+                    })
             } else {
                 pictureUtil2.chooseGetImageDialog(activity, imageView)
             }
@@ -503,7 +620,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
                 hutang.piutangNama = userInvite?.name ?: et_hutang_add_user.text.toString().trim()
                 hutang.piutangEmail = userInvite?.email ?: hutang.piutangEmail ?: ""
                 hutang.penghutangPersetujuan = true
-                hutang.piutangPersetujuan = false
+                hutang.piutangPersetujuan = hutang.piutangId.isNullOrEmpty()
             } else {
                 hutang.hutangRadioIndex = 1
                 hutang.piutangId = UserPreference.getInstance().uid
@@ -513,7 +630,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
                 hutang.penghutangNama = userInvite?.name ?: et_hutang_add_user.text.toString().trim()
                 hutang.penghutangEmail = userInvite?.email ?: hutang.penghutangEmail ?: ""
                 hutang.piutangPersetujuan = true
-                hutang.penghutangPersetujuan = false
+                hutang.penghutangPersetujuan = hutang.penghutangId.isNullOrEmpty()
             }
 
             hutang.piutang_penghutang_id = hutang.penghutangId + "_" + hutang.piutangId
@@ -533,12 +650,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
                     hutang.hutangCicilanTanggalAkhir = et_hutang_add_installment_due_date.text.toString().trim()
                 }
             } else {
-                hutang.hutangCicilanBerapaKali
-                hutang.hutangCicilanBerapaKaliType
-                hutang.hutangCicilanBerapaKaliPosisi
-                hutang.hutangCicilanNominal
-                hutang.hutangisBayarKapanSaja
-                hutang.hutangCicilanTanggalAkhir
+                hutang.hutangCicilanBerapaKali = null
+                hutang.hutangCicilanBerapaKaliType = null
+                hutang.hutangCicilanNominal = null
+                hutang.hutangisBayarKapanSaja = null
+                hutang.hutangCicilanTanggalAkhir = null
             }
 
             if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
@@ -548,16 +664,16 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
                         if (isBundle && hutang.hutangBuktiGambar != null) {
                             if (hutang.hutangBuktiGambar.size > 0) {
                                 storageUtil.deleteImages1(hutang.hutangBuktiGambar,
-                                        object : FirebaseStorageUtil.DoneRemoveListener {
-                                            override fun isFinised() {
-                                                hutang.hutangBuktiGambar = imageDonwloadUrls
-                                                mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
-                                            }
+                                    object : FirebaseStorageUtil.DoneRemoveListener {
+                                        override fun isFinised() {
+                                            hutang.hutangBuktiGambar = imageDonwloadUrls
+                                            mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
+                                        }
 
-                                            override fun isFailed(message: String?) {
-                                                showSnackbar(message)
-                                            }
-                                        })
+                                        override fun isFailed(message: String?) {
+                                            showSnackbar(message)
+                                        }
+                                    })
                             } else {
                                 hutang.hutangBuktiGambar = imageDonwloadUrls
                                 mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
@@ -580,21 +696,4 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View, Adapte
         }
     }
 
-    private fun saveImageData() {
-        if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
-            val listUri = PictureUtil2.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
-            storageUtil.uploadImages("Hutang", listUri, object : FirebaseStorageUtil.DoneListener {
-                override fun isFinised(imageDonwloadUrls: ArrayList<String>?) {
-                    hutang.hutangBuktiGambar = imageDonwloadUrls
-                    mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
-                }
-
-                override fun isFailed(message: String) {
-                    showSnackbar(getString(R.string.message_image_save_failed))
-                }
-            })
-        } else {
-            mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
-        }
-    }
 }
