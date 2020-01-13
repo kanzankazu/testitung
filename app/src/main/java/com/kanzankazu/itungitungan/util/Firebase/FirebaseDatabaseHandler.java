@@ -22,7 +22,9 @@ import java.util.List;
  * Created by Faisal Bahri on 2020-01-10.
  */
 public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
-    /*User*/
+    /**
+     * User
+     */
     public static void isExistUser(DatabaseReference database, User user, FirebaseDatabaseUtil.ValueListenerTrueFalse listenerData) {
         database.child(Constants.DATABASE_FIREBASE.TABLE.USER)
                 .orderByChild(Constants.DATABASE_FIREBASE.ROW.UID)
@@ -444,7 +446,9 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
     }
 
-    /*Hutang*/
+    /**
+     * Hutang
+     */
     public static void isExistHutang(DatabaseReference database, Hutang hutang, FirebaseDatabaseUtil.ValueListenerData listenerData) {
         database.child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
                 .orderByChild(Constants.DATABASE_FIREBASE.ROW.HID)

@@ -2,7 +2,6 @@ package com.kanzankazu.itungitungan.view.main.Hutang
 
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.view.base.BaseViewContract
-import java.util.ArrayList
 
 interface HutangListContract {
     interface View : BaseViewContract {
@@ -11,6 +10,7 @@ interface HutangListContract {
         fun onHutangHapusClick(hutang: Hutang, position: Int)
         fun onHutangFilter(hutangs: MutableList<Hutang>)
         fun onAgreementApproveClick(hutang: Hutang)
+        fun onHutangLihatClick(hutang: Hutang)
 
     }
 

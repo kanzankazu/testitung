@@ -139,6 +139,12 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <style name="TvStandartCenterMarquee" parent="TvStandartCenter">
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+    </style>
+
     <style name="EtText" parent="TvStandart">
         <item name="android:inputType">text</item>
         <item name="android:singleLine">true</item>

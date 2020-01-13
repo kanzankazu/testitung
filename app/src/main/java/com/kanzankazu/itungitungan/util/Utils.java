@@ -14,6 +14,7 @@ import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.ArrayRes;
@@ -163,28 +164,12 @@ public class Utils {
     }
 
     public static void intentTo(Activity mActivity, Class<?> classDestination, Boolean isFinish) {
-        if (isFinish) {
-            intentWithClearTask(mActivity, classDestination);
-        } else {
-            intentTo(mActivity, classDestination);
-        }
-    }
-
-    public static void intentTo(Activity mActivity, Class<?> classDestination) {
         if (mActivity != null) {
             Intent intent = new Intent(mActivity, classDestination);
+            if (isFinish) intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             overridePendingTransition(mActivity);
             mActivity.startActivity(intent);
-        }
-    }
-
-    private static void intentWithClearTask(Activity mActivity, Class<?> classDestination) {
-        if (mActivity != null) {
-            Intent intent = new Intent(mActivity, classDestination);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            overridePendingTransition(mActivity);
-            mActivity.startActivity(intent);
-            mActivity.finish();
+            if (isFinish) mActivity.finish();
         }
     }
 

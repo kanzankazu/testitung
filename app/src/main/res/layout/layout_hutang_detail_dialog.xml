@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/colorAccent"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/padding_margin_10dp">
 
@@ -17,47 +18,92 @@
         android:text="Title"
         android:textSize="@dimen/Big_font_size" />
 
-    <TextView
-        android:id="@+id/tv_hutang_detail_dialog_nominal"
-        style="@style/TvStandart"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/padding_margin_5dp"
-        android:text="Rp. 0"
-        android:textSize="@dimen/Big_font_size" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_hutang_detail_dialog_cicilan_nominal"
-        style="@style/TvStandart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_margin_5dp"
-        android:text="Rp. 0"
-        android:textSize="@dimen/medium_font_size" />
+        <TextView
+            style="@style/TvStandart"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Nominal Dibayarkan : "
+            android:textColor="@color/Black" />
+
+        <TextView
+            android:id="@+id/tv_hutang_detail_dialog_nominal"
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rp. 0"
+            android:textSize="@dimen/Big_font_size" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_hutang_detail_dialog_pinjam_date"
         style="@style/TvStandart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_margin_5dp"
+        android:layout_marginBottom="@dimen/padding_margin_20dp"
         android:text="TextView" />
 
-    <TextView
-        android:id="@+id/tv_hutang_detail_dialog_cicilan"
-        style="@style/TvStandart"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_margin_5dp"
-        android:text="TextView" />
+        android:layout_marginBottom="@dimen/padding_margin_20dp"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_hutang_detail_dialog_cicilan_duedate"
-        style="@style/TvStandart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_margin_5dp"
-        android:text="TextView" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_margin_5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TvStandart"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Nominal Cicilan : "
+                android:textColor="@color/Black" />
+
+            <TextView
+                android:id="@+id/tv_hutang_detail_dialog_cicilan_nominal"
+                style="@style/TvStandart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rp. 0"
+                android:textSize="@dimen/medium_font_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_hutang_detail_dialog_cicilan"
+                style="@style/TvStandart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/tv_hutang_detail_dialog_cicilan_duedate"
+                style="@style/TvStandart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 
     <android.support.v7.widget.CardView
@@ -80,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_margin_5dp"
-                android:text="eperluan dan Catatan"
+                android:text="Keperluan dan Catatan"
                 android:textColor="@color/Black" />
 
             <View
@@ -168,7 +214,7 @@
 
                 <TextView
                     android:id="@+id/tv_hutang_detail_dialog_piutang_email"
-                    style="@style/TvStandart"
+                    style="@style/TvStandartCenterMarquee"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView" />
@@ -206,7 +252,7 @@
 
                 <TextView
                     android:id="@+id/tv_hutang_detail_dialog_penghutang_email"
-                    style="@style/TvStandart"
+                    style="@style/TvStandartCenterMarquee"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView" />

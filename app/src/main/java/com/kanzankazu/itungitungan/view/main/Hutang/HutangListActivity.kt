@@ -1,5 +1,6 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,7 +11,6 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.Window
 import android.widget.TextView
 import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.Constants
@@ -50,7 +50,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.menuHutangListAdd) {
-            Utils.intentTo(this, HutangAddEditActivity::class.java)
+            Utils.intentTo(this, HutangAddEditActivity::class.java, false)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -74,6 +74,10 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     override fun onHutangUbahClick(hutang: Hutang) {
+        moveToHutangAdd(hutang)
+    }
+
+    private fun moveToHutangAdd(hutang: Hutang) {
         val intent = Intent(this, HutangAddEditActivity::class.java)
         intent.putExtra(Constants.BUNDLE.Hutang, hutang)
         startActivity(intent)
@@ -87,32 +91,32 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     override fun onHutangHapusClick(hutang: Hutang, position: Int) {
         Utils.showIntroductionDialog(
-                this,
-                "",
-                "Konfirmasi",
-                "Apakah anda yakin ingin menghapus data ini?",
-                "Ya",
-                "Tidak",
-                false,
-                -1,
-                object : Utils.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        showProgressDialog()
-                        FirebaseDatabaseHandler.removeHutang(databaseUtil.rootRef, this@HutangListActivity, hutang.gethId(), object : FirebaseDatabaseUtil.ValueListenerString {
-                            override fun onSuccess(message: String?) {
-                                dismissProgressDialog()
-                                showSnackbar(message)
-                            }
+            this,
+            "",
+            "Konfirmasi",
+            "Apakah anda yakin ingin menghapus data ini?",
+            "Ya",
+            "Tidak",
+            false,
+            -1,
+            object : Utils.IntroductionButtonListener {
+                override fun onFirstButtonClick() {
+                    showProgressDialog()
+                    FirebaseDatabaseHandler.removeHutang(databaseUtil.rootRef, this@HutangListActivity, hutang.gethId(), object : FirebaseDatabaseUtil.ValueListenerString {
+                        override fun onSuccess(message: String?) {
+                            dismissProgressDialog()
+                            showSnackbar(message)
+                        }
 
-                            override fun onFailure(message: String?) {
-                                dismissProgressDialog()
-                                showSnackbar(message)
-                            }
-                        })
-                    }
-
-                    override fun onSecondButtonClick() {}
+                        override fun onFailure(message: String?) {
+                            dismissProgressDialog()
+                            showSnackbar(message)
+                        }
+                    })
                 }
+
+                override fun onSecondButtonClick() {}
+            }
         )
     }
 
@@ -126,7 +130,11 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     override fun onAgreementApproveClick(hutang: Hutang) {
-        detailDialog(hutang)
+        detailDialog(hutang, true)//approve
+    }
+
+    override fun onHutangLihatClick(hutang: Hutang) {
+        detailDialog(hutang, false)//lihat
     }
 
     private fun setView() {
@@ -191,9 +199,8 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 for (snapshot in dataSnapshot.children) {
                     val hutang = snapshot.getValue(Hutang::class.java)
                     if (hutang != null) {
-                        if (hutang.piutang_penghutang_id.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) || hutang.hutangKeluargaId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
+                        if (hutang.piutang_penghutang_id.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) || (!hutang.hutangKeluargaId.isNullOrEmpty() && hutang.hutangKeluargaId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()))) {
                             hutangs.add(hutang)
-
                             totalPiuHutang(hutang)//from database
                         }
                     }
@@ -221,50 +228,66 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 hutangNominal += hutang.hutangNominal.toInt()
             } else if (isIPiutang) {
                 piutangNominal += hutang.hutangNominal.toInt()
-            } else if (isDataPenghutang && isIFamily) {
-                hutangNominal += hutang.hutangNominal.toInt()
-            } else if (!isDataPenghutang && isIFamily) {
-                piutangNominal += hutang.hutangNominal.toInt()
-            }
-        }
+            } else if (isIFamily) {
+                if (isDataPenghutang) {
+                    hutangNominal += hutang.hutangNominal.toInt()
+                } else {
+                    piutangNominal += hutang.hutangNominal.toInt()
 
-        tv_hutang_list_hutang.text = Utils.setRupiah(hutangNominal.toString())
-        tv_hutang_list_piutang.text = Utils.setRupiah(piutangNominal.toString())
+                }
+            }
+
+            tv_hutang_list_hutang.text = Utils.setRupiah(hutangNominal.toString())
+            tv_hutang_list_piutang.text = Utils.setRupiah(piutangNominal.toString())
+        }
     }
 
-    private fun detailDialog(hutang: Hutang) {
+    private fun detailDialog(hutang: Hutang, isApprove: Boolean) {
         try {
-            val dialog: android.app.Dialog = android.app.Dialog(this)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setContentView(R.layout.layout_hutang_detail_dialog)
-            dialog.setCancelable(false)
+            //val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
+            //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            //dialog.setContentView(R.layout.layout_hutang_detail_dialog)
+            //dialog.setCancelable(false)
+            val alertDialog: AlertDialog
+            val dialogView = layoutInflater.inflate(R.layout.layout_hutang_detail_dialog, null)
+            val popupPromo = AlertDialog.Builder(this)
+            popupPromo.setView(dialogView)
 
-            val tvHutangDetailDialogTitle = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_Title)
-            val tvHutangDetailDialogNominal = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_nominal)
-            val tvHutangDetailDialogCicilanNominal = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan_nominal)
-            val tvHutangDetailDialogPinjamDate = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_pinjam_date)
-            val tvHutangDetailDialogCicilan = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan)
-            val tvHutangDetailDialogCicilanDuedate = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan_duedate)
-            val tvHutangDetailDialogKeperluan = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_keperluan)
-            val tvHutangDetailDialogCatatan = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_catatan)
-            val tvHutangDetailDialogPiutangName = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_piutang_name)
-            val tvHutangDetailDialogPiutangEmail = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_piutang_email)
-            val tvHutangDetailDialogPenghutangName = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_penghutang_name)
-            val tvHutangDetailDialogPenghutangEmail = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_penghutang_email)
-            val tvHutangDetailDialogSubmitTidak = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_tidak)
-            val tvHutangDetailDialogSubmitSetuju = dialog.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_setuju)
+            val tvHutangDetailDialogTitle = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_Title)
+            val tvHutangDetailDialogNominal = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_nominal)
+            val tvHutangDetailDialogCicilanNominal = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan_nominal)
+            val tvHutangDetailDialogPinjamDate = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_pinjam_date)
+            val tvHutangDetailDialogCicilan = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan)
+            val tvHutangDetailDialogCicilanDuedate = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan_duedate)
+            val tvHutangDetailDialogKeperluan = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_keperluan)
+            val tvHutangDetailDialogCatatan = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_catatan)
+            val tvHutangDetailDialogPiutangName = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_piutang_name)
+            val tvHutangDetailDialogPiutangEmail = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_piutang_email)
+            val tvHutangDetailDialogPenghutangName = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_penghutang_name)
+            val tvHutangDetailDialogPenghutangEmail = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_penghutang_email)
+            val tvHutangDetailDialogSubmitTidak = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_tidak)
+            val tvHutangDetailDialogSubmitSetuju = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_setuju)
 
-            tvHutangDetailDialogTitle.text = "Persetujuan Hutang Piutang"
-            tvHutangDetailDialogNominal.text = Utils.setRupiah(hutang.hutangNominal)
+            if (isApprove) {
+                tvHutangDetailDialogTitle.text = "Persetujuan Hutang Piutang"
+                tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
+                tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
+            } else {
+                tvHutangDetailDialogTitle.text = "Detail Hutang Piutang"
+                tvHutangDetailDialogSubmitTidak.text = "TUTUP"
+                tvHutangDetailDialogSubmitSetuju.text = "DETAIL"
+            }
+
+            tvHutangDetailDialogNominal.text = "Nominal Dibayarkan : " + Utils.setRupiah(hutang.hutangNominal)
             tvHutangDetailDialogPinjamDate.text = hutang.hutangPinjam
-            if (hutang.hutangIsCicilan) {
-                tvHutangDetailDialogCicilanNominal.text = Utils.setRupiah(hutang.hutangCicilanNominal)
+            if (hutang.hutangIsCicilan != null && hutang.hutangIsCicilan) {
+                tvHutangDetailDialogCicilanNominal.text = "Nominal Cicilan : " + Utils.setRupiah(hutang.hutangCicilanNominal)
                 tvHutangDetailDialogCicilan.text = getString(R.string.installment_count, hutang.hutangCicilanBerapaKali, hutang.hutangCicilanBerapaKaliType)
             } else {
                 tvHutangDetailDialogCicilanNominal.visibility = View.GONE
                 tvHutangDetailDialogCicilan.visibility = View.GONE
             }
-            if (hutang.hutangisBayarKapanSaja) {
+            if (hutang.hutangisBayarKapanSaja != null && !hutang.hutangisBayarKapanSaja) {
                 tvHutangDetailDialogCicilanDuedate.text = hutang.hutangCicilanTanggalAkhir
             } else {
                 tvHutangDetailDialogCicilanDuedate.visibility = View.GONE
@@ -276,16 +299,23 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             tvHutangDetailDialogPenghutangName.text = hutang.penghutangNama
             tvHutangDetailDialogPenghutangEmail.text = hutang.penghutangEmail
 
-            tvHutangDetailDialogSubmitTidak.setOnClickListener {
-                dialog.dismiss()
-            }
+            alertDialog = popupPromo.create()
+            alertDialog.setCancelable(false)
+            alertDialog.setCanceledOnTouchOutside(false)
+            alertDialog.show()
+
             tvHutangDetailDialogSubmitSetuju.setOnClickListener {
-                dialog.dismiss()
-                approveSubmit(hutang)
+                alertDialog.dismiss()
+                if (isApprove) {
+                    approveSubmit(hutang)
+                } else {
+                    moveToHutangAdd(hutang)
+                }
+
             }
-
-            dialog.show()
-
+            tvHutangDetailDialogSubmitTidak.setOnClickListener {
+                alertDialog.dismiss()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

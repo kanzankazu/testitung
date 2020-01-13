@@ -41,58 +41,58 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         private var isIFamily = false
         private var isDataPenghutang = false
 
-        fun setView(data: Hutang, position: Int) {
+        fun setView(hutang: Hutang, position: Int) {
 
-            isIInclude = if (!data.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(data.piutang_penghutang_id, true) else false
-            isIPenghutang = if (!data.penghutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(data.penghutangId, true) else false
-            isIPiutang = if (!data.piutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(data.piutangId, true) else false
-            isIFamily = if (!data.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(data.hutangKeluargaId, true) else false
-            isDataPenghutang = data.hutangRadioIndex == 0
+            isIInclude = if (!hutang.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.piutang_penghutang_id, true) else false
+            isIPenghutang = if (!hutang.penghutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.penghutangId, true) else false
+            isIPiutang = if (!hutang.piutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.piutangId, true) else false
+            isIFamily = if (!hutang.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
+            isDataPenghutang = hutang.hutangRadioIndex == 0
 
-            if (data.piutangPersetujuan && data.penghutangPersetujuan) {
-                setViewPersetujuan(true, data)
-            } else if (data.piutangPersetujuan && isIPiutang) {
-                setViewPersetujuan(true, data)
-            } else if (data.penghutangPersetujuan && isIPenghutang) {
-                setViewPersetujuan(true, data)
+            if (hutang.piutangPersetujuan && hutang.penghutangPersetujuan) {
+                setViewPersetujuan(true, hutang)
+            } else if (hutang.piutangPersetujuan && isIPiutang) {
+                setViewPersetujuan(true, hutang)
+            } else if (hutang.penghutangPersetujuan && isIPenghutang) {
+                setViewPersetujuan(true, hutang)
             } else {
-                if (!data.piutangId.isNullOrEmpty() && data.penghutangId.isNullOrEmpty()) {
-                    setViewPersetujuan(true, data)
-                } else if (data.piutangId.isNullOrEmpty() && !data.penghutangId.isNullOrEmpty()) {
-                    setViewPersetujuan(true, data)
+                if (!hutang.piutangId.isNullOrEmpty() && hutang.penghutangId.isNullOrEmpty()) {
+                    setViewPersetujuan(true, hutang)
+                } else if (hutang.piutangId.isNullOrEmpty() && !hutang.penghutangId.isNullOrEmpty()) {
+                    setViewPersetujuan(true, hutang)
                 } else {
-                    setViewPersetujuan(false, data)
+                    setViewPersetujuan(false, hutang)
                 }
             }
 
-            if (!data.piutangPersetujuan) itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE else itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
-            if (!data.penghutangPersetujuan) itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE else itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
+            if (!hutang.piutangPersetujuan) itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE else itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
+            if (!hutang.penghutangPersetujuan) itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE else itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
 
             if (isIPenghutang) {
-                setViewPiutang(data)
+                setViewPiutang(hutang)
             } else if (isIPiutang) {
-                setViewPenghutang(data)
+                setViewPenghutang(hutang)
             } else if (isIFamily) {
                 if (isDataPenghutang) {
-                    setViewPiutang(data)
+                    setViewPiutang(hutang)
                 } else {
-                    setViewPenghutang(data)
+                    setViewPenghutang(hutang)
                 }
             }
 
-            itemView.tv_hutang_list_keperluan.text = data.hutangKeperluan
+            itemView.tv_hutang_list_keperluan.text = hutang.hutangKeperluan
 
-            itemView.tv_hutang_list_nominal.text = Utils.setRupiah(data.hutangNominal)
-            if (!data.hutangCicilanBerapaKali.isNullOrEmpty() && !data.hutangCicilanNominal.isNullOrEmpty()) {
+            itemView.tv_hutang_list_nominal.text = Utils.setRupiah(hutang.hutangNominal)
+            if (!hutang.hutangCicilanBerapaKali.isNullOrEmpty() && !hutang.hutangCicilanNominal.isNullOrEmpty()) {
                 itemView.cv_item_hutang_list_installment.visibility = View.VISIBLE
-                itemView.tv_hutang_list_nominal_installment_count.text = mActivity.getString(R.string.installment_count, data.hutangCicilanBerapaKali, data.hutangCicilanBerapaKaliType)
-                itemView.tv_hutang_list_nominal_installment_nominal.text = Utils.setRupiah(data.hutangCicilanNominal)
+                itemView.tv_hutang_list_nominal_installment_count.text = mActivity.getString(R.string.installment_count, hutang.hutangCicilanBerapaKali, hutang.hutangCicilanBerapaKaliType)
+                itemView.tv_hutang_list_nominal_installment_nominal.text = Utils.setRupiah(hutang.hutangCicilanNominal)
             } else {
                 itemView.cv_item_hutang_list_installment.visibility = View.GONE
             }
-            if (!data.hutangCicilanTanggalAkhir.isNullOrEmpty()) {
+            if (!hutang.hutangCicilanTanggalAkhir.isNullOrEmpty()) {
                 itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.VISIBLE
-                itemView.tv_hutang_list_nominal_installment_due_date.text = mActivity.getString(R.string.installment_duedate, data.hutangCicilanTanggalAkhir)
+                itemView.tv_hutang_list_nominal_installment_due_date.text = mActivity.getString(R.string.installment_duedate, hutang.hutangCicilanTanggalAkhir)
             } else {
                 itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.GONE
             }
@@ -102,7 +102,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             if (isAgree) {
                 itemView.ll_item_hutang_list.alpha = 1F
                 itemView.ll_item_hutang_list.isEnabled = true
-                setListener(data, position)
+                itemView.setOnClickListener { setOnClickListener(data) }
             } else {
                 itemView.ll_item_hutang_list.alpha = 0.5F
                 itemView.ll_item_hutang_list.isEnabled = false
@@ -148,23 +148,24 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             itemView.tv_hutang_list_nominal.setTextColor(mActivity.resources.getColor(R.color.green))
         }
 
-        private fun setListener(hutang: Hutang, position: Int) {
-            itemView.setOnClickListener { setOnClickListener(hutang) }
-        }
-
         fun setOnClickListener(hutang: Hutang) {
-            val strings = arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
+            val strings: Array<String> = if (isIFamily) {
+                arrayOf("Ubah", "Lihat")
+            } else {
+                arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
+            }
             Utils.listDialog(mActivity, strings) { _, which ->
                 when (strings[which]) {
                     "Ubah" -> {
                         mView.onHutangUbahClick(hutang)
                     }
+                    "Lihat" -> {
+                        mView.onHutangLihatClick(hutang)
+                    }
                     "Bayar" -> {
                         mView.onHutangBayarClick(hutang)
                     }
                     "Hapus" -> {
-                        mView.onHutangHapusClick(hutang, position)
-                    }"Hapus" -> {
                         mView.onHutangHapusClick(hutang, position)
                     }
                 }
