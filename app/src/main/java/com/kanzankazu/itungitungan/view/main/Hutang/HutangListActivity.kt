@@ -23,7 +23,6 @@ import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_hutang_list.*
 import kotlinx.android.synthetic.main.app_toolbar.*
-import okhttp3.internal.Util
 import retrofit2.Call
 import java.util.*
 
@@ -88,32 +87,32 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     override fun onHutangHapusClick(hutang: Hutang, position: Int) {
         Utils.showIntroductionDialog(
-            this,
-            "",
-            "Konfirmasi",
-            "Apakah anda yakin ingin menghapus data ini?",
-            "Ya",
-            "Tidak",
-            false,
-            -1,
-            object : Utils.IntroductionButtonListener {
-                override fun onFirstButtonClick() {
-                    showProgressDialog()
-                    FirebaseDatabaseHandler.removeHutang(databaseUtil.rootRef, this@HutangListActivity, hutang.gethId(), object : FirebaseDatabaseUtil.ValueListenerString {
-                        override fun onSuccess(message: String?) {
-                            dismissProgressDialog()
-                            showSnackbar(message)
-                        }
+                this,
+                "",
+                "Konfirmasi",
+                "Apakah anda yakin ingin menghapus data ini?",
+                "Ya",
+                "Tidak",
+                false,
+                -1,
+                object : Utils.IntroductionButtonListener {
+                    override fun onFirstButtonClick() {
+                        showProgressDialog()
+                        FirebaseDatabaseHandler.removeHutang(databaseUtil.rootRef, this@HutangListActivity, hutang.gethId(), object : FirebaseDatabaseUtil.ValueListenerString {
+                            override fun onSuccess(message: String?) {
+                                dismissProgressDialog()
+                                showSnackbar(message)
+                            }
 
-                        override fun onFailure(message: String?) {
-                            dismissProgressDialog()
-                            showSnackbar(message)
-                        }
-                    })
+                            override fun onFailure(message: String?) {
+                                dismissProgressDialog()
+                                showSnackbar(message)
+                            }
+                        })
+                    }
+
+                    override fun onSecondButtonClick() {}
                 }
-
-                override fun onSecondButtonClick() {}
-            }
         )
     }
 
@@ -192,7 +191,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 for (snapshot in dataSnapshot.children) {
                     val hutang = snapshot.getValue(Hutang::class.java)
                     if (hutang != null) {
-                        if (hutang.piutang_penghutang_id.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
+                        if (hutang.piutang_penghutang_id.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) || hutang.hutangKeluargaId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
                             hutangs.add(hutang)
 
                             totalPiuHutang(hutang)//from database

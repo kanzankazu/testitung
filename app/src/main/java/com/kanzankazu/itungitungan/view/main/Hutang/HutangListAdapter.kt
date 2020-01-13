@@ -72,12 +72,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 setViewPiutang(data)
             } else if (isIPiutang) {
                 setViewPenghutang(data)
-            }
-
-            if (isDataPenghutang && isIFamily) {
-                setViewPiutang(data)
-            } else if (!isDataPenghutang && isIFamily) {
-                setViewPenghutang(data)
+            } else if (isIFamily) {
+                if (isDataPenghutang) {
+                    setViewPiutang(data)
+                } else {
+                    setViewPenghutang(data)
+                }
             }
 
             itemView.tv_hutang_list_keperluan.text = data.hutangKeperluan
@@ -153,16 +153,18 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         }
 
         fun setOnClickListener(hutang: Hutang) {
-            val strings = arrayOf("Ubah", "Bayar", "Hapus")
+            val strings = arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
             Utils.listDialog(mActivity, strings) { _, which ->
-                when (which) {
-                    0 -> {
+                when (strings[which]) {
+                    "Ubah" -> {
                         mView.onHutangUbahClick(hutang)
                     }
-                    1 -> {
+                    "Bayar" -> {
                         mView.onHutangBayarClick(hutang)
                     }
-                    else -> {
+                    "Hapus" -> {
+                        mView.onHutangHapusClick(hutang, position)
+                    }"Hapus" -> {
                         mView.onHutangHapusClick(hutang, position)
                     }
                 }
