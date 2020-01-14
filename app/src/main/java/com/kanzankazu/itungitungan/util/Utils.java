@@ -14,7 +14,6 @@ import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.ArrayRes;
@@ -150,7 +149,7 @@ public class Utils {
         mActivity.setSupportActionBar(toolbar);
         mActivity.getSupportActionBar().setTitle("");
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mActivity.getSupportActionBar().setElevation(0f);
+        mActivity.getSupportActionBar().setElevation(0);
         toolbar.setNavigationOnClickListener(view -> mActivity.onBackPressed());
     }
 
@@ -174,11 +173,11 @@ public class Utils {
     }
 
     public static void exitApp() {
-        //Intent intent = new Intent(activity, LoginActivity.class);
+        //Intent intent = new Intent(mActivity, LoginActivity.class);
         //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         //intent.putExtra("IS_EXIT", true);
-        //activity.startActivity(intent);
-        //activity.finish();
+        //mActivity.startActivity(intent);
+        //mActivity.finish();
         System.exit(0);
     }
 
@@ -727,6 +726,20 @@ public class Utils {
 
     public static String replace(String emailAddress) {
         return emailAddress.replaceAll("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)", "*");
+    }
+
+    public static String getInitialName(String name) {
+        if (TextUtils.isEmpty(name)) {
+            return "";
+        } else {
+            String[] words = name.split(" ");
+            StringBuilder s1 = new StringBuilder();
+            for (String word : words) {
+                String s = Character.toUpperCase(word.charAt(0)) + " ";
+                s1.append(s);
+            }
+            return s1.toString();
+        }
     }
 
     public interface DialogButtonListener {

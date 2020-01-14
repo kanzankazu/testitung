@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -366,9 +365,9 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
         // [END auth_email_cred]
     }
 
-    public void signOut(@Nullable FirebaseDatabaseUtil databaseUtil, Boolean isRefresh) {
+    public void signOut(Boolean isRefresh) {
         if (isConnected(mActivity, this)) {
-            FirebaseDatabaseHandler.logOutUser(databaseUtil.getRootRef(), mActivity, new FirebaseDatabaseUtil.ValueListenerString() {
+            FirebaseDatabaseHandler.logOutUser(mActivity, new FirebaseDatabaseUtil.ValueListenerString() {
                 @Override
                 public void onSuccess(String message) {
                     mAuth.signOut();

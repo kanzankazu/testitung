@@ -1,5 +1,6 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
+import android.widget.AutoCompleteTextView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.kanzankazu.itungitungan.model.Hutang
@@ -10,7 +11,6 @@ import com.kanzankazu.itungitungan.view.base.BaseViewContract
 
 interface HutangAddEditContract {
     interface View : BaseViewContract {
-
     }
 
     interface Presenter : BasePresenterContractWOCheckMessage {

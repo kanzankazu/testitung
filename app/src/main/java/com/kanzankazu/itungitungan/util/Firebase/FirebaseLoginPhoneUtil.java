@@ -82,7 +82,7 @@ public class FirebaseLoginPhoneUtil {
                     s = "Invalid phone number.";
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
-                    //Snackbar.make(activity.findViewById(android.R.id.content), "Quota exceeded.", Snackbar.LENGTH_SHORT).show();
+                    //Snackbar.make(mActivity.findViewById(android.R.id.content), "Quota exceeded.", Snackbar.LENGTH_SHORT).show();
                     s = "Quota exceeded.";
                 }
 

@@ -54,7 +54,7 @@
     <string name="message_image_get_failed">Terjadi kesalahan saat memproses gambar Anda</string>
     <string name="message_its_you">Ini anda</string>
     <string name="message_its_you_family">Ini keluarga anda</string>
-
+    <string name="message_its_you_invite">Ini rekan yang kamu undang</string>
 
     <!--Profile-->
     <string name="sign_in">Masuk</string>
@@ -80,7 +80,6 @@
     <string name="installment_duedate">tanggal jatuh tempo : %s</string>
     <string name="hutang_info_undang_penghutang_piutang">* Pastikan piutang/penghutang yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (tekan tombol tambah sebelah kanan)</string>
     <string name="hutang_info_undang_keluarga">* Pastikan keluarga yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (masukkan Nama / Email undangan)</string>
-    <string name="message_its_you_invite">Ini rekan yang kamu undang</string>
 
     <!--Hutang-->
 

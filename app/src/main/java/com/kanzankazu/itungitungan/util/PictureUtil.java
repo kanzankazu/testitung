@@ -380,7 +380,7 @@ public class PictureUtil {
         /*Uri selectedImageUri = data.getData();
         String[] projection = {MediaStore.MediaColumns.DATA};
         @SuppressWarnings("deprecation")
-        Cursor cursor = getActivity().managedQuery(selectedImageUri, projection, null, null, null);
+        Cursor cursor = getMActivity().managedQuery(selectedImageUri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         cursor.moveToFirst();
 
@@ -548,7 +548,7 @@ public class PictureUtil {
         String replace = title.replace(" ", "");
         String imageFileName = replace + "_" + id + ".jpg";
         File imageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)/* + "/Openguide/" + id*/.toString());
-        //File imageDir = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)/* + "/Openguide/" + id*/.toString());
+        //File imageDir = new File(mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)/* + "/Openguide/" + id*/.toString());
         boolean success = true;
         if (!imageDir.exists()) {
             success = imageDir.mkdirs();

@@ -12,6 +12,9 @@ import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Utils
 import kotlinx.android.synthetic.main.item_hutang_list.view.*
+import com.amulyakhare.textdrawable.TextDrawable
+import com.amulyakhare.textdrawable.util.ColorGenerator
+
 
 class HutangListAdapter(private val mActivity: Activity, private val mView: HutangListContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mainModel: MutableList<Hutang> = arrayListOf()
@@ -33,6 +36,10 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
     }
 
     inner class HutangListAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
+        private val generator = ColorGenerator.MATERIAL
+        private var color: Int = 0
+        private var builder: TextDrawable.IBuilder? = null
+        private var textDrawable: TextDrawable? = null
         private var name = ""
         private var email = ""
         private var isIInclude = false
@@ -43,17 +50,25 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
 
         fun setView(hutang: Hutang, position: Int) {
 
+            builder = TextDrawable.builder()
+                .beginConfig()
+                .withBorder(4)
+                .width(50)
+                .height(50)
+                .endConfig()
+                .roundRect(20)
+
             isIInclude = if (!hutang.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.piutang_penghutang_id, true) else false
             isIPenghutang = if (!hutang.penghutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.penghutangId, true) else false
             isIPiutang = if (!hutang.piutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.piutangId, true) else false
             isIFamily = if (!hutang.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
             isDataPenghutang = hutang.hutangRadioIndex == 0
 
-            if (hutang.piutangPersetujuan && hutang.penghutangPersetujuan) {
+            if (hutang.piutangPersetujuanBaru && hutang.penghutangPersetujuanBaru) {
                 setViewPersetujuan(true, hutang)
-            } else if (hutang.piutangPersetujuan && isIPiutang) {
+            } else if (hutang.piutangPersetujuanBaru && isIPiutang) {
                 setViewPersetujuan(true, hutang)
-            } else if (hutang.penghutangPersetujuan && isIPenghutang) {
+            } else if (hutang.penghutangPersetujuanBaru && isIPenghutang) {
                 setViewPersetujuan(true, hutang)
             } else {
                 if (!hutang.piutangId.isNullOrEmpty() && hutang.penghutangId.isNullOrEmpty()) {
@@ -65,18 +80,18 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 }
             }
 
-            if (!hutang.piutangPersetujuan) itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE else itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
-            if (!hutang.penghutangPersetujuan) itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE else itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
+            if (!hutang.piutangPersetujuanBaru) itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE else itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
+            if (!hutang.penghutangPersetujuanBaru) itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE else itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
 
             if (isIPenghutang) {
-                setViewPiutang(hutang)
+                setViewIPenghutang(hutang)
             } else if (isIPiutang) {
-                setViewPenghutang(hutang)
+                setViewIPiutang(hutang)
             } else if (isIFamily) {
                 if (isDataPenghutang) {
-                    setViewPiutang(hutang)
+                    setViewIPenghutang(hutang)
                 } else {
-                    setViewPenghutang(hutang)
+                    setViewIPiutang(hutang)
                 }
             }
 
@@ -96,6 +111,8 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             } else {
                 itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.GONE
             }
+
+            itemView.iv_item_hutang_list_user.setImageDrawable(textDrawable)
         }
 
         private fun setViewPersetujuan(isAgree: Boolean, data: Hutang) {
@@ -106,15 +123,18 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             } else {
                 itemView.ll_item_hutang_list.alpha = 0.5F
                 itemView.ll_item_hutang_list.isEnabled = false
-                itemView.setOnClickListener { mView.onAgreementApproveClick(data) }
+                itemView.setOnClickListener { mView.onHutangAgreementApproveClick(data) }
             }
         }
 
-        private fun setViewPiutang(data: Hutang) {
+        private fun setViewIPenghutang(data: Hutang) {
             if (!data.piutangNama.isNullOrEmpty()) {
                 name = data.piutangNama
                 itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_name.visibility = View.VISIBLE
+
+                color = generator.getColor(data.piutangNama)
+                textDrawable = builder?.build(Utils.getInitialName(data.piutangNama.trim()), color)
             } else {
                 itemView.tv_hutang_list_name.visibility = View.GONE
             }
@@ -129,11 +149,14 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             itemView.tv_hutang_list_nominal.setTextColor(mActivity.resources.getColor(R.color.red))
         }
 
-        private fun setViewPenghutang(data: Hutang) {
+        private fun setViewIPiutang(data: Hutang) {
             if (!data.penghutangNama.isNullOrEmpty()) {
                 name = data.penghutangNama
                 itemView.tv_hutang_list_name.text = name
                 itemView.tv_hutang_list_name.visibility = View.VISIBLE
+
+                color = generator.getColor(data.penghutangNama)
+                textDrawable = builder?.build(Utils.getInitialName(data.penghutangNama.trim()), color)
             } else {
                 itemView.tv_hutang_list_name.visibility = View.GONE
             }

@@ -12,7 +12,7 @@ public class FirebaseAnalyticsUtil {
 
     public interface param {
         String ID = "id";
-        String ACTIVITY = "activity";
+        String ACTIVITY = "mActivity";
     }
 
     public interface event {

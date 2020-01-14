@@ -139,7 +139,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         civ_profile_photo_edit.setOnClickListener { }
         cv_profile_signout.setOnClickListener {
             showProgressDialog()
-            loginUtil.signOut(databaseUtil, true)
+            loginUtil.signOut(true)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             sv_profile_settings.setOnScrollChangeListener { _, _, _, _, _ ->

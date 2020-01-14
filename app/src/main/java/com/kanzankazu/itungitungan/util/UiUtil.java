@@ -11,7 +11,7 @@ public class UiUtil {
 
     public static void showDialog(Context context, View dialogContentView) {
         if (!(context instanceof Activity)) {
-            throw new IllegalStateException("Context should be an activity");
+            throw new IllegalStateException("Context should be an mActivity");
         }
         Dialog dialog = new Dialog((Activity) context);
         dialog.setContentView(dialogContentView);

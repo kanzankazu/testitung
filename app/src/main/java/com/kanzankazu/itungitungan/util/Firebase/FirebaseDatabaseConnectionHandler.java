@@ -51,7 +51,7 @@ public class FirebaseDatabaseConnectionHandler implements Application.ActivityLi
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    // just make sure that in the defined seconds no other activity is brought to front
+                    // just make sure that in the defined seconds no other mActivity is brought to front
                     Log.d(TAG, "run: confirming if it is safe to go offline. Activity count: " + count);
                     if (count == 0) {
                         Log.d(TAG, "run: going offline...");

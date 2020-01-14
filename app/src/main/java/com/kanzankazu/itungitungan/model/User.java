@@ -25,17 +25,6 @@ import java.util.List;
  */
 public class User implements Parcelable {
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
     private String key;
     private String uId;
     private String level;
@@ -50,10 +39,31 @@ public class User implements Parcelable {
     private Boolean isEmailVerified;
     private Boolean isSignIn;
     private String phoneCode;
+    private String phoneDetail;
     private String firstSignIn;
     private String lastSignIn;
     private String lastSignOut;
     private String bySignIn;
+
+    public User(FirebaseUser user) {
+        this.name = user.getDisplayName();
+        this.email = user.getEmail();
+        this.uId = user.getUid();
+    }
+
+    public User(String uId, String name, String email) {
+        this.uId = uId;
+        this.name = name;
+        this.email = email;
+    }
+
+    public User(String name) {
+        this.name = name;
+    }
+
+    public User() {
+
+    }
 
     protected User(Parcel in) {
         key = in.readString();
@@ -72,54 +82,24 @@ public class User implements Parcelable {
         byte tmpIsSignIn = in.readByte();
         isSignIn = tmpIsSignIn == 0 ? null : tmpIsSignIn == 1;
         phoneCode = in.readString();
+        phoneDetail = in.readString();
         firstSignIn = in.readString();
         lastSignIn = in.readString();
         lastSignOut = in.readString();
         bySignIn = in.readString();
     }
 
-    public User(FirebaseUser user) {
-        this.name = user.getDisplayName();
-        this.email = user.getEmail();
-        this.uId = user.getUid();
-    }
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
 
-    public User(String uId, String name, String email){
-        this.uId = uId;
-        this.name = name;
-        this.email = email;
-    }
-
-    public User() {
-
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(key);
-        parcel.writeString(uId);
-        parcel.writeString(level);
-        parcel.writeString(tokenAccess);
-        parcel.writeString(tokenFcm);
-        parcel.writeString(token);
-        parcel.writeString(name);
-        parcel.writeString(email);
-        parcel.writeString(phone);
-        parcel.writeString(photoUrl);
-        parcel.writeString(photoDt);
-        parcel.writeByte((byte) (isEmailVerified == null ? 0 : isEmailVerified ? 1 : 2));
-        parcel.writeByte((byte) (isSignIn == null ? 0 : isSignIn ? 1 : 2));
-        parcel.writeString(phoneCode);
-        parcel.writeString(firstSignIn);
-        parcel.writeString(lastSignIn);
-        parcel.writeString(lastSignOut);
-        parcel.writeString(bySignIn);
-    }
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getKey() {
         return key;
@@ -233,6 +213,14 @@ public class User implements Parcelable {
         this.phoneCode = phoneCode;
     }
 
+    public String getPhoneDetail() {
+        return phoneDetail;
+    }
+
+    public void setPhoneDetail(String phoneDetail) {
+        this.phoneDetail = phoneDetail;
+    }
+
     public String getFirstSignIn() {
         return firstSignIn;
     }
@@ -265,4 +253,31 @@ public class User implements Parcelable {
         this.bySignIn = bySignIn;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
+        dest.writeString(uId);
+        dest.writeString(level);
+        dest.writeString(tokenAccess);
+        dest.writeString(tokenFcm);
+        dest.writeString(token);
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(phone);
+        dest.writeString(photoUrl);
+        dest.writeString(photoDt);
+        dest.writeByte((byte) (isEmailVerified == null ? 0 : isEmailVerified ? 1 : 2));
+        dest.writeByte((byte) (isSignIn == null ? 0 : isSignIn ? 1 : 2));
+        dest.writeString(phoneCode);
+        dest.writeString(phoneDetail);
+        dest.writeString(firstSignIn);
+        dest.writeString(lastSignIn);
+        dest.writeString(lastSignOut);
+        dest.writeString(bySignIn);
+    }
 }

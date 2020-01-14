@@ -8,6 +8,6 @@ public interface BaseViewContract {
     void showToastView(String message);
     void showSnackbarView(String message);
     void showRetryDialogView(Call call);
-    void showprogressDialogView();
+    void showProgressDialogView();
     void dismissProgressDialogView();
 }

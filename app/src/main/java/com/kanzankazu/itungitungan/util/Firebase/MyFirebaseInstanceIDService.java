@@ -21,21 +21,16 @@ import android.util.Log;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.UserPreference;
-import com.kanzankazu.itungitungan.model.User;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
-    private FirebaseDatabaseUtil databaseUtil;
     private static final String SUBSCRIBE_TO = "userABC";
 
     @Override
     public void onTokenRefresh() {
-
-        databaseUtil = new FirebaseDatabaseUtil();
 
         String token = FirebaseInstanceId.getInstance().getToken();
         Log.d("Lihat", "onTokenRefresh MyFirebaseInstanceIDService : " + token);
@@ -50,9 +45,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     }
 
     private void sendRegistrationToServer(String token) {
-        DatabaseReference rootRef = databaseUtil.getRootRef();
         String uid = UserPreference.getInstance().getUid();
-        FirebaseDatabaseHandler.setFCMTokenUser(rootRef, uid, token, new FirebaseDatabaseUtil.ValueListenerString() {
+        FirebaseDatabaseHandler.setFCMTokenUser(uid, token, new FirebaseDatabaseUtil.ValueListenerString() {
             @Override
             public void onSuccess(String message) {
                 Log.d("Lihat", "onSuccess MyFirebaseInstanceIDService : " + message);

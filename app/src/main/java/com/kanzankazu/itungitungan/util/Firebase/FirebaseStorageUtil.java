@@ -32,7 +32,7 @@ public class FirebaseStorageUtil {
 
     /*Upload*/
     public void uploadImage(String STORAGE_PATH, Uri filePath, OnSuccessListener successListener, OnFailureListener failureListener, OnProgressListener progressListener) {
-        //ProgressDialog progressDialog = new ProgressDialog(activity);
+        //ProgressDialog progressDialog = new ProgressDialog(mActivity);
         //progressDialog.setTitle("Uploading");
         //progressDialog.show();
         StorageReference reference = getRootRef().child(STORAGE_PATH + System.currentTimeMillis() + "." + PictureUtil2.getFileExtension(mActivity, filePath));

@@ -86,7 +86,7 @@ public class FirebaseLoginGoogleUtil extends FirebaseLoginUtil implements Fireba
     public void revokeAccess() {
         if (isConnected(mActivity, this)) {
             // Firebase sign out
-            signOut(databaseUtil, false);
+            signOut(false);
 
             // Google revoke access
             mGoogleSignInClient.revokeAccess().addOnCompleteListener(mActivity, task -> {

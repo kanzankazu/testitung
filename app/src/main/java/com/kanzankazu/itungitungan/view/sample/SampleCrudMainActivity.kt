@@ -34,7 +34,7 @@ class SampleCrudMainActivity : BaseActivity(), FirebaseLoginUtil.FirebaseLoginLi
         bt_viewdata.setOnClickListener { startActivity(Intent(this, SampleCrudReadActivity::class.java)) }
         bt_logout.setOnClickListener {
             showProgressDialog()
-            loginUtil.signOut(databaseUtil, true)
+            loginUtil.signOut(true)
         }
     }
 

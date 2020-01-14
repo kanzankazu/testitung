@@ -326,8 +326,8 @@ public class DateTimeAlarmUtil extends DateTimeUtil {
         }
     }
 
-    /*public static void setAlarmSwitch(Activity activity, AlarmModel model, int isActive) {
-        SQLiteHelper db = new SQLiteHelper(activity);
+    /*public static void setAlarmSwitch(Activity mActivity, AlarmModel model, int isActive) {
+        SQLiteHelper db = new SQLiteHelper(mActivity);
 
         String s;
         if (TextUtils.isEmpty(model.getAlarm_title())) {
@@ -336,7 +336,7 @@ public class DateTimeAlarmUtil extends DateTimeUtil {
             s = "dan sudah waktunya " + model.getAlarm_title() + " . ";
         }
 
-        Intent intent = new Intent(activity, AlarmReceiver.class);
+        Intent intent = new Intent(mActivity, AlarmReceiver.class);
         intent.putExtra("id", model.getAlarm_id());
         intent.putExtra("title", "Notifikasi " + model.getAlarm_title());
         intent.putExtra("msg", "Hay Kamu.. sekarang sudah jam " + model.getAlarm_hour() + ":" + model.getAlarm_minute() + " . " + s);
@@ -352,42 +352,42 @@ public class DateTimeAlarmUtil extends DateTimeUtil {
                     String alarmSubId = alarm_sub_ids[i];
                     String alarmDay = alarm_days[i];
 
-                    Intent intent1 = new Intent(activity, AlarmReceiver.class);
-                    boolean alarmActive = DateTimeAlarmUtil.isAlarmActive(activity, intent1, Integer.parseInt(alarmSubId));
+                    Intent intent1 = new Intent(mActivity, AlarmReceiver.class);
+                    boolean alarmActive = DateTimeAlarmUtil.isAlarmActive(mActivity, intent1, Integer.parseInt(alarmSubId));
 
                     intent.putExtra("subid", SystemUtil.getLastString(alarmSubId, 4));
 
                     if (alarmActive && isActive == 0) {
-                        DateTimeAlarmUtil.cancelAlarm(activity, intent1, Integer.parseInt(alarmSubId));
+                        DateTimeAlarmUtil.cancelAlarm(mActivity, intent1, Integer.parseInt(alarmSubId));
                     } else if (!alarmActive && isActive == 1) {
-                        DateTimeAlarmUtil.setAlarmRepeatDay(activity, intent, Integer.parseInt(model.getAlarm_hour()), Integer.parseInt(model.getAlarm_minute()), Integer.parseInt(alarmDay), Integer.parseInt(alarmSubId));
+                        DateTimeAlarmUtil.setAlarmRepeatDay(mActivity, intent, Integer.parseInt(model.getAlarm_hour()), Integer.parseInt(model.getAlarm_minute()), Integer.parseInt(alarmDay), Integer.parseInt(alarmSubId));
                     }
                 }
             } else {
                 String alarmSubId = model.getAlarm_sub_id();
 
-                Intent intent1 = new Intent(activity, AlarmReceiver.class);
-                boolean alarmActive = DateTimeAlarmUtil.isAlarmActive(activity, intent1, Integer.parseInt(alarmSubId));
+                Intent intent1 = new Intent(mActivity, AlarmReceiver.class);
+                boolean alarmActive = DateTimeAlarmUtil.isAlarmActive(mActivity, intent1, Integer.parseInt(alarmSubId));
 
                 intent.putExtra("subid", SystemUtil.getLastString(alarmSubId, 4));
 
                 if (alarmActive && isActive == 0) {
-                    DateTimeAlarmUtil.cancelAlarm(activity, intent1, Integer.parseInt(alarmSubId));
+                    DateTimeAlarmUtil.cancelAlarm(mActivity, intent1, Integer.parseInt(alarmSubId));
                 } else if (!alarmActive && isActive == 1) {
-                    DateTimeAlarmUtil.setAlarmRepeatDay(activity, intent, Integer.parseInt(model.getAlarm_hour()), Integer.parseInt(model.getAlarm_minute()), Integer.parseInt(alarm_day), Integer.parseInt(alarmSubId));
+                    DateTimeAlarmUtil.setAlarmRepeatDay(mActivity, intent, Integer.parseInt(model.getAlarm_hour()), Integer.parseInt(model.getAlarm_minute()), Integer.parseInt(alarm_day), Integer.parseInt(alarmSubId));
                 }
             }
         } else {
             String alarmSubId = model.getAlarm_sub_id();
-            Intent intent1 = new Intent(activity, AlarmReceiver.class);
-            boolean alarmActive = DateTimeAlarmUtil.isAlarmActive(activity, intent1, Integer.parseInt(alarmSubId));
+            Intent intent1 = new Intent(mActivity, AlarmReceiver.class);
+            boolean alarmActive = DateTimeAlarmUtil.isAlarmActive(mActivity, intent1, Integer.parseInt(alarmSubId));
 
             intent.putExtra("subid", SystemUtil.getLastString(alarmSubId, 4));
 
             if (alarmActive && isActive == 0) {
-                DateTimeAlarmUtil.cancelAlarm(activity, intent1, Integer.parseInt(alarmSubId));
+                DateTimeAlarmUtil.cancelAlarm(mActivity, intent1, Integer.parseInt(alarmSubId));
             } else if (!alarmActive && isActive == 1) {
-                DateTimeAlarmUtil.setAlarm(activity, intent, Integer.parseInt(model.getAlarm_hour()), Integer.parseInt(model.getAlarm_minute()), Integer.parseInt(alarmSubId));
+                DateTimeAlarmUtil.setAlarm(mActivity, intent, Integer.parseInt(model.getAlarm_hour()), Integer.parseInt(model.getAlarm_minute()), Integer.parseInt(alarmSubId));
             }
         }
 

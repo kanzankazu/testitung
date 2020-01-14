@@ -4,14 +4,10 @@ import android.app.Activity
 import android.view.View
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import retrofit2.Call
-import java.lang.Exception
 
 class HutangAddEditPresenter(private val mActivity: Activity, private val mView: HutangAddEditContract.View) : HutangAddEditContract.Presenter {
     override fun showProgressDialoPresenter() {}
@@ -21,10 +17,9 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
     override fun onNoConnection(call: Call<*>?) {}
 
     override fun saveEditHutang(hutang: Hutang, databaseUtil: FirebaseDatabaseUtil, isEdit: Boolean) {
-        mView.dismissProgressDialogView()
-
+        mView.showProgressDialogView()
         if (!isEdit) {
-            FirebaseDatabaseHandler.setHutang(databaseUtil.rootRef, mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+            FirebaseDatabaseHandler.setHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
                 override fun onSuccess(message: String?) {
                     mView.dismissProgressDialogView()
                     mView.showSnackbarView(message)
@@ -37,7 +32,7 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
                 }
             })
         } else {
-            FirebaseDatabaseHandler.updateHutang(databaseUtil.rootRef, mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+            FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
                 override fun onSuccess(message: String?) {
                     mView.dismissProgressDialogView()
                     mView.showSnackbarView(message)

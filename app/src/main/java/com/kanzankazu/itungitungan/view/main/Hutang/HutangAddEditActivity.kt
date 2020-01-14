@@ -48,7 +48,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private val userSuggest = ArrayList<User>()
     private var listTypeInstallmentCount = ArrayList<String>()
     private var listTypeInstallmentCountPos: Int = 0
-    private var userInvite: User? = null
+    private var userInvite: User = User()
     private var isIInclude: Boolean = false
     private var isIPenghutang: Boolean = false
     private var isIPiutang: Boolean = false
@@ -111,7 +111,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         showRetryDialog {}
     }
 
-    override fun showprogressDialogView() {
+    override fun showProgressDialogView() {
         showProgressDialog()
     }
 
@@ -154,16 +154,22 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     private fun setBundleData() {
         if (hutang.hutangRadioIndex == 0) {
-            if (!hutang.piutangId.isNullOrEmpty() && !hutang.piutangId!!.contentEquals(UserPreference.getInstance().uid)) {
-                setCheckSuggestUsers(User(hutang.penghutangId, hutang.penghutangNama, hutang.penghutangEmail))
-            } else {
-                et_hutang_add_user.setText(hutang.piutangNama)
-            }
-        } else {
-            if (!hutang.penghutangId.isNullOrEmpty() && !hutang.penghutangId!!.contentEquals(UserPreference.getInstance().uid)) {
+            if (!hutang.piutangId.isNullOrEmpty() && !hutang.piutangId.equals(UserPreference.getInstance().uid, true)) {
                 setCheckSuggestUsers(User(hutang.piutangId, hutang.piutangNama, hutang.piutangEmail))
             } else {
+                et_hutang_add_user.setText(hutang.piutangNama)
+                userInvite.name = hutang.piutangNama
+                userInvite.setuId("")
+                userInvite.email = ""
+            }
+        } else {
+            if (!hutang.penghutangId.isNullOrEmpty() && !hutang.penghutangId!!.equals(UserPreference.getInstance().uid, true)) {
+                setCheckSuggestUsers(User(hutang.penghutangId, hutang.penghutangNama, hutang.penghutangEmail))
+            } else {
                 et_hutang_add_user.setText(hutang.penghutangNama)
+                userInvite.name = hutang.penghutangNama
+                userInvite.setuId("")
+                userInvite.email = ""
             }
         }
 
@@ -336,7 +342,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         iv_hutang_add_user_clear.setOnClickListener {
             et_hutang_add_user.setText("")
             iv_hutang_add_user_clear.visibility = View.GONE
-            userInvite = null
+            userInvite = User()
 
             if (isBundle && hutang.hutangRadioIndex == 0) {
                 hutang.piutangNama = null
@@ -362,51 +368,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
         civ_hutang_add_image_0.setOnClickListener { chooseDialogPickImage(this, civ_hutang_add_image_0, 0) }
         civ_hutang_remove_image_0.setOnClickListener {
-            if (isBundle) {
-                if (hutang.hutangBuktiGambar != null) {
-                    if (hutang.hutangBuktiGambar[0].isNotEmpty()) {
-                        storageUtil.deleteImage(hutang.hutangBuktiGambar[0]
-                            , {
-                                removeImage(0)
-                                hutang.hutangBuktiGambar.removeAt(0)
-                            }
-                            , {
-                                showSnackbar(it.message)
-                                it.stackTrace
-                            })
-                    } else {
-                        showSnackbar("gagal menghapus")
-                    }
-                } else {
-                    removeImage(0)
-                }
-            } else {
-                removeImage(0)
-            }
+            removeImage(0)
         }
         civ_hutang_add_image_1.setOnClickListener { chooseDialogPickImage(this, civ_hutang_add_image_1, 1) }
         civ_hutang_remove_image_1.setOnClickListener {
-            if (isBundle) {
-                if (hutang.hutangBuktiGambar != null) {
-                    if (hutang.hutangBuktiGambar[1].isNotEmpty()) {
-                        storageUtil.deleteImage(hutang.hutangBuktiGambar[1]
-                            , {
-                                removeImage(1)
-                                hutang.hutangBuktiGambar.removeAt(1)
-                            }
-                            , {
-                                showSnackbar(it.message)
-                                it.stackTrace
-                            })
-                    } else {
-                        showSnackbar("gagal menghapus")
-                    }
-                } else {
-                    removeImage(1)
-                }
-            } else {
-                removeImage(1)
-            }
+            removeImage(1)
         }
     }
 
@@ -427,6 +393,30 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     }
 
     private fun removeImage(pos: Int) {
+        if (isBundle) {
+            if (hutang.hutangBuktiGambar != null) {
+                if (hutang.hutangBuktiGambar[pos].isNotEmpty()) {
+                    storageUtil.deleteImage(hutang.hutangBuktiGambar[pos]
+                        , {
+                            removeImagePath(pos)
+                            hutang.hutangBuktiGambar.removeAt(pos)
+                        }
+                        , {
+                            showSnackbar(it.message)
+                            it.stackTrace
+                        })
+                } else {
+                    showSnackbar("gagal menghapus")
+                }
+            } else {
+                removeImagePath(pos)
+            }
+        } else {
+            removeImagePath(pos)
+        }
+    }
+
+    private fun removeImagePath(pos: Int) {
         if (pos == 0) {
             mCurrentPhotoPath0 = ""
             mCurrentPhotoPath0Uri = null
@@ -465,7 +455,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private fun setSuggestUser(resultAccount: String, pickAccount: Int) {
         showProgressDialog()
         if (pickAccount == 0) {
-            FirebaseDatabaseHandler.getUserByPhone(this, databaseUtil.rootRef, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
+            FirebaseDatabaseHandler.getUserByPhone(this, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
                 override fun onSuccess(dataSnapshot: Any?) {
                     dismissProgressDialog()
                     setCheckSuggestUsers(dataSnapshot)
@@ -478,7 +468,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 }
             })
         } else {
-            FirebaseDatabaseHandler.getUserByEmail(this, databaseUtil.rootRef, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
+            FirebaseDatabaseHandler.getUserByEmail(this, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
                 override fun onSuccess(dataSnapshot: Any?) {
                     dismissProgressDialog()
                     setCheckSuggestUsers(dataSnapshot)
@@ -495,20 +485,20 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     private fun setCheckSuggestUsers(dataSnapshot: Any?) {
         userInvite = dataSnapshot as User
-        if (userInvite!!.getuId()!!.contentEquals(UserPreference.getInstance().uid)) {
+        if (userInvite.getuId()!!.equals(UserPreference.getInstance().uid, true)) {
             showSnackbar(getString(R.string.message_its_you))
-            userInvite = null
-        } else if (!hutang.hutangKeluargaId.isNullOrEmpty() && userInvite!!.getuId()!!.contentEquals(hutang.hutangKeluargaId)) {
+            userInvite = User()
+        } else if (!hutang.hutangKeluargaId.isNullOrEmpty() && userInvite.getuId()!!.equals(hutang.hutangKeluargaId, true)) {
             showSnackbar(getString(R.string.message_its_you_family))
-            userInvite = null
+            userInvite = User()
         } else {
             iv_hutang_add_user_clear.visibility = View.VISIBLE
-            et_hutang_add_user.setText(userInvite?.name)
+            et_hutang_add_user.setText(userInvite.name)
         }
     }
 
     private fun setSuggestUserFamily(completeTextView: AutoCompleteTextView) {
-        FirebaseDatabaseHandler.getUsers(databaseUtil.rootRef, true, object : FirebaseDatabaseUtil.ValueListenerData {
+        FirebaseDatabaseHandler.getUsers(true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccess(dataSnapshot: DataSnapshot?) {
                 if (dataSnapshot != null) {
 
@@ -542,13 +532,13 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             hutang.hutangKeluargaNama = (parent.adapter.getItem(position) as User).name ?: ""
             hutang.hutangKeluargaId = (parent.adapter.getItem(position) as User).getuId() ?: ""
 
-            if (hutang.hutangKeluargaId!!.contentEquals(UserPreference.getInstance().uid)) {
+            if (hutang.hutangKeluargaId!!.equals(UserPreference.getInstance().uid, true)) {
                 showSnackbar(getString(R.string.message_its_you))
                 hutang.hutangKeluargaId = ""
                 hutang.hutangKeluargaNama = ""
                 et_hutang_add_user_family.setText("")
             } else if (!hutang.piutangId.isNullOrEmpty() || !hutang.penghutangId.isNullOrEmpty()) {
-                if (hutang.hutangKeluargaId!!.contentEquals(hutang.piutangId) || hutang.hutangKeluargaId!!.contentEquals(hutang.penghutangId)) {
+                if (hutang.hutangKeluargaId!!.equals(hutang.piutangId, true) || hutang.hutangKeluargaId!!.equals(hutang.penghutangId, true)) {
                     showSnackbar(getString(R.string.message_its_you_invite))
                     hutang.hutangKeluargaId = ""
                     hutang.hutangKeluargaNama = ""
@@ -595,8 +585,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                         override fun onFirstButtonClick() {
                             pictureUtil2.chooseGetImageDialog(activity, imageView)
 
-                            removeImage(0)
-                            removeImage(1)
+                            removeImagePath(0)
+                            removeImagePath(1)
                             hutang.hutangBuktiGambar.clear()
                             hutang.hutangBuktiGambar = null
                         }
@@ -633,21 +623,21 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.penghutangId = UserPreference.getInstance().uid
                 hutang.penghutangNama = UserPreference.getInstance().name
                 hutang.penghutangEmail = UserPreference.getInstance().email
-                hutang.penghutangPersetujuan = true
-                hutang.piutangId = userInvite?.getuId() ?: hutang.piutangId ?: ""
-                hutang.piutangNama = userInvite?.name ?: et_hutang_add_user.text.toString().trim()
-                hutang.piutangEmail = userInvite?.email ?: hutang.piutangEmail ?: ""
-                hutang.piutangPersetujuan = hutang.piutangPersetujuan ?: hutang.piutangId.isNullOrEmpty()
+                hutang.penghutangPersetujuanBaru = true
+                hutang.piutangId = userInvite.getuId() ?: ""
+                hutang.piutangNama = userInvite.name ?: et_hutang_add_user.text.toString().trim()
+                hutang.piutangEmail = userInvite.email ?: ""
+                hutang.piutangPersetujuanBaru = hutang.piutangPersetujuanBaru ?: hutang.piutangId.isNullOrEmpty()
             } else {
                 hutang.hutangRadioIndex = 1
-                hutang.penghutangId = userInvite?.getuId() ?: hutang.penghutangId ?: ""
-                hutang.penghutangNama = userInvite?.name ?: et_hutang_add_user.text.toString().trim()
-                hutang.penghutangEmail = userInvite?.email ?: hutang.penghutangEmail ?: ""
-                hutang.penghutangPersetujuan = hutang.penghutangPersetujuan ?: hutang.penghutangId.isNullOrEmpty()
+                hutang.penghutangId = userInvite.getuId() ?: ""
+                hutang.penghutangNama = userInvite.name ?: et_hutang_add_user.text.toString().trim()
+                hutang.penghutangEmail = userInvite.email ?: ""
+                hutang.penghutangPersetujuanBaru = hutang.penghutangPersetujuanBaru ?: hutang.penghutangId.isNullOrEmpty()
                 hutang.piutangId = UserPreference.getInstance().uid
                 hutang.piutangNama = UserPreference.getInstance().name
                 hutang.piutangEmail = UserPreference.getInstance().email
-                hutang.piutangPersetujuan = true
+                hutang.piutangPersetujuanBaru = true
             }
 
             calculateNominalCount()

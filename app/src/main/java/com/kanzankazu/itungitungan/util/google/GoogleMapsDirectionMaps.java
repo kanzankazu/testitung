@@ -157,7 +157,7 @@ public class GoogleMapsDirectionMaps {
             if (result != null) {
                 if (result.size() < 1) {
                     Toast.makeText(activity.getBaseContext(), "No Points", Toast.LENGTH_SHORT).show();
-                    //Toast.makeText(activity.getBaseContext(), "Jarak dan WaktuModel tidak terdeteksi \n Tekan ulang tanda di atas mapsnya!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mActivity.getBaseContext(), "Jarak dan WaktuModel tidak terdeteksi \n Tekan ulang tanda di atas mapsnya!", Toast.LENGTH_SHORT).show();
                     //fabrefresh.setVisibility(View.VISIBLE);
                     return;
                 }

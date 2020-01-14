@@ -118,7 +118,7 @@ public class PictureUtil2 {
     }
 
     public String onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("data on activity result : " + data);
+        System.out.println("data on mActivity result : " + data);
         if (requestCode == REQUEST_IMAGE_CAMERA && resultCode == RESULT_OK && mCurrentPhotoPath != null) { //FROM CAMERA
             try {
                 compressImage();

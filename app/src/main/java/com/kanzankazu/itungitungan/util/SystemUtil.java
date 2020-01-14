@@ -286,7 +286,7 @@ public class SystemUtil {
     public static void openAnotherApps(Context context, String packageName) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
         if (intent != null) {
-            // We found the activity now start the activity
+            // We found the mActivity now start the mActivity
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } else {
@@ -316,7 +316,7 @@ public class SystemUtil {
 
                 ActivityInfo otherAppActivity = otherApp.activityInfo;
                 ComponentName componentName = new ComponentName(otherAppActivity.applicationInfo.packageName, otherAppActivity.name);
-                // make sure it does NOT open in the stack of your activity
+                // make sure it does NOT open in the stack of your mActivity
                 rateIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 // task reparenting if needed
                 rateIntent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);

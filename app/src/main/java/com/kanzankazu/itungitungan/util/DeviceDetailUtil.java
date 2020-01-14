@@ -218,7 +218,7 @@ public class DeviceDetailUtil {
         detailDevice += "\n DISPLAY: " + Build.DISPLAY;
         detailDevice += "\n CPU_ABI: " + Build.CPU_ABI;
         detailDevice += "\n CPU_ABI2: " + Build.CPU_ABI2;
-        detailDevice += "\n UNKNOWN: " + getDeviceId(context);
+        detailDevice += "\n DEVICEID: " + getDeviceId(context);
         detailDevice += "\n HARDWARE: " + Build.HARDWARE;
         detailDevice += "\n Build ID: " + Build.ID;
         detailDevice += "\n MANUFACTURER: " + Build.MANUFACTURER;
