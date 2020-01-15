@@ -13,13 +13,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_hutang_list.*
@@ -97,7 +94,11 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             -1,
             object : Utils.IntroductionButtonListener {
                 override fun onFirstButtonClick() {
-                    mPresenter.hapusHutang(hutang)
+                    if (!hutang.piutangId.isNullOrEmpty() && !hutang.penghutangId.isNullOrEmpty()) {
+                        mPresenter.requestHutangHapus(hutang)
+                    } else {
+                        mPresenter.hapusHutang(hutang)
+                    }
                 }
 
                 override fun onSecondButtonClick() {}
@@ -113,11 +114,19 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     override fun onHutangLihatClick(hutang: Hutang) {
-        detailDialog(hutang, false)//lihat
+        detailDialog(hutang, isApproveNew = false, isApproveEdit = false, isApproveDelete = false)//lihat
     }
 
-    override fun onHutangAgreementApproveClick(hutang: Hutang) {
-        detailDialog(hutang, true)//approve
+    override fun onHutangApproveNewClick(hutang: Hutang) {
+        detailDialog(hutang, isApproveNew = true, isApproveEdit = false, isApproveDelete = false)//approve
+    }
+
+    override fun onHutangApproveEditClick(hutang: Hutang) {
+        detailDialog(hutang, isApproveNew = false, isApproveEdit = true, isApproveDelete = false)//approve
+    }
+
+    override fun onHutangApproveDeleteClick(hutang: Hutang) {
+        detailDialog(hutang, isApproveNew = false, isApproveEdit = false, isApproveDelete = true)//approve
     }
 
     override fun setAllHutangs(hutangs: ArrayList<Hutang>) {
@@ -211,7 +220,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         startActivity(intent)
     }
 
-    private fun detailDialog(hutang: Hutang, isApprove: Boolean) {
+    private fun detailDialog(hutang: Hutang, isApproveNew: Boolean, isApproveEdit: Boolean, isApproveDelete: Boolean) {
         try {
             //val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
             //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -238,14 +247,27 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             val tvHutangDetailDialogSubmitTidak = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_tidak)
             val tvHutangDetailDialogSubmitSetuju = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_setuju)
 
-            if (isApprove) {
-                tvHutangDetailDialogTitle.text = "Persetujuan Hutang Piutang"
-                tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
-                tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
-            } else {
-                tvHutangDetailDialogTitle.text = "Detail Hutang Piutang"
-                tvHutangDetailDialogSubmitTidak.text = "TUTUP"
-                tvHutangDetailDialogSubmitSetuju.text = "DETAIL"
+            when {
+                isApproveNew -> {
+                    tvHutangDetailDialogTitle.text = "Persetujuan Hutang Piutang Baru"
+                    tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
+                    tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
+                }
+                isApproveEdit -> {
+                    tvHutangDetailDialogTitle.text = "Persetujuan Hutang Piutang Ubah"
+                    tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
+                    tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
+                }
+                isApproveDelete -> {
+                    tvHutangDetailDialogTitle.text = "Persetujuan Hutang Piutang Hapus"
+                    tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
+                    tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
+                }
+                else -> {
+                    tvHutangDetailDialogTitle.text = "Detail Hutang Piutang"
+                    tvHutangDetailDialogSubmitTidak.text = "TUTUP"
+                    tvHutangDetailDialogSubmitSetuju.text = "DETAIL"
+                }
             }
 
             tvHutangDetailDialogNominal.text = Utils.setRupiah(hutang.hutangNominal)
@@ -275,14 +297,19 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
             tvHutangDetailDialogSubmitSetuju.setOnClickListener {
                 alertDialog.dismiss()
-                if (isApprove) {
-                    mPresenter.approveHutang(hutang)
-                } else {
-                    moveToHutangAdd(hutang)
+                when {
+                    isApproveNew -> mPresenter.approveHutangNew(hutang)
+                    isApproveEdit -> mPresenter.approveHutangEdit(hutang)
+                    isApproveDelete -> mPresenter.approveHutangHapus(hutang, true)
+                    else -> moveToHutangAdd(hutang)
                 }
             }
             tvHutangDetailDialogSubmitTidak.setOnClickListener {
                 alertDialog.dismiss()
+                when {
+                    isApproveDelete -> mPresenter.approveHutangHapus(hutang, false)
+                    else -> moveToHutangAdd(hutang)
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()

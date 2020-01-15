@@ -185,16 +185,18 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
         Handler().postDelayed({
             mPresenter.setRadioGroupIndex(rg_hutang_add_user, hutang.hutangRadioIndex).isChecked = true
-            sw_hutang_add_installment.isChecked = hutang.hutangIsCicilan
-            if (hutang.hutangIsCicilan) {
-                Handler().postDelayed({
-                    et_hutang_add_installment_count.setText(hutang.hutangCicilanBerapaKali)
-                }, 500)
-                sp_hutang_add_installment_count.setSelection(hutang.hutangCicilanBerapaKaliPosisi)
-                et_hutang_add_installment_nominal.setText(Utils.setRupiah(hutang.hutangCicilanNominal))
-                cb_hutang_add_installment_free_to_pay.isChecked = hutang.hutangisBayarKapanSaja
-                if (!hutang.hutangisBayarKapanSaja) {
-                    et_hutang_add_installment_due_date.setText(hutang.hutangCicilanTanggalAkhir)
+            if (hutang.hutangIsCicilan != null) {
+                sw_hutang_add_installment.isChecked = hutang.hutangIsCicilan
+                if (hutang.hutangIsCicilan) {
+                    Handler().postDelayed({
+                        et_hutang_add_installment_count.setText(hutang.hutangCicilanBerapaKali)
+                    }, 500)
+                    sp_hutang_add_installment_count.setSelection(hutang.hutangCicilanBerapaKaliPosisi)
+                    et_hutang_add_installment_nominal.setText(Utils.setRupiah(hutang.hutangCicilanNominal))
+                    cb_hutang_add_installment_free_to_pay.isChecked = hutang.hutangisBayarKapanSaja
+                    if (!hutang.hutangisBayarKapanSaja) {
+                        et_hutang_add_installment_due_date.setText(hutang.hutangCicilanTanggalAkhir)
+                    }
                 }
             }
         }, 500)
@@ -624,20 +626,30 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.penghutangNama = UserPreference.getInstance().name
                 hutang.penghutangEmail = UserPreference.getInstance().email
                 hutang.penghutangPersetujuanBaru = true
+                hutang.penghutangPersetujuanUbah = true
+                hutang.penghutangPersetujuanHapus = true
+
                 hutang.piutangId = userInvite.getuId() ?: ""
                 hutang.piutangNama = userInvite.name ?: et_hutang_add_user.text.toString().trim()
                 hutang.piutangEmail = userInvite.email ?: ""
                 hutang.piutangPersetujuanBaru = hutang.piutangPersetujuanBaru ?: hutang.piutangId.isNullOrEmpty()
+                hutang.piutangPersetujuanUbah = false
+                hutang.piutangPersetujuanHapus = false
             } else {
                 hutang.hutangRadioIndex = 1
-                hutang.penghutangId = userInvite.getuId() ?: ""
-                hutang.penghutangNama = userInvite.name ?: et_hutang_add_user.text.toString().trim()
-                hutang.penghutangEmail = userInvite.email ?: ""
-                hutang.penghutangPersetujuanBaru = hutang.penghutangPersetujuanBaru ?: hutang.penghutangId.isNullOrEmpty()
                 hutang.piutangId = UserPreference.getInstance().uid
                 hutang.piutangNama = UserPreference.getInstance().name
                 hutang.piutangEmail = UserPreference.getInstance().email
                 hutang.piutangPersetujuanBaru = true
+                hutang.piutangPersetujuanUbah = true
+                hutang.piutangPersetujuanHapus = true
+
+                hutang.penghutangId = userInvite.getuId() ?: ""
+                hutang.penghutangNama = userInvite.name ?: et_hutang_add_user.text.toString().trim()
+                hutang.penghutangEmail = userInvite.email ?: ""
+                hutang.penghutangPersetujuanBaru = hutang.penghutangPersetujuanBaru ?: hutang.penghutangId.isNullOrEmpty()
+                hutang.penghutangPersetujuanUbah = false
+                hutang.penghutangPersetujuanHapus = false
             }
 
             calculateNominalCount()

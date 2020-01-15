@@ -65,7 +65,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
         })
     }
 
-    override fun approveHutang(hutang: Hutang) {
+    override fun approveHutangNew(hutang: Hutang) {
         val isIInclude = if (!hutang.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.piutang_penghutang_id, true) else false
         val isIPenghutang = if (!hutang.penghutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.penghutangId, true) else false
         val isIPiutang = if (!hutang.piutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.piutangId, true) else false
@@ -87,6 +87,86 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                 mView.showToastView(message)
             }
         })
+    }
 
+    override fun approveHutangEdit(hutang: Hutang) {
+        val isIInclude = if (!hutang.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.piutang_penghutang_id, true) else false
+        val isIPenghutang = if (!hutang.penghutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.penghutangId, true) else false
+        val isIPiutang = if (!hutang.piutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.piutangId, true) else false
+        val isIFamily = if (!hutang.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
+        val isDataPenghutang = hutang.hutangRadioIndex == 0
+
+        if (isIPiutang) {
+            hutang.piutangPersetujuanUbah = true
+        } else if (isIPenghutang) {
+            hutang.penghutangPersetujuanUbah = true
+        }
+
+        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+            override fun onSuccess(message: String?) {
+                mView.showToastView(message)
+            }
+
+            override fun onFailure(message: String?) {
+                mView.showToastView(message)
+            }
+        })
+    }
+
+    override fun requestHutangHapus(hutang: Hutang) {
+        val isIInclude = if (!hutang.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.piutang_penghutang_id, true) else false
+        val isIPenghutang = if (!hutang.penghutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.penghutangId, true) else false
+        val isIPiutang = if (!hutang.piutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.piutangId, true) else false
+        val isIFamily = if (!hutang.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
+        val isDataPenghutang = hutang.hutangRadioIndex == 0
+
+        if (isIPiutang) {
+            hutang.penghutangPersetujuanHapus = false
+        } else if (isIPenghutang) {
+            hutang.piutangPersetujuanHapus = false
+        }
+
+        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+            override fun onSuccess(message: String?) {
+                mView.showToastView(message)
+            }
+
+            override fun onFailure(message: String?) {
+                mView.showToastView(message)
+            }
+        })
+    }
+
+    override fun approveHutangHapus(hutang: Hutang, isDelete: Boolean) {
+        val isIInclude = if (!hutang.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.piutang_penghutang_id, true) else false
+        val isIPenghutang = if (!hutang.penghutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.penghutangId, true) else false
+        val isIPiutang = if (!hutang.piutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.piutangId, true) else false
+        val isIFamily = if (!hutang.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
+        val isDataPenghutang = hutang.hutangRadioIndex == 0
+
+        if (isDelete) {
+            if (isIPiutang) {
+                hutang.piutangPersetujuanHapus = false
+            } else if (isIPenghutang) {
+                hutang.penghutangPersetujuanHapus = false
+            }
+        }else{
+            if (isIPiutang) {
+                hutang.penghutangPersetujuanHapus = true
+            } else if (isIPenghutang) {
+                hutang.piutangPersetujuanHapus = true
+            }
+        }
+
+        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
+            override fun onSuccess(message: String?) {
+                hapusHutang(hutang)
+                mView.showToastView(message)
+            }
+
+            override fun onFailure(message: String?) {
+                mView.showToastView(message)
+            }
+        })
     }
 }

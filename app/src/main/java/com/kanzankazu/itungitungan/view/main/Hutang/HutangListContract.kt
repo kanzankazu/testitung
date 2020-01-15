@@ -12,7 +12,9 @@ interface HutangListContract {
         fun onHutangHapusClick(hutang: Hutang, position: Int)
         fun onHutangFilter(hutangs: MutableList<Hutang>)
         fun onHutangLihatClick(hutang: Hutang)
-        fun onHutangAgreementApproveClick(hutang: Hutang)
+        fun onHutangApproveNewClick(hutang: Hutang)
+        fun onHutangApproveEditClick(hutang: Hutang)
+        fun onHutangApproveDeleteClick(hutang: Hutang)
         fun setAllHutangs(hutangs: ArrayList<Hutang>)
         fun setTotalPiuHutang(hutang: Hutang)
         fun setZeroHutangs()
@@ -22,7 +24,10 @@ interface HutangListContract {
     interface Presenter : BasePresenterContractWOCheckMessage {
         fun getAllHutang()
         fun hapusHutang(hutang: Hutang)
-        fun approveHutang(hutang: Hutang)
+        fun approveHutangNew(hutang: Hutang)
+        fun approveHutangEdit(hutang: Hutang)
+        fun requestHutangHapus(hutang: Hutang)
+        fun approveHutangHapus(hutang: Hutang, isDelete: Boolean)
     }
 
     interface Interactor {

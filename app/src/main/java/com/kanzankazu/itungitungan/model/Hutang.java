@@ -19,8 +19,8 @@ public class Hutang implements Parcelable {
     private String penghutangNama;
     private String penghutangEmail;
     private Boolean penghutangPersetujuanBaru;
-    private Boolean penghutangPersetujuuanUbah;
-    private Boolean penghutangPersetujuuanHapus;
+    private Boolean penghutangPersetujuanUbah;
+    private Boolean penghutangPersetujuanHapus;
     private String piutang_penghutang_id;
 
     private String hutangKeluargaId;
@@ -48,6 +48,52 @@ public class Hutang implements Parcelable {
     private String CreateBy;
     private String UpdateAt;
     private String UpdateBy;
+
+    protected Hutang(Parcel in) {
+        hId = in.readString();
+        hutangRadioIndex = in.readInt();
+        piutangId = in.readString();
+        piutangNama = in.readString();
+        piutangEmail = in.readString();
+        byte tmpPiutangPersetujuanBaru = in.readByte();
+        piutangPersetujuanBaru = tmpPiutangPersetujuanBaru == 0 ? null : tmpPiutangPersetujuanBaru == 1;
+        byte tmpPiutangPersetujuanUbah = in.readByte();
+        piutangPersetujuanUbah = tmpPiutangPersetujuanUbah == 0 ? null : tmpPiutangPersetujuanUbah == 1;
+        byte tmpPiutangPersetujuanHapus = in.readByte();
+        piutangPersetujuanHapus = tmpPiutangPersetujuanHapus == 0 ? null : tmpPiutangPersetujuanHapus == 1;
+        penghutangId = in.readString();
+        penghutangNama = in.readString();
+        penghutangEmail = in.readString();
+        byte tmpPenghutangPersetujuanBaru = in.readByte();
+        penghutangPersetujuanBaru = tmpPenghutangPersetujuanBaru == 0 ? null : tmpPenghutangPersetujuanBaru == 1;
+        byte tmpPenghutangPersetujuanUbah = in.readByte();
+        penghutangPersetujuanUbah = tmpPenghutangPersetujuanUbah == 0 ? null : tmpPenghutangPersetujuanUbah == 1;
+        byte tmpPenghutangPersetujuanHapus = in.readByte();
+        penghutangPersetujuanHapus = tmpPenghutangPersetujuanHapus == 0 ? null : tmpPenghutangPersetujuanHapus == 1;
+        piutang_penghutang_id = in.readString();
+        hutangKeluargaId = in.readString();
+        hutangKeluargaNama = in.readString();
+        hutangNominal = in.readString();
+        hutangKeperluan = in.readString();
+        hutangCatatan = in.readString();
+        hutangPinjam = in.readString();
+        hutangBuktiGambar = in.createStringArrayList();
+        byte tmpHutangIsCicilan = in.readByte();
+        hutangIsCicilan = tmpHutangIsCicilan == 0 ? null : tmpHutangIsCicilan == 1;
+        hutangCicilanBerapaKali = in.readString();
+        hutangCicilanBerapaKaliType = in.readString();
+        hutangCicilanBerapaKaliPosisi = in.readInt();
+        hutangCicilanNominal = in.readString();
+        byte tmpHutangisBayarKapanSaja = in.readByte();
+        hutangisBayarKapanSaja = tmpHutangisBayarKapanSaja == 0 ? null : tmpHutangisBayarKapanSaja == 1;
+        hutangCicilanTanggalAkhir = in.readString();
+        byte tmpIsLunas = in.readByte();
+        isLunas = tmpIsLunas == 0 ? null : tmpIsLunas == 1;
+        CreateAt = in.readString();
+        CreateBy = in.readString();
+        UpdateAt = in.readString();
+        UpdateBy = in.readString();
+    }
 
     public static final Creator<Hutang> CREATOR = new Creator<Hutang>() {
         @Override
@@ -80,8 +126,8 @@ public class Hutang implements Parcelable {
         dest.writeString(penghutangNama);
         dest.writeString(penghutangEmail);
         dest.writeByte((byte) (penghutangPersetujuanBaru == null ? 0 : penghutangPersetujuanBaru ? 1 : 2));
-        dest.writeByte((byte) (penghutangPersetujuuanUbah == null ? 0 : penghutangPersetujuuanUbah ? 1 : 2));
-        dest.writeByte((byte) (penghutangPersetujuuanHapus == null ? 0 : penghutangPersetujuuanHapus ? 1 : 2));
+        dest.writeByte((byte) (penghutangPersetujuanUbah == null ? 0 : penghutangPersetujuanUbah ? 1 : 2));
+        dest.writeByte((byte) (penghutangPersetujuanHapus == null ? 0 : penghutangPersetujuanHapus ? 1 : 2));
         dest.writeString(piutang_penghutang_id);
         dest.writeString(hutangKeluargaId);
         dest.writeString(hutangKeluargaNama);
@@ -105,44 +151,6 @@ public class Hutang implements Parcelable {
     }
 
     public Hutang() {
-    }
-
-    protected Hutang(Parcel in) {
-        hId = in.readString();
-        hutangRadioIndex = in.readInt();
-        piutangId = in.readString();
-        piutangNama = in.readString();
-        piutangEmail = in.readString();
-        byte tmpPiutangPersetujuan = in.readByte();
-        piutangPersetujuanBaru = tmpPiutangPersetujuan == 0 ? null : tmpPiutangPersetujuan == 1;
-        penghutangId = in.readString();
-        penghutangNama = in.readString();
-        penghutangEmail = in.readString();
-        byte tmpPenghutangPersetujuan = in.readByte();
-        penghutangPersetujuanBaru = tmpPenghutangPersetujuan == 0 ? null : tmpPenghutangPersetujuan == 1;
-        piutang_penghutang_id = in.readString();
-        hutangKeluargaId = in.readString();
-        hutangKeluargaNama = in.readString();
-        hutangNominal = in.readString();
-        hutangKeperluan = in.readString();
-        hutangCatatan = in.readString();
-        hutangPinjam = in.readString();
-        hutangBuktiGambar = in.createStringArrayList();
-        byte tmpHutangIsCicilan = in.readByte();
-        hutangIsCicilan = tmpHutangIsCicilan == 0 ? null : tmpHutangIsCicilan == 1;
-        hutangCicilanBerapaKali = in.readString();
-        hutangCicilanBerapaKaliType = in.readString();
-        hutangCicilanBerapaKaliPosisi = in.readInt();
-        hutangCicilanNominal = in.readString();
-        byte tmpHutangisBayarKapanSaja = in.readByte();
-        hutangisBayarKapanSaja = tmpHutangisBayarKapanSaja == 0 ? null : tmpHutangisBayarKapanSaja == 1;
-        hutangCicilanTanggalAkhir = in.readString();
-        byte tmpIsLunas = in.readByte();
-        isLunas = tmpIsLunas == 0 ? null : tmpIsLunas == 1;
-        CreateAt = in.readString();
-        CreateBy = in.readString();
-        UpdateAt = in.readString();
-        UpdateBy = in.readString();
     }
 
     public String gethId() {
@@ -241,20 +249,20 @@ public class Hutang implements Parcelable {
         this.penghutangPersetujuanBaru = penghutangPersetujuanBaru;
     }
 
-    public Boolean getPenghutangPersetujuuanUbah() {
-        return penghutangPersetujuuanUbah;
+    public Boolean getPenghutangPersetujuanUbah() {
+        return penghutangPersetujuanUbah;
     }
 
-    public void setPenghutangPersetujuuanUbah(Boolean penghutangPersetujuuanUbah) {
-        this.penghutangPersetujuuanUbah = penghutangPersetujuuanUbah;
+    public void setPenghutangPersetujuanUbah(Boolean penghutangPersetujuanUbah) {
+        this.penghutangPersetujuanUbah = penghutangPersetujuanUbah;
     }
 
-    public Boolean getPenghutangPersetujuuanHapus() {
-        return penghutangPersetujuuanHapus;
+    public Boolean getPenghutangPersetujuanHapus() {
+        return penghutangPersetujuanHapus;
     }
 
-    public void setPenghutangPersetujuuanHapus(Boolean penghutangPersetujuuanHapus) {
-        this.penghutangPersetujuuanHapus = penghutangPersetujuuanHapus;
+    public void setPenghutangPersetujuanHapus(Boolean penghutangPersetujuanHapus) {
+        this.penghutangPersetujuanHapus = penghutangPersetujuanHapus;
     }
 
     public String getPiutang_penghutang_id() {
