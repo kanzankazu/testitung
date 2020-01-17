@@ -9,20 +9,21 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseActivity
-import kotlinx.android.synthetic.main.activity_hutang_add_edit.*
 import kotlinx.android.synthetic.main.activity_hutang_list.*
 import kotlinx.android.synthetic.main.app_toolbar.*
 import retrofit2.Call
@@ -88,25 +89,25 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     override fun onHutangHapusClick(hutang: Hutang, position: Int) {
         Utils.showIntroductionDialog(
-                this,
-                "",
-                "Konfirmasi",
-                "Apakah anda yakin ingin menghapus data ini?",
-                "Ya",
-                "Tidak",
-                false,
-                -1,
-                object : Utils.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        if (!hutang.piutangId.isNullOrEmpty() && !hutang.penghutangId.isNullOrEmpty()) {
-                            mPresenter.requestHutangHapus(hutang, false)
-                        } else {
-                            mPresenter.hapusHutang(hutang)
-                        }
+            this,
+            "",
+            "Konfirmasi",
+            "Apakah anda yakin ingin menghapus data ini?",
+            "Ya",
+            "Tidak",
+            false,
+            -1,
+            object : Utils.IntroductionButtonListener {
+                override fun onFirstButtonClick() {
+                    if (!hutang.piutangId.isNullOrEmpty() && !hutang.penghutangId.isNullOrEmpty()) {
+                        mPresenter.requestHutangHapus(hutang, false)
+                    } else {
+                        mPresenter.hapusHutang(hutang)
                     }
-
-                    override fun onSecondButtonClick() {}
                 }
+
+                override fun onSecondButtonClick() {}
+            }
         )
     }
 
@@ -235,6 +236,11 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             val popupPromo = AlertDialog.Builder(this)
             popupPromo.setView(dialogView)
 
+            val flHutangDetailDialogImage = dialogView.findViewById<FrameLayout>(R.id.fl_hutang_detail_dialog_image)
+            val pbHutangDetailDialogPiutangPreview = dialogView.findViewById<ProgressBar>(R.id.pb_hutang_detail_dialog_piutang_preview)
+            val ivHutangDetailDialogPiutangPreview = dialogView.findViewById<ImageView>(R.id.iv_hutang_detail_dialog_piutang_preview)
+            val ivHutangDetailDialogPiutangPreviewClose = dialogView.findViewById<ImageView>(R.id.iv_hutang_detail_dialog_piutang_preview_close)
+            val llHutangDetailDialog = dialogView.findViewById<LinearLayout>(R.id.ll_hutang_detail_dialog)
             val tvHutangDetailDialogTitle = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_Title)
             val tvHutangDetailDialogNominal = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_nominal)
             val tvHutangDetailDialogCicilanNominal = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan_nominal)
@@ -322,12 +328,46 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 cvHutangDetailDialogPenghutangImage.visibility = View.GONE
             }
 
+            val imageClickShow = View.OnClickListener {
+                flHutangDetailDialogImage.visibility = View.VISIBLE
+                pbHutangDetailDialogPiutangPreview.visibility = View.VISIBLE
+                llHutangDetailDialog.visibility = View.GONE
+                if (it == ivHutangDetailDialogPenghutang0) {
+
+                } else if (it == ivHutangDetailDialogPenghutang1) {
+                    Glide.with(this)
+                        .load(if (it == ivHutangDetailDialogPenghutang0) hutang.hutangBuktiGambar[0] else hutang.hutangBuktiGambar[1])
+                        .listener(object : RequestListener<String, GlideDrawable> {
+                            override fun onException(e: java.lang.Exception?, model: String?, target: Target<GlideDrawable>?, isFirstResource: Boolean): Boolean {
+                                Log.d("Lihat onException HutangListActivity", e!!.message)
+                                pbHutangDetailDialogPiutangPreview.visibility = View.GONE
+
+                                flHutangDetailDialogImage.visibility = View.GONE
+                                llHutangDetailDialog.visibility = View.VISIBLE
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: GlideDrawable?, model: String?, target: Target<GlideDrawable>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
+                                pbHutangDetailDialogPiutangPreview.visibility = View.GONE
+                                ivHutangDetailDialogPiutangPreview.visibility = View.VISIBLE
+                                return false
+                            }
+                        }).into(ivHutangDetailDialogPiutangPreview)
+                }
+            }
 
             alertDialog = popupPromo.create()
             alertDialog.setCancelable(false)
             alertDialog.setCanceledOnTouchOutside(false)
             alertDialog.show()
 
+            ivHutangDetailDialogPiutangPreviewClose.setOnClickListener {
+                ivHutangDetailDialogPiutangPreview.visibility = View.GONE
+                flHutangDetailDialogImage.visibility = View.GONE
+                llHutangDetailDialog.visibility = View.VISIBLE
+            }
+            ivHutangDetailDialogPenghutang0.setOnClickListener(imageClickShow)
+            ivHutangDetailDialogPenghutang1.setOnClickListener(imageClickShow)
             tvHutangDetailDialogSubmitSetuju.setOnClickListener {
                 alertDialog.dismiss()
                 when {

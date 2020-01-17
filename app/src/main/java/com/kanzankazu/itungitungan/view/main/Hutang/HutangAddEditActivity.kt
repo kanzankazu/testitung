@@ -38,7 +38,7 @@ import java.io.File
 
 class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private var hutang: Hutang = Hutang()
-    private var isBundle: Boolean = false
+    private var isEdit: Boolean = false
     private var pickAccount: Int = -1
     private var positionImage: Int = -1
     private var mCurrentPhotoPath0: String? = ""
@@ -132,7 +132,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private fun setBundle() {
         val extras = intent.extras
         if (extras != null) {
-            isBundle = true
+            isEdit = true
             if (extras.containsKey(Constants.BUNDLE.Hutang)) {
                 hutang = extras.getParcelable(Constants.BUNDLE.Hutang)
                 isIInclude = if (!hutang.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.piutang_penghutang_id, true) else false
@@ -144,7 +144,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             //isFromValuationActivity = extras.getBoolean(Constants.ScreenFlag.IS_FROM_VALUATION_ACTIVITY)
         }
 
-        if (isBundle) {
+        if (isEdit) {
             setBundleData()
             setFamilyData(!isIFamily)
 
@@ -349,7 +349,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             iv_hutang_add_user_clear.visibility = View.GONE
             userInvite = User()
 
-            if (isBundle && hutang.hutangRadioIndex == 0) {
+            if (isEdit && hutang.hutangRadioIndex == 0) {
                 hutang.piutangNama = null
                 hutang.piutangId = null
                 hutang.piutangEmail = null
@@ -363,7 +363,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             et_hutang_add_user_family.setText("")
             iv_hutang_add_family_clear.visibility = View.GONE
 
-            if (isBundle && !hutang.hutangKeluargaId.isNullOrEmpty()) {
+            if (isEdit && !hutang.hutangKeluargaId.isNullOrEmpty()) {
                 hutang.hutangKeluargaId = ""
                 hutang.hutangKeluargaNama = ""
             }
@@ -398,18 +398,18 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     }
 
     private fun removeImage(pos: Int) {
-        if (isBundle) {
+        if (isEdit) {
             if (hutang.hutangBuktiGambar != null) {
                 if (hutang.hutangBuktiGambar[pos].isNotEmpty()) {
                     storageUtil.deleteImage(hutang.hutangBuktiGambar[pos]
-                            , {
-                        removeImagePath(pos)
-                        hutang.hutangBuktiGambar.removeAt(pos)
-                    }
-                            , {
-                        showSnackbar(it.message)
-                        it.stackTrace
-                    })
+                        , {
+                            removeImagePath(pos)
+                            hutang.hutangBuktiGambar.removeAt(pos)
+                        }
+                        , {
+                            showSnackbar(it.message)
+                            it.stackTrace
+                        })
                 } else {
                     showSnackbar("gagal menghapus")
                 }
@@ -577,27 +577,27 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private fun chooseDialogPickImage(activity: Activity, imageView: ImageView?, positionImage: Int) {
         this.positionImage = positionImage
         if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
-            if (isBundle && hutang.hutangBuktiGambar != null) {
+            if (isEdit && hutang.hutangBuktiGambar != null) {
                 Utils.showIntroductionDialog(
-                        this,
-                        "",
-                        "Konfirmasi",
-                        "Anda Akan menghapus semua gambar lama menjadi baru, apakah anda setuju?",
-                        "Iya",
-                        "Tidak",
-                        false,
-                        -1, object : Utils.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        pictureUtil2.chooseGetImageDialog(activity, imageView)
+                    this,
+                    "",
+                    "Konfirmasi",
+                    "Anda Akan menghapus semua gambar lama menjadi baru, apakah anda setuju?",
+                    "Iya",
+                    "Tidak",
+                    false,
+                    -1, object : Utils.IntroductionButtonListener {
+                        override fun onFirstButtonClick() {
+                            pictureUtil2.chooseGetImageDialog(activity, imageView)
 
-                        removeImagePath(0)
-                        removeImagePath(1)
-                        hutang.hutangBuktiGambar.clear()
-                        hutang.hutangBuktiGambar = null
-                    }
+                            removeImagePath(0)
+                            removeImagePath(1)
+                            hutang.hutangBuktiGambar.clear()
+                            hutang.hutangBuktiGambar = null
+                        }
 
-                    override fun onSecondButtonClick() {}
-                })
+                        override fun onSecondButtonClick() {}
+                    })
             } else {
                 pictureUtil2.chooseGetImageDialog(activity, imageView)
             }
@@ -621,6 +621,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         chooseImageDialog.show()
     }
 
+    /***
+     * kanzankazuaskdjadklsjasd
+    */
     private fun saveHutangValidate() {
         if (checkData(true)) {
             if (mPresenter.getRadioGroupIndex(rg_hutang_add_user) == 0) {
@@ -633,11 +636,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.penghutangPersetujuanHapus = true
 
                 hutang.piutangId = userInvite.getuId() ?: ""
-                hutang.piutangNama = userInvite.name ?: et_hutang_add_user.text.toString().trim()
+                hutang.piutangNama = if (userInvite.name != null && userInvite.name.equals(et_hutang_add_user.text.toString().trim(), true)) userInvite.name else et_hutang_add_user.text.toString().trim()
                 hutang.piutangEmail = userInvite.email ?: ""
-                hutang.piutangPersetujuanBaru = hutang.piutangPersetujuanBaru
-                        ?: hutang.piutangId.isNullOrEmpty()
-                hutang.piutangPersetujuanUbah = !isBundle
+                hutang.piutangPersetujuanBaru = hutang.piutangPersetujuanBaru ?: hutang.piutangId.isNullOrEmpty()
+                if (!hutang.piutangId.isNullOrEmpty()) hutang.piutangPersetujuanUbah = !isEdit else hutang.piutangPersetujuanUbah = true
                 hutang.piutangPersetujuanHapus = true
             } else {
                 hutang.hutangRadioIndex = 1
@@ -649,11 +651,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 hutang.piutangPersetujuanHapus = true
 
                 hutang.penghutangId = userInvite.getuId() ?: ""
-                hutang.penghutangNama = userInvite.name ?: et_hutang_add_user.text.toString().trim()
+                hutang.penghutangNama = if (userInvite.name != null && userInvite.name.equals(et_hutang_add_user.text.toString().trim(), true)) userInvite.name else et_hutang_add_user.text.toString().trim()
                 hutang.penghutangEmail = userInvite.email ?: ""
-                hutang.penghutangPersetujuanBaru = hutang.penghutangPersetujuanBaru
-                        ?: hutang.penghutangId.isNullOrEmpty()
-                hutang.penghutangPersetujuanUbah = !isBundle
+                hutang.penghutangPersetujuanBaru = hutang.penghutangPersetujuanBaru ?: hutang.penghutangId.isNullOrEmpty()
+                if (!hutang.penghutangId.isNullOrEmpty()) hutang.penghutangPersetujuanUbah = !isEdit else hutang.penghutangPersetujuanUbah = true
                 hutang.penghutangPersetujuanHapus = true
             }
 
@@ -690,26 +691,26 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 val listUri = PictureUtil2.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
                 storageUtil.uploadImages("Hutang", listUri, object : FirebaseStorageUtil.DoneListener {
                     override fun isFinised(imageDonwloadUrls: ArrayList<String>?) {
-                        if (isBundle && hutang.hutangBuktiGambar != null) {
+                        if (isEdit && hutang.hutangBuktiGambar != null) {
                             if (hutang.hutangBuktiGambar.size > 0) {
                                 storageUtil.deleteImages1(hutang.hutangBuktiGambar,
-                                        object : FirebaseStorageUtil.DoneRemoveListener {
-                                            override fun isFinised() {
-                                                hutang.hutangBuktiGambar = imageDonwloadUrls
-                                                mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
-                                            }
+                                    object : FirebaseStorageUtil.DoneRemoveListener {
+                                        override fun isFinised() {
+                                            hutang.hutangBuktiGambar = imageDonwloadUrls
+                                            mPresenter.saveEditHutang(hutang, databaseUtil, isEdit)
+                                        }
 
-                                            override fun isFailed(message: String?) {
-                                                showSnackbar(message)
-                                            }
-                                        })
+                                        override fun isFailed(message: String?) {
+                                            showSnackbar(message)
+                                        }
+                                    })
                             } else {
                                 hutang.hutangBuktiGambar = imageDonwloadUrls
-                                mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
+                                mPresenter.saveEditHutang(hutang, databaseUtil, isEdit)
                             }
                         } else {
                             hutang.hutangBuktiGambar = imageDonwloadUrls
-                            mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
+                            mPresenter.saveEditHutang(hutang, databaseUtil, isEdit)
                         }
                     }
 
@@ -718,7 +719,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                     }
                 })
             } else {
-                mPresenter.saveEditHutang(hutang, databaseUtil, isBundle)
+                mPresenter.saveEditHutang(hutang, databaseUtil, isEdit)
             }
         } else {
             showSnackbar(getString(R.string.message_validation_failed))

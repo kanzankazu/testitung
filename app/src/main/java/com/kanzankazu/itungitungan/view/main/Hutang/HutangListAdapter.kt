@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Filter
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
+import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
@@ -51,12 +52,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         fun setView(hutang: Hutang, position: Int) {
 
             builder = TextDrawable.builder()
-                    .beginConfig()
-                    .withBorder(4)
-                    .width(80)
-                    .height(80)
-                    .endConfig()
-                    .roundRect(20)
+                .beginConfig()
+                .withBorder(4)
+                .width(80)
+                .height(80)
+                .endConfig()
+                .roundRect(20)
 
             isIInclude = if (!hutang.piutang_penghutang_id.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.piutang_penghutang_id, true) else false
             isIPenghutang = if (!hutang.penghutangId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.penghutangId, true) else false
@@ -94,6 +95,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 itemView.tv_hutang_list_nominal_installment_due_date.text = mActivity.getString(R.string.installment_duedate, hutang.hutangCicilanTanggalAkhir)
             } else {
                 itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.GONE
+            }
+
+            if (hutang.hutangBuktiGambar != null) {
+                itemView.iv_hutang_list_is_image.visibility = View.VISIBLE
+            } else {
+                itemView.iv_hutang_list_is_image.visibility = View.GONE
             }
 
             itemView.iv_item_hutang_list_user.setImageDrawable(textDrawable)
