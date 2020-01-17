@@ -32,7 +32,7 @@ class HutangAddEditAdapter(val mActivity: Activity, val mView: HutangAddEditCont
         fun setView(position: Int) {
             Glide.with(mActivity)
                     .load(File(datas[position]))
-                    .placeholder(R.drawable.ic_profile_picture)
+                    .placeholder(R.drawable.ic_profile)
                     .into(itemView.civ_item_image)
         }
 

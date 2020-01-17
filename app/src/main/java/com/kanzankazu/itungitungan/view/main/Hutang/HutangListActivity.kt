@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
@@ -11,14 +12,17 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseActivity
+import kotlinx.android.synthetic.main.activity_hutang_add_edit.*
 import kotlinx.android.synthetic.main.activity_hutang_list.*
 import kotlinx.android.synthetic.main.app_toolbar.*
 import retrofit2.Call
@@ -84,25 +88,25 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     override fun onHutangHapusClick(hutang: Hutang, position: Int) {
         Utils.showIntroductionDialog(
-            this,
-            "",
-            "Konfirmasi",
-            "Apakah anda yakin ingin menghapus data ini?",
-            "Ya",
-            "Tidak",
-            false,
-            -1,
-            object : Utils.IntroductionButtonListener {
-                override fun onFirstButtonClick() {
-                    if (!hutang.piutangId.isNullOrEmpty() && !hutang.penghutangId.isNullOrEmpty()) {
-                        mPresenter.requestHutangHapus(hutang)
-                    } else {
-                        mPresenter.hapusHutang(hutang)
+                this,
+                "",
+                "Konfirmasi",
+                "Apakah anda yakin ingin menghapus data ini?",
+                "Ya",
+                "Tidak",
+                false,
+                -1,
+                object : Utils.IntroductionButtonListener {
+                    override fun onFirstButtonClick() {
+                        if (!hutang.piutangId.isNullOrEmpty() && !hutang.penghutangId.isNullOrEmpty()) {
+                            mPresenter.requestHutangHapus(hutang, false)
+                        } else {
+                            mPresenter.hapusHutang(hutang)
+                        }
                     }
-                }
 
-                override fun onSecondButtonClick() {}
-            }
+                    override fun onSecondButtonClick() {}
+                }
         )
     }
 
@@ -244,6 +248,9 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             val tvHutangDetailDialogPiutangEmail = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_piutang_email)
             val tvHutangDetailDialogPenghutangName = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_penghutang_name)
             val tvHutangDetailDialogPenghutangEmail = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_penghutang_email)
+            val cvHutangDetailDialogPenghutangImage = dialogView.findViewById<CardView>(R.id.cv_hutang_detail_dialog_piutang_image)
+            val ivHutangDetailDialogPenghutang0 = dialogView.findViewById<ImageView>(R.id.iv_hutang_detail_dialog_piutang_0)
+            val ivHutangDetailDialogPenghutang1 = dialogView.findViewById<ImageView>(R.id.iv_hutang_detail_dialog_piutang_1)
             val tvHutangDetailDialogSubmitTidak = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_tidak)
             val tvHutangDetailDialogSubmitSetuju = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_setuju)
 
@@ -279,6 +286,8 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
                 if (hutang.hutangisBayarKapanSaja != null && !hutang.hutangisBayarKapanSaja) {
                     tvHutangDetailDialogCicilanDuedate.text = hutang.hutangCicilanTanggalAkhir
+                } else if (hutang.hutangisBayarKapanSaja != null && hutang.hutangisBayarKapanSaja) {
+                    tvHutangDetailDialogCicilanDuedate.visibility = View.GONE
                 }
             } else {
                 llHutangDetailDialogCicilan.visibility = View.GONE
@@ -290,6 +299,30 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             tvHutangDetailDialogPenghutangName.text = hutang.penghutangNama
             tvHutangDetailDialogPenghutangEmail.text = hutang.penghutangEmail
 
+            if (hutang.hutangBuktiGambar != null) {
+                cvHutangDetailDialogPenghutangImage.visibility = View.VISIBLE
+                when {
+                    hutang.hutangBuktiGambar.size == 1 -> {
+                        Glide.with(this).load(hutang.hutangBuktiGambar[0]).into(ivHutangDetailDialogPenghutang0)
+                        ivHutangDetailDialogPenghutang0.visibility = View.VISIBLE
+                        ivHutangDetailDialogPenghutang1.visibility = View.GONE
+                    }
+                    hutang.hutangBuktiGambar.size == 2 -> {
+                        ivHutangDetailDialogPenghutang0.visibility = View.VISIBLE
+                        ivHutangDetailDialogPenghutang1.visibility = View.VISIBLE
+                        Glide.with(this).load(hutang.hutangBuktiGambar[0]).into(ivHutangDetailDialogPenghutang0)
+                        Glide.with(this).load(hutang.hutangBuktiGambar[1]).into(ivHutangDetailDialogPenghutang1)
+                    }
+                    else -> {
+                        ivHutangDetailDialogPenghutang0.visibility = View.GONE
+                        ivHutangDetailDialogPenghutang1.visibility = View.GONE
+                    }
+                }
+            } else {
+                cvHutangDetailDialogPenghutangImage.visibility = View.GONE
+            }
+
+
             alertDialog = popupPromo.create()
             alertDialog.setCancelable(false)
             alertDialog.setCanceledOnTouchOutside(false)
@@ -300,15 +333,14 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 when {
                     isApproveNew -> mPresenter.approveHutangNew(hutang)
                     isApproveEdit -> mPresenter.approveHutangEdit(hutang)
-                    isApproveDelete -> mPresenter.approveHutangHapus(hutang, true)
+                    isApproveDelete -> mPresenter.approveHutangHapus(hutang)
                     else -> moveToHutangAdd(hutang)
                 }
             }
             tvHutangDetailDialogSubmitTidak.setOnClickListener {
                 alertDialog.dismiss()
                 when {
-                    isApproveDelete -> mPresenter.approveHutangHapus(hutang, false)
-                    else -> moveToHutangAdd(hutang)
+                    isApproveDelete -> mPresenter.requestHutangHapus(hutang, true)
                 }
             }
         } catch (e: Exception) {

@@ -113,41 +113,41 @@ public class Hutang implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(hId);
-        dest.writeInt(hutangRadioIndex);
-        dest.writeString(piutangId);
-        dest.writeString(piutangNama);
-        dest.writeString(piutangEmail);
-        dest.writeByte((byte) (piutangPersetujuanBaru == null ? 0 : piutangPersetujuanBaru ? 1 : 2));
-        dest.writeByte((byte) (piutangPersetujuanUbah == null ? 0 : piutangPersetujuanUbah ? 1 : 2));
-        dest.writeByte((byte) (piutangPersetujuanHapus == null ? 0 : piutangPersetujuanHapus ? 1 : 2));
-        dest.writeString(penghutangId);
-        dest.writeString(penghutangNama);
-        dest.writeString(penghutangEmail);
-        dest.writeByte((byte) (penghutangPersetujuanBaru == null ? 0 : penghutangPersetujuanBaru ? 1 : 2));
-        dest.writeByte((byte) (penghutangPersetujuanUbah == null ? 0 : penghutangPersetujuanUbah ? 1 : 2));
-        dest.writeByte((byte) (penghutangPersetujuanHapus == null ? 0 : penghutangPersetujuanHapus ? 1 : 2));
-        dest.writeString(piutang_penghutang_id);
-        dest.writeString(hutangKeluargaId);
-        dest.writeString(hutangKeluargaNama);
-        dest.writeString(hutangNominal);
-        dest.writeString(hutangKeperluan);
-        dest.writeString(hutangCatatan);
-        dest.writeString(hutangPinjam);
-        dest.writeStringList(hutangBuktiGambar);
-        dest.writeByte((byte) (hutangIsCicilan == null ? 0 : hutangIsCicilan ? 1 : 2));
-        dest.writeString(hutangCicilanBerapaKali);
-        dest.writeString(hutangCicilanBerapaKaliType);
-        dest.writeInt(hutangCicilanBerapaKaliPosisi);
-        dest.writeString(hutangCicilanNominal);
-        dest.writeByte((byte) (hutangisBayarKapanSaja == null ? 0 : hutangisBayarKapanSaja ? 1 : 2));
-        dest.writeString(hutangCicilanTanggalAkhir);
-        dest.writeByte((byte) (isLunas == null ? 0 : isLunas ? 1 : 2));
-        dest.writeString(CreateAt);
-        dest.writeString(CreateBy);
-        dest.writeString(UpdateAt);
-        dest.writeString(UpdateBy);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(hId);
+        parcel.writeInt(hutangRadioIndex);
+        parcel.writeString(piutangId);
+        parcel.writeString(piutangNama);
+        parcel.writeString(piutangEmail);
+        parcel.writeByte((byte) (piutangPersetujuanBaru == null ? 0 : piutangPersetujuanBaru ? 1 : 2));
+        parcel.writeByte((byte) (piutangPersetujuanUbah == null ? 0 : piutangPersetujuanUbah ? 1 : 2));
+        parcel.writeByte((byte) (piutangPersetujuanHapus == null ? 0 : piutangPersetujuanHapus ? 1 : 2));
+        parcel.writeString(penghutangId);
+        parcel.writeString(penghutangNama);
+        parcel.writeString(penghutangEmail);
+        parcel.writeByte((byte) (penghutangPersetujuanBaru == null ? 0 : penghutangPersetujuanBaru ? 1 : 2));
+        parcel.writeByte((byte) (penghutangPersetujuanUbah == null ? 0 : penghutangPersetujuanUbah ? 1 : 2));
+        parcel.writeByte((byte) (penghutangPersetujuanHapus == null ? 0 : penghutangPersetujuanHapus ? 1 : 2));
+        parcel.writeString(piutang_penghutang_id);
+        parcel.writeString(hutangKeluargaId);
+        parcel.writeString(hutangKeluargaNama);
+        parcel.writeString(hutangNominal);
+        parcel.writeString(hutangKeperluan);
+        parcel.writeString(hutangCatatan);
+        parcel.writeString(hutangPinjam);
+        parcel.writeStringList(hutangBuktiGambar);
+        parcel.writeByte((byte) (hutangIsCicilan == null ? 0 : hutangIsCicilan ? 1 : 2));
+        parcel.writeString(hutangCicilanBerapaKali);
+        parcel.writeString(hutangCicilanBerapaKaliType);
+        parcel.writeInt(hutangCicilanBerapaKaliPosisi);
+        parcel.writeString(hutangCicilanNominal);
+        parcel.writeByte((byte) (hutangisBayarKapanSaja == null ? 0 : hutangisBayarKapanSaja ? 1 : 2));
+        parcel.writeString(hutangCicilanTanggalAkhir);
+        parcel.writeByte((byte) (isLunas == null ? 0 : isLunas ? 1 : 2));
+        parcel.writeString(CreateAt);
+        parcel.writeString(CreateBy);
+        parcel.writeString(UpdateAt);
+        parcel.writeString(UpdateBy);
     }
 
     public Hutang() {

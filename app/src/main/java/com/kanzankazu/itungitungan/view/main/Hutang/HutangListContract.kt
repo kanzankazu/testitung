@@ -26,8 +26,8 @@ interface HutangListContract {
         fun hapusHutang(hutang: Hutang)
         fun approveHutangNew(hutang: Hutang)
         fun approveHutangEdit(hutang: Hutang)
-        fun requestHutangHapus(hutang: Hutang)
-        fun approveHutangHapus(hutang: Hutang, isDelete: Boolean)
+        fun requestHutangHapus(hutang: Hutang, isCancel: Boolean)
+        fun approveHutangHapus(hutang: Hutang)
     }
 
     interface Interactor {

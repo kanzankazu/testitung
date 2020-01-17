@@ -45,7 +45,7 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             if (model.image != 0) {
                 Glide.with(mActivity)
                     .load(model.image)
-                    .placeholder(R.drawable.ic_profile_picture)
+                    .placeholder(R.drawable.ic_profile)
                     .into(itemView.iv_item_home_image)
                 itemView.iv_item_home_image.visibility = View.VISIBLE
             } else {
@@ -55,7 +55,7 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             itemView.tv_item_home_title.text = model.title
 
             if (model.isComingSoon) {
-                itemView.ll_item_home.alpha = 0.5f
+                itemView.ll_item_home.alpha = 0.2f
                 itemView.ll_item_home.isEnabled = false
                 itemView.cv_item_home_comming_soon.visibility = View.VISIBLE
                 itemView.setOnClickListener(null)

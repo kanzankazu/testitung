@@ -76,13 +76,13 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
 
     override fun setProfileOptionList() {
         val profileModels = arrayListOf<ProfileModel>()
-        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.account), true))
-        profileModels.add(ProfileModel(R.drawable.ic_back_black, mActivity.getString(R.string.share_friend_family), true))
-        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.idea), true))
-        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.help), true))
-        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.donate), true))
-        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.give_star), true))
-        profileModels.add(ProfileModel(R.drawable.ic_clear, mActivity.getString(R.string.about), true))
+        profileModels.add(ProfileModel(R.drawable.ic_profile, mActivity.getString(R.string.account), true))
+        profileModels.add(ProfileModel(R.drawable.ic_share, mActivity.getString(R.string.share_friend_family), true))
+        profileModels.add(ProfileModel(R.drawable.ic_idea, mActivity.getString(R.string.idea), true))
+        profileModels.add(ProfileModel(R.drawable.ic_help, mActivity.getString(R.string.help), true))
+        profileModels.add(ProfileModel(R.drawable.ic_donate, mActivity.getString(R.string.donate), true))
+        profileModels.add(ProfileModel(R.drawable.ic_rate_app, mActivity.getString(R.string.give_star), true))
+        profileModels.add(ProfileModel(R.drawable.ic_info, mActivity.getString(R.string.about), true))
         profileListAdapter.setData(profileModels)
     }
 

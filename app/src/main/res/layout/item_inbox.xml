@@ -18,7 +18,7 @@
             android:layout_width="@dimen/padding_margin_40dp"
             android:layout_height="@dimen/padding_margin_50dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_profile_picture" />
+            android:src="@drawable/ic_profile" />
 
     </FrameLayout>
 

@@ -15,13 +15,14 @@
 
     <TextView
         android:id="@+id/tv_item_profile_title"
+        style="@style/TvStandartCenter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/padding_margin_10dp"
         android:layout_weight="1"
-        android:fontFamily="@font/avenir_next_ltpro_demi"
         android:gravity="center_vertical"
-        android:text="@string/account" />
+        android:text="@string/account"
+        android:textColor="@color/colorPrimaryDark" />
 
     <ImageButton
         android:layout_width="wrap_content"

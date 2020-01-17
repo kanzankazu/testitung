@@ -3,7 +3,9 @@ package com.kanzankazu.itungitungan.view.main
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.Utils
@@ -101,12 +103,12 @@ class HomeFragment : BaseFragment(), HomeContract.View {
     private fun setHomeList() {
 
         val homeModels = arrayListOf<HomeModel>()
-        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Anggaran, isShow = true, isComingSoon = true))
-        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Arisan, isShow = true, isComingSoon = true))
-        homeModels.add(HomeModel(R.drawable.ic_edit_profile_photo, Constants.HOME.Banding, isShow = true, isComingSoon = true))
-        homeModels.add(HomeModel(0, Constants.HOME.Hutang, isShow = true, isComingSoon = false))
-        homeModels.add(HomeModel(0, Constants.HOME.Keuangan, isShow = true, isComingSoon = true))
-        homeModels.add(HomeModel(0, Constants.HOME.Stok, isShow = true, isComingSoon = true))
+        homeModels.add(HomeModel(R.drawable.ic_anggaran, Constants.HOME.Anggaran, isShow = true, isComingSoon = true))
+        homeModels.add(HomeModel(R.drawable.ic_arisan, Constants.HOME.Arisan, isShow = true, isComingSoon = true))
+        homeModels.add(HomeModel(R.drawable.ic_best_price, Constants.HOME.Banding, isShow = true, isComingSoon = true))
+        homeModels.add(HomeModel(R.drawable.ic_hutang, Constants.HOME.Hutang, isShow = true, isComingSoon = false))
+        homeModels.add(HomeModel(R.drawable.ic_keuangan, Constants.HOME.Keuangan, isShow = true, isComingSoon = true))
+        homeModels.add(HomeModel(R.drawable.ic_stok, Constants.HOME.Stok, isShow = true, isComingSoon = true))
         homeAdapter.setData(homeModels)
 
     }
