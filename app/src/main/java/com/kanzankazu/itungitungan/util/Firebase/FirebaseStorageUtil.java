@@ -76,7 +76,6 @@ public class FirebaseStorageUtil {
                 progressDialog.show();
 
                 StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-                //StorageReference reference = getRootRef().child(STORAGE_PATH + System.currentTimeMillis() + "." + "jpg" /*PictureUtil2.getFileExtension(mActivity, uri)*/);
                 reference.delete()
                         .addOnSuccessListener(taskSnapshot -> {
                             progressDialog.dismiss();

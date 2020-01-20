@@ -58,11 +58,27 @@
                             tools:text="@tools:sample/full_names" />
 
                         <ImageView
+                            android:id="@+id/iv_hutang_list_is_editable"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_edit"
+                            android:tint="@color/red"
+                            android:visibility="gone" />
+
+                        <ImageView
                             android:id="@+id/iv_hutang_list_is_image"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_photo"
                             android:tint="@color/colorPrimaryDark"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/iv_hutang_list_is_family"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_family"
+                            android:tint="@color/green"
                             android:visibility="gone" />
 
                     </LinearLayout>

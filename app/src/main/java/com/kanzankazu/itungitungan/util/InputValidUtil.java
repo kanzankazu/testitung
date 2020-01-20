@@ -226,12 +226,12 @@ public class InputValidUtil {
         if (isLenghtCharOver(s, minChar)) {
             textInputLayout.setErrorEnabled(false);
 
-            return false;
+            return true;
         } else {
             textInputLayout.setError(errorMessage);
             textInputLayout.setErrorEnabled(true);
 
-            return true;
+            return false;
         }
     }
     public static boolean isLenghtCharOver(EditText editText, int minChar) {

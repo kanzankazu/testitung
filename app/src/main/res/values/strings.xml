@@ -81,7 +81,7 @@
     <string name="hutang_info_undang_penghutang_piutang">* Pastikan piutang/penghutang yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (tekan tombol tambah sebelah kanan)</string>
     <string name="hutang_info_undang_keluarga">* Pastikan keluarga yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (masukkan Nama / Email undangan)</string>
 
-    <!--Hutang-->
+    <!--HUTANG-->
 
 
 </resources>

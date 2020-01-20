@@ -51,12 +51,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         fun setView(hutang: Hutang, position: Int) {
 
             builder = TextDrawable.builder()
-                    .beginConfig()
-                    .withBorder(4)
-                    .width(80)
-                    .height(80)
-                    .endConfig()
-                    .roundRect(20)
+                .beginConfig()
+                .withBorder(4)
+                .width(80)
+                .height(80)
+                .endConfig()
+                .roundRect(20)
 
             isIInclude = if (!hutang.debtorCreditorId.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
             isIPenghutang = if (!hutang.debtorId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
@@ -100,6 +100,18 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 itemView.iv_hutang_list_is_image.visibility = View.VISIBLE
             } else {
                 itemView.iv_hutang_list_is_image.visibility = View.GONE
+            }
+
+            if (hutang.hutangEditableis) {
+                itemView.iv_hutang_list_is_editable.visibility = View.GONE
+            } else {
+                itemView.iv_hutang_list_is_editable.visibility = View.VISIBLE
+            }
+
+            if (isIFamily) {
+                itemView.iv_hutang_list_is_family.visibility = View.VISIBLE
+            } else {
+                itemView.iv_hutang_list_is_family.visibility = View.GONE
             }
 
             itemView.iv_item_hutang_list_user.setImageDrawable(textDrawable)
@@ -259,20 +271,27 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
 
         fun setNormalOnClickListener(hutang: Hutang) {
             val strings: Array<String> =
-                    if (isIFamily && hutang.statusEditable) {
-                        arrayOf("Ubah", "Lihat")
-                    } else if (isIFamily && !hutang.statusEditable) {
-                        arrayOf("Lihat", "Bayar", "Hapus")
-                    } else if (!isIFamily && hutang.statusEditable) {
-                        arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
-                    } else if (!isIFamily && !hutang.statusEditable) {
-                        arrayOf("Lihat", "Bayar", "Hapus")
-                    } else {
-                        arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
-                    }
+                if (isIFamily && hutang.hutangEditableis) {
+                    arrayOf("Detail", "Lihat")
+                } else if (isIFamily && !hutang.hutangEditableis) {
+                    arrayOf("Lihat")
+                } else if (!isIFamily && hutang.hutangEditableis && isIPenghutang) {
+                    arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
+                } else if (!isIFamily && !hutang.hutangEditableis && isIPenghutang) {
+                    arrayOf("Lihat", "Bayar", "Hapus")
+                } else if (!isIFamily && hutang.hutangEditableis && isIPiutang) {
+                    arrayOf("Ubah", "Lihat", "Hapus")
+                } else if (!isIFamily && !hutang.hutangEditableis && isIPiutang) {
+                    arrayOf("Lihat", "Hapus")
+                } else {
+                    arrayOf("Lihat")
+                }
             Utils.listDialog(mActivity, strings) { _, which ->
                 when (strings[which]) {
                     "Ubah" -> {
+                        mView.onHutangUbahClick(hutang)
+                    }
+                    "Detail" -> {
                         mView.onHutangUbahClick(hutang)
                     }
                     "Lihat" -> {

@@ -249,14 +249,6 @@
             </android.support.design.widget.TextInputLayout>
 
             <Switch
-                android:id="@+id/sw_hutang_add_editable"
-                style="@style/TvStandart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_margin_5dp"
-                android:checked="false"
-                android:text="Apakah Data ini bisa di ubah ?" />
-            <Switch
                 android:id="@+id/sw_hutang_add_installment"
                 style="@style/TvStandart"
                 android:layout_width="match_parent"
@@ -353,10 +345,10 @@
 
             </LinearLayout>
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_20dp"
                 android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
@@ -438,8 +430,17 @@
                     </FrameLayout>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
+            <Switch
+                android:id="@+id/sw_hutang_add_editable"
+                style="@style/TvStandart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
+                android:checked="true"
+                android:text="Apakah Data ini bisa di ubah ?" />
+
+        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 

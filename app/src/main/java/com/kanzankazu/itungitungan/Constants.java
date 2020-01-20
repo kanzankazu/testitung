@@ -29,27 +29,18 @@ public class Constants {
         String GUEST = "GUEST";
     }
 
+    public interface Bundle {
+        String HUTANG = "hutang";
+    }
+
     public interface FirebaseRemoteConfig {
         String IS_MAINTENANCE = "is_maintenance";
         String CURRENT_VERSION = "current_version";
         String MIN_VERSION = "min_version";
-        String TEST_AB = "test_ab";
-        String WELCOME_MESSAGE = "welcome_message";
-        String IS_LOAN = "show_loan";
-        String IS_INSPECTION = "show_inspection";
-        String IS_BUY = "show_buy";
-        String IS_SELL = "show_sell";
+
     }
 
-    public interface BUNDLE {
-        String Hutang = "hutang";
-        String HutangApprove = "HutangApprove";
-    }
-
-    public interface EXTRA {
-    }
-
-    public interface DATABASE_FIREBASE {
+    public interface FirebaseDatabase {
         interface TABLE {
             String USER = "user";
             String HUTANG = "hutang";
@@ -69,12 +60,12 @@ public class Constants {
         String Anggaran = "Anggaran";
         String Arisan = "Arisan";
         String Banding = "Banding harga";
-        String Hutang = "Hutang";
+        String Hutang = "HUTANG";
         String Keuangan = "Keuangan";
         String Stok = "Stok Barang";
     }
 
-    public static interface Installment {
+    public interface Installment {
         String Year = "Tahun";
         String Month = "Bulan";
         String Day = "Hari";

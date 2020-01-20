@@ -119,7 +119,7 @@ public class MyApplication extends MultiDexApplication {
     }
 
     /**
-     * DATABASE_FIREBASE ANALYTICS
+     * FirebaseDatabase ANALYTICS
      */
     public FirebaseAnalytics getmFirebaseAnalytics() {
         return mFirebaseAnalytics;

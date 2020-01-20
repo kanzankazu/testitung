@@ -42,7 +42,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hutang_list)
 
-        Utils.setupAppToolbarForActivity(this, toolbar, "Hutang")
+        Utils.setupAppToolbarForActivity(this, toolbar, "HUTANG")
 
         setView()
         setListener()
@@ -85,7 +85,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     override fun onHutangBayarClick(hutang: Hutang) {
         val intent = Intent(this, HutangPayActivity::class.java)
-        intent.putExtra(Constants.BUNDLE.Hutang, hutang)
+        intent.putExtra(Constants.Bundle.HUTANG, hutang)
         startActivity(intent)
     }
 
@@ -223,7 +223,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private fun moveToHutangAdd(hutang: Hutang) {
         val intent = Intent(this, HutangAddEditActivity::class.java)
-        intent.putExtra(Constants.BUNDLE.Hutang, hutang)
+        intent.putExtra(Constants.Bundle.HUTANG, hutang)
         startActivity(intent)
     }
 
@@ -263,25 +263,25 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
             when {
                 isApproveNew -> {
-                    tvHutangDetailDialogTitle.text = "Persetujuan Hutang Piutang Baru"
+                    tvHutangDetailDialogTitle.text = "Persetujuan HUTANG Piutang Baru"
                     tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
                     tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
                 }
                 isApproveEdit -> {
-                    tvHutangDetailDialogTitle.text = "Persetujuan Hutang Piutang Ubah"
+                    tvHutangDetailDialogTitle.text = "Persetujuan HUTANG Piutang Ubah"
                     tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
                     tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
                 }
                 isApproveDelete -> {
-                    tvHutangDetailDialogTitle.text = "Persetujuan Hutang Piutang Hapus"
+                    tvHutangDetailDialogTitle.text = "Persetujuan HUTANG Piutang Hapus"
                     tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
                     tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
                 }
                 else -> {
-                    tvHutangDetailDialogTitle.text = "Detail Hutang Piutang"
+                    tvHutangDetailDialogTitle.text = "Detail HUTANG Piutang"
                     tvHutangDetailDialogSubmitTidak.text = "TUTUP"
                     tvHutangDetailDialogSubmitSetuju.text = "DETAIL"
-                    if (!hutang.statusEditable) {
+                    if (!hutang.hutangEditableis) {
                         tvHutangDetailDialogSubmitSetuju.isClickable = false
                         tvHutangDetailDialogSubmitSetuju.isEnabled = false
                     }
@@ -290,14 +290,14 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
             tvHutangDetailDialogNominal.text = Utils.setRupiah(hutang.hutangNominal)
             tvHutangDetailDialogPinjamDate.text = hutang.hutangPinjam
-            if (hutang.hutangCicilanIs != null && hutang.hutangCicilanIs) {
+            if (hutang.hutangCicilanIs) {
                 llHutangDetailDialogCicilan.visibility = View.VISIBLE
                 tvHutangDetailDialogCicilanNominal.text = Utils.setRupiah(hutang.hutangCicilanNominal)
                 tvHutangDetailDialogCicilan.text = getString(R.string.installment_count, hutang.hutangCicilanBerapaKali, hutang.hutangCicilanBerapaKaliType)
 
-                if (hutang.hutangCicilanIsBayarKapanSaja != null && !hutang.hutangCicilanIsBayarKapanSaja) {
+                if (!hutang.hutangCicilanIsBayarKapanSaja) {
                     tvHutangDetailDialogCicilanDuedate.text = hutang.hutangCicilanTanggalAkhir
-                } else if (hutang.hutangCicilanIsBayarKapanSaja != null && hutang.hutangCicilanIsBayarKapanSaja) {
+                } else if (hutang.hutangCicilanIsBayarKapanSaja) {
                     tvHutangDetailDialogCicilanDuedate.visibility = View.GONE
                 }
             } else {

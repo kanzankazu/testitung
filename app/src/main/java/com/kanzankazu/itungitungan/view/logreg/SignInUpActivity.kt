@@ -172,7 +172,7 @@ class SignInUpActivity :
         showSnackbar(getString(R.string.message_email_sent_failed))
     }
 
-    /*DATABASE_FIREBASE*/
+    /*FirebaseDatabase*/
     override fun onSuccess(message: String) {
         dismissProgressDialog()
         if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser)) {

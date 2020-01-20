@@ -25,8 +25,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
      * User
      */
     public static void isExistUser(User user, ValueListenerTrueFalse listenerData) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
-                .orderByChild(Constants.DATABASE_FIREBASE.ROW.UID)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
+                .orderByChild(Constants.FirebaseDatabase.ROW.UID)
                 .equalTo(user.getUId())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -43,8 +43,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void isExistEmail(String email, ValueListenerTrueFalse listenerTrueFalse) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
-                .orderByChild(Constants.DATABASE_FIREBASE.ROW.EMAIL)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
+                .orderByChild(Constants.FirebaseDatabase.ROW.EMAIL)
                 .equalTo(email)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -61,8 +61,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void isExistPhone(String phone, ValueListenerTrueFalse listenerData) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
-                .orderByChild(Constants.DATABASE_FIREBASE.ROW.PHONE)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
+                .orderByChild(Constants.FirebaseDatabase.ROW.PHONE)
                 .equalTo(phone)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -79,8 +79,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void isExistPhone(String phone, ValueListenerData listenerData) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
-                .orderByChild(Constants.DATABASE_FIREBASE.ROW.PHONE)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
+                .orderByChild(Constants.FirebaseDatabase.ROW.PHONE)
                 .equalTo(phone)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -97,10 +97,10 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void setUser(Activity mActivity, User user, ValueListenerString listenerString) {
-        String primaryKey = getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER).push().getKey();
+        String primaryKey = getRootRef().child(Constants.FirebaseDatabase.TABLE.USER).push().getKey();
         user.setKey(primaryKey);
 
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(user.getUId())
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> {
@@ -117,7 +117,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     private static void setUserLogout(Activity mActivity, User user, ValueListenerString listenerString) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(user.getUId())
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> {
@@ -128,7 +128,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void updateUser(Activity mActivity, User user, ValueListenerString listenerString) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(user.getUId())
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_update_success)))
@@ -136,7 +136,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void removeUser(Activity mActivity, String uid, ValueListenerString listenerString) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(uid)
                 .removeValue()
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_delete_success)))
@@ -163,7 +163,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void getUserByUid(String uId, ValueListenerDataTrueFalse listenerData) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(uId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -180,8 +180,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void getUserByEmail(Activity activity, String email, ValueListenerObject listenerData) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
-                .orderByChild(Constants.DATABASE_FIREBASE.ROW.EMAIL)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
+                .orderByChild(Constants.FirebaseDatabase.ROW.EMAIL)
                 .equalTo(email)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -216,8 +216,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void getUserByPhone(Activity activity, String phone, ValueListenerObject listenerData) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
-                .orderByChild(Constants.DATABASE_FIREBASE.ROW.PHONE)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
+                .orderByChild(Constants.FirebaseDatabase.ROW.PHONE)
                 .equalTo(phone)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -253,7 +253,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     public static void getUsers(Boolean isSingleCall, ValueListenerData listenerData) {
         if (isSingleCall) {
-            getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -273,7 +273,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         }
                     });
         } else {
-            getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -297,7 +297,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     public static void getUsers(Boolean isSingleCall, int limit, ValueListenerData listenerData) {
         if (isSingleCall) {
-            getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                     .limitToFirst(limit)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -318,7 +318,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         }
                     });
         } else {
-            getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -341,9 +341,9 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void setFCMTokenUser(String uid, String fcmToken, ValueListenerString listenerString) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(uid)
-                .child(Constants.DATABASE_FIREBASE.ROW.TOKEN_FCM)
+                .child(Constants.FirebaseDatabase.ROW.TOKEN_FCM)
                 .setValue(fcmToken)
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess("FCM data berhasil disimpan"))
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
@@ -385,20 +385,20 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void setPhoneNumberUser(String uid, String phone, ValueListenerString listenerString) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(uid)
-                .child(Constants.DATABASE_FIREBASE.ROW.PHONE)
+                .child(Constants.FirebaseDatabase.ROW.PHONE)
                 .setValue(phone)
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess("No Hp data berhasil disimpan"))
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
     }
 
     /**
-     * Hutang
+     * HUTANG
      */
     public static void isExistHutang(Hutang hutang, ValueListenerData listenerData) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
-                .orderByChild(Constants.DATABASE_FIREBASE.ROW.HID)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
+                .orderByChild(Constants.FirebaseDatabase.ROW.HID)
                 .equalTo(hutang.getHId())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -414,13 +414,13 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void setHutang(Activity mActivity, Hutang hutang, ValueListenerString listenerString) {
-        String primaryKey = getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG).push().getKey();
+        String primaryKey = getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG).push().getKey();
         hutang.setHId(primaryKey);
 
         hutang.setCreateAt(DateTimeUtil.getCurrentDate().toString());
         hutang.setCreateBy(UserPreference.getInstance().getUid());
 
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                 .child(hutang.getHId())
                 .setValue(hutang)
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_save_success)))
@@ -432,7 +432,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         hutang.setUpdateAt(DateTimeUtil.getCurrentDate().toString());
         hutang.setUpdateBy(UserPreference.getInstance().getUid());
 
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                 .child(hutang.getHId())
                 .setValue(hutang)
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_update_success)))
@@ -440,7 +440,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void removeHutang(Activity mActivity, String hid, ValueListenerString listenerString) {
-        getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                 .child(hid)
                 .removeValue()
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_delete_success)))
@@ -449,7 +449,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     public static void getHutang(String uId, Boolean isSingleCall, ValueListenerData listenerData) {
         if (isSingleCall) {
-            getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                     .child(uId)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -463,7 +463,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         }
                     });
         } else {
-            getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                     .child(uId)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
@@ -481,13 +481,13 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     public static void getHutangs(Boolean isSingleCall, ValueListenerData listenerData) {
         if (isSingleCall) {
-            getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             List<Hutang> hutangs = new ArrayList<>();
                             /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                Hutang hutang = snapshot.getValue(Hutang.class);
+                                HUTANG hutang = snapshot.getValue(HUTANG.class);
                                 hutangs.add(hutang);
                             }*/
 
@@ -500,13 +500,13 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         }
                     });
         } else {
-            getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             List<Hutang> hutangs = new ArrayList<>();
                             /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                Hutang hutang = snapshot.getValue(Hutang.class);
+                                HUTANG hutang = snapshot.getValue(HUTANG.class);
                                 hutangs.add(hutang);
                             }*/
 

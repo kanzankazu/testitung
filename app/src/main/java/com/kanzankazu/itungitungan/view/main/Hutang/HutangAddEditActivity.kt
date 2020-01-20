@@ -133,8 +133,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         val bundle = intent.extras
         if (bundle != null) {
             isEdit = true
-            if (bundle.containsKey(Constants.BUNDLE.Hutang)) {
-                hutang = bundle.getParcelable(Constants.BUNDLE.Hutang)
+            if (bundle.containsKey(Constants.Bundle.HUTANG)) {
+                hutang = bundle.getParcelable(Constants.Bundle.HUTANG)
                 isIInclude = if (hutang.debtorCreditorId.isNotEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
                 isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
                 isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
@@ -148,9 +148,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             setBundleData()
             setFamilyData(!isIFamily)
 
-            Utils.setupAppToolbarForActivity(this, toolbar, "Ubah Hutang Piutang")
+            Utils.setupAppToolbarForActivity(this, toolbar, "Ubah HUTANG Piutang")
         } else {
-            Utils.setupAppToolbarForActivity(this, toolbar, "Tambah Hutang Piutang")
+            Utils.setupAppToolbarForActivity(this, toolbar, "Tambah HUTANG Piutang")
         }
 
     }
@@ -163,10 +163,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 userInvite.uId = ""
                 userInvite.email = ""
             } else {
-                val user = User()
-                user.uId = hutang.creditorId
-                user.name = hutang.creditorName
-                user.email = hutang.creditorEmail
+                val user = User().apply {
+                    uId = hutang.creditorId
+                    name = hutang.creditorName
+                    email = hutang.creditorEmail
+                }
                 setCheckSuggestUsers(user)
             }
         } else {
@@ -194,7 +195,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             et_hutang_add_user_family.setText(hutang.hutangKeluargaNama)
         }
 
-        sw_hutang_add_editable.isChecked = hutang.statusEditable
+        sw_hutang_add_editable.isChecked = hutang.hutangEditableis
 
         Handler().postDelayed({
             mPresenter.setRadioGroupIndex(rg_hutang_add_user, hutang.hutangRadioIndex).isChecked = true
@@ -692,7 +693,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             hutang.hutangCatatan = et_hutang_add_note.text.toString().trim()
             hutang.hutangPinjam = et_hutang_add_date.text.toString().trim()
 
-            hutang.statusEditable = sw_hutang_add_editable.isChecked
+            hutang.hutangEditableis = sw_hutang_add_editable.isChecked
             hutang.hutangCicilanIs = sw_hutang_add_installment.isChecked
             if (hutang.hutangCicilanIs) {
                 hutang.hutangCicilanBerapaKali = et_hutang_add_installment_count.text.toString().trim()
@@ -713,7 +714,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
             if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
                 val listUri = PictureUtil2.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
-                FirebaseStorageUtil.uploadImages(this@HutangAddEditActivity, "Hutang", listUri, object : FirebaseStorageUtil.DoneListener {
+                FirebaseStorageUtil.uploadImages(this@HutangAddEditActivity, "HUTANG", listUri, object : FirebaseStorageUtil.DoneListener {
                     override fun isFinised(imageDonwloadUrls: ArrayList<String>?) {
                         if (isEdit && hutang.hutangBuktiGambar != null) {
                             if (hutang.hutangBuktiGambar!!.size > 0) {
