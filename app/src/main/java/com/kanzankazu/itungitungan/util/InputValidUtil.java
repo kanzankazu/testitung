@@ -221,12 +221,25 @@ public class InputValidUtil {
         }
     }
 
-    public static boolean isLenghtChar(EditText editText, int minChar) {
+    public static boolean isLenghtCharOver(final String errorMessage,TextInputLayout textInputLayout, EditText editText, int minChar) {
         String s = editText.getText().toString().trim();
-        return isLenghtChar(s, minChar);
+        if (isLenghtCharOver(s, minChar)) {
+            textInputLayout.setErrorEnabled(false);
+
+            return false;
+        } else {
+            textInputLayout.setError(errorMessage);
+            textInputLayout.setErrorEnabled(true);
+
+            return true;
+        }
+    }
+    public static boolean isLenghtCharOver(EditText editText, int minChar) {
+        String s = editText.getText().toString().trim();
+        return isLenghtCharOver(s, minChar);
     }
 
-    public static boolean isLenghtChar(String stringValue, int minChar) {
+    public static boolean isLenghtCharOver(String stringValue, int minChar) {
         return stringValue.length() >= minChar;
     }
 

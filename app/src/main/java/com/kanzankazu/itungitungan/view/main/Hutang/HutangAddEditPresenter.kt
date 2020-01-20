@@ -16,7 +16,7 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
 
     override fun onNoConnection(call: Call<*>?) {}
 
-    override fun saveEditHutang(hutang: Hutang, databaseUtil: FirebaseDatabaseUtil, isEdit: Boolean) {
+    override fun saveEditHutang(hutang: Hutang, isEdit: Boolean) {
         mView.showProgressDialogView()
         if (!isEdit) {
             FirebaseDatabaseHandler.setHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {

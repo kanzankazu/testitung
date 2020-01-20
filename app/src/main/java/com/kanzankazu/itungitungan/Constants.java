@@ -1,10 +1,5 @@
 package com.kanzankazu.itungitungan;
 
-import android.Manifest;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 public class Constants {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -66,7 +61,7 @@ public class Constants {
             String PHONE = "phone";
             String UID = "uid";
             String HID = "hid";
-            String PIUHUTANGID = "piutang_penghutang_id";
+            String PIUHUTANGID = "debtorCreditorId";
         }
     }
 

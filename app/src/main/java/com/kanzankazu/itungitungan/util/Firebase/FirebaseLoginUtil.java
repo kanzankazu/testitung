@@ -34,7 +34,6 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
     public Activity mActivity;
     public FirebaseAuth mAuth;
     public FirebaseLoginListener mListener;
-    public FirebaseDatabaseUtil databaseUtil;
 
     public FirebaseLoginUtil(Activity mActivity, FirebaseLoginUtil.FirebaseLoginListener mListener) {
         this.mActivity = mActivity;
@@ -42,7 +41,6 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        databaseUtil = new FirebaseDatabaseUtil();
     }
 
     public boolean isSignIn() {

@@ -192,4 +192,14 @@
         <item name="android:lineSpacingExtra">@dimen/padding_margin_5dp</item>
     </style>
 
+    <!--Animate-->
+    <style name="PauseDialog">
+        <item name="android:windowAnimationStyle">@style/PauseDialogAnimation</item>
+    </style>
+
+    <style name="PauseDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/masuk_dari_kanan_ke_kiri</item>
+        <item name="android:windowExitAnimation">@anim/keluar_ke_kiri</item>
+    </style>
+
 </resources>

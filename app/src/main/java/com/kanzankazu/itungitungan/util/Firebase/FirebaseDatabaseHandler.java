@@ -3,7 +3,6 @@ package com.kanzankazu.itungitungan.util.Firebase;
 import android.app.Activity;
 import android.util.Log;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -28,7 +27,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     public static void isExistUser(User user, ValueListenerTrueFalse listenerData) {
         getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
                 .orderByChild(Constants.DATABASE_FIREBASE.ROW.UID)
-                .equalTo(user.getuId())
+                .equalTo(user.getUId())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -102,11 +101,11 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         user.setKey(primaryKey);
 
         getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
-                .child(user.getuId())
+                .child(user.getUId())
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> {
                     listenerString.onSuccess(mActivity.getString(R.string.message_database_save_success));
-                    UserPreference.getInstance().setUid(user.getuId());
+                    UserPreference.getInstance().setUid(user.getUId());
                     UserPreference.getInstance().setEmail(user.getEmail());
                     UserPreference.getInstance().setName(user.getName());
                     UserPreference.getInstance().setIsLogin(true);
@@ -119,7 +118,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     private static void setUserLogout(Activity mActivity, User user, ValueListenerString listenerString) {
         getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
-                .child(user.getuId())
+                .child(user.getUId())
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> {
                     listenerString.onSuccess(mActivity.getString(R.string.message_database_save_success));
@@ -130,7 +129,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     public static void updateUser(Activity mActivity, User user, ValueListenerString listenerString) {
         getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.USER)
-                .child(user.getuId())
+                .child(user.getUId())
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_update_success)))
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
@@ -201,7 +200,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                             }
 
                             User user = users.get(0);
-                            if (user.getuId().equalsIgnoreCase(UserPreference.getInstance().getUid())) {
+                            if (user.getUId().equalsIgnoreCase(UserPreference.getInstance().getUid())) {
                                 listenerData.onFailure(activity.getString(R.string.message_its_you));
                             } else {
                                 listenerData.onSuccess(user);
@@ -237,7 +236,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                             }
 
                             User user = users.get(0);
-                            if (user.getuId().equalsIgnoreCase(UserPreference.getInstance().getUid())) {
+                            if (user.getUId().equalsIgnoreCase(UserPreference.getInstance().getUid())) {
                                 listenerData.onFailure(activity.getString(R.string.message_its_you));
                             } else {
                                 listenerData.onSuccess(user);
@@ -400,7 +399,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     public static void isExistHutang(Hutang hutang, ValueListenerData listenerData) {
         getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
                 .orderByChild(Constants.DATABASE_FIREBASE.ROW.HID)
-                .equalTo(hutang.gethId())
+                .equalTo(hutang.getHId())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -416,13 +415,13 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     public static void setHutang(Activity mActivity, Hutang hutang, ValueListenerString listenerString) {
         String primaryKey = getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG).push().getKey();
-        hutang.sethId(primaryKey);
+        hutang.setHId(primaryKey);
 
         hutang.setCreateAt(DateTimeUtil.getCurrentDate().toString());
         hutang.setCreateBy(UserPreference.getInstance().getUid());
 
         getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
-                .child(hutang.gethId())
+                .child(hutang.getHId())
                 .setValue(hutang)
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_save_success)))
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
@@ -434,7 +433,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         hutang.setUpdateBy(UserPreference.getInstance().getUid());
 
         getRootRef().child(Constants.DATABASE_FIREBASE.TABLE.HUTANG)
-                .child(hutang.gethId())
+                .child(hutang.getHId())
                 .setValue(hutang)
                 .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_update_success)))
                 .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));

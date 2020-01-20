@@ -141,11 +141,6 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
             showProgressDialog()
             loginUtil.signOut(true)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            sv_profile_settings.setOnScrollChangeListener { _, _, _, _, _ ->
-                fl_profile_header.isSelected = sv_profile_settings.canScrollVertically(-1)
-            }
-        }
     }
 
     private fun setProfileData() {

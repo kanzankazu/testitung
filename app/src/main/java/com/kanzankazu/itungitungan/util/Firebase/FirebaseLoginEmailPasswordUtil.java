@@ -7,7 +7,6 @@ import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.BuildConfig;
-import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.model.User;
 
 public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil implements FirebaseConnectionUtil.FirebaseConnectionListener {
@@ -24,7 +23,13 @@ public class FirebaseLoginEmailPasswordUtil extends FirebaseLoginUtil implements
                 .addOnCompleteListener(mActivity, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        mListenerEmailPass.uiSignUpSuccess(new User(firebaseUser));
+
+                        User user = new User();
+                        user.setUId(firebaseUser.getUid());
+                        user.setName(firebaseUser.getDisplayName());
+                        user.setEmail(firebaseUser.getEmail());
+
+                        mListenerEmailPass.uiSignUpSuccess(user);
                     } else {
                         mListenerEmailPass.uiSignUpFailed(task.getException().getMessage());
                     }

@@ -178,15 +178,17 @@ dependencies {
 
     /*USED*/
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    implementation 'com.github.ajithvgiri:search-dialog:v1.2'
-    implementation 'net.soulwolf.widget:materialRadio:1.0.1'
-    implementation 'com.hbb20:ccp:2.1.2'
-    implementation 'id.zelory:compressor:2.1.0'
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
-    implementation 'com.mindorks.android:prdownloader:0.4.0'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
-    implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation 'com.github.ajithvgiri:search-dialog:v1.2'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    implementation 'com.hbb20:ccp:2.1.2'
+    implementation 'com.mindorks.android:prdownloader:0.4.0'
+    implementation 'com.soundcloud.android:android-crop:1.0.1@aar'
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'net.soulwolf.widget:materialRadio:1.0.1'
 
     /*UNUSED*/
     implementation 'us.belka:androidtoggleswitch:1.2.2'

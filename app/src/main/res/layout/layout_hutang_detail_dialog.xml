@@ -12,22 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:animateLayoutChanges="true"
         android:orientation="vertical"
         android:visibility="gone">
 
-        <ProgressBar
-            android:id="@+id/pb_hutang_detail_dialog_piutang_preview"
-            android:layout_width="match_parent"
-            android:visibility="visible"
-            android:layout_height="@dimen/padding_margin_100dp"
-            android:layout_marginTop="@dimen/padding_margin_40dp"/>
-
-        <ImageView
+        <android.support.v4.view.ViewPager
             android:id="@+id/iv_hutang_detail_dialog_piutang_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerInside"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:src="@tools:sample/backgrounds/scenic" />
 
         <ImageView

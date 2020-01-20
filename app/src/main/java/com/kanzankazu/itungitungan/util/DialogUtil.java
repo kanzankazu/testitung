@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.support.annotation.AnimatorRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
@@ -65,7 +67,7 @@ public class DialogUtil {
     android:drawableRight="@null"
     android:ellipsize="marquee" />
     * */
-    private AlertDialog setupRadioAlertDialog(Activity activity, String title, CharSequence[] radioButtonData, int checkedIndex, int identifier, String mode, DialogRadioListener listener) {
+    public static AlertDialog setupRadioAlertDialog(Activity activity, String title, CharSequence[] radioButtonData, int checkedIndex, int identifier, String mode, dialogRadioListener listener) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
 
         TextView titleTv = new TextView(activity);
@@ -88,7 +90,28 @@ public class DialogUtil {
         return dialogBuilder.create();
     }
 
-    public static CharSequence[] convertListStrinToCharSequenceArray(List<String> list){
+    public static void setupCustomAlertDialog(Activity activity, @LayoutRes int layout, @AnimatorRes int anim, Boolean isCancelable, dialogCustomListener listener) {
+        View dialogView = activity.getLayoutInflater().inflate(layout, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setView(dialogView);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCancelable(isCancelable);
+        alertDialog.setCanceledOnTouchOutside(isCancelable);
+
+        if (anim != 0) {
+            if (alertDialog.getWindow() != null) {
+                alertDialog.getWindow().getAttributes().windowAnimations = R.style.PauseDialogAnimation;
+            }
+        }
+
+        listener.customDialogContent(dialogView, alertDialog);
+
+        alertDialog.show();
+
+    }
+
+    public static CharSequence[] convertListStrinToCharSequenceArray(List<String> list) {
         return list.toArray(new CharSequence[list.size()]);
     }
 
@@ -100,7 +123,11 @@ public class DialogUtil {
         void onClickButton();
     }
 
-    public interface DialogRadioListener {
+    public interface dialogRadioListener {
         void onRadioButtonClick(int index, int identifier, String mode);
+    }
+
+    public interface dialogCustomListener {
+        void customDialogContent(View view, AlertDialog mAlertDialog);
     }
 }

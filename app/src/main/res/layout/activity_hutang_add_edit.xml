@@ -249,6 +249,14 @@
             </android.support.design.widget.TextInputLayout>
 
             <Switch
+                android:id="@+id/sw_hutang_add_editable"
+                style="@style/TvStandart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
+                android:checked="false"
+                android:text="Apakah Data ini bisa di ubah ?" />
+            <Switch
                 android:id="@+id/sw_hutang_add_installment"
                 style="@style/TvStandart"
                 android:layout_width="match_parent"

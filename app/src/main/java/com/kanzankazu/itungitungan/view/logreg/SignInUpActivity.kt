@@ -32,12 +32,12 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * Created by Faisal Bahri on 2019-11-05.
  */
 class SignInUpActivity :
-    BaseActivity(),
-    SignInUpContract.View,
-    FirebaseLoginUtil.FirebaseLoginListener,
-    FirebaseLoginUtil.FirebaseLoginListener.Google,
-    FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
-    FirebaseDatabaseUtil.ValueListenerString {
+        BaseActivity(),
+        SignInUpContract.View,
+        FirebaseLoginUtil.FirebaseLoginListener,
+        FirebaseLoginUtil.FirebaseLoginListener.Google,
+        FirebaseLoginUtil.FirebaseLoginListener.EmailPass,
+        FirebaseDatabaseUtil.ValueListenerString {
 
     private var viewPagerPosition: Int = 0
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
@@ -90,8 +90,14 @@ class SignInUpActivity :
 
     override fun uiSignInSuccess(firebaseUser: FirebaseUser) {
         dismissProgressDialog()
-        val userFirebaseSignIn = User(firebaseUser)
-        FirebaseDatabaseHandler.getUserByUid(userFirebaseSignIn.getuId(), object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
+
+        val user = User()
+        user.uId = firebaseUser.uid
+        user.name = firebaseUser.displayName.toString()
+        user.email = firebaseUser.email.toString()
+
+        val userFirebaseSignIn: User = user
+        FirebaseDatabaseHandler.getUserByUid(userFirebaseSignIn.uId, object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
             override fun onSuccess(dataSnapshot: DataSnapshot, isExsist: Boolean) {
                 if (isExsist) {
                     val userInDatabase = dataSnapshot.getValue(User::class.java) as User
@@ -201,22 +207,22 @@ class SignInUpActivity :
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         mGoogleApiClient = GoogleApiClient.Builder(this)
-            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-            .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                override fun onConnected(bundle: Bundle?) {
-                    mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
-                }
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+                    override fun onConnected(bundle: Bundle?) {
+                        mGoogleApiClient.clearDefaultAccountAndReconnect() // To remove to previously selected user's account so that the choose account UI will show
+                    }
 
-                override fun onConnectionSuspended(i: Int) {
+                    override fun onConnectionSuspended(i: Int) {
 
-                }
-            })
-            .build()
+                    }
+                })
+                .build()
 
         moveToValidate()
     }
@@ -293,7 +299,7 @@ class SignInUpActivity :
             user.tokenFcm = UserPreference.getInstance().fcmToken
         } else {
             UserPreference.getInstance().fcmToken = user.tokenFcm
-            user.tokenFcm = FirebaseInstanceId.getInstance().token
+            user.tokenFcm = FirebaseInstanceId.getInstance().token.toString()
         }
 
         if (isSignUp) {
