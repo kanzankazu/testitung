@@ -73,6 +73,8 @@
     <string name="about">Tentang Aplikasi</string>
     <string name="fs_code">FS Code</string>
     <string name="t_message">Your message</string>
+
+    <!--Hutang-->
     <string name="invite_piutang">Undang Piutang *</string>
     <string name="invite_penghutang">Undang Penghutang *</string>
     <string name="invite_keluarga">Undang Keluarga</string>
@@ -80,8 +82,10 @@
     <string name="installment_duedate">tanggal jatuh tempo : %s</string>
     <string name="hutang_info_undang_penghutang_piutang">* Pastikan piutang/penghutang yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (tekan tombol tambah sebelah kanan)</string>
     <string name="hutang_info_undang_keluarga">* Pastikan keluarga yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (masukkan Nama / Email undangan)</string>
-
-    <!--HUTANG-->
+    <string name="pay_date">Tanggal Pembayaran</string>
+    <string name="note">Catatan</string>
+    <string name="due_date">Tanggal jatuh tempo :</string>
+    <string name="installment">Cicilan ke :</string>
 
 
 </resources>

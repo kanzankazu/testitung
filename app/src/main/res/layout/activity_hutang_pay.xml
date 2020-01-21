@@ -1,213 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="@dimen/padding_margin_16dp"
     tools:context="com.kanzankazu.itungitungan.view.main.Hutang.HutangPayActivity">
 
-    <FrameLayout
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center|top"
-        android:layout_marginBottom="@dimen/padding_margin_5dp"
-        android:background="@drawable/round">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/civ_hutang_pay_user"
-            android:layout_width="@dimen/padding_margin_90dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_profile" />
-
-    </FrameLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_margin_5dp"
-        android:fontFamily="@font/avenir_next_ltpro_demi"
-        android:text="Jumlah Bayar" />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_hutang_pay_nominal"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_margin_5dp">
-
-        <com.kanzankazu.itungitungan.util.widget.view.CurrencyEditText
-            android:id="@+id/et_hutang_pay_nominal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/avenir_next_ltpro_demi"
-            android:hint="Rp"
-            android:imeOptions="actionNext"
-            android:inputType="number"
-            android:selectAllOnFocus="true"
-            android:singleLine="true" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cv_hutang_pay_cicilan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        app:cardBackgroundColor="@color/colorAccent"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="5dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:orientation="vertical"
-            android:padding="@dimen/padding_margin_10dp">
+            android:padding="@dimen/padding_margin_16dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center|top"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
+                android:background="@drawable/round">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civ_hutang_pay_user"
+                    android:layout_width="@dimen/padding_margin_90dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_profile" />
+
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_margin_5dp"
-                android:animateLayoutChanges="true"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TvStandart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Cicilan ke : "
-                    android:textColor="@color/Black"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_hutang_pay_cicilan_ke"
-                    style="@style/TvStandart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="1" />
-
-                <TextView
-                    android:id="@+id/tv_hutang_pay_cicilan_type"
-                    style="@style/TvStandart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Bulan" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_hutang_pay_due_dt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TvStandart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Tanggal jatuh tempo : "
-                    android:textColor="@color/Black"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_hutang_pay_due_dt"
-                    style="@style/TvStandart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        app:cardBackgroundColor="@color/colorAccent"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="5dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_margin_10dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_margin_5dp"
-                android:layout_marginBottom="@dimen/padding_margin_5dp"
-                android:animateLayoutChanges="true"
-                android:orientation="horizontal">
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_very_light" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_hutang_pay_note"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    tools:itemCount="4"
-                    tools:layoutManager="LinearLayoutManager"
-                    tools:listitem="@layout/item_estimation_text" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="@dimen/padding_margin_10dp"
-                    android:background="@color/gray_very_light" />
-
-            </LinearLayout>
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:text="Jumlah Bayar" />
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/til_hutang_pay_note"
+                android:id="@+id/til_hutang_pay_nominal"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_margin_5dp">
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/et_hutang_pay_note"
-                    style="@style/EtMultiline"
+                <com.kanzankazu.itungitungan.util.widget.view.CurrencyEditText
+                    android:id="@+id/et_hutang_pay_nominal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Catatan" />
+                    android:fontFamily="@font/avenir_next_ltpro_demi"
+                    android:hint="Rp"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/shape_round_rect_border"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_margin_10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp"
+                    android:animateLayoutChanges="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TvStandart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/installment"
+                        android:textColor="@color/Black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_hutang_pay_cicilan_ke"
+                        style="@style/TvStandart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="1" />
+
+                    <TextView
+                        android:id="@+id/tv_hutang_pay_cicilan_type"
+                        style="@style/TvStandart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bulan" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_hutang_pay_due_dt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TvStandart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/due_date"
+                        android:textColor="@color/Black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_hutang_pay_due_dt"
+                        style="@style/TvStandart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/shape_round_rect_border"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_margin_10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_margin_5dp"
+                    android:animateLayoutChanges="true"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorPrimary" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_hutang_pay_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        tools:itemCount="4"
+                        tools:layoutManager="LinearLayoutManager"
+                        tools:listitem="@layout/item_estimation_text" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorPrimary" />
+
+                </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_hutang_pay_note"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/et_hutang_pay_note"
+                        style="@style/EtMultiline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/note" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
         </LinearLayout>
-    </android.support.v7.widget.CardView>
 
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_hutang_pay_date"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_margin_5dp">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_hutang_pay_date"
-            style="@style/EtClickable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_calendar"
-            android:hint="Tanggal Pembayaran" />
-    </android.support.design.widget.TextInputLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <TextView
         android:id="@+id/tv_hutang_pay"

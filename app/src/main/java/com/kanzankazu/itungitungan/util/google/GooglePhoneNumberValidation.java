@@ -301,7 +301,7 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
                 //     detect the incoming verification SMS and perform verification without
                 //     USER action.
 
-                signInWithPhoneAuthCredential(credential);//onVerificationCompleted
+                //signInWithPhoneAuthCredential(credential);//onVerificationCompleted
 
                 if (credential != null) {
                     if (credential.getSmsCode() != null) {
@@ -314,6 +314,8 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
                         }, 1000L);
                     } else {
                         snackBar("instant validation", false);
+
+                        signInWithPhoneAuthCredential(credential);
                     }
                 }
             }

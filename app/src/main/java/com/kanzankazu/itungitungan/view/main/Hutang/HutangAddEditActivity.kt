@@ -119,6 +119,26 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         dismissProgressDialog()
     }
 
+    override fun checkData(isFocus: Boolean): Boolean {
+        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, isFocus)) return false
+        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, isFocus)) return false
+        else if (!InputValidUtil.isLenghtCharOver("Data kurang dari 6", til_hutang_add_nominal, et_hutang_add_nominal, 5)) return false
+        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, isFocus)) return false
+        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, isFocus)) return false
+        else if (sw_hutang_add_installment.isChecked) {
+            if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_count, et_hutang_add_installment_count, isFocus)) return false
+            else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_nominal, et_hutang_add_installment_nominal, isFocus)) return false
+            else if (cb_hutang_add_installment_free_to_pay.isChecked) {
+                return true
+            } else {
+                if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_due_date, et_hutang_add_installment_due_date, isFocus)) return false
+            }
+        } else {
+            return true
+        }
+        return true
+    }
+
     private fun setView() {
         permissionUtil = AndroidPermissionUtil(this, *AndroidPermissionUtil.permCameraGallery)
         pictureUtil2 = PictureUtil2(this)
@@ -134,7 +154,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         if (bundle != null) {
             isEdit = true
             if (bundle.containsKey(Constants.Bundle.HUTANG)) {
-                hutang = bundle.getParcelable(Constants.Bundle.HUTANG)
+                hutang = bundle.getParcelable(Constants.Bundle.HUTANG) as Hutang
                 isIInclude = if (hutang.debtorCreditorId.isNotEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
                 isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
                 isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
@@ -565,26 +585,6 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 iv_hutang_add_family_clear.visibility = View.VISIBLE
             }
         }
-    }
-
-    private fun checkData(isFocus: Boolean): Boolean {
-        if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, isFocus)) return false
-        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_nominal, et_hutang_add_nominal, isFocus)) return false
-        else if (!InputValidUtil.isLenghtCharOver("Data kurang dari 6", til_hutang_add_nominal, et_hutang_add_nominal, 5)) return false
-        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, isFocus)) return false
-        else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, isFocus)) return false
-        else if (sw_hutang_add_installment.isChecked) {
-            if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_count, et_hutang_add_installment_count, isFocus)) return false
-            else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_nominal, et_hutang_add_installment_nominal, isFocus)) return false
-            else if (cb_hutang_add_installment_free_to_pay.isChecked) {
-                return true
-            } else {
-                if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_installment_due_date, et_hutang_add_installment_due_date, isFocus)) return false
-            }
-        } else {
-            return true
-        }
-        return true
     }
 
     private fun chooseDialogPickImage(activity: Activity, imageView: ImageView?, positionImage: Int) {

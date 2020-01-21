@@ -8,6 +8,7 @@ import com.kanzankazu.itungitungan.view.base.BaseViewContract
 
 interface HutangAddEditContract {
     interface View : BaseViewContract {
+        fun checkData(isFocus: Boolean): Boolean
     }
 
     interface Presenter : BasePresenterContractWOCheckMessage {
