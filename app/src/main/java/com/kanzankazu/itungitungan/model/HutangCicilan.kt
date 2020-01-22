@@ -1,6 +1,7 @@
 package com.kanzankazu.itungitungan.model
 
 import android.os.Parcelable
+import com.kanzankazu.itungitungan.util.widget.gallery2.ImageModel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -12,7 +13,7 @@ data class HutangCicilan(
         var paymentDesc: String = "",
         var photo1: String = "",
         var photo2: String = "",
-        var hutangCicilanBuktiGambar: MutableList<String>? = null,
+        var hutangCicilanBuktiGambar: MutableList<ImageModel>? = null,
         var approvalCreditor: Boolean = false,
         var approvalDebtor: Boolean = false,
         var createAt: String = "",

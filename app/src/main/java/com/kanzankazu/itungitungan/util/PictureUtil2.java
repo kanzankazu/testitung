@@ -49,7 +49,7 @@ public class PictureUtil2 {
     };
     private String mCurrentPhotoPath;
     private AppCompatActivity mActivity;
-    private ImageView imageView;
+    private ImageView imageView = null;
 
     public PictureUtil2(AppCompatActivity mActivity) {
         this.mActivity = mActivity;
@@ -103,6 +103,10 @@ public class PictureUtil2 {
     public void chooseGetImageDialog(Activity activity, ImageView imageView) {
         this.imageView = imageView;
 
+        chooseGetImageDialog(activity);
+    }
+
+    public void chooseGetImageDialog(Activity activity) {
         final String[] items = {"Pilih foto dari kamera", "Pilih foto dari galeri"};
 
         AlertDialog.Builder chooseImageDialog = new AlertDialog.Builder(mActivity);
@@ -122,7 +126,7 @@ public class PictureUtil2 {
         if (requestCode == REQUEST_IMAGE_CAMERA && resultCode == RESULT_OK && mCurrentPhotoPath != null) { //FROM CAMERA
             try {
                 compressImage();
-                Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
+                if (imageView != null) Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
 
                 /*documentDataList.get(currentIndex).setPhotoPath(mCurrentPhotoPath);
                 preApprovalUploadAdapter.addToList(currentIndex, mCurrentPhotoPath);
@@ -152,7 +156,7 @@ public class PictureUtil2 {
                             .setCompressFormat(Bitmap.CompressFormat.JPEG)
                             .compressToFile(file);
                     mCurrentPhotoPath = getRealPathFromURIPath(Uri.parse(compressedImage.getAbsolutePath()));
-                    Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
+                    if (imageView != null) Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
 
                     /*CompressBitmap cb = new CompressBitmap(mActivity);
                     String filepath = cb.getRealPathFromURI(mActivity, data.getData());
@@ -222,7 +226,7 @@ public class PictureUtil2 {
                 storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
+        // Save a file: pathLocal for use with ACTION_VIEW intents
         if (isUriFormat) {
             mCurrentPhotoPath = /*"file:" + */file.getAbsolutePath();
         } else {

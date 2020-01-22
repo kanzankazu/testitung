@@ -593,7 +593,7 @@ public class PictureUtil {
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
-        // Save a file: path for use with ACTION_VIEW intents
+        // Save a file: pathLocal for use with ACTION_VIEW intents
         String mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }

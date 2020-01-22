@@ -35,7 +35,7 @@ data class Hutang(
         var hutangCicilanNominal: String = "",
         var hutangCicilanIsBayarKapanSaja: Boolean = true,
         var hutangCicilanTanggalAkhir: String = "",
-        var hutangCicilanSub: MutableList<HutangCicilan>? = null,
+        var hutangCicilanSub: MutableList<HutangCicilan> = mutableListOf(),
         var statusLunas: Boolean = false,
         var statusDeleted: Boolean = false,
         var createAt: String = "",

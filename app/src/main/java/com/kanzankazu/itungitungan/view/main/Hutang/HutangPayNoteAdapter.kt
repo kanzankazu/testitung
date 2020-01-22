@@ -6,11 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kanzankazu.itungitungan.R
+import kotlinx.android.synthetic.main.item_estimation_text.view.*
 
 /**
  * Created by Faisal Bahri on 2020-01-20.
  */
-class HutangPayNoteAdapter(private val activity: Activity,private val mView: HutangPayContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class HutangPayNoteAdapter(private val activity: Activity, private val mView: HutangPayContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var datas: ArrayList<String> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -29,11 +30,13 @@ class HutangPayNoteAdapter(private val activity: Activity,private val mView: Hut
 
     inner class HutangPayNoteAdapterHolder(view: View?) : RecyclerView.ViewHolder(view!!) {
         fun setView(model: String) {
-
+            itemView.tv_item_suggest.text = model
         }
 
         fun setListener(model: String, itemView: View) {
-
+            itemView.setOnClickListener {
+mView.onSuggestItemClick(model)
+            }
         }
     }
 

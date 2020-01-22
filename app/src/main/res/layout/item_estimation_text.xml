@@ -15,6 +15,7 @@
         app:cardElevation="5dp">
 
         <TextView
+            android:id="@+id/tv_item_suggest"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/padding_margin_10dp"

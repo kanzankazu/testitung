@@ -39,6 +39,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.kanzankazu.itungitungan.BuildConfig;
@@ -740,6 +742,29 @@ public class Utils {
             }
             return s1.toString();
         }
+    }
+
+    /**
+     * implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+     * @return
+     * @param string = bisa apa saja
+     *
+     * bisa di pasang di Imageview dengan (imageView.setImageDrawable(textDrawable))
+     */
+    public static TextDrawable getInitialNameDrawable(String string) {
+        ColorGenerator generator = ColorGenerator.MATERIAL;
+        int color = generator.getColor(string);
+        TextDrawable.IBuilder builder = TextDrawable.builder()
+                .beginConfig()
+                .withBorder(4)
+                .width(80)
+                .height(80)
+                .endConfig()
+                .roundRect(20);
+        return builder.build(Utils.getInitialName(string), color);
+
+
+
     }
 
     public interface DialogButtonListener {

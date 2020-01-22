@@ -18,4 +18,8 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
     override fun saveData(hutang: Hutang) {
 
     }
+
+    override fun deleteImage() {
+
+    }
 }

@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kanzankazu.itungitungan.util.PictureUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +37,9 @@ public class FirebaseStorageUtil {
                             String imageDownloadUrl = taskSnapshot.getDownloadUrl().toString();
                             imageDonwloadUrls.add(imageDownloadUrl);
                             listStat.add("1");
+
+                            String pathFromUri = PictureUtil.getImagePathFromUri(mActivity, uri);
+                            PictureUtil.removeImageFromPathFile(pathFromUri);
 
                             int frequency0 = Collections.frequency(listStat, "0");
                             int frequency1 = Collections.frequency(listStat, "1");
@@ -106,7 +110,7 @@ public class FirebaseStorageUtil {
 
     /*interface*/
     public static interface DoneListener {
-        void isFinised(ArrayList<String> imageDonwloadUrls);
+        void isFinised(ArrayList<String> imageDownloadUrls);
 
         void isFailed(String message);
     }

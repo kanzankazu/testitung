@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="100dp"
     android:layout_height="100dp"
     android:layout_gravity="center|top"
@@ -10,16 +11,17 @@
         android:layout_width="@dimen/padding_margin_90dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_profile" />
+        tools:src="@tools:sample/avatars" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/civ_item_image_option"
+        android:id="@+id/civ_item_image_remove"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_gravity="top|end"
-        android:padding="@dimen/padding_margin_5dp"
+        android:background="@drawable/round"
         android:backgroundTint="@color/colorPrimary"
-        android:background="@drawable/cast_ic_stop_circle_filled_grey600"
+        android:padding="@dimen/padding_margin_5dp"
+        android:tint="@color/colorAccent"
         android:src="@drawable/ic_clear"
         android:visibility="visible" />
 

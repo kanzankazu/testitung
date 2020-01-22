@@ -715,13 +715,13 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
                 val listUri = PictureUtil2.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
                 FirebaseStorageUtil.uploadImages(this@HutangAddEditActivity, "HUTANG", listUri, object : FirebaseStorageUtil.DoneListener {
-                    override fun isFinised(imageDonwloadUrls: ArrayList<String>?) {
+                    override fun isFinised(imageDownloadUrls: ArrayList<String>?) {
                         if (isEdit && hutang.hutangBuktiGambar != null) {
                             if (hutang.hutangBuktiGambar!!.size > 0) {
                                 FirebaseStorageUtil.deleteImages(this@HutangAddEditActivity, hutang.hutangBuktiGambar,
                                         object : FirebaseStorageUtil.DoneRemoveListener {
                                             override fun isFinised() {
-                                                hutang.hutangBuktiGambar = imageDonwloadUrls
+                                                hutang.hutangBuktiGambar = imageDownloadUrls
                                                 mPresenter.saveEditHutang(hutang, isEdit)
                                             }
 
@@ -730,11 +730,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                                             }
                                         })
                             } else {
-                                hutang.hutangBuktiGambar = imageDonwloadUrls
+                                hutang.hutangBuktiGambar = imageDownloadUrls
                                 mPresenter.saveEditHutang(hutang, isEdit)
                             }
                         } else {
-                            hutang.hutangBuktiGambar = imageDonwloadUrls
+                            hutang.hutangBuktiGambar = imageDownloadUrls
                             mPresenter.saveEditHutang(hutang, isEdit)
                         }
                     }

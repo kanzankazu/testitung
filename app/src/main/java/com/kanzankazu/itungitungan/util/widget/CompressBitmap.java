@@ -35,7 +35,7 @@ public class CompressBitmap {
         Bitmap scaledBitmap = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap bmp = BitmapFactory.decodeFile(imagePath, options);
-        System.out.println("image path: " + imagePath);
+        System.out.println("image pathLocal: " + imagePath);
         int actualHeight = bmp.getHeight();
         int actualWidth = bmp.getWidth();
 //      max Height and width values of the compressed image is taken as 500x500
@@ -67,7 +67,7 @@ public class CompressBitmap {
         options.inInputShareable = true;
         options.inTempStorage = new byte[16 * 1024];
         try {
-//          load the bitmap from its path
+//          load the bitmap from its pathLocal
             bmp = BitmapFactory.decodeFile(imagePath, options);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();

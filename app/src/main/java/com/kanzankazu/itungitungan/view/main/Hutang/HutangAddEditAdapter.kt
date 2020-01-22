@@ -37,7 +37,7 @@ class HutangAddEditAdapter(val mActivity: Activity, val mView: HutangAddEditCont
         }
 
         fun setListener(position: Int) {
-            itemView.civ_item_image_option.setOnClickListener {  }
+            itemView.civ_item_image_remove.setOnClickListener {  }
         }
     }
 

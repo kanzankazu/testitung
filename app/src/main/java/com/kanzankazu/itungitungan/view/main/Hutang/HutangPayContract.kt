@@ -4,9 +4,10 @@ import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.view.base.BaseViewContract
 
 interface HutangPayContract {
-    interface View : BaseViewContract{
+    interface View : BaseViewContract {
         fun checkData(isFocus: Boolean): Boolean
         fun setSuggestNote(list: ArrayList<String>)
+        fun onSuggestItemClick(s: String)
     }
 
     interface Presenter {
@@ -14,6 +15,7 @@ interface HutangPayContract {
         fun getSuggestNoteManual(): ArrayList<String>
 
         fun saveData(hutang: Hutang)
+        fun deleteImage()
     }
 
 }

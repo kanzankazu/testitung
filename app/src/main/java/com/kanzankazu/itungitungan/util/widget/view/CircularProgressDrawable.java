@@ -473,7 +473,7 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
                 float x = (float) (mRingCenterRadius * Math.cos(0) + bounds.exactCenterX());
                 float y = (float) (mRingCenterRadius * Math.sin(0) + bounds.exactCenterY());
 
-                // Update the path each time. This works around an issue in SKIA
+                // Update the pathLocal each time. This works around an issue in SKIA
                 // where concatenating a rotation matrix to a scale matrix
                 // ignored a starting negative rotation. This appears to have
                 // been fixed as of API 21.

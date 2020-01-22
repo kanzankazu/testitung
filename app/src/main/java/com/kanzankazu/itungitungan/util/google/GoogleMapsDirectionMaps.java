@@ -224,9 +224,9 @@ public class GoogleMapsDirectionMaps {
                         jDuration = ((JSONObject) jLegs.get(j)).getJSONObject("duration");
                         HashMap<String, String> hmDuration = new HashMap<String, String>();
                         hmDuration.put("duration", jDuration.getString("text"));
-                        /** Adding distance object to the path */
+                        /** Adding distance object to the pathLocal */
                         path.add(hmDistance);
-                        /** Adding duration object to the path */
+                        /** Adding duration object to the pathLocal */
                         path.add(hmDuration);
                         jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
                         /** Traversing all steps */

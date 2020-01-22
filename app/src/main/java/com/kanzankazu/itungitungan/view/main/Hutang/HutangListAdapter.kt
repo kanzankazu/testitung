@@ -40,6 +40,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         private var color: Int = 0
         private var builder: TextDrawable.IBuilder? = null
         private var textDrawable: TextDrawable? = null
+
         private var name = ""
         private var email = ""
         private var isIInclude = false
