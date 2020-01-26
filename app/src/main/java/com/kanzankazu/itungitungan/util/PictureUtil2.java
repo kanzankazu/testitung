@@ -16,7 +16,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 
@@ -48,10 +47,10 @@ public class PictureUtil2 {
             Manifest.permission.CAMERA
     };
     private String mCurrentPhotoPath;
-    private AppCompatActivity mActivity;
+    private Activity mActivity;
     private ImageView imageView = null;
 
-    public PictureUtil2(AppCompatActivity mActivity) {
+    public PictureUtil2(Activity mActivity) {
         this.mActivity = mActivity;
     }
 
@@ -159,8 +158,8 @@ public class PictureUtil2 {
                     if (imageView != null) Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
 
                     /*CompressBitmap cb = new CompressBitmap(mActivity);
-                    String filepath = cb.getRealPathFromURI(mActivity, data.getData());
-                    Bitmap bitmap = cb.compressImage(cb.getRealPathFromURI(mActivity, data.getData()), filepath);*/
+                    String filepath = cb.getRealPathFromURI(mActivity, data.getDatas());
+                    Bitmap bitmap = cb.compressImage(cb.getRealPathFromURI(mActivity, data.getDatas()), filepath);*/
 
                     /*documentDataList.get(currentIndex).setPhotoPath(String.valueOf(uri));
                     preApprovalUploadAdapter.addToList(currentIndex, String.valueOf(uri));

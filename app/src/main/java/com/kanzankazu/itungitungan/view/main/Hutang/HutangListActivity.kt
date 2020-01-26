@@ -86,31 +86,12 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     override fun onHutangBayarClick(hutang: Hutang) {
         val intent = Intent(this, HutangPayActivity::class.java)
         intent.putExtra(Constants.Bundle.HUTANG, hutang)
+        intent.putExtra(Constants.Bundle.HUTANG_NEW, true)
         startActivity(intent)
     }
 
-    override fun onHutangHapusClick(hutang: Hutang, position: Int) {
-        Utils.showIntroductionDialog(
-                this,
-                "",
-                "Konfirmasi",
-                "Apakah anda yakin ingin menghapus data ini?",
-                "Ya",
-                "Tidak",
-                false,
-                -1,
-                object : Utils.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        if (hutang.creditorId.isNotEmpty() && hutang.debtorId.isNotEmpty()) {
-                            mPresenter.requestHutangHapus(hutang, false)
-                        } else {
-                            mPresenter.hapusHutangCheckImage(hutang)
-                        }
-                    }
-
-                    override fun onSecondButtonClick() {}
-                }
-        )
+    override fun onHutangHapusClick(hutang: Hutang, position: Int, isHasReqDelete: Boolean) {
+        removeDeleteDialog(hutang, position, isHasReqDelete)
     }
 
     override fun onHutangFilter(hutangs: MutableList<Hutang>) {
@@ -225,6 +206,39 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         val intent = Intent(this, HutangAddEditActivity::class.java)
         intent.putExtra(Constants.Bundle.HUTANG, hutang)
         startActivity(intent)
+    }
+
+    private fun removeDeleteDialog(hutang: Hutang, position: Int, isHasReqDelete: Boolean) {
+        Utils.showIntroductionDialog(
+                this,
+                "",
+                "Konfirmasi",
+                if (isHasReqDelete) {
+                    "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
+                } else {
+                    "Apakah anda yakin ingin menghapus data ini?"
+                }
+                ,
+                "Ya",
+                "Tidak",
+                false,
+                -1,
+                object : Utils.IntroductionButtonListener {
+                    override fun onFirstButtonClick() {
+                        if (!isHasReqDelete) {
+                            mPresenter.requestHutangHapus(hutang, false)
+                            if (hutang.hutangBuktiGambar!!.isNotEmpty()) {
+                                mPresenter.hapusHutangCheckImage(hutang)
+                            }
+                        } else {
+                            mPresenter.requestHutangHapus(hutang, true)
+                        }
+                    }
+
+                    override fun onSecondButtonClick() {}
+                }
+        )
+
     }
 
     private fun detailDialog(hutang: Hutang, isApproveNew: Boolean, isApproveEdit: Boolean, isApproveDelete: Boolean) {
@@ -347,19 +361,6 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 showHidePreview(true)
 
                 val posData = if (it == ivHutangDetailDialogPenghutang0) 0 else 1
-                /*val image: String = if (it == ivHutangDetailDialogPenghutang0) hutang.hutangBuktiGambar[0] else hutang.hutangBuktiGambar[1]
-                val circularProgressDrawable = CircularProgressDrawable(this, flHutangDetailDialogImage)
-                Glide.with(this)
-                        .load(image)
-                        .asBitmap()
-                        .error(R.mipmap.ic_launcher)
-                        .placeholder(circularProgressDrawable)
-                        .dontAnimate()
-                        .into(object : SimpleTarget<Bitmap>() {
-                            override fun onResourceReady(resource: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
-                                ivHutangDetailDialogPiutangPreview.setImageBitmap(resource)
-                            }
-                        })*/
 
                 val mGalleryDetailPagerAdapter = GalleryDetailPagerAdapter(this, hutang.hutangBuktiGambar as ArrayList<String>?)
                 ivHutangDetailDialogPiutangPreview.setPageTransformer(true, DepthPageTransformer())
@@ -377,9 +378,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
             alertDialog.show()
 
-            ivHutangDetailDialogPiutangPreviewClose.setOnClickListener {
-                showHidePreview(false)
-            }
+            ivHutangDetailDialogPiutangPreviewClose.setOnClickListener { showHidePreview(false) }
             ivHutangDetailDialogPenghutang0.setOnClickListener(imageClickShow)
             ivHutangDetailDialogPenghutang1.setOnClickListener(imageClickShow)
             tvHutangDetailDialogSubmitSetuju.setOnClickListener {

@@ -413,15 +413,15 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     }
 
     private fun calculateNominalCount() {
-        val nominal: Int = if (et_hutang_add_nominal.text.toString().isNotEmpty() && !et_hutang_add_nominal.text.toString().trim().equals("Rp", true)) Utils.getRupiahToString(et_hutang_add_nominal).toInt() else "1".toInt()
+        val nominalPembayaran: Int = if (et_hutang_add_nominal.text.toString().isNotEmpty() && !et_hutang_add_nominal.text.toString().trim().equals("Rp", true)) Utils.getRupiahToString(et_hutang_add_nominal).toInt() else "1".toInt()
         val installmentCount: Int = if (et_hutang_add_installment_count.text.toString().isNotEmpty()) et_hutang_add_installment_count.text.toString().trim().toInt() else "1".toInt()
         if (installmentCount < 1) {
             til_hutang_add_installment_nominal.visibility = View.GONE
         } else {
-            if (nominal <= 1) {
+            if (nominalPembayaran <= 1) {
                 et_hutang_add_nominal.requestFocus()
             } else {
-                val i = nominal / installmentCount
+                val i = nominalPembayaran / installmentCount
                 et_hutang_add_installment_nominal.setText(Utils.setRupiah(i.toString()))
             }
             til_hutang_add_installment_nominal.visibility = View.VISIBLE

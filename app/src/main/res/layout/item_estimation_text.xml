@@ -14,16 +14,36 @@
         app:cardCornerRadius="@dimen/padding_margin_15dp"
         app:cardElevation="5dp">
 
-        <TextView
-            android:id="@+id/tv_item_suggest"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/padding_margin_10dp"
-            android:layout_marginRight="@dimen/padding_margin_10dp"
-            android:fontFamily="@font/avenir_next_ltpro_demi"
-            android:gravity="center"
-            android:textColor="@color/white"
-            tools:text="@tools:sample/lorem" />
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_item_suggest"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/padding_margin_10dp"
+                android:layout_marginRight="@dimen/padding_margin_10dp"
+                android:fontFamily="@font/avenir_next_ltpro_demi"
+                android:gravity="center"
+                android:textColor="@color/white"
+                tools:text="@tools:sample/lorem" />
+
+            <ImageView
+                android:id="@+id/iv_item_suggest_clear"
+                android:layout_width="@dimen/padding_margin_30dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginRight="@dimen/padding_margin_10dp"
+                android:src="@drawable/ic_clear"
+                android:tint="@color/white"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
 
     </android.support.v7.widget.CardView>
 

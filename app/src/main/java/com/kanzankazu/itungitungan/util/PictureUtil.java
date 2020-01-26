@@ -377,7 +377,7 @@ public class PictureUtil {
     }
 
     public static void onSelectGallery(Intent data) {
-        /*Uri selectedImageUri = data.getData();
+        /*Uri selectedImageUri = data.getDatas();
         String[] projection = {MediaStore.MediaColumns.DATA};
         @SuppressWarnings("deprecation")
         Cursor cursor = getMActivity().managedQuery(selectedImageUri, projection, null, null, null);

@@ -1,18 +1,22 @@
 package com.kanzankazu.itungitungan.view.adapter
 
 import android.app.Activity
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.widget.gallery2.ImageModel
 import kotlinx.android.synthetic.main.item_image.view.*
 import kotlinx.android.synthetic.main.item_image_add.view.*
+import java.io.File
 
 class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var datas: MutableList<ImageModel> = mutableListOf()
+    private var datas: MutableList<ImageModel> = mutableListOf()
+    private var removeDatas: MutableList<ImageModel> = mutableListOf()
 
     companion object {
         const val IMAGE_TYPE = 0
@@ -54,6 +58,63 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
 
     }
 
+    fun isNotEmptyData(): Boolean {
+        return datas.size != 0
+    }
+
+    fun getDatas(): MutableList<ImageModel> {
+        return datas
+    }
+
+    fun getData(position: Int): ImageModel {
+        return datas[position]
+    }
+
+    fun getDatasStringAll(): MutableList<String> {
+        val imagePaths = mutableListOf<String>()
+        for (models in datas) {
+            imagePaths.add(models.path!!)
+        }
+        return imagePaths
+    }
+
+    fun getDatasString(isUrl: Boolean): MutableList<String> {
+        val imagePaths = mutableListOf<String>()
+        for (models in datas) {
+            if (isUrl) {
+                if (InputValidUtil.isLinkUrl(models.path))
+                    imagePaths.add(models.path!!)
+            } else {
+                if (!InputValidUtil.isLinkUrl(models.path))
+                    imagePaths.add(models.path!!)
+            }
+        }
+        return imagePaths
+    }
+
+    fun getDatasUri(): MutableList<Uri> {
+        val imagePaths = mutableListOf<Uri>()
+        for (models in datas) {
+            if (!InputValidUtil.isLinkUrl(models.path))
+                imagePaths.add(Uri.fromFile(File(models.path!!)))
+        }
+        return imagePaths
+    }
+
+    fun getRemoveDataString(isUrl: Boolean): MutableList<String> {
+        val imagePaths = mutableListOf<String>()
+        for (models in removeDatas) {
+            if (isUrl) {
+                if (InputValidUtil.isLinkUrl(models.path))
+                    imagePaths.add(models.path!!)
+            } else {
+                if (!InputValidUtil.isLinkUrl(models.path))
+                    imagePaths.add(models.path!!)
+            }
+        }
+        return imagePaths
+    }
+
     inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun setView(data: ImageModel) {
             Glide.with(mActivity).load(data.path).into(itemView.civ_item_image)
@@ -81,14 +142,6 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
     interface ImageListContract {
         fun onImageListRemove(data: ImageModel, position: Int)
         fun onImageListAdd(data: ImageModel, position: Int)
-    }
-
-    fun getItemData(position: Int): ImageModel {
-        return datas[position]
-    }
-
-    fun getItemDatas(): MutableList<ImageModel> {
-        return datas
     }
 
     fun setData(datas: List<ImageModel>) {
@@ -121,9 +174,17 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
         val position = 0
         this.datas.add(position, data)
         notifyItemInserted(position)
+        notifyDataSetChanged()
+    }
+
+    fun addDataAt(data: ImageModel, pos: Int) {
+        this.datas.add(pos, data)
+        notifyItemInserted(pos)
+        notifyDataSetChanged()
     }
 
     fun removeAt(position: Int) {
+        this.removeDatas.add(this.datas[position])
         this.datas.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, this.datas.size)
@@ -131,6 +192,7 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
 
     fun removeDataFirst() {
         val position = 0
+        this.removeDatas.add(this.datas[position])
         this.datas.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, this.datas.size)

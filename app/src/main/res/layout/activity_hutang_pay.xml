@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context="com.kanzankazu.itungitungan.view.main.Hutang.HutangPayActivity">
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -35,13 +41,6 @@
 
             </FrameLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_margin_5dp"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:text="Jumlah Bayar" />
-
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/til_hutang_pay_nominal"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -51,16 +50,17 @@
 
                 <com.kanzankazu.itungitungan.util.widget.view.CurrencyEditText
                     android:id="@+id/et_hutang_pay_nominal"
+                    style="@style/EtNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/avenir_next_ltpro_demi"
-                    android:hint="Rp"
-                    android:imeOptions="actionNext"
-                    android:inputType="number"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true" />
+                    android:hint="Jumlah Bayar" />
             </android.support.design.widget.TextInputLayout>
 
+            <TextView
+                android:id="@+id/tv_hutang_pay_total_nominal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_5dp" />
 
             <LinearLayout
                 android:id="@+id/ll_hutang_pay_cicilan"
@@ -157,6 +157,7 @@
                         android:id="@+id/rv_hutang_pay_note"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padding_margin_5dp"
                         android:layout_weight="1"
                         android:orientation="horizontal"
                         tools:itemCount="4"
@@ -194,6 +195,30 @@
                 android:background="@drawable/shape_round_rect_border"
                 android:orientation="vertical"
                 android:padding="@dimen/padding_margin_10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_5dp"
+                    android:animateLayoutChanges="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TvStandartCenter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Bukti Pembayaran" />
+
+                    <ImageView
+                        android:id="@+id/iv_hutang_pay_image_add"
+                        android:layout_width="@dimen/padding_margin_30dp"
+                        android:layout_height="@dimen/padding_margin_30dp"
+                        android:src="@drawable/ic_add_photo"
+                        android:visibility="visible" />
+
+
+                </LinearLayout>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_hutang_pay_image"

@@ -413,7 +413,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 });
     }
 
-    public static void setHutang(Activity mActivity, Hutang hutang, ValueListenerString listenerString) {
+    public static void setHutang(Activity mActivity, Hutang hutang, ValueListenerStringSaveUpdate listener) {
         String primaryKey = getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG).push().getKey();
         hutang.setHId(primaryKey);
 
@@ -423,11 +423,11 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                 .child(hutang.getHId())
                 .setValue(hutang)
-                .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_save_success)))
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+                .addOnSuccessListener(aVoid -> listener.onSuccessSaveUpdate(mActivity.getString(R.string.message_database_save_success)))
+                .addOnFailureListener(e -> listener.onFailureSaveUpdate(e.getMessage()));
     }
 
-    public static void updateHutang(Activity mActivity, Hutang hutang, ValueListenerString listenerString) {
+    public static void updateHutang(Activity mActivity, Hutang hutang, ValueListenerStringSaveUpdate listenerString) {
 
         hutang.setUpdateAt(DateTimeUtil.getCurrentDate().toString());
         hutang.setUpdateBy(UserPreference.getInstance().getUid());
@@ -435,8 +435,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                 .child(hutang.getHId())
                 .setValue(hutang)
-                .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_update_success)))
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+                .addOnSuccessListener(aVoid -> listenerString.onSuccessSaveUpdate(mActivity.getString(R.string.message_database_update_success)))
+                .addOnFailureListener(e -> listenerString.onFailureSaveUpdate(e.getMessage()));
     }
 
     public static void removeHutang(Activity mActivity, String hid, ValueListenerString listenerString) {

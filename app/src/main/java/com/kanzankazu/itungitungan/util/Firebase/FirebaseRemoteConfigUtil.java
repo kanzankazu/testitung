@@ -51,7 +51,6 @@ public class FirebaseRemoteConfigUtil {
                     } catch (NumberFormatException e) {
                         firebaseRemoteConfigurationOnNext.onNextAction();
                     }
-
                 } else {
                     firebaseRemoteConfigurationOnNext.onNextAction();
                 }

@@ -31,6 +31,7 @@ public class Constants {
 
     public interface Bundle {
         String HUTANG = "hutang";
+        String HUTANG_NEW = "hutang_new";
     }
 
     public interface FirebaseRemoteConfig {
@@ -60,7 +61,7 @@ public class Constants {
         String Anggaran = "Anggaran";
         String Arisan = "Arisan";
         String Banding = "Banding harga";
-        String Hutang = "HUTANG";
+        String Hutang = "Hutang";
         String Keuangan = "Keuangan";
         String Stok = "Stok Barang";
     }

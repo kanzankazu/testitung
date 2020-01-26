@@ -12,6 +12,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.util.AppUtil
 import com.kanzankazu.itungitungan.util.Utils
 import kotlinx.android.synthetic.main.item_hutang_list.view.*
 
@@ -40,7 +41,6 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         private var color: Int = 0
         private var builder: TextDrawable.IBuilder? = null
         private var textDrawable: TextDrawable? = null
-
         private var name = ""
         private var email = ""
         private var isIInclude = false
@@ -48,22 +48,23 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         private var isIPiutang = false
         private var isIFamily = false
         private var isDataPenghutang = false
+        private var isLunas: Boolean = false
 
         fun setView(hutang: Hutang, position: Int) {
-
-            builder = TextDrawable.builder()
-                .beginConfig()
-                .withBorder(4)
-                .width(80)
-                .height(80)
-                .endConfig()
-                .roundRect(20)
-
             isIInclude = if (!hutang.debtorCreditorId.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
             isIPenghutang = if (!hutang.debtorId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
             isIPiutang = if (!hutang.creditorId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
             isIFamily = if (!hutang.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
             isDataPenghutang = hutang.hutangRadioIndex == 0
+            isLunas = hutang.statusLunas
+
+            builder = TextDrawable.builder()
+                    .beginConfig()
+                    .withBorder(4)
+                    .width(80)
+                    .height(80)
+                    .endConfig()
+                    .roundRect(20)
 
             checkPersetujuan(hutang)
             setPersetujuan(hutang)
@@ -119,7 +120,15 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         }
 
         fun checkPersetujuan(hutang: Hutang) {
-            checkPersetujuanBaru(hutang)
+            checkStatusLunas(hutang)
+        }
+
+        private fun checkStatusLunas(hutang: Hutang) {
+            if (isLunas) {
+                setViewPersetujuan(false, false, false, true, hutang)
+            } else {
+                checkPersetujuanBaru(hutang)
+            }
         }
 
         private fun checkPersetujuanBaru(hutang: Hutang) {
@@ -127,15 +136,15 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 checkPersetujuanUbah(hutang)
             } else {
                 if (hutang.creditorApprovalNew && isIPiutang) {
-                    setViewPersetujuan(false, false, false, hutang)
+                    setViewPersetujuan(false, false, false, false, hutang)
                 } else {
                     if (hutang.debtorApprovalNew && isIPenghutang) {
-                        setViewPersetujuan(false, false, false, hutang)
+                        setViewPersetujuan(false, false, false, false, hutang)
                     } else {
                         if ((!hutang.creditorId.isNullOrEmpty() && hutang.debtorId.isNullOrEmpty()) || (hutang.creditorId.isNullOrEmpty() && !hutang.debtorId.isNullOrEmpty())) {
-                            setViewPersetujuan(false, false, false, hutang)
+                            setViewPersetujuan(false, false, false, false, hutang)
                         } else {
-                            setViewPersetujuan(true, false, false, hutang)
+                            setViewPersetujuan(true, false, false, false, hutang)
                         }
                     }
                 }
@@ -148,12 +157,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 checkPersetujuanHapus(hutang)
             } else {
                 if ((hutang.creditorApprovalEdit && isIPiutang) || (hutang.debtorApprovalEdit && isIPenghutang)) {
-                    setViewPersetujuan(false, false, false, hutang)
+                    setViewPersetujuan(false, false, false, false, hutang)
                 } else {
                     if ((!hutang.creditorId.isNullOrEmpty() && hutang.debtorId.isNullOrEmpty()) || (hutang.creditorId.isNullOrEmpty() && !hutang.debtorId.isNullOrEmpty())) {
-                        setViewPersetujuan(false, false, false, hutang)
+                        setViewPersetujuan(false, false, false, false, hutang)
                     } else {
-                        setViewPersetujuan(false, true, false, hutang)
+                        setViewPersetujuan(false, true, false, false, hutang)
                     }
                 }
             }
@@ -161,29 +170,37 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
 
         private fun checkPersetujuanHapus(hutang: Hutang) {
             if (hutang.creditorApprovalDelete && hutang.debtorApprovalDelete) {
-                setViewPersetujuan(false, false, false, hutang)
+                setViewPersetujuan(false, false, false, false, hutang)
             } else {
                 if ((hutang.creditorApprovalDelete && isIPiutang) || (hutang.debtorApprovalDelete && isIPenghutang)) {
-                    setViewPersetujuan(false, false, false, hutang)
+                    setViewPersetujuan(false, false, false, false, hutang)
                 } else {
                     if ((!hutang.creditorId.isNullOrEmpty() && hutang.debtorId.isNullOrEmpty()) || (hutang.creditorId.isNullOrEmpty() && !hutang.debtorId.isNullOrEmpty())) {
-                        setViewPersetujuan(false, false, false, hutang)
+                        setViewPersetujuan(false, false, false, false, hutang)
                     } else {
-                        setViewPersetujuan(false, false, true, hutang)
+                        setViewPersetujuan(false, false, true, false, hutang)
                     }
                 }
             }
         }
 
-        fun setViewPersetujuan(isNeedAgreeNew: Boolean, isNeedAgreeEdit: Boolean, isNeedAgreeDelete: Boolean, hutang: Hutang) {
-
+        fun setViewPersetujuan(isNeedAgreeNew: Boolean, isNeedAgreeEdit: Boolean, isNeedAgreeDelete: Boolean, isLunas: Boolean, hutang: Hutang) {
             if (isNeedAgreeNew || isNeedAgreeEdit || isNeedAgreeDelete) {
                 itemView.ll_item_hutang_list.alpha = 0.5F
                 itemView.ll_item_hutang_list.isEnabled = false
                 itemView.setOnClickListener {
-                    if (isNeedAgreeNew) mView.onHutangApproveNewClick(hutang)
-                    else if (isNeedAgreeEdit) mView.onHutangApproveEditClick(hutang)
-                    else if (isNeedAgreeDelete) mView.onHutangApproveDeleteClick(hutang)
+                    when {
+                        isNeedAgreeNew -> mView.onHutangApproveNewClick(hutang)
+                        isNeedAgreeEdit -> mView.onHutangApproveEditClick(hutang)
+                        isNeedAgreeDelete -> mView.onHutangApproveDeleteClick(hutang)
+                    }
+                }
+            } else if (isLunas) {
+                itemView.ll_item_hutang_list.alpha = 0.5F
+                itemView.tv_item_hutang_list_lunas.visibility = View.VISIBLE
+                itemView.ll_item_hutang_list.isEnabled = false
+                itemView.setOnClickListener {
+                    setNormalOnClickListener(hutang)
                 }
             } else {
                 itemView.ll_item_hutang_list.alpha = 1F
@@ -192,7 +209,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             }
         }
 
-        fun setPersetujuan(hutang: Hutang) {
+        private fun setPersetujuan(hutang: Hutang) {
             if (!hutang.creditorApprovalNew && !hutang.debtorId.isNullOrEmpty()) {
                 itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
             } else {
@@ -226,67 +243,51 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             }
         }
 
-        fun setViewIPenghutang(data: Hutang) {
-            if (!data.creditorName.isNullOrEmpty()) {
+        private fun setViewIPenghutang(data: Hutang) {
+            if (AppUtil.checkStringNVisibilityView(data.creditorName, itemView.tv_hutang_list_name)) {
                 name = data.creditorName
-                itemView.tv_hutang_list_name.text = name
-                itemView.tv_hutang_list_name.visibility = View.VISIBLE
-
-                color = generator.getColor(data.creditorName)
-                textDrawable = builder?.build(Utils.getInitialName(data.creditorName.trim()), color)
-            } else {
-                itemView.tv_hutang_list_name.visibility = View.GONE
+                color = generator.getColor(name)
+                textDrawable = builder?.build(Utils.getInitialName(name.trim()), color)
             }
-            if (!data.creditorEmail.isNullOrEmpty()) {
+            if (AppUtil.checkStringNVisibilityView(data.creditorEmail, itemView.tv_hutang_list_email)) {
                 email = data.creditorEmail
-                itemView.tv_hutang_list_email.text = email
-                itemView.tv_hutang_list_email.visibility = View.VISIBLE
-            } else {
-                itemView.tv_hutang_list_email.visibility = View.GONE
             }
 
             itemView.tv_hutang_list_nominal.setTextColor(mActivity.resources.getColor(R.color.red))
         }
 
-        fun setViewIPiutang(data: Hutang) {
-            if (!data.debtorName.isNullOrEmpty()) {
+        private fun setViewIPiutang(data: Hutang) {
+            if (AppUtil.checkStringNVisibilityView(data.debtorName, itemView.tv_hutang_list_name)) {
                 name = data.debtorName
-                itemView.tv_hutang_list_name.text = name
-                itemView.tv_hutang_list_name.visibility = View.VISIBLE
-
-                color = generator.getColor(data.debtorName)
-                textDrawable = builder?.build(Utils.getInitialName(data.debtorName.trim()), color)
-            } else {
-                itemView.tv_hutang_list_name.visibility = View.GONE
+                color = generator.getColor(name)
+                textDrawable = builder?.build(Utils.getInitialName(name.trim()), color)
             }
-            if (!data.debtorEmail.isNullOrEmpty()) {
+            if (AppUtil.checkStringNVisibilityView(data.debtorEmail, itemView.tv_hutang_list_email)) {
                 email = data.debtorEmail
-                itemView.tv_hutang_list_email.text = email
-                itemView.tv_hutang_list_email.visibility = View.VISIBLE
-            } else {
-                itemView.tv_hutang_list_email.visibility = View.GONE
             }
 
             itemView.tv_hutang_list_nominal.setTextColor(mActivity.resources.getColor(R.color.green))
         }
 
-        fun setNormalOnClickListener(hutang: Hutang) {
+        private fun setNormalOnClickListener(hutang: Hutang) {
             val strings: Array<String> =
-                if (isIFamily && hutang.hutangEditableis) {
-                    arrayOf("Detail", "Lihat")
-                } else if (isIFamily && !hutang.hutangEditableis) {
-                    arrayOf("Lihat")
-                } else if (!isIFamily && hutang.hutangEditableis && isIPenghutang) {
-                    arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
-                } else if (!isIFamily && !hutang.hutangEditableis && isIPenghutang) {
-                    arrayOf("Lihat", "Bayar", "Hapus")
-                } else if (!isIFamily && hutang.hutangEditableis && isIPiutang) {
-                    arrayOf("Ubah", "Lihat", "Hapus")
-                } else if (!isIFamily && !hutang.hutangEditableis && isIPiutang) {
-                    arrayOf("Lihat", "Hapus")
-                } else {
-                    arrayOf("Lihat")
-                }
+                    if (isIFamily && hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Detail", "Lihat")
+                    } else if (isIFamily && !hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else if (!isIFamily && hutang.hutangEditableis && isIPenghutang) {
+                        arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
+                    } else if (!isIFamily && !hutang.hutangEditableis && isIPenghutang) {
+                        arrayOf("Lihat", "Bayar", "Hapus")
+                    } else if (!isIFamily && hutang.hutangEditableis && isIPiutang) {
+                        arrayOf("Ubah", "Lihat", "Hapus")
+                    } else if (!isIFamily && !hutang.hutangEditableis && isIPiutang) {
+                        arrayOf("Lihat", "Hapus")
+                    } else if (!isIFamily && isLunas && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else {
+                        arrayOf("Lihat")
+                    }
             Utils.listDialog(mActivity, strings) { _, which ->
                 when (strings[which]) {
                     "Ubah" -> {
@@ -302,7 +303,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                         mView.onHutangBayarClick(hutang)
                     }
                     "Hapus" -> {
-                        mView.onHutangHapusClick(hutang, position)
+                        mView.onHutangHapusClick(hutang, position, (!hutang.creditorApprovalDelete || !hutang.debtorApprovalDelete))
                     }
                 }
             }

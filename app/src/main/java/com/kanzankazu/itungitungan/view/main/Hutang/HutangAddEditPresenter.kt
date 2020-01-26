@@ -19,29 +19,28 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
     override fun saveEditHutang(hutang: Hutang, isEdit: Boolean) {
         mView.showProgressDialogView()
         if (!isEdit) {
-            FirebaseDatabaseHandler.setHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
-                override fun onSuccess(message: String?) {
+            FirebaseDatabaseHandler.setHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                override fun onSuccessSaveUpdate(message: String?) {
                     mView.dismissProgressDialogView()
                     mView.showSnackbarView(message)
                     mActivity.finish()
                 }
 
-                override fun onFailure(message: String?) {
+                override fun onFailureSaveUpdate(message: String?) {
                     mView.dismissProgressDialogView()
                     mView.showSnackbarView(message)
                 }
             })
         } else {
-            FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
-                override fun onSuccess(message: String?) {
+            FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                override fun onSuccessSaveUpdate(message: String?) {
                     mView.dismissProgressDialogView()
                     mView.showSnackbarView(message)
                     mActivity.finish()
                 }
 
-                override fun onFailure(message: String?) {
+                override fun onFailureSaveUpdate(message: String?) {
                     mView.dismissProgressDialogView()
-                    mView.showSnackbarView(message)
                 }
             })
         }

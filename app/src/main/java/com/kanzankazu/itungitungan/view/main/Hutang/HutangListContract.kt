@@ -9,7 +9,7 @@ interface HutangListContract {
     interface View : BaseViewContract {
         fun onHutangUbahClick(hutang: Hutang)
         fun onHutangBayarClick(hutang: Hutang)
-        fun onHutangHapusClick(hutang: Hutang, position: Int)
+        fun onHutangHapusClick(hutang: Hutang, position: Int, isHasReqDelete: Boolean)
         fun onHutangFilter(hutangs: MutableList<Hutang>)
         fun onHutangLihatClick(hutang: Hutang)
         fun onHutangApproveNewClick(hutang: Hutang)

@@ -12,7 +12,7 @@
         android:padding="@dimen/padding_margin_5dp">
 
         <ImageView
-            android:id="@+id/iv"
+            android:id="@+id/iv_splash"
             android:layout_width="@dimen/padding_margin_50dp"
             android:layout_height="@dimen/padding_margin_50dp"
             android:layout_gravity="center_horizontal"

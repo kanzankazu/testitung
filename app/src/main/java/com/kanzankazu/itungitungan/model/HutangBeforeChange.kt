@@ -4,4 +4,4 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class HutangBackup(val hutang: Hutang) : Parcelable
+data class HutangBeforeChange(val hutang: Hutang) : Parcelable

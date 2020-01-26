@@ -1,16 +1,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:layout_gravity="center|top"
-    android:layout_marginEnd="@dimen/padding_margin_5dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:padding="@dimen/padding_margin_5dp">
 
     <ImageView
         android:id="@+id/civ_item_image_add"
-        android:layout_width="@dimen/padding_margin_90dp"
-        android:layout_height="100dp"
+        android:layout_width="@dimen/padding_margin_100dp"
+        android:layout_height="@dimen/padding_margin_100dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_add_photo" />
+        android:src="@drawable/ic_add_photo"
+        tools:src="@tools:sample/avatars" />
 
 </FrameLayout>
 

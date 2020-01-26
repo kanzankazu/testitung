@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ItungItungan</string>
     <string name="package_name">com.kanzankazu.itungitungan</string>
+    <string name="app_version">%s_%s</string>
 
     <!--SDK-->
     <string name="facebook_app_id">2506960146067219</string>
@@ -32,7 +33,6 @@
     <string name="message_signout_failed">Keluar gagal</string>
     <string name="message_revoke_success">Batal Berhasil</string>
     <string name="message_no_internet_network">Tidak ada jaringan internet</string>
-    <string name="message_image_save_failed">gambar gagal disimpan</string>
     <string name="message_database_save_success">Data berhasil disimpan</string>
     <string name="message_database_save_failed">Data gagal disimpan</string>
     <string name="message_database_update_success">Data berhasil diperbaharui</string>
@@ -51,6 +51,8 @@
     <string name="message_phone_number_exist_used_another_account">No. Dipakai beberapa akun</string>
     <string name="message_welcome">Selamat datang %s di Itung-itungan</string>
     <string name="message_picture_failed">Terjadi kesalahan saat memproses gambar Anda, Silahkan coba lagi</string>
+    <string name="message_image_save_success">gambar berhasil disimpan</string>
+    <string name="message_image_save_failed">gambar gagal disimpan</string>
     <string name="message_image_get_failed">Terjadi kesalahan saat memproses gambar Anda</string>
     <string name="message_its_you">Ini anda</string>
     <string name="message_its_you_family">Ini keluarga anda</string>
@@ -86,6 +88,7 @@
     <string name="note">Catatan</string>
     <string name="due_date">Tanggal jatuh tempo :</string>
     <string name="installment">Cicilan ke :</string>
+    <string name="hutang_pay_to">%s dari %s</string>
 
 
 </resources>

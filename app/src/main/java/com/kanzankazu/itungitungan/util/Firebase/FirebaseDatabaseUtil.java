@@ -9,16 +9,24 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 public class FirebaseDatabaseUtil {
 
-    public static DatabaseReference getRootRef() {
+    static DatabaseReference getRootRef() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        /*if (isPersistance)*/
-        /*    firebaseDatabase.setPersistenceEnabled(isPersistance);*/
 
         DatabaseReference reference = firebaseDatabase.getReference();
-        /*if (isKeepSync)
-            reference.keepSynced(isKeepSync);*/
 
         return reference;
+    }
+
+    public interface ValueListenerStringSaveUpdate {
+        void onSuccessSaveUpdate(String message);
+
+        void onFailureSaveUpdate(String message);
+    }
+
+    public interface ValueListenerStringDelete {
+        void onSuccessDelete(String message);
+
+        void onFailureDelete(String message);
     }
 
     public interface ValueListenerString {

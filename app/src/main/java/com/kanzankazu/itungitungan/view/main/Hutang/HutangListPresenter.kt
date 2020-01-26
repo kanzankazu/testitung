@@ -65,12 +65,12 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                 hutang.debtorApprovalNew = true
             }
 
-            FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
-                override fun onSuccess(message: String?) {
+            FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                override fun onSuccessSaveUpdate(message: String?) {
                     mView.showToastView(message)
                 }
 
-                override fun onFailure(message: String?) {
+                override fun onFailureSaveUpdate(message: String?) {
                     mView.showToastView(message)
                 }
             })
@@ -93,12 +93,12 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.debtorApprovalEdit = true
         }
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
-            override fun onSuccess(message: String?) {
+        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+            override fun onSuccessSaveUpdate(message: String?) {
                 mView.showToastView(message)
             }
 
-            override fun onFailure(message: String?) {
+            override fun onFailureSaveUpdate(message: String?) {
                 mView.showToastView(message)
             }
         })
@@ -111,23 +111,23 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
         val isIFamily = if (!hutang.hutangKeluargaId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
         val isDataPenghutang = hutang.hutangRadioIndex == 0
 
-        if (!isCancel) {
+        if (isCancel) {
+            hutang.debtorApprovalDelete = true
+            hutang.creditorApprovalDelete = true
+        } else {
             if (isIPiutang) {
                 hutang.debtorApprovalDelete = false
             } else if (isIPenghutang) {
                 hutang.creditorApprovalDelete = false
             }
-        } else {
-            hutang.debtorApprovalDelete = true
-            hutang.creditorApprovalDelete = true
         }
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
-            override fun onSuccess(message: String?) {
+        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+            override fun onSuccessSaveUpdate(message: String?) {
                 mView.showToastView(message)
             }
 
-            override fun onFailure(message: String?) {
+            override fun onFailureSaveUpdate(message: String?) {
                 mView.showToastView(message)
             }
         })
@@ -146,13 +146,13 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.creditorApprovalDelete = true
         }
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerString {
-            override fun onSuccess(message: String?) {
+        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+            override fun onSuccessSaveUpdate(message: String?) {
                 hapusHutangCheckImage(hutang)
                 mView.showToastView(message)
             }
 
-            override fun onFailure(message: String?) {
+            override fun onFailureSaveUpdate(message: String?) {
                 mView.showToastView(message)
             }
         })
@@ -178,7 +178,11 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     }
 
     private fun hapusHutang(hutang: Hutang) {
-        FirebaseDatabaseHandler.removeHutang(mActivity, hutang.hId, object : FirebaseDatabaseUtil.ValueListenerString {
+        FirebaseDatabaseHandler.removeHutang(mActivity, hutang.hId, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate, FirebaseDatabaseUtil.ValueListenerString {
+            override fun onSuccessSaveUpdate(message: String?) {}
+
+            override fun onFailureSaveUpdate(message: String?) {}
+
             override fun onSuccess(message: String?) {
                 mView.dismissProgressDialogView()
                 mView.showSnackbarView(message)
