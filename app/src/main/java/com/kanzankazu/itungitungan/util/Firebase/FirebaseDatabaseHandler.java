@@ -108,7 +108,6 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     UserPreference.getInstance().setUid(user.getUId());
                     UserPreference.getInstance().setEmail(user.getEmail());
                     UserPreference.getInstance().setName(user.getName());
-                    UserPreference.getInstance().setIsLogin(true);
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getUid());
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getEmail());
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getName());

@@ -200,12 +200,12 @@ public class UserPreference {
         return getSharedPrefBoolean(Constants.SharedPreference.LOGIN);
     }
 
-    public Boolean getIsOtp() {
-        return getSharedPrefBoolean(Constants.SharedPreference.OTP_STATUS);
-    }
-
     public void setIsOtp(Boolean otpStatus) {
         putSharedPrefBoolean(Constants.SharedPreference.OTP_STATUS, otpStatus);
+    }
+
+    public Boolean getIsOtp() {
+        return getSharedPrefBoolean(Constants.SharedPreference.OTP_STATUS);
     }
 
 

@@ -5,12 +5,21 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
+import com.kanzankazu.itungitungan.view.base.BaseFragment
+import retrofit2.Call
 
-class DashboardFragment : Fragment() {
+class DashboardFragment : BaseFragment(), DashboardFragmentContract.View, FirebaseDatabaseUtil.ValueListenerData {
+    override fun onSuccess(dataSnapshot: DataSnapshot?) {}
+
+    override fun onFailure(message: String?) {}
 
     private var mParam1: String? = ""
     private var mParam2: String? = ""
+    
+    var mPresenter = DashboardFragmentPresenter(mActivity,this)
 
     companion object {
         val ARG_PARAM1 = "param1"
@@ -21,17 +30,13 @@ class DashboardFragment : Fragment() {
             val args = Bundle()
             args.putString(ARG_PARAM1, param1)
             args.putString(ARG_PARAM2, param2)
-            fragment.setArguments(args)
+            fragment.arguments = args
             return fragment
         }
 
         fun newInstance(): Fragment {
             return DashboardFragment()
         }
-    }
-
-    fun DashboardFragment() {
-        // Required empty public constructor
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,27 +54,22 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initComponent()
-        initParam()
-        initSession()
-        initContent()
+        initView()
         initListener()
     }
 
-    private fun initComponent() {
+    override fun showToastView(message: String?) {showToast(message)}
 
-    }
+    override fun showSnackbarView(message: String?) {showSnackbar(message)}
 
-    private fun initParam() {
+    override fun showRetryDialogView(call: Call<*>?) {}
 
-    }
+    override fun showProgressDialogView() {showProgressDialog()}
 
-    private fun initSession() {
+    override fun dismissProgressDialogView() {dismissProgressDialog()}
 
-    }
-
-    private fun initContent() {
-
+    private fun initView() {
+        mPresenter.getHutang(this)
     }
 
     private fun initListener() {
