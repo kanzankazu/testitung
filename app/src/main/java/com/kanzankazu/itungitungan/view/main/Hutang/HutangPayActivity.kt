@@ -27,6 +27,11 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
     private var hutang: Hutang = Hutang()
     private var mCurrentPhotoPath: String = ""
     private var mCurrentPhotoPathUri: Uri? = null
+
+    private var nominalYangDiBayarkan: Int = 0
+    private var nominalTotalPembayaran: Int = 0
+    private var nominalSudahDiBayarkan: Int = 0
+
     private lateinit var pictureUtil2: PictureUtil2
     private lateinit var payNoteAdapter: HutangPayNoteAdapter
     private lateinit var imageListAdapter: ImageListAdapter
@@ -70,10 +75,16 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
     override fun onClick(v: View?) {
         when (v) {
             tv_hutang_pay -> {
-                mPresenter.saveSubHutangValidate(isNew, huCil, hutang,
+                mPresenter.saveSubHutangValidate(
+                        isNew,
+                        huCil,
+                        hutang,
                         tv_hutang_pay_cicilan_ke,
                         et_hutang_pay_nominal,
-                        et_hutang_pay_note, imageListAdapter, this)
+                        et_hutang_pay_note,
+                        imageListAdapter,
+                        this
+                )
             }
         }
     }
@@ -134,15 +145,20 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
     }
 
     private fun setBundleData() {
-        civ_hutang_pay_user.setImageDrawable(Utils.getInitialNameDrawable(hutang.debtorName))
-        et_hutang_pay_nominal.setText(if (hutang.hutangCicilanIs) Utils.setRupiah(hutang.hutangCicilanNominal) else Utils.setRupiah(hutang.hutangNominal))
-        if (hutang.hutangCicilanIs) {
-            var nominalSudahDiBayarkan = 0
-            for (models in hutang.hutangPembayaranSub) {
-                nominalSudahDiBayarkan += models.paymentNominal.toInt()
-            }
-            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(hutang.hutangNominal) + " & total sudah di bayarkan = " + nominalSudahDiBayarkan
+        nominalTotalPembayaran = if (hutang.hutangCicilanIs) {
+            hutang.hutangCicilanNominal.toInt() * hutang.hutangCicilanBerapaKali.toInt()
+        } else {
+            hutang.hutangNominal.toInt()
+        }
 
+        for (models in hutang.hutangPembayaranSub) {
+            nominalSudahDiBayarkan += models.paymentNominal.toInt()
+        }
+
+        civ_hutang_pay_user.setImageDrawable(Utils.getInitialNameDrawable(hutang.debtorName))
+        et_hutang_pay_nominal.setText(if (hutang.hutangCicilanIs) Utils.setRupiah(hutang.hutangCicilanNominal) else Utils.setRupiah((nominalTotalPembayaran - nominalSudahDiBayarkan).toString()))
+        if (hutang.hutangCicilanIs) {
+            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
             ll_hutang_pay_cicilan.visibility = View.VISIBLE
             tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_to, (hutang.hutangPembayaranSub.size + 1).toString(), hutang.hutangCicilanBerapaKali)
             tv_hutang_pay_cicilan_type.text = hutang.hutangCicilanBerapaKaliType
@@ -153,8 +169,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
                 ll_hutang_pay_due_dt.visibility = View.GONE
             }
         } else {
-            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(hutang.hutangNominal)
-
+            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
             ll_hutang_pay_cicilan.visibility = View.GONE
         }
     }

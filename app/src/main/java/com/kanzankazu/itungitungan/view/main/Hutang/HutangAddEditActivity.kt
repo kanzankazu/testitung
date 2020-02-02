@@ -177,7 +177,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     }
 
     private fun setBundleData() {
-        if (hutang.hutangRadioIndex == 0) {
+        if (isIPenghutang) {
             if (hutang.creditorId.isEmpty() || hutang.creditorId.equals(UserPreference.getInstance().uid, true)) {
                 et_hutang_add_user.setText(hutang.creditorName)
                 userInvite.name = hutang.creditorName
@@ -192,9 +192,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 setCheckSuggestUsers(user)
             }
 
-            if (!hutang.creditorFamilyId.isEmpty()) {
+            if (!hutang.debtorFamilyId.isEmpty()) {
                 iv_hutang_add_family_clear.visibility = View.VISIBLE
-                et_hutang_add_user_family.setText(hutang.creditorFamilyName)
+                et_hutang_add_user_family.setText(hutang.debtorFamilyName)
             } else {
                 iv_hutang_add_family_clear.visibility = View.GONE
             }
@@ -213,9 +213,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 setCheckSuggestUsers(user)
             }
 
-            if (!hutang.debtorFamilyId.isEmpty()) {
+            if (!hutang.creditorFamilyId.isEmpty()) {
                 iv_hutang_add_family_clear.visibility = View.VISIBLE
-                et_hutang_add_user_family.setText(hutang.debtorFamilyName)
+                et_hutang_add_user_family.setText(hutang.creditorFamilyName)
             } else {
                 iv_hutang_add_family_clear.visibility = View.GONE
             }
