@@ -48,13 +48,13 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         String uid = UserPreference.getInstance().getUid();
         FirebaseDatabaseHandler.setFCMTokenUser(uid, token, new FirebaseDatabaseUtil.ValueListenerString() {
             @Override
-            public void onSuccess(String message) {
-                Log.d("Lihat", "onSuccess MyFirebaseInstanceIDService : " + message);
+            public void onSuccessString(String message) {
+                Log.d("Lihat", "onSuccessString MyFirebaseInstanceIDService : " + message);
             }
 
             @Override
-            public void onFailure(String message) {
-                Log.d("Lihat", "onFailure MyFirebaseInstanceIDService : " + message);
+            public void onFailureString(String message) {
+                Log.d("Lihat", "onFailureString MyFirebaseInstanceIDService : " + message);
             }
         });
     }

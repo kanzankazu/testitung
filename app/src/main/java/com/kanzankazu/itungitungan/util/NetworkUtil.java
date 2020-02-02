@@ -37,21 +37,16 @@ public class NetworkUtil {
      * These constants aren't yet available in my API level (7), but I need to
      * handle these cases if they come up, on newer versions
      */
-    public static final int NETWORK_TYPE_EHRPD = 14; // Level 11
-    public static final int NETWORK_TYPE_EVDO_B = 12; // Level 9
-    public static final int NETWORK_TYPE_HSPAP = 15; // Level 13
-    public static final int NETWORK_TYPE_IDEN = 11; // Level 8
-    public static final int NETWORK_TYPE_LTE = 13; // Level 11
+    private static final int NETWORK_TYPE_EHRPD = 14; // Level 11
+    private static final int NETWORK_TYPE_EVDO_B = 12; // Level 9
+    private static final int NETWORK_TYPE_HSPAP = 15; // Level 13
+    private static final int NETWORK_TYPE_IDEN = 11; // Level 8
+    private static final int NETWORK_TYPE_LTE = 13; // Level 11
     private static final String IPV4_BASIC_PATTERN_STRING =
             "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}" + // initial 3 fields, 0-255 followed by .
                     "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"; // final field, 0-255
     private static final Pattern IPV4_PATTERN = Pattern.compile("^" + IPV4_BASIC_PATTERN_STRING + "$");
     private static int LoopCurrentIP;
-    private final Context context;
-
-    public NetworkUtil(Context context) {
-        this.context = context;
-    }
 
     /**
      * CHECK CONNECTION
@@ -101,10 +96,8 @@ public class NetworkUtil {
         try {
             Process p1 = Runtime.getRuntime().exec("ping -c 1 www.google.com");
             int returnVal = p1.waitFor();
-            boolean reachable = (returnVal == 0);
-            return reachable;
+            return (returnVal == 0);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return false;
@@ -119,9 +112,7 @@ public class NetworkUtil {
             Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
             int exitValue = ipProcess.waitFor();
             return (exitValue == 0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return false;
@@ -494,6 +485,7 @@ public class NetworkUtil {
             setMobileDataEnabledMethod.setAccessible(b);
             setMobileDataEnabledMethod.invoke(iConnectivityManager, b);
         } catch (Exception e) {
+            e.printStackTrace();
         }
         /*try {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);

@@ -367,14 +367,14 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
         if (isConnected(mActivity, this)) {
             FirebaseDatabaseHandler.logOutUser(mActivity, new FirebaseDatabaseUtil.ValueListenerString() {
                 @Override
-                public void onSuccess(String message) {
+                public void onSuccessString(String message) {
                     mAuth.signOut();
                     UserPreference.getInstance().signout();
                     mListener.uiSignOutSuccess(isRefresh);
                 }
 
                 @Override
-                public void onFailure(String message) {
+                public void onFailureString(String message) {
                     mListener.uiSignOutFailed(message);
                 }
             });

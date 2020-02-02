@@ -15,6 +15,7 @@ interface HutangListContract {
         fun onHutangApproveNewClick(hutang: Hutang)
         fun onHutangApproveEditClick(hutang: Hutang)
         fun onHutangApproveDeleteClick(hutang: Hutang)
+        fun onHutangApprovePayClick(hutang: Hutang)
         fun setAllHutangs(hutangs: ArrayList<Hutang>)
         fun setTotalPiuHutang(hutang: Hutang)
         fun setZeroHutangs()
@@ -28,6 +29,7 @@ interface HutangListContract {
         fun approveHutangEdit(hutang: Hutang, isCancel: Boolean)
         fun requestHutangHapus(hutang: Hutang, isCancel: Boolean)
         fun approveHutangHapus(hutang: Hutang)
+        fun approveHutangCicilanPay(hutang: Hutang)
     }
 
     interface Interactor {

@@ -102,19 +102,23 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     override fun onHutangLihatClick(hutang: Hutang) {
-        detailDialog(hutang, isApproveNew = false, isApproveEdit = false, isApproveDelete = false)//lihat
+        detailDialog(hutang, false, false, false, false)//lihat
     }
 
     override fun onHutangApproveNewClick(hutang: Hutang) {
-        detailDialog(hutang, isApproveNew = true, isApproveEdit = false, isApproveDelete = false)//approve
+        detailDialog(hutang, true, false, false, false)//approve
     }
 
     override fun onHutangApproveEditClick(hutang: Hutang) {
-        detailDialog(hutang, isApproveNew = false, isApproveEdit = true, isApproveDelete = false)//approve
+        detailDialog(hutang, false, true, false, false)//approve
     }
 
     override fun onHutangApproveDeleteClick(hutang: Hutang) {
-        detailDialog(hutang, isApproveNew = false, isApproveEdit = false, isApproveDelete = true)//approve
+        detailDialog(hutang, false, false, true, false)//approve
+    }
+
+    override fun onHutangApprovePayClick(hutang: Hutang) {
+        detailDialog(hutang, false, false, false, true)
     }
 
     override fun setAllHutangs(hutangs: ArrayList<Hutang>) {
@@ -127,23 +131,16 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     override fun setTotalPiuHutang(hutang: Hutang) {
-        val isIInclude = if (!hutang.debtorCreditorId.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
         val isIPenghutang = if (!hutang.debtorId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
         val isIPiutang = if (!hutang.creditorId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
-        val isIFamily = if (!hutang.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
-        val isDataPenghutang = hutang.hutangRadioIndex == 0
+        val isIPenghutangFamily = if (!hutang.debtorFamilyId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorFamilyId, true) else false
+        val isIPiutangFamily = if (!hutang.creditorFamilyId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorFamilyId, true) else false
 
         if (!hutang.hutangNominal.isEmpty()) {
-            if (isIPenghutang) {
+            if (isIPenghutang || isIPenghutangFamily) {
                 hutangNominal += hutang.hutangNominal.toInt()
-            } else if (isIPiutang) {
+            } else if (isIPiutang || isIPiutangFamily) {
                 piutangNominal += hutang.hutangNominal.toInt()
-            } else if (isIFamily) {
-                if (isDataPenghutang) {
-                    hutangNominal += hutang.hutangNominal.toInt()
-                } else {
-                    piutangNominal += hutang.hutangNominal.toInt()
-                }
             }
 
             tv_hutang_list_hutang.text = Utils.setRupiah(hutangNominal.toString())
@@ -241,7 +238,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     }
 
-    private fun detailDialog(hutang: Hutang, isApproveNew: Boolean, isApproveEdit: Boolean, isApproveDelete: Boolean) {
+    private fun detailDialog(hutang: Hutang, isApproveNew: Boolean, isApproveEdit: Boolean, isApproveDelete: Boolean, isApprovePay: Boolean) {
         try {
             //val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
             //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -288,6 +285,11 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 }
                 isApproveDelete -> {
                     tvHutangDetailDialogTitle.text = "Persetujuan HUTANG Piutang Hapus"
+                    tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
+                    tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
+                }
+                isApprovePay -> {
+                    tvHutangDetailDialogTitle.text = "Persetujuan Pembayaran Hutang"
                     tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
                     tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
                 }
@@ -387,6 +389,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                     isApproveNew -> mPresenter.approveHutangNew(hutang, false)
                     isApproveEdit -> mPresenter.approveHutangEdit(hutang, false)
                     isApproveDelete -> mPresenter.approveHutangHapus(hutang)
+                    isApprovePay -> mPresenter.approveHutangCicilanPay(hutang)
                     else -> moveToHutangAdd(hutang)
                 }
             }

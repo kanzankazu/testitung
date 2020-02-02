@@ -32,12 +32,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d("Lihat", "onDataChange User isExistUser : " + dataSnapshot.getChildrenCount());
-                        listenerData.isExist(dataSnapshot.exists());
+                        listenerData.onSuccessExist(dataSnapshot.exists());
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listenerData.onFailure(databaseError.getMessage());
+                        listenerData.onFailureExist(databaseError.getMessage());
                     }
                 });
     }
@@ -50,12 +50,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d("Lihat", "onDataChange User isExistEmail : " + dataSnapshot.getChildrenCount());
-                        listenerTrueFalse.isExist(dataSnapshot.exists());
+                        listenerTrueFalse.onSuccessExist(dataSnapshot.exists());
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listenerTrueFalse.onFailure(databaseError.getMessage());
+                        listenerTrueFalse.onFailureExist(databaseError.getMessage());
                     }
                 });
     }
@@ -68,12 +68,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d("Lihat", "onDataChange User isExistPhone : " + dataSnapshot.getChildrenCount());
-                        listenerData.isExist(dataSnapshot.exists());
+                        listenerData.onSuccessExist(dataSnapshot.exists());
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listenerData.onFailure(databaseError.getMessage());
+                        listenerData.onFailureExist(databaseError.getMessage());
                     }
                 });
     }
@@ -86,12 +86,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d("Lihat", "onDataChange User isExistPhone : " + dataSnapshot.getChildrenCount());
-                        listenerData.onSuccess(dataSnapshot);
+                        listenerData.onSuccessData(dataSnapshot);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listenerData.onFailure(databaseError.getMessage());
+                        listenerData.onFailureData(databaseError.getMessage());
                     }
                 });
     }
@@ -104,7 +104,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 .child(user.getUId())
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> {
-                    listenerString.onSuccess(mActivity.getString(R.string.message_database_save_success));
+                    listenerString.onSuccessString(mActivity.getString(R.string.message_database_save_success));
                     UserPreference.getInstance().setUid(user.getUId());
                     UserPreference.getInstance().setEmail(user.getEmail());
                     UserPreference.getInstance().setName(user.getName());
@@ -113,17 +113,15 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getEmail());
                     Log.d("Lihat", "setUser User : " + UserPreference.getInstance().getName());
                 })
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+                .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
     }
 
     private static void setUserLogout(Activity mActivity, User user, ValueListenerString listenerString) {
         getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(user.getUId())
                 .setValue(user)
-                .addOnSuccessListener(aVoid -> {
-                    listenerString.onSuccess(mActivity.getString(R.string.message_database_save_success));
-                })
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+                .addOnSuccessListener(aVoid -> listenerString.onSuccessString(mActivity.getString(R.string.message_database_save_success)))
+                .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
 
     }
 
@@ -131,23 +129,23 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(user.getUId())
                 .setValue(user)
-                .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_update_success)))
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+                .addOnSuccessListener(aVoid -> listenerString.onSuccessString(mActivity.getString(R.string.message_database_update_success)))
+                .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
     }
 
     public static void removeUser(Activity mActivity, String uid, ValueListenerString listenerString) {
         getRootRef().child(Constants.FirebaseDatabase.TABLE.USER)
                 .child(uid)
                 .removeValue()
-                .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_delete_success)))
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+                .addOnSuccessListener(aVoid -> listenerString.onSuccessString(mActivity.getString(R.string.message_database_delete_success)))
+                .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
     }
 
     public static void logOutUser(Activity mActivity, ValueListenerString listenerString) {
         String uid = UserPreference.getInstance().getUid();
         getUserByUid(uid, new FirebaseDatabaseUtil.ValueListenerDataTrueFalse() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot, Boolean isExsist) {
+            public void onSuccessDataExist(DataSnapshot dataSnapshot, Boolean isExsist) {
                 User user = dataSnapshot.getValue(User.class);
                 user.setTokenFcm("");
                 user.setSignIn(false);
@@ -156,8 +154,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
             }
 
             @Override
-            public void onFailure(String message) {
-                listenerString.onFailure(message);
+            public void onFailureDataExist(String message) {
+                listenerString.onFailureString(message);
             }
         });
     }
@@ -169,12 +167,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d("Lihat", "onDataChange User getUserByUid : " + dataSnapshot.getChildrenCount());
-                        listenerData.onSuccess(dataSnapshot, dataSnapshot.exists());
+                        listenerData.onSuccessDataExist(dataSnapshot, dataSnapshot.exists());
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listenerData.onFailure(databaseError.getMessage());
+                        listenerData.onFailureDataExist(databaseError.getMessage());
                     }
                 });
     }
@@ -189,9 +187,9 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         Log.d("Lihat", "onDataChange User getUserByEmail : " + dataSnapshot.getChildrenCount());
 
                         if (dataSnapshot.getChildrenCount() < 1) {
-                            listenerData.onFailure(activity.getString(R.string.message_database_data_cant_find));
+                            listenerData.onFailureData(activity.getString(R.string.message_database_data_cant_find));
                         } else if (dataSnapshot.getChildrenCount() > 1) {
-                            listenerData.onFailure(activity.getString(R.string.message_database_data_over));
+                            listenerData.onFailureData(activity.getString(R.string.message_database_data_over));
                         } else {
                             List<User> users = new ArrayList<>();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -201,16 +199,16 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
                             User user = users.get(0);
                             if (user.getUId().equalsIgnoreCase(UserPreference.getInstance().getUid())) {
-                                listenerData.onFailure(activity.getString(R.string.message_its_you));
+                                listenerData.onFailureData(activity.getString(R.string.message_its_you));
                             } else {
-                                listenerData.onSuccess(user);
+                                listenerData.onSuccessData(user);
                             }
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listenerData.onFailure(databaseError.getMessage());
+                        listenerData.onFailureData(databaseError.getMessage());
                     }
                 });
     }
@@ -225,9 +223,9 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         Log.d("Lihat", "onDataChange User getUserByPhone : " + dataSnapshot.getChildrenCount());
 
                         if (dataSnapshot.getChildrenCount() < 1) {
-                            listenerData.onFailure(activity.getString(R.string.message_database_data_cant_find));
+                            listenerData.onFailureData(activity.getString(R.string.message_database_data_cant_find));
                         } else if (dataSnapshot.getChildrenCount() > 1) {
-                            listenerData.onFailure(activity.getString(R.string.message_database_data_over));
+                            listenerData.onFailureData(activity.getString(R.string.message_database_data_over));
                         } else {
                             List<User> users = new ArrayList<>();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -237,16 +235,16 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
                             User user = users.get(0);
                             if (user.getUId().equalsIgnoreCase(UserPreference.getInstance().getUid())) {
-                                listenerData.onFailure(activity.getString(R.string.message_its_you));
+                                listenerData.onFailureData(activity.getString(R.string.message_its_you));
                             } else {
-                                listenerData.onSuccess(user);
+                                listenerData.onSuccessData(user);
                             }
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listenerData.onFailure(databaseError.getMessage());
+                        listenerData.onFailureData(databaseError.getMessage());
                     }
                 });
     }
@@ -264,12 +262,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                                 users.add(user);
                             }
 
-                            listenerData.onSuccess(dataSnapshot);
+                            listenerData.onSuccessData(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailure(databaseError.getMessage());
+                            listenerData.onFailureData(databaseError.getMessage());
                         }
                     });
         } else {
@@ -284,12 +282,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                                 users.add(user);
                             }*/
 
-                            listenerData.onSuccess(dataSnapshot);
+                            listenerData.onSuccessData(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailure(databaseError.getMessage());
+                            listenerData.onFailureData(databaseError.getMessage());
                         }
                     });
         }
@@ -309,12 +307,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                                 users.add(user);
                             }
 
-                            listenerData.onSuccess(dataSnapshot);
+                            listenerData.onSuccessData(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailure(databaseError.getMessage());
+                            listenerData.onFailureData(databaseError.getMessage());
                         }
                     });
         } else {
@@ -329,12 +327,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                                 users.add(user);
                             }*/
 
-                            listenerData.onSuccess(dataSnapshot);
+                            listenerData.onSuccessData(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailure(databaseError.getMessage());
+                            listenerData.onFailureData(databaseError.getMessage());
                         }
                     });
         }
@@ -345,14 +343,14 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 .child(uid)
                 .child(Constants.FirebaseDatabase.ROW.TOKEN_FCM)
                 .setValue(fcmToken)
-                .addOnSuccessListener(aVoid -> listenerString.onSuccess("FCM data berhasil disimpan"))
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+                .addOnSuccessListener(aVoid -> listenerString.onSuccessString("FCM data berhasil disimpan"))
+                .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
     }
 
     public static void setPhoneNumberUserValidate(Activity activity, String uid, String phone, ValueListenerString listenerString) {
         isExistPhone(phone, new FirebaseDatabaseUtil.ValueListenerData() {
             @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
+            public void onSuccessData(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     List<User> users = new ArrayList<>();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -363,13 +361,13 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     if (users.size() == 1) {
                         if (users.get(0) != null) {
                             if (users.get(0).getEmail().equalsIgnoreCase(UserPreference.getInstance().getEmail())) {
-                                listenerString.onSuccess(activity.getString(R.string.message_phone_number_save_success));
+                                listenerString.onSuccessString(activity.getString(R.string.message_phone_number_save_success));
                             } else {
-                                listenerString.onFailure(activity.getString(R.string.message_phone_number_exist, Utils.replace(users.get(0).getEmail())));
+                                listenerString.onFailureString(activity.getString(R.string.message_phone_number_exist, Utils.replace(users.get(0).getEmail())));
                             }
                         }
                     } else {
-                        listenerString.onFailure(activity.getString(R.string.message_phone_number_exist_used_another_account));
+                        listenerString.onFailureString(activity.getString(R.string.message_phone_number_exist_used_another_account));
                     }
                 } else {
                     setPhoneNumberUser(uid, phone, listenerString);
@@ -378,8 +376,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
             }
 
             @Override
-            public void onFailure(String message) {
-                listenerString.onFailure(message);
+            public void onFailureData(String message) {
+                listenerString.onFailureString(message);
             }
         });
     }
@@ -389,8 +387,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 .child(uid)
                 .child(Constants.FirebaseDatabase.ROW.PHONE)
                 .setValue(phone)
-                .addOnSuccessListener(aVoid -> listenerString.onSuccess("No Hp data berhasil disimpan"))
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+                .addOnSuccessListener(aVoid -> listenerString.onSuccessString("No Hp data berhasil disimpan"))
+                .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
     }
 
     /**
@@ -403,12 +401,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        listenerData.onSuccess(dataSnapshot);
+                        listenerData.onSuccessData(dataSnapshot);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listenerData.onFailure(databaseError.getMessage());
+                        listenerData.onFailureData(databaseError.getMessage());
                     }
                 });
     }
@@ -443,8 +441,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
                 .child(hid)
                 .removeValue()
-                .addOnSuccessListener(aVoid -> listenerString.onSuccess(mActivity.getString(R.string.message_database_delete_success)))
-                .addOnFailureListener(e -> listenerString.onFailure(e.getMessage()));
+                .addOnSuccessListener(aVoid -> listenerString.onSuccessString(mActivity.getString(R.string.message_database_delete_success)))
+                .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
     }
 
     public static void getHutang(String uId, Boolean isSingleCall, ValueListenerData listenerData) {
@@ -454,12 +452,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            listenerData.onSuccess(dataSnapshot);
+                            listenerData.onSuccessData(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailure(databaseError.getMessage());
+                            listenerData.onFailureData(databaseError.getMessage());
                         }
                     });
         } else {
@@ -468,12 +466,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            listenerData.onSuccess(dataSnapshot);
+                            listenerData.onSuccessData(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailure(databaseError.getMessage());
+                            listenerData.onFailureData(databaseError.getMessage());
                         }
                     });
         }
@@ -491,12 +489,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                                 hutangs.add(hutang);
                             }*/
 
-                            listenerData.onSuccess(dataSnapshot);
+                            listenerData.onSuccessData(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailure(databaseError.getMessage());
+                            listenerData.onFailureData(databaseError.getMessage());
                         }
                     });
         } else {
@@ -510,12 +508,12 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                                 hutangs.add(hutang);
                             }*/
 
-                            listenerData.onSuccess(dataSnapshot);
+                            listenerData.onSuccessData(dataSnapshot);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailure(databaseError.getMessage());
+                            listenerData.onFailureData(databaseError.getMessage());
                         }
                     });
 

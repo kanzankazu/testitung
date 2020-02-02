@@ -7,7 +7,7 @@ import android.view.View
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
-import com.kanzankazu.itungitungan.model.HutangCicilan
+import com.kanzankazu.itungitungan.model.HutangPembayaran
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.PictureUtil2
@@ -23,7 +23,7 @@ import java.io.File
 class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickListener, FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
     private var mPresenter: HutangPayPresenter = HutangPayPresenter(this, this)
     private var isNew: Boolean = false
-    private var huCil: HutangCicilan = HutangCicilan()
+    private var huCil: HutangPembayaran = HutangPembayaran()
     private var hutang: Hutang = Hutang()
     private var mCurrentPhotoPath: String = ""
     private var mCurrentPhotoPathUri: Uri? = null
@@ -137,18 +137,14 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
         civ_hutang_pay_user.setImageDrawable(Utils.getInitialNameDrawable(hutang.debtorName))
         et_hutang_pay_nominal.setText(if (hutang.hutangCicilanIs) Utils.setRupiah(hutang.hutangCicilanNominal) else Utils.setRupiah(hutang.hutangNominal))
         if (hutang.hutangCicilanIs) {
-        } else {
-        }
-
-        if (hutang.hutangCicilanIs) {
             var nominalSudahDiBayarkan = 0
-            for (models in hutang.hutangCicilanSub) {
+            for (models in hutang.hutangPembayaranSub) {
                 nominalSudahDiBayarkan += models.paymentNominal.toInt()
             }
-            tv_hutang_pay_total_nominal.text = "total hutang = " + Utils.setRupiah(hutang.hutangNominal) + " & total sudah di bayarkan = " + nominalSudahDiBayarkan
+            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(hutang.hutangNominal) + " & total sudah di bayarkan = " + nominalSudahDiBayarkan
 
             ll_hutang_pay_cicilan.visibility = View.VISIBLE
-            tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_to, (hutang.hutangCicilanSub.size + 1).toString(), hutang.hutangCicilanBerapaKali)
+            tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_to, (hutang.hutangPembayaranSub.size + 1).toString(), hutang.hutangCicilanBerapaKali)
             tv_hutang_pay_cicilan_type.text = hutang.hutangCicilanBerapaKaliType
             if (!hutang.hutangCicilanIsBayarKapanSaja) {
                 ll_hutang_pay_due_dt.visibility = View.VISIBLE
@@ -157,7 +153,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
                 ll_hutang_pay_due_dt.visibility = View.GONE
             }
         } else {
-            tv_hutang_pay_total_nominal.text = "total hutang = " + Utils.setRupiah(hutang.hutangNominal)
+            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(hutang.hutangNominal)
 
             ll_hutang_pay_cicilan.visibility = View.GONE
         }
@@ -180,14 +176,14 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
             huCil.hIdSub = hutang.hId + "_" + Date()
             huCil.hId = hutang.hId
             if (hutang.hutangCicilanIs) {
-                huCil.paymentInstallmentTo = tv_hutang_pay_cicilan_ke.text.toString().split(" dari ")[0].toInt()
+                huCil.paymentTo = tv_hutang_pay_cicilan_ke.text.toString().split(" dari ")[0].toInt()
             }
             huCil.paymentNominal = Utils.getRupiahToString(et_hutang_pay_nominal)
             huCil.paymentDesc = et_hutang_pay_note.text.toString().trim()
             huCil.approvalCreditor = false
             huCil.approvalDebtor = true
 
-            checkOverPay(et_hutang_pay_nominal)
+            checkStatusPay(et_hutang_pay_nominal)
 
             if (imageListAdapter.isNotEmptyData()) {
                 val imageRemove = imageListAdapter.getRemoveDataString(true)
@@ -218,7 +214,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
         }
     }
 
-    private fun checkOverPay(etHutangPayNominal: CurrencyEditText) {
+    private fun checkStatusPay(etHutangPayNominal: CurrencyEditText) {
         val nominalYangDiBayarkan = Utils.getRupiahToString(etHutangPayNominal).toInt()
         val nominalPembayaran: Int = if (hutang.hutangCicilanIs) {
             hutang.hutangCicilanNominal.toInt() * hutang.hutangCicilanBerapaKali.toInt()

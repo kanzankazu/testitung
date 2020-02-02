@@ -158,7 +158,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 isIInclude = if (hutang.debtorCreditorId.isNotEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
                 isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
                 isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
-                isIFamily = if (hutang.hutangKeluargaId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
+                isIFamily = if (hutang.creditorFamilyId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorFamilyId, true) else false
+                isIFamily = if (hutang.debtorFamilyId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorFamilyId, true) else false
                 isDataPenghutang = hutang.hutangRadioIndex == 0
             }
             //isFromValuationActivity = bundle.getBoolean(Constants.ScreenFlag.IS_FROM_VALUATION_ACTIVITY)
@@ -190,6 +191,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 }
                 setCheckSuggestUsers(user)
             }
+
+            if (!hutang.creditorFamilyId.isEmpty()) {
+                iv_hutang_add_family_clear.visibility = View.VISIBLE
+                et_hutang_add_user_family.setText(hutang.creditorFamilyName)
+            } else {
+                iv_hutang_add_family_clear.visibility = View.GONE
+            }
+
         } else {
             if (hutang.debtorId.isEmpty() || hutang.debtorId.equals(UserPreference.getInstance().uid, true)) {
                 et_hutang_add_user.setText(hutang.debtorName)
@@ -203,17 +212,20 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 user.email = hutang.debtorEmail
                 setCheckSuggestUsers(user)
             }
+
+            if (!hutang.debtorFamilyId.isEmpty()) {
+                iv_hutang_add_family_clear.visibility = View.VISIBLE
+                et_hutang_add_user_family.setText(hutang.debtorFamilyName)
+            } else {
+                iv_hutang_add_family_clear.visibility = View.GONE
+            }
+
         }
 
         et_hutang_add_nominal.setText(Utils.setRupiah(hutang.hutangNominal))
         et_hutang_add_desc.setText(hutang.hutangKeperluan)
         et_hutang_add_note.setText(hutang.hutangCatatan)
         et_hutang_add_date.setText(hutang.hutangPinjam)
-
-        if (!hutang.hutangKeluargaId.isEmpty()) {
-            iv_hutang_add_family_clear.visibility = View.VISIBLE
-            et_hutang_add_user_family.setText(hutang.hutangKeluargaNama)
-        }
 
         sw_hutang_add_editable.isChecked = hutang.hutangEditableis
 
@@ -380,7 +392,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             iv_hutang_add_user_clear.visibility = View.GONE
             userInvite = User()
 
-            if (isEdit && hutang.hutangRadioIndex == 0) {
+            if (isEdit && mPresenter.getRadioGroupIndex(rg_hutang_add_user) == 0) {
                 hutang.creditorName = ""
                 hutang.creditorId = ""
                 hutang.creditorEmail = ""
@@ -394,9 +406,12 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             et_hutang_add_user_family.setText("")
             iv_hutang_add_family_clear.visibility = View.GONE
 
-            if (isEdit && hutang.hutangKeluargaId.isNotEmpty()) {
-                hutang.hutangKeluargaId = ""
-                hutang.hutangKeluargaNama = ""
+            if (isEdit && hutang.debtorFamilyId.isNotEmpty() && mPresenter.getRadioGroupIndex(rg_hutang_add_user) == 0) {
+                hutang.debtorFamilyId = ""
+                hutang.debtorFamilyName = ""
+            } else if (isEdit && hutang.creditorFamilyId.isNotEmpty() && mPresenter.getRadioGroupIndex(rg_hutang_add_user) == 1) {
+                hutang.creditorFamilyId = ""
+                hutang.creditorFamilyName = ""
             }
         }
         iv_hutang_add_user.setOnClickListener { chooseDialogPickUserData() }
@@ -468,7 +483,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     }
 
     private fun setListTypeInstallmentCount(spinner: Spinner) {
-        listTypeInstallmentCount = arrayListOf(Constants.Installment.Month, Constants.Installment.Year, Constants.Installment.Day)
+        listTypeInstallmentCount = arrayListOf(Constants.Hutang.Installment.Month, Constants.Hutang.Installment.Year, Constants.Hutang.Installment.Day)
         val adapter = ArrayAdapter(this, R.layout.multiline_spinner_item, listTypeInstallmentCount)
         adapter.setDropDownViewResource(R.layout.multiline_spinner_item)
         spinner.adapter = adapter
@@ -476,9 +491,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 listTypeInstallmentCountPos = position
                 when (listTypeInstallmentCount[position]) {
-                    Constants.Installment.Day -> InputValidUtil.setEditTextMaxLenght(et_hutang_add_installment_count, 3)
-                    Constants.Installment.Month -> InputValidUtil.setEditTextMaxLenght(et_hutang_add_installment_count, 2)
-                    Constants.Installment.Year -> InputValidUtil.setEditTextMaxLenght(et_hutang_add_installment_count, 4)
+                    Constants.Hutang.Installment.Day -> InputValidUtil.setEditTextMaxLenght(et_hutang_add_installment_count, 3)
+                    Constants.Hutang.Installment.Month -> InputValidUtil.setEditTextMaxLenght(et_hutang_add_installment_count, 2)
+                    Constants.Hutang.Installment.Year -> InputValidUtil.setEditTextMaxLenght(et_hutang_add_installment_count, 4)
                 }
 
                 et_hutang_add_installment_count.setText("1")
@@ -493,12 +508,12 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         showProgressDialog()
         if (pickAccount == 0) {
             FirebaseDatabaseHandler.getUserByPhone(this, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
-                override fun onSuccess(dataSnapshot: Any?) {
+                override fun onSuccessData(dataSnapshot: Any?) {
                     dismissProgressDialog()
                     setCheckSuggestUsers(dataSnapshot)
                 }
 
-                override fun onFailure(message: String?) {
+                override fun onFailureData(message: String?) {
                     dismissProgressDialog()
                     showSnackbar(message)
                     et_hutang_add_user.setText("")
@@ -506,12 +521,12 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             })
         } else {
             FirebaseDatabaseHandler.getUserByEmail(this, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
-                override fun onSuccess(dataSnapshot: Any?) {
+                override fun onSuccessData(dataSnapshot: Any?) {
                     dismissProgressDialog()
                     setCheckSuggestUsers(dataSnapshot)
                 }
 
-                override fun onFailure(message: String?) {
+                override fun onFailureData(message: String?) {
                     dismissProgressDialog()
                     showSnackbar(message)
                     et_hutang_add_user.setText("")
@@ -525,9 +540,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         if (userInvite.uId.equals(UserPreference.getInstance().uid, true)) {
             showSnackbar(getString(R.string.message_its_you))
             userInvite = User()
-        } else if (hutang.hutangKeluargaId.isNotEmpty() && userInvite.uId.equals(hutang.hutangKeluargaId, true)) {
-            showSnackbar(getString(R.string.message_its_you_family))
-            userInvite = User()
+        } else if (mPresenter.getRadioGroupIndex(rg_hutang_add_user) == 0) {
+            if (hutang.creditorFamilyId.isNotEmpty() && userInvite.uId.equals(hutang.creditorFamilyId, true)) {
+                showSnackbar(getString(R.string.message_its_you_family))
+                userInvite = User()
+            } else if (hutang.debtorFamilyId.isNotEmpty() && userInvite.uId.equals(hutang.debtorFamilyId, true)) {
+                showSnackbar(getString(R.string.message_its_you_family))
+                userInvite = User()
+            }
         } else {
             iv_hutang_add_user_clear.visibility = View.VISIBLE
             et_hutang_add_user.setText(userInvite.name)
@@ -536,7 +556,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     private fun setSuggestUserFamily(completeTextView: AutoCompleteTextView) {
         FirebaseDatabaseHandler.getUsers(true, object : FirebaseDatabaseUtil.ValueListenerData {
-            override fun onSuccess(dataSnapshot: DataSnapshot?) {
+            override fun onSuccessData(dataSnapshot: DataSnapshot?) {
                 if (dataSnapshot != null) {
 
                     for (snapshot in dataSnapshot.children) {
@@ -547,12 +567,12 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                     userSuggestAdapter = UserSuggestAdapter(this@HutangAddEditActivity, R.layout.activity_hutang_add_edit, R.id.et_hutang_add_desc, userSuggest)
                     completeTextView.setAdapter(userSuggestAdapter)
                 } else {
-                    Log.d("Lihat", "onSuccess HutangAddEditActivity : " + "datasnapshot kosong")
+                    Log.d("Lihat", "onSuccessString HutangAddEditActivity : " + "datasnapshot kosong")
                 }
             }
 
-            override fun onFailure(message: String?) {
-                Log.d("Lihat", "onFailure HutangAddEditActivity : $message")
+            override fun onFailureData(message: String?) {
+                Log.d("Lihat", "onFailureString HutangAddEditActivity : $message")
             }
         })
         completeTextView.threshold = 3
@@ -566,23 +586,44 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             Log.d("Lihat", "setSuggestUserFamily HutangAddEditActivity : " + (parent.adapter.getItem(position) as User).uId)
             Log.d("Lihat", "setSuggestUserFamily HutangAddEditActivity : " + userSuggest[position])
 
-            hutang.hutangKeluargaNama = (parent.adapter.getItem(position) as User).name
-            hutang.hutangKeluargaId = (parent.adapter.getItem(position) as User).uId
+            if (mPresenter.getRadioGroupIndex(rg_hutang_add_user)==0){
+                hutang.debtorFamilyName = (parent.adapter.getItem(position) as User).name
+                hutang.debtorFamilyId = (parent.adapter.getItem(position) as User).uId
 
-            if (hutang.hutangKeluargaId.equals(UserPreference.getInstance().uid, true)) {
-                showSnackbar(getString(R.string.message_its_you))
-                hutang.hutangKeluargaId = ""
-                hutang.hutangKeluargaNama = ""
-                et_hutang_add_user_family.setText("")
-            } else if (!hutang.creditorId.isEmpty() || !hutang.debtorId.isEmpty()) {
-                if (hutang.hutangKeluargaId.equals(hutang.creditorId, true) || hutang.hutangKeluargaId.equals(hutang.debtorId, true)) {
-                    showSnackbar(getString(R.string.message_its_you_invite))
-                    hutang.hutangKeluargaId = ""
-                    hutang.hutangKeluargaNama = ""
+                if (hutang.debtorFamilyId.equals(UserPreference.getInstance().uid, true)) {
+                    showSnackbar(getString(R.string.message_its_you))
+                    hutang.debtorFamilyId = ""
+                    hutang.debtorFamilyName = ""
                     et_hutang_add_user_family.setText("")
+                } else if (!hutang.creditorId.isEmpty() || !hutang.debtorId.isEmpty()) {
+                    if (hutang.debtorFamilyId.equals(hutang.creditorId, true) || hutang.debtorFamilyId.equals(hutang.debtorId, true)) {
+                        showSnackbar(getString(R.string.message_its_you_invite))
+                        hutang.debtorFamilyId = ""
+                        hutang.debtorFamilyName = ""
+                        et_hutang_add_user_family.setText("")
+                    }
+                } else {
+                    iv_hutang_add_family_clear.visibility = View.VISIBLE
                 }
-            } else {
-                iv_hutang_add_family_clear.visibility = View.VISIBLE
+            }else{
+                hutang.creditorFamilyName = (parent.adapter.getItem(position) as User).name
+                hutang.creditorFamilyId = (parent.adapter.getItem(position) as User).uId
+
+                if (hutang.creditorFamilyId.equals(UserPreference.getInstance().uid, true)) {
+                    showSnackbar(getString(R.string.message_its_you))
+                    hutang.creditorFamilyId = ""
+                    hutang.creditorFamilyName = ""
+                    et_hutang_add_user_family.setText("")
+                } else if (!hutang.creditorId.isEmpty() || !hutang.creditorId.isEmpty()) {
+                    if (hutang.creditorFamilyId.equals(hutang.creditorId, true) || hutang.creditorFamilyId.equals(hutang.creditorId, true)) {
+                        showSnackbar(getString(R.string.message_its_you_invite))
+                        hutang.creditorFamilyId = ""
+                        hutang.creditorFamilyName = ""
+                        et_hutang_add_user_family.setText("")
+                    }
+                } else {
+                    iv_hutang_add_family_clear.visibility = View.VISIBLE
+                }
             }
         }
     }
@@ -682,8 +723,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
             calculateNominalCount()
 
-            hutang.hutangKeluargaId = hutang.hutangKeluargaId
-            hutang.hutangKeluargaNama = hutang.hutangKeluargaNama
+            hutang.creditorFamilyId = hutang.creditorFamilyId
+            hutang.creditorFamilyName = hutang.creditorFamilyName
+            hutang.debtorFamilyId = hutang.debtorFamilyId
+            hutang.debtorFamilyName = hutang.debtorFamilyName
 
             hutang.debtorCreditorId = hutang.debtorId + "_" + hutang.creditorId
 

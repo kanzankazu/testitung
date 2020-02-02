@@ -1,7 +1,6 @@
 package com.kanzankazu.itungitungan.util;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.support.annotation.AnimatorRes;
@@ -9,6 +8,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,19 +20,7 @@ import java.util.List;
 
 public class DialogUtil {
 
-    public static void generateCustomAlertDialog(Context context, View view, String title, Boolean twoButton, @Nullable DialogInterface.OnClickListener positiveListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(view);
-        builder.setTitle(title);
-        if (twoButton) {
-            builder.setPositiveButton(context.getText(R.string.confirm_yes), positiveListener != null ? positiveListener : (DialogInterface.OnClickListener) (dialogInterface, i) -> {
-                dialogInterface.dismiss();
-            });
-        }
-        builder.setNegativeButton(context.getText(R.string.confirm_no), (dialogInterface, i) -> dialogInterface.dismiss());
-    }
-
-    public static void dialogStandart(Activity activity, String title, String message, Boolean cancelable, dialogStandartListener listener) {
+    public static void makeDialogStandart(Activity activity, String title, String message, Boolean cancelable, dialogStandartListener listener) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
         dialog.setTitle(title);
         dialog.setMessage(message);
@@ -43,6 +31,37 @@ public class DialogUtil {
             dialogInterface.dismiss();
         });
         dialog.show();
+    }
+
+    public static void makeDialogStandart2Button(Activity activity, String title, String message, Boolean cancelable, String textButton1, String textButton2, dialogStandart2Listener listener) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
+        dialog.setTitle(title);
+        dialog.setMessage(message);
+        dialog.setCancelable(cancelable);
+        dialog.setPositiveButton(textButton1, (dialogInterface, i) -> {
+            //code here
+            listener.onClickButton1();
+            dialogInterface.dismiss();
+        });
+        if (!TextUtils.isEmpty(textButton2)) {
+            dialog.setNegativeButton(textButton2, (dialogInterface, i) -> {
+                listener.onClickButton2();
+                dialogInterface.dismiss();
+            });
+        }
+        dialog.show();
+    }
+
+    public static void makeDialogStandart2Button(Activity activity, View view, String title, Boolean twoButton, @Nullable DialogInterface.OnClickListener positiveListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setView(view);
+        builder.setTitle(title);
+        if (twoButton) {
+            builder.setPositiveButton(activity.getText(R.string.confirm_yes), positiveListener != null ? positiveListener : (DialogInterface.OnClickListener) (dialogInterface, i) -> {
+                dialogInterface.dismiss();
+            });
+        }
+        builder.setNegativeButton(activity.getText(R.string.confirm_no), (dialogInterface, i) -> dialogInterface.dismiss());
     }
 
     /*
@@ -121,6 +140,12 @@ public class DialogUtil {
 
     public interface dialogStandartListener {
         void onClickButton();
+    }
+
+    public interface dialogStandart2Listener {
+        void onClickButton1();
+
+        void onClickButton2();
     }
 
     public interface dialogRadioListener {
