@@ -66,9 +66,19 @@ public class Constants {
         String Stok = "Stok Barang";
     }
 
-    public interface Installment {
-        String Year = "Tahun";
-        String Month = "Bulan";
-        String Day = "Hari";
+    public interface Hutang {
+
+        interface Installment {
+            String Year = "Tahun";
+            String Month = "Bulan";
+            String Day = "Hari";
+
+        }
+
+        interface Status {
+            String Lunas = "Lunas";
+            String Berlebih = "Berlebih";
+            String Kurang = "Kurang";
+        }
     }
 }

@@ -7,5 +7,5 @@ public interface BasePresenterContractWOCheckMessage {
 
     void dismissProgressDialogPresenter();
 
-    void onNoConnection();
+    void onNoConnection(String message);
 }

@@ -7,7 +7,6 @@ import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
-import retrofit2.Call
 import java.util.*
 
 class HutangListPresenter(val mActivity: Activity, private val mView: HutangListContract.View) : HutangListContract.Presenter {
@@ -19,13 +18,14 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
         mView.dismissProgressDialogView()
     }
 
-    override fun onNoConnection() {
+    override fun onNoConnection(message: String?) {
+        mView.showSnackbarView(message)
     }
 
     override fun getAllHutang() {
         mView.showProgressDialogView()
         FirebaseDatabaseHandler.getHutangs(false, object : FirebaseDatabaseUtil.ValueListenerData {
-            override fun onSuccess(dataSnapshot: DataSnapshot) {
+            override fun onSuccessData(dataSnapshot: DataSnapshot) {
                 mView.dismissProgressDialogView()
 
                 mView.setZeroHutangs()
@@ -34,7 +34,11 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                 for (snapshot in dataSnapshot.children) {
                     val hutang = snapshot.getValue(Hutang::class.java)
                     if (hutang != null) {
-                        if (hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) || (hutang.hutangKeluargaId.isNotEmpty() && hutang.hutangKeluargaId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))) {
+                        if (
+                                hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) ||
+                                (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
+                                (hutang.debtorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase()
+                                ))) {
                             hutangs.add(hutang)
                             mView.setTotalPiuHutang(hutang)//from database
                         }
@@ -44,19 +48,33 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                 mView.setAllHutangs(hutangs)
             }
 
-            override fun onFailure(message: String?) {
+            override fun onFailureData(message: String?) {
                 mView.dismissProgressDialogView()
                 mView.showSnackbarView(message)
             }
         })
     }
 
+    override fun approveHutangCicilanPay(hutang: Hutang) {
+        for (i in hutang.hutangPembayaranSub.indices) {
+            hutang.hutangPembayaranSub[i].approvalCreditor = true
+        }
+
+        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+            override fun onSuccessSaveUpdate(message: String?) {
+                mView.showToastView(message)
+            }
+
+            override fun onFailureSaveUpdate(message: String?) {
+                mView.showToastView(message)
+            }
+        })
+
+    }
+
     override fun approveHutangNew(hutang: Hutang, isCancel: Boolean) {
-        val isIInclude = if (!hutang.debtorCreditorId.isEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
         val isIPenghutang = if (!hutang.debtorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
         val isIPiutang = if (!hutang.creditorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
-        val isIFamily = if (!hutang.hutangKeluargaId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
-        val isDataPenghutang = hutang.hutangRadioIndex == 0
 
         if (!isCancel) {
             if (isIPiutang) {
@@ -80,11 +98,8 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     }
 
     override fun approveHutangEdit(hutang: Hutang, isCancel: Boolean) {
-        val isIInclude = if (!hutang.debtorCreditorId.isEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
         val isIPenghutang = if (!hutang.debtorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
         val isIPiutang = if (!hutang.creditorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
-        val isIFamily = if (!hutang.hutangKeluargaId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
-        val isDataPenghutang = hutang.hutangRadioIndex == 0
 
 
         if (isIPiutang) {
@@ -105,11 +120,8 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     }
 
     override fun requestHutangHapus(hutang: Hutang, isCancel: Boolean) {
-        val isIInclude = if (!hutang.debtorCreditorId.isEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
         val isIPenghutang = if (!hutang.debtorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
         val isIPiutang = if (!hutang.creditorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
-        val isIFamily = if (!hutang.hutangKeluargaId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
-        val isDataPenghutang = hutang.hutangRadioIndex == 0
 
         if (isCancel) {
             hutang.debtorApprovalDelete = true
@@ -134,11 +146,8 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     }
 
     override fun approveHutangHapus(hutang: Hutang) {
-        val isIInclude = if (!hutang.debtorCreditorId.isEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
         val isIPenghutang = if (!hutang.debtorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
         val isIPiutang = if (!hutang.creditorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
-        val isIFamily = if (!hutang.hutangKeluargaId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
-        val isDataPenghutang = hutang.hutangRadioIndex == 0
 
         if (isIPiutang) {
             hutang.debtorApprovalDelete = true
@@ -178,17 +187,13 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     }
 
     private fun hapusHutang(hutang: Hutang) {
-        FirebaseDatabaseHandler.removeHutang(mActivity, hutang.hId, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate, FirebaseDatabaseUtil.ValueListenerString {
-            override fun onSuccessSaveUpdate(message: String?) {}
-
-            override fun onFailureSaveUpdate(message: String?) {}
-
-            override fun onSuccess(message: String?) {
+        FirebaseDatabaseHandler.removeHutang(mActivity, hutang.hId, object : FirebaseDatabaseUtil.ValueListenerString {
+            override fun onSuccessString(message: String?) {
                 mView.dismissProgressDialogView()
                 mView.showSnackbarView(message)
             }
 
-            override fun onFailure(message: String?) {
+            override fun onFailureString(message: String?) {
                 mView.dismissProgressDialogView()
                 mView.showSnackbarView(message)
             }

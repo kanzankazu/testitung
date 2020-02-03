@@ -12,16 +12,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.iid.FirebaseInstanceId
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.User
-import com.kanzankazu.itungitungan.util.DateTimeUtil
-import com.kanzankazu.itungitungan.util.DeviceDetailUtil
 import com.kanzankazu.itungitungan.util.Firebase.*
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginGoogleUtil.RC_SIGN_IN
 import com.kanzankazu.itungitungan.util.FragmentUtil
-import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.google.GooglePhoneNumberValidation
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.main.MainActivity
@@ -40,6 +36,7 @@ class SignInUpActivity :
     FirebaseDatabaseUtil.ValueListenerString {
 
     private var viewPagerPosition: Int = 0
+    var mPresenter = SignInUpPresenter(this,this)
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var loginFacebookUtil: FirebaseLoginFacebookUtil
     private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
@@ -68,13 +65,13 @@ class SignInUpActivity :
 
                 showProgressDialog()
                 FirebaseDatabaseHandler.setPhoneNumberUserValidate(this, UserPreference.getInstance().uid, GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data), object : FirebaseDatabaseUtil.ValueListenerString {
-                    override fun onSuccess(message: String?) {
+                    override fun onSuccessString(message: String?) {
                         dismissProgressDialog()
                         UserPreference.getInstance().isOtp = true
                         moveToMain()
                     }
 
-                    override fun onFailure(message: String?) {
+                    override fun onFailureString(message: String?) {
                         dismissProgressDialog()
                         loginUtil.signOut(false)
                         showSnackbar(message)
@@ -98,17 +95,17 @@ class SignInUpActivity :
 
         val userFirebaseSignIn: User = user
         FirebaseDatabaseHandler.getUserByUid(userFirebaseSignIn.uId, object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
-            override fun onSuccess(dataSnapshot: DataSnapshot, isExsist: Boolean) {
-                if (isExsist) {
-                    val userInDatabase = dataSnapshot.getValue(User::class.java) as User
-                    signInUpControl(isSignUp = false, isFirst = false, user = userInDatabase)//SignIn
+            override fun onSuccessDataExist(dataSnapshot: DataSnapshot?, isExsist: Boolean?) {
+                if (isExsist!!) {
+                    val userInDatabase = dataSnapshot?.getValue(User::class.java) as User
+                    mPresenter.signInUpControl(false, false, userInDatabase, name, this@SignInUpActivity)//SignIn
                 } else {
                     userFirebaseSignIn.emailVerified = true
-                    signInUpControl(isSignUp = false, isFirst = true, user = userFirebaseSignIn)
+                    mPresenter.signInUpControl(false, true, userFirebaseSignIn, name, this@SignInUpActivity)
                 }
             }
 
-            override fun onFailure(message: String?) {
+            override fun onFailureDataExist(message: String?) {
                 showSnackbar(message)
             }
         })
@@ -139,15 +136,15 @@ class SignInUpActivity :
         etSignUpPassword.setText("")
 
         FirebaseDatabaseHandler.isExistUser(userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerTrueFalse {
-            override fun isExist(isExists: Boolean?) {
+            override fun onSuccessExist(isExists: Boolean?) {
                 if (isExists!!) {
                     showSnackbar(getString(R.string.message_database_data_exist))
                 } else {
-                    signInUpControl(isSignUp = true, isFirst = true, user = userFirebaseSignUp)
+                    mPresenter.signInUpControl(true, true, userFirebaseSignUp, name, this@SignInUpActivity)
                 }
             }
 
-            override fun onFailure(message: String?) {
+            override fun onFailureExist(message: String?) {
                 showSnackbar(message)
             }
         })
@@ -173,7 +170,7 @@ class SignInUpActivity :
     }
 
     /*FirebaseDatabase*/
-    override fun onSuccess(message: String) {
+    override fun onSuccessString(message: String) {
         dismissProgressDialog()
         if (loginGoogleUtil.isEmailVerfied(mAuth.currentUser)) {
             showSnackbar(message)
@@ -183,12 +180,12 @@ class SignInUpActivity :
         }
     }
 
-    override fun onFailure(message: String) {
+    override fun onFailureString(message: String) {
         dismissProgressDialog()
         showSnackbar(message)
     }
 
-    fun initView() {
+    private fun initView() {
         loginGoogleUtil = FirebaseLoginGoogleUtil(this, this, this)
         loginFacebookUtil = FirebaseLoginFacebookUtil(this, this, this)
         loginEmailPasswordUtil = FirebaseLoginEmailPasswordUtil(this, this, this)
@@ -222,21 +219,21 @@ class SignInUpActivity :
         moveToValidate()
     }
 
-    fun initListener() {
+    private fun initListener() {
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
-                Log.d("Lihat", "onPageScrollStateChanged SignInUpActivity p0 : " + p0)
+                Log.d("Lihat", "onPageScrollStateChanged SignInUpActivity p0 : $p0")
             }
 
             override fun onPageSelected(p0: Int) {
                 viewPagerPosition = p0
-                Log.d("Lihat", "onPageSelected SignInUpActivity p0 : " + p0)
+                Log.d("Lihat", "onPageSelected SignInUpActivity p0 : $p0")
             }
 
             override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
-                Log.d("Lihat", "onPageScrolled SignInUpActivity p0 : " + p0)
-                Log.d("Lihat", "onPageScrolled SignInUpActivity p1 : " + p1)
-                Log.d("Lihat", "onPageScrolled SignInUpActivity p2 : " + p2)
+                Log.d("Lihat", "onPageScrolled SignInUpActivity p0 : $p0")
+                Log.d("Lihat", "onPageScrolled SignInUpActivity p1 : $p1")
+                Log.d("Lihat", "onPageScrolled SignInUpActivity p2 : $p2")
             }
         })
     }
@@ -251,8 +248,12 @@ class SignInUpActivity :
         }
     }
 
-    fun moveToPhoneValidation() {
+    private fun moveToPhoneValidation() {
         GooglePhoneNumberValidation.startPhoneNumberValidation(this)
+    }
+
+    private fun signUpEmailSendVerify() {
+        loginEmailPasswordUtil.sendEmailVerification()
     }
 
     fun moveToMain() {
@@ -281,37 +282,6 @@ class SignInUpActivity :
         showProgressDialog()
         this.name = name
         loginEmailPasswordUtil.createAccount(email, password)
-    }
-
-    fun signUpEmailSendVerify() {
-        loginEmailPasswordUtil.sendEmailVerification()
-    }
-
-    fun signInUpControl(isSignUp: Boolean, isFirst: Boolean, user: User) {
-        showProgressDialog()
-
-        if (!UserPreference.getInstance().fcmToken.isNullOrEmpty()) {
-            user.tokenFcm = UserPreference.getInstance().fcmToken
-        } else {
-            UserPreference.getInstance().fcmToken = user.tokenFcm
-            user.tokenFcm = FirebaseInstanceId.getInstance().token.toString()
-        }
-
-        if (isSignUp) {
-            user.name = name
-            user.signIn = false
-        } else {
-            user.signIn = true
-            user.phoneDetail = DeviceDetailUtil.getAllDataPhone(this)
-        }
-
-        if (isFirst) {
-            user.firstSignIn = DateTimeUtil.getCurrentDate().toString()
-            user.phoneCode = Utils.getUniquePsuedoID()
-        }
-
-        user.lastSignIn = DateTimeUtil.getCurrentDate().toString()
-        FirebaseDatabaseHandler.setUser(this, user, this)
     }
 
 }

@@ -6,12 +6,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.EditText
 import android.widget.TextView
+import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
-import com.kanzankazu.itungitungan.model.HutangCicilan
+import com.kanzankazu.itungitungan.model.HutangPembayaran
 import com.kanzankazu.itungitungan.util.DateTimeUtil
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
+import com.kanzankazu.itungitungan.util.DialogUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import com.kanzankazu.itungitungan.util.PictureUtil2
@@ -21,6 +22,20 @@ import com.kanzankazu.itungitungan.view.adapter.ImageListAdapter
 import java.util.*
 
 class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.View) : HutangPayContract.Presenter {
+    val mInteractor = HutangPayInteractor(mActivity, this)
+
+    override fun showProgressDialoPresenter() {
+        mView.showProgressDialogView()
+    }
+
+    override fun dismissProgressDialogPresenter() {
+        mView.dismissProgressDialogView()
+    }
+
+    override fun onNoConnection(message: String?) {
+        mView.showSnackbarView(message)
+    }
+
     override fun initImageAdapter(rv_hutang_pay_image: RecyclerView, listener: ImageListAdapter.ImageListContract): ImageListAdapter {
         val linearLayoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false)
         val imageListAdapter = ImageListAdapter(mActivity, listener)
@@ -47,52 +62,6 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
         mView.setSuggestNote(list)
     }
 
-    override fun checkOverPay(etHutangPayNominal: TextView, hutang: Hutang, isNew: Boolean) {
-        val nominalYangDiBayarkan = Utils.getRupiahToString(etHutangPayNominal).toInt()
-        val nominalPembayaran: Int = if (hutang.hutangCicilanIs) {
-            hutang.hutangCicilanNominal.toInt() * hutang.hutangCicilanBerapaKali.toInt()
-        } else {
-            hutang.hutangNominal.toInt()
-        }
-
-        if (nominalYangDiBayarkan == nominalPembayaran) {
-            hutang.statusLunas = true
-        } else if (nominalYangDiBayarkan > nominalPembayaran) {
-            if (hutang.debtorId.equals(UserPreference.getInstance().uid, true)) {
-                hutang.hutangRadioIndex = 1
-                hutang.creditorId = UserPreference.getInstance().uid
-                hutang.creditorName = UserPreference.getInstance().name
-                hutang.creditorEmail = UserPreference.getInstance().email
-                hutang.creditorApprovalNew = true
-                hutang.creditorApprovalEdit = true
-                hutang.creditorApprovalDelete = true
-
-                hutang.debtorId = if (hutang.creditorId.isNotEmpty()) hutang.creditorId else ""
-                hutang.debtorEmail = if (hutang.creditorEmail.isNotEmpty()) hutang.creditorEmail else ""
-                hutang.debtorName = hutang.creditorName
-                hutang.debtorApprovalNew = if (isNew) hutang.debtorApprovalNew else hutang.debtorId.isEmpty()
-                hutang.debtorApprovalEdit = if (!isNew) !isNew else hutang.debtorId.isEmpty()
-                hutang.debtorApprovalDelete = true
-            } else {
-                hutang.hutangRadioIndex = 0
-                hutang.debtorId = UserPreference.getInstance().uid
-                hutang.debtorName = UserPreference.getInstance().name
-                hutang.debtorEmail = UserPreference.getInstance().email
-                hutang.debtorApprovalNew = true
-                hutang.debtorApprovalEdit = true
-                hutang.debtorApprovalDelete = true
-
-                hutang.creditorId = if (hutang.debtorId.isNotEmpty()) hutang.debtorId else ""
-                hutang.creditorEmail = if (hutang.debtorEmail.isNotEmpty()) hutang.debtorEmail else ""
-                hutang.creditorName = hutang.debtorName
-                hutang.creditorApprovalNew = if (isNew) hutang.creditorApprovalNew else hutang.creditorId.isEmpty()
-                hutang.creditorApprovalEdit = if (!isNew) !isNew else hutang.creditorId.isEmpty()
-                hutang.creditorApprovalDelete = true
-            }
-
-        }
-    }
-
     override fun addImage(): PictureUtil2 {
         val permissionUtil = AndroidPermissionUtil(mActivity, *AndroidPermissionUtil.permCameraGallery)
         val pictureUtil2 = PictureUtil2(mActivity)
@@ -103,7 +72,7 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
 
     }
 
-    override fun saveSubHutangValidate(isNew: Boolean, huCil: HutangCicilan, hutang: Hutang, tv_hutang_pay_cicilan_ke: TextView, et_hutang_pay_nominal: EditText, et_hutang_pay_note: EditText, imageListAdapter: ImageListAdapter, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
+    override fun saveSubHutangValidate(isNew: Boolean, huCil: HutangPembayaran, hutang: Hutang, tv_hutang_pay_cicilan_ke: TextView, et_hutang_pay_nominal: EditText, et_hutang_pay_note: EditText, imageListAdapter: ImageListAdapter, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
         if (mView.checkData(true)) {
             if (isNew) {
                 huCil.createAt = DateTimeUtil.getCurrentDate().toString()
@@ -115,49 +84,143 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             huCil.hIdSub = hutang.hId + "_" + Date()
             huCil.hId = hutang.hId
             if (hutang.hutangCicilanIs) {
-                huCil.paymentInstallmentTo = tv_hutang_pay_cicilan_ke.text.toString().split(" dari ")[0].toInt()
+                huCil.paymentTo = tv_hutang_pay_cicilan_ke.text.toString().split(" dari ")[0].toInt()
             }
             huCil.paymentNominal = Utils.getRupiahToString(et_hutang_pay_nominal)
             huCil.paymentDesc = et_hutang_pay_note.text.toString().trim()
             huCil.approvalCreditor = false
             huCil.approvalDebtor = true
 
-            checkOverPay(et_hutang_pay_nominal, hutang, isNew)
-
-            if (imageListAdapter.isNotEmptyData()) {
-                val imageRemove = imageListAdapter.getRemoveDataString(true)
-                val imageLocalUri = imageListAdapter.getDatasUri()
-                val imageLocal = imageListAdapter.getDatasString(false)
-                if (!isNew) {
-                    if (imageRemove.size != 0) {
-                        FirebaseStorageUtil.deleteImages(mActivity, imageRemove, object : FirebaseStorageUtil.DoneRemoveListener {
-                            override fun isFinised() {
-                                saveImageData(hutang, huCil, imageLocalUri, listener)
-                            }
-
-                            override fun isFailed(message: String?) {
-                                mView.showSnackbarView(message)
-                            }
-                        })
-                    } else {
-                        saveImageData(hutang, huCil, imageLocalUri, listener)
-                    }
-                } else {
-                    saveImageData(hutang, huCil, imageLocalUri, listener)
-                }
+            //Start checkNominal
+            val nominalTotalPembayaran: Int = if (hutang.hutangCicilanIs) {
+                hutang.hutangCicilanNominal.toInt() * hutang.hutangCicilanBerapaKali.toInt()
             } else {
-                saveUpdateData(hutang, huCil, listener)
+                hutang.hutangNominal.toInt()
             }
 
+            var nominalSudahDiBayarkan = 0
+            for (models in hutang.hutangPembayaranSub) {
+                nominalSudahDiBayarkan += models.paymentNominal.toInt()
+            }
+
+            val nominalYangDiBayarkan = Utils.getRupiahToString(et_hutang_pay_nominal).toInt()
+
+            var status = ""
+            if (nominalSudahDiBayarkan + nominalYangDiBayarkan == nominalTotalPembayaran) {
+                hutang.statusLunas = true
+                status = Constants.Hutang.Status.Lunas
+            } else if (nominalSudahDiBayarkan + nominalYangDiBayarkan > nominalTotalPembayaran) {
+                if (hutang.debtorId.equals(UserPreference.getInstance().uid, true)) {
+                    hutang.hutangRadioIndex = 1
+                    hutang.creditorId = UserPreference.getInstance().uid
+                    hutang.creditorName = UserPreference.getInstance().name
+                    hutang.creditorEmail = UserPreference.getInstance().email
+                    hutang.creditorApprovalNew = true
+                    hutang.creditorApprovalEdit = true
+                    hutang.creditorApprovalDelete = true
+
+                    hutang.debtorId = if (hutang.creditorId.isNotEmpty()) hutang.creditorId else ""
+                    hutang.debtorEmail = if (hutang.creditorEmail.isNotEmpty()) hutang.creditorEmail else ""
+                    hutang.debtorName = hutang.creditorName
+                    hutang.debtorApprovalNew = if (isNew) hutang.debtorApprovalNew else hutang.debtorId.isEmpty()
+                    hutang.debtorApprovalEdit = if (!isNew) !isNew else hutang.debtorId.isEmpty()
+                    hutang.debtorApprovalDelete = true
+
+                    val tempDebtorFamilyId = hutang.creditorFamilyId
+                    val tempDebtorFamilyName = hutang.creditorFamilyName
+                    val tempCreditorFamilyId = hutang.debtorFamilyId
+                    val tempCreditorFamilyName = hutang.debtorFamilyName
+                    hutang.debtorFamilyId = tempDebtorFamilyId
+                    hutang.debtorFamilyName = tempDebtorFamilyName
+                    hutang.creditorFamilyId = tempCreditorFamilyId
+                    hutang.creditorFamilyName = tempCreditorFamilyName
+                } else {
+                    hutang.hutangRadioIndex = 0
+                    hutang.debtorId = UserPreference.getInstance().uid
+                    hutang.debtorName = UserPreference.getInstance().name
+                    hutang.debtorEmail = UserPreference.getInstance().email
+                    hutang.debtorApprovalNew = true
+                    hutang.debtorApprovalEdit = true
+                    hutang.debtorApprovalDelete = true
+
+                    hutang.creditorId = if (hutang.debtorId.isNotEmpty()) hutang.debtorId else ""
+                    hutang.creditorEmail = if (hutang.debtorEmail.isNotEmpty()) hutang.debtorEmail else ""
+                    hutang.creditorName = hutang.debtorName
+                    hutang.creditorApprovalNew = if (isNew) hutang.creditorApprovalNew else hutang.creditorId.isEmpty()
+                    hutang.creditorApprovalEdit = if (!isNew) !isNew else hutang.creditorId.isEmpty()
+                    hutang.creditorApprovalDelete = true
+
+                    val tempDebtorFamilyId = hutang.creditorFamilyId
+                    val tempDebtorFamilyName = hutang.creditorFamilyName
+                    val tempCreditorFamilyId = hutang.debtorFamilyId
+                    val tempCreditorFamilyName = hutang.debtorFamilyName
+                    hutang.debtorFamilyId = tempDebtorFamilyId
+                    hutang.debtorFamilyName = tempDebtorFamilyName
+                    hutang.creditorFamilyId = tempCreditorFamilyId
+                    hutang.creditorFamilyName = tempCreditorFamilyName
+                }
+
+                val nominalBaru = (nominalSudahDiBayarkan + nominalYangDiBayarkan) - nominalTotalPembayaran
+                hutang.hutangNominal = nominalBaru.toString()
+
+                hutang.hutangCicilanIs = false
+                hutang.hutangCicilanBerapaKali = ""
+                hutang.hutangCicilanBerapaKaliType = ""
+                hutang.hutangCicilanBerapaKaliPosisi = 0
+                hutang.hutangCicilanNominal = ""
+                hutang.hutangCicilanIsBayarKapanSaja = true
+                hutang.hutangCicilanTanggalAkhir = ""
+
+                status = Constants.Hutang.Status.Berlebih
+            }
+            //End checkNominal
+
+            DialogUtil.makeDialogStandart(
+                    mActivity,
+                    "Info",
+                    when (status) {
+                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkan dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan)
+                    },
+                    false) {
+                saveValidateImageData(imageListAdapter, isNew,hutang,huCil,listener)
+            }
         } else {
             mView.showSnackbarView(mActivity.getString(R.string.message_validation_failed))
         }
     }
 
-    override fun saveImageData(hutang: Hutang, huCil: HutangCicilan, imageLocalUri: MutableList<Uri>, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
+    override fun saveValidateImageData(imageListAdapter: ImageListAdapter, isNew: Boolean, hutang: Hutang, huCil: HutangPembayaran, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
+        if (imageListAdapter.isNotEmptyData()) {
+            val imageRemove = imageListAdapter.getRemoveDataString(true)
+            val imageLocalUri = imageListAdapter.getDatasUri()
+            if (!isNew) {
+                if (imageRemove.size != 0) {
+                    FirebaseStorageUtil.deleteImages(mActivity, imageRemove, object : FirebaseStorageUtil.DoneRemoveListener {
+                        override fun isFinised() {
+                            saveImageData(hutang, huCil, imageLocalUri, listener)
+                        }
+
+                        override fun isFailed(message: String?) {
+                            mView.showSnackbarView(message)
+                        }
+                    })
+                } else {
+                    saveImageData(hutang, huCil, imageLocalUri, listener)
+                }
+            } else {
+                saveImageData(hutang, huCil, imageLocalUri, listener)
+            }
+        } else {
+            saveUpdateData(hutang, huCil, listener)
+        }
+    }
+
+    override fun saveImageData(hutang: Hutang, huCil: HutangPembayaran, imageLocalUri: MutableList<Uri>, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
         FirebaseStorageUtil.uploadImages(mActivity, "HUTANG_PAY", imageLocalUri as ArrayList<Uri>?, object : FirebaseStorageUtil.DoneListener {
             override fun isFinised(imageDownloadUrls: ArrayList<String>) {
-                huCil.hutangCicilanBuktiGambar = imageDownloadUrls
+                huCil.paymentEvidence = imageDownloadUrls
                 mView.showSnackbarView(mActivity.getString(R.string.message_image_save_success))
                 saveUpdateData(hutang, huCil, listener)
             }
@@ -168,17 +231,18 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
         })
     }
 
-    override fun saveUpdateData(hutang: Hutang, huCil: HutangCicilan, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
+    override fun saveUpdateData(hutang: Hutang, huCil: HutangPembayaran, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
         hutang.hutangEditableis = false
-        hutang.hutangCicilanSub.add(huCil)
+        hutang.hutangPembayaranSub.add(huCil)
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+        mInteractor.UpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
             override fun onSuccessSaveUpdate(message: String?) {
-                listener.onSuccessSaveUpdate(message)
+                mView.showSnackbarView(message)
+                mActivity.finish()
             }
 
             override fun onFailureSaveUpdate(message: String?) {
-                listener.onFailureSaveUpdate(message)
+                mView.showSnackbarView(message)
             }
         })
     }

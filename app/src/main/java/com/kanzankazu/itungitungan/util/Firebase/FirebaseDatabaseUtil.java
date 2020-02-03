@@ -30,36 +30,36 @@ public class FirebaseDatabaseUtil {
     }
 
     public interface ValueListenerString {
-        void onSuccess(String message);
+        void onSuccessString(String message);
 
-        void onFailure(String message);
+        void onFailureString(String message);
     }
 
     public interface ValueListenerData {
-        void onSuccess(DataSnapshot dataSnapshot);
+        void onSuccessData(DataSnapshot dataSnapshot);
 
-        void onFailure(String message);
+        void onFailureData(String message);
     }
 
     public interface ValueListenerObject {
 
-        void onSuccess(Object dataSnapshot);
+        void onSuccessData(Object dataSnapshot);
 
-        void onFailure(String message);
+        void onFailureData(String message);
 
     }
 
     public interface ValueListenerTrueFalse {
 
-        void isExist(Boolean isExists);
+        void onSuccessExist(Boolean isExists);
 
-        void onFailure(String message);
+        void onFailureExist(String message);
 
     }
 
     public interface ValueListenerDataTrueFalse {
-        void onSuccess(DataSnapshot dataSnapshot, Boolean isExsist);
+        void onSuccessDataExist(DataSnapshot dataSnapshot, Boolean isExsist);
 
-        void onFailure(String message);
+        void onFailureDataExist(String message);
     }
 }

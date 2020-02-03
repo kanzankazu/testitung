@@ -4,13 +4,13 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class HutangCicilan(
+data class HutangPembayaran(
         var hIdSub: String = "",
         var hId: String = "",
-        var paymentInstallmentTo: Int = 1,
+        var paymentTo: Int = 1,
+        var paymentEvidence: MutableList<String> = mutableListOf(),
         var paymentNominal: String = "0",
         var paymentDesc: String = "",
-        var hutangCicilanBuktiGambar: MutableList<String> = mutableListOf(),
         var approvalCreditor: Boolean = false,
         var approvalDebtor: Boolean = false,
         var createAt: String = "",
