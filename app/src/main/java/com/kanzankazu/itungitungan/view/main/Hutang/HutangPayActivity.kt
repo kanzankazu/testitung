@@ -57,7 +57,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
         showSnackbar(message)
     }
 
-    override fun showRetryDialogView(call: Call<*>?) {}
+    override fun showRetryDialogView() {}
 
     override fun showProgressDialogView() {
         showProgressDialog()

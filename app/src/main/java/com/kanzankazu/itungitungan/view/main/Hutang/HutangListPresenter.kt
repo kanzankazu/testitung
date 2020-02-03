@@ -19,7 +19,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
         mView.dismissProgressDialogView()
     }
 
-    override fun onNoConnection(call: Call<*>?) {
+    override fun onNoConnection() {
     }
 
     override fun getAllHutang() {

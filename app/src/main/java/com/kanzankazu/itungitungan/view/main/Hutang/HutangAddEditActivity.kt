@@ -107,7 +107,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         showSnackbar(message)
     }
 
-    override fun showRetryDialogView(call: Call<*>?) {
+    override fun showRetryDialogView() {
         showRetryDialog {}
     }
 

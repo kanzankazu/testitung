@@ -17,6 +17,7 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
+                android:id="@+id/cv_dash_hutang"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/colorAccent"
@@ -32,163 +33,265 @@
                     android:orientation="vertical"
                     android:padding="5dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:fontFamily="@font/avenir_next_ltpro_demi"
-                        android:gravity="center_vertical"
-                        android:padding="5dp"
-                        android:text="Hutang Piutang"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        style="@style/TextTitleStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="Status"
-                        android:textSize="@dimen/medium_font_size"
-                        android:textStyle="bold" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/gray" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:animateLayoutChanges="true"
                         android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/padding_margin_30dp"
                             android:layout_weight="1"
-                            android:animateLayoutChanges="true"
-                            android:orientation="vertical"
-                            android:padding="@dimen/padding_margin_8dp">
+                            android:fontFamily="@font/avenir_next_ltpro_demi"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text="Hutang Piutang"
+                            android:textStyle="bold" />
 
-                            <TextView
-                                style="@style/TextTitleStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:text="Hutang"
-                                android:textColor="@color/red"
-                                android:textSize="@dimen/medium_font_size" />
+                        <ImageView
+                            android:id="@+id/iv_dash_hutang_reload"
+                            android:layout_width="@dimen/padding_margin_30dp"
+                            android:layout_height="@dimen/padding_margin_30dp"
+                            android:src="@drawable/quantum_ic_refresh_white_24"
+                            android:tint="@color/colorPrimaryDark"
+                            android:visibility="visible" />
 
-                            <TextView
-                                android:id="@+id/tv_dash_hutang_count"
-                                style="@style/TextTitleStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:text="0"
-                                android:textSize="@dimen/Big_font_size"
-                                tools:text="0" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:animateLayoutChanges="true"
-                            android:orientation="vertical"
-                            android:padding="@dimen/padding_margin_8dp">
-
-                            <TextView
-                                style="@style/TextTitleStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:text="Piutang"
-                                android:textColor="@color/green"
-                                android:textSize="@dimen/medium_font_size" />
-
-                            <TextView
-                                android:id="@+id/tv_dash_piutang_count"
-                                style="@style/TextTitleStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:text="0"
-                                android:textSize="@dimen/Big_font_size"
-                                tools:text="0" />
-
-                        </LinearLayout>
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/gray" />
-
                     <LinearLayout
+                        android:id="@+id/ll_dash_hutang_status"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:animateLayoutChanges="true"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <TextView
+                            style="@style/TextTitleStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Status"
+                            android:textSize="@dimen/medium_font_size"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
 
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:animateLayoutChanges="true"
-                            android:orientation="vertical"
-                            android:padding="@dimen/padding_margin_8dp">
+                            android:orientation="horizontal">
 
-                            <TextView
-                                style="@style/TextTitleStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:text="Pembayaran"
-                                android:textSize="@dimen/medium_font_size" />
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:animateLayoutChanges="true"
+                                android:orientation="vertical"
+                                android:padding="@dimen/padding_margin_8dp">
 
-                            <TextView
-                                android:id="@+id/tv_dash_pay_count"
-                                style="@style/TextTitleStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:text="0"
-                                android:textSize="@dimen/Big_font_size"
-                                tools:text="0" />
+                                <TextView
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="Hutang Sendiri"
+                                    android:textColor="@color/red"
+                                    android:textSize="@dimen/medium_font_size" />
+
+                                <TextView
+                                    android:id="@+id/tv_dash_hutang_penghutang_count"
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="0"
+                                    android:textSize="@dimen/Big_font_size"
+                                    tools:text="0" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:animateLayoutChanges="true"
+                                android:orientation="vertical"
+                                android:padding="@dimen/padding_margin_8dp">
+
+                                <TextView
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="Piutang Sendiri"
+                                    android:textColor="@color/green"
+                                    android:textSize="@dimen/medium_font_size" />
+
+                                <TextView
+                                    android:id="@+id/tv_dash_hutang_piutang_count"
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="0"
+                                    android:textSize="@dimen/Big_font_size"
+                                    tools:text="0" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:animateLayoutChanges="true"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:animateLayoutChanges="true"
+                                android:orientation="vertical"
+                                android:padding="@dimen/padding_margin_8dp">
+
+                                <TextView
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="Hutang Keluarga"
+                                    android:textColor="@color/red"
+                                    android:textSize="@dimen/medium_font_size" />
+
+                                <TextView
+                                    android:id="@+id/tv_dash_hutang_penghutang_keluarga_count"
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="0"
+                                    android:textSize="@dimen/Big_font_size"
+                                    tools:text="0" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:animateLayoutChanges="true"
+                                android:orientation="vertical"
+                                android:padding="@dimen/padding_margin_8dp">
+
+                                <TextView
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="Piutang Keluarga"
+                                    android:textColor="@color/green"
+                                    android:textSize="@dimen/medium_font_size" />
+
+                                <TextView
+                                    android:id="@+id/tv_dash_hutang_piutang_keluarga_count"
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="0"
+                                    android:textSize="@dimen/Big_font_size"
+                                    tools:text="0" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
+
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:animateLayoutChanges="true"
-                            android:orientation="vertical"
-                            android:padding="@dimen/padding_margin_8dp">
+                            android:orientation="horizontal">
 
-                            <TextView
-                                style="@style/TextTitleStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:text="Lunas"
-                                android:textSize="@dimen/medium_font_size" />
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:animateLayoutChanges="true"
+                                android:orientation="vertical"
+                                android:padding="@dimen/padding_margin_8dp">
 
-                            <TextView
-                                android:id="@+id/tv_dash_lunas_count"
-                                style="@style/TextTitleStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:text="0"
-                                android:textSize="@dimen/Big_font_size"
-                                tools:text="0" />
+                                <TextView
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="Pembayaran"
+                                    android:textSize="@dimen/medium_font_size" />
+
+                                <TextView
+                                    android:id="@+id/tv_dash_hutang_pay_count"
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="0"
+                                    android:textSize="@dimen/Big_font_size"
+                                    tools:text="0" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:animateLayoutChanges="true"
+                                android:orientation="vertical"
+                                android:padding="@dimen/padding_margin_8dp">
+
+                                <TextView
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="Lunas"
+                                    android:textSize="@dimen/medium_font_size" />
+
+                                <TextView
+                                    android:id="@+id/tv_dash_hutang_lunas_count"
+                                    style="@style/TextTitleStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="0"
+                                    android:textSize="@dimen/Big_font_size"
+                                    tools:text="0" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
-
                     </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/pb_dash_hutang"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>

@@ -4,26 +4,51 @@ import android.app.Activity
 import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
-import retrofit2.Call
+import com.kanzankazu.itungitungan.util.NetworkUtil
 
-class DashboardFragmentPresenter(var mActivity: Activity,var mView: DashboardFragmentContract.View): DashboardFragmentContract.Presenter {
-    override fun showProgressDialoPresenter() {}
+class DashboardFragmentPresenter(var mActivity: Activity, var mView: DashboardFragmentContract.View) : DashboardFragmentContract.Presenter {
+    var mInteractor = DashboardFragmentinteractor(this)
 
-    override fun dismissProgressDialogPresenter() {}
-
-    override fun onNoConnection(call: Call<*>?) {}
-
-    override fun getHutang(listener: FirebaseDatabaseUtil.ValueListenerData) {
+    override fun showProgressDialoPresenter() {
         mView.showProgressDialogView()
-        FirebaseDatabaseHandler.getHutangs(false,object :FirebaseDatabaseUtil.ValueListenerData{
-            override fun onSuccess(dataSnapshot: DataSnapshot?) {
-                mView.dismissProgressDialogView()
-            }
-
-            override fun onFailure(message: String?) {
-                mView.dismissProgressDialogView()
-            }
-        })
     }
+
+    override fun dismissProgressDialogPresenter() {
+        mView.dismissProgressDialogView()
+    }
+
+    override fun onNoConnection() {
+        mView.showRetryDialogView()
+    }
+
+    override fun getAllStatusData() {
+        getHutang()
+        getKeuangan()
+    }
+
+    override fun getHutang() {
+        mView.showHideHutangProgressView(true)
+        if (NetworkUtil.isConnected(mActivity)) {
+            FirebaseDatabaseHandler.getHutangs(true, object : FirebaseDatabaseUtil.ValueListenerData {
+                override fun onSuccess(dataSnapshot: DataSnapshot?) {
+                    mView.showHideHutangProgressView(false)
+                    mView.setHutangData(dataSnapshot!!)
+                }
+
+                override fun onFailure(message: String?) {
+                    mView.showHideHutangProgressView(false)
+                    mView.showSnackbarView(message)
+                }
+            })
+        } else {
+            mView.showHideHutangProgressView(false)
+            onNoConnection()
+        }
+    }
+
+    override fun getKeuangan() {
+
+    }
+
 
 }

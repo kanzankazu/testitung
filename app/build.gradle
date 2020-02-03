@@ -189,6 +189,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.0.1'
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'net.soulwolf.widget:materialRadio:1.0.1'
+    implementation 'com.chaos.view:pinview:1.4.2'
 
     /*UNUSED*/
     implementation 'us.belka:androidtoggleswitch:1.2.2'

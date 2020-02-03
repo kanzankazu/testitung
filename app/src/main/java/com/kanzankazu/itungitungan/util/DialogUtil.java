@@ -3,20 +3,30 @@ package com.kanzankazu.itungitungan.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.AnimatorRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kanzankazu.itungitungan.R;
 
 import java.util.List;
+
+import butterknife.ButterKnife;
 
 public class DialogUtil {
 
@@ -109,6 +119,137 @@ public class DialogUtil {
 
         alertDialog.show();
 
+    }
+
+    public static void showIntroductionDialog(Activity mActivity, String imageUrl, String title, String message, String titleButton1, String titleButton2, boolean isCancelable, int assetHardCode, final Utils.IntroductionButtonListener introductionButtonListener) {
+        if (!mActivity.isFinishing()) {
+            android.app.AlertDialog alertDialog;
+            View dialogView = mActivity.getLayoutInflater().inflate(R.layout.popup_introduction, null);
+            final android.app.AlertDialog.Builder popupPromo = new android.app.AlertDialog.Builder(mActivity);
+            popupPromo.setView(dialogView);
+
+            TextView tvIntroTitle = ButterKnife.findById(dialogView, R.id.tv_popup_intro_title);
+            ImageView imgIntro = ButterKnife.findById(dialogView, R.id.img_popup_intro);
+            ImageView imgClose = ButterKnife.findById(dialogView, R.id.img_popup_close);
+            TextView tvIntroMessage = ButterKnife.findById(dialogView, R.id.tv_popup_intro_message);
+            TextView tvPopupButton = ButterKnife.findById(dialogView, R.id.tv_popup_button);
+            TextView tvPopupButton2 = ButterKnife.findById(dialogView, R.id.tv_popup_button2);
+            ScrollView svIntroDesc = ButterKnife.findById(dialogView, R.id.sv_intro_desc);
+
+            LinearLayout llPopup = ButterKnife.findById(dialogView, R.id.ll_popup);
+            llPopup.setBackgroundColor(Color.parseColor("#1e3559"));
+            imgIntro.setBackgroundColor(Color.parseColor("#1e3559"));
+            tvIntroMessage.setTextColor(mActivity.getResources().getColor(R.color.color_off_white));
+            tvIntroTitle.setTextColor(mActivity.getResources().getColor(R.color.color_off_white));
+
+            tvPopupButton.setText(titleButton1);
+            tvPopupButton2.setText(titleButton2);
+
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Glide.with(mActivity).load(imageUrl).into(imgIntro);
+            } else {
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500);
+                imgIntro.setLayoutParams(layoutParams);
+                if (assetHardCode != -1) {
+                    Glide.with(mActivity).load(assetHardCode).into(imgIntro);
+                } else {
+                    Glide.with(mActivity).load(R.mipmap.ic_launcher).into(imgIntro);
+                }
+            }
+
+            imgClose.setVisibility(isCancelable ? View.VISIBLE : View.GONE);
+
+            //Hide Title if empty
+            if (title != null) {
+                if (title.isEmpty()) {
+                    tvIntroTitle.setVisibility(View.GONE);
+                } else {
+                    tvIntroTitle.setText(title);
+                    tvIntroTitle.setVisibility(View.VISIBLE);
+                }
+            }
+            //Hide ScrollView that contain intro description if description empty
+            if (message.isEmpty()) {
+                svIntroDesc.setVisibility(View.GONE);
+            } else {
+                svIntroDesc.setVisibility(View.VISIBLE);
+                tvIntroMessage.setText(message);
+            }
+            //Hide second button if second button title is empty
+            if (titleButton2.isEmpty()) {
+                tvPopupButton2.setVisibility(View.GONE);
+            } else {
+                tvPopupButton2.setVisibility(View.VISIBLE);
+                tvPopupButton2.setText(titleButton2);
+            }
+
+            alertDialog = popupPromo.create();
+            alertDialog.setCancelable(false);
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+
+            imgClose.setOnClickListener(view -> {
+                alertDialog.dismiss();
+                Utils.showingDialogOnce = true;
+            });
+            tvPopupButton.setOnClickListener(v -> {
+                alertDialog.dismiss();
+                introductionButtonListener.onFirstButtonClick();
+                Utils.showingDialogOnce = true;
+            });
+            tvPopupButton2.setOnClickListener(v -> {
+                alertDialog.dismiss();
+                introductionButtonListener.onSecondButtonClick();
+            });
+        }
+    }
+
+    public static void showRetryDialog(Activity mActivity, final Utils.DialogButtonListener dialogButtonListener) {
+        if (!mActivity.isFinishing()) {
+            android.app.Dialog dialog = new android.app.AlertDialog.Builder(mActivity)
+                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_error_dialog, null))
+                    .setCancelable(false)
+                    .show();
+
+            ImageView ivDialog = ButterKnife.findById(dialog, R.id.image_booking_complete);
+            TextView tvDescDialog = ButterKnife.findById(dialog, R.id.tv_booking_complete);
+            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
+
+            ivDialog.setImageResource(R.drawable.ic_no_internet);
+            tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
+            tvCloseDialog.setTextColor(ContextCompat.getColor(mActivity, R.color.cyan));
+            tvCloseDialog.setText(mActivity.getResources().getString(R.string.confirm_retry));
+            tvCloseDialog.setOnClickListener(v -> {
+                dialogButtonListener.onDialogButtonClick();
+                dialog.dismiss();
+            });
+        }
+    }
+
+    public static void showConfirmationDialog(Activity mActivity, String dialogTitle, String dialogDescription, final Utils.DialogButtonListener dialogButtonListener) {
+        if (!mActivity.isFinishing()) {
+            android.app.Dialog dialog = new android.app.AlertDialog.Builder(mActivity)
+                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_confirmation_dialog, null))
+                    .show();
+
+            TextView tvConfirmationDialogTitle = ButterKnife.findById(dialog, R.id.tv_confirmation_text);
+            TextView tvConfirmationDialogDescription = ButterKnife.findById(dialog, R.id.tv_confirmation_description);
+            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
+            TextView tvCloseDialogOk = ButterKnife.findById(dialog, R.id.btn_close_dialog_OK);
+
+            tvConfirmationDialogTitle.setText(dialogTitle);
+            if (dialogDescription.isEmpty()) {
+                tvConfirmationDialogDescription.setVisibility(View.GONE);
+            } else {
+                tvConfirmationDialogDescription.setVisibility(View.VISIBLE);
+                tvConfirmationDialogDescription.setText(dialogDescription);
+            }
+            tvCloseDialog.setOnClickListener(v -> dialog.dismiss());
+            tvCloseDialogOk.setOnClickListener(view -> {
+                dialogButtonListener.onDialogButtonClick();
+                dialog.dismiss();
+            });
+        }
     }
 
     public static CharSequence[] convertListStrinToCharSequenceArray(List<String> list) {

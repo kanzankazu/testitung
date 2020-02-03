@@ -14,7 +14,7 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
 
     override fun dismissProgressDialogPresenter() {}
 
-    override fun onNoConnection(call: Call<*>?) {}
+    override fun onNoConnection() {}
 
     override fun saveEditHutang(hutang: Hutang, isEdit: Boolean) {
         mView.showProgressDialogView()

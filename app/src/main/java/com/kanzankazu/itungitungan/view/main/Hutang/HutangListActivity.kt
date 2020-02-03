@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -28,7 +29,6 @@ import com.kanzankazu.itungitungan.util.widget.gallery2.GalleryDetailPagerAdapte
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_hutang_list.*
 import kotlinx.android.synthetic.main.app_toolbar.*
-import retrofit2.Call
 import java.util.*
 
 class HutangListActivity : BaseActivity(), HutangListContract.View {
@@ -61,6 +61,12 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        Log.d("Lihat onBackPressed HutangListActivity", isFinishing.toString())
+    }
+
     override fun showToastView(message: String?) {
         showToast(message)
     }
@@ -69,7 +75,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         showSnackbar(message)
     }
 
-    override fun showRetryDialogView(call: Call<*>?) {}
+    override fun showRetryDialogView() {}
 
     override fun showProgressDialogView() {
         showProgressDialog()
@@ -127,7 +133,6 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     override fun setTotalPiuHutang(hutang: Hutang) {
-        val isIInclude = if (!hutang.debtorCreditorId.isNullOrEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
         val isIPenghutang = if (!hutang.debtorId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
         val isIPiutang = if (!hutang.creditorId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
         val isIFamily = if (!hutang.hutangKeluargaId.isNullOrEmpty()) UserPreference.getInstance().uid.equals(hutang.hutangKeluargaId, true) else false
@@ -210,33 +215,33 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private fun removeDeleteDialog(hutang: Hutang, position: Int, isHasReqDelete: Boolean) {
         Utils.showIntroductionDialog(
-                this,
-                "",
-                "Konfirmasi",
-                if (isHasReqDelete) {
-                    "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
-                } else {
-                    "Apakah anda yakin ingin menghapus data ini?"
-                }
-                ,
-                "Ya",
-                "Tidak",
-                false,
-                -1,
-                object : Utils.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        if (!isHasReqDelete) {
-                            mPresenter.requestHutangHapus(hutang, false)
-                            if (hutang.hutangBuktiGambar!!.isNotEmpty()) {
-                                mPresenter.hapusHutangCheckImage(hutang)
-                            }
-                        } else {
-                            mPresenter.requestHutangHapus(hutang, true)
+            this,
+            "",
+            "Konfirmasi",
+            if (isHasReqDelete) {
+                "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
+            } else {
+                "Apakah anda yakin ingin menghapus data ini?"
+            }
+            ,
+            "Ya",
+            "Tidak",
+            false,
+            -1,
+            object : Utils.IntroductionButtonListener {
+                override fun onFirstButtonClick() {
+                    if (!isHasReqDelete) {
+                        mPresenter.requestHutangHapus(hutang, false)
+                        if (hutang.hutangBuktiGambar!!.isNotEmpty()) {
+                            mPresenter.hapusHutangCheckImage(hutang)
                         }
+                    } else {
+                        mPresenter.requestHutangHapus(hutang, true)
                     }
-
-                    override fun onSecondButtonClick() {}
                 }
+
+                override fun onSecondButtonClick() {}
+            }
         )
 
     }
