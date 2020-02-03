@@ -2,6 +2,7 @@ package com.kanzankazu.itungitungan.view.main
 
 import android.app.Activity
 import com.google.firebase.database.DataSnapshot
+import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.NetworkUtil
@@ -17,7 +18,7 @@ class DashboardFragmentPresenter(var mActivity: Activity, var mView: DashboardFr
         mView.dismissProgressDialogView()
     }
 
-    override fun onNoConnection() {
+    override fun onNoConnection(message: String?) {
         mView.showRetryDialogView()
     }
 
@@ -30,25 +31,23 @@ class DashboardFragmentPresenter(var mActivity: Activity, var mView: DashboardFr
         mView.showHideHutangProgressView(true)
         if (NetworkUtil.isConnected(mActivity)) {
             FirebaseDatabaseHandler.getHutangs(true, object : FirebaseDatabaseUtil.ValueListenerData {
-                override fun onSuccess(dataSnapshot: DataSnapshot?) {
+                override fun onSuccessData(dataSnapshot: DataSnapshot?) {
                     mView.showHideHutangProgressView(false)
                     mView.setHutangData(dataSnapshot!!)
                 }
 
-                override fun onFailure(message: String?) {
+                override fun onFailureData(message: String?) {
                     mView.showHideHutangProgressView(false)
                     mView.showSnackbarView(message)
                 }
             })
         } else {
             mView.showHideHutangProgressView(false)
-            onNoConnection()
+            onNoConnection(mActivity.getString(R.string.message_no_internet_network))
         }
     }
 
-    override fun getKeuangan() {
-
-    }
+    override fun getKeuangan() {}
 
 
 }

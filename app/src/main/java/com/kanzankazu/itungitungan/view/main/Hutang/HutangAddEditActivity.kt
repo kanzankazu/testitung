@@ -33,7 +33,6 @@ import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
 import kotlinx.android.synthetic.main.activity_hutang_add_edit.*
 import kotlinx.android.synthetic.main.app_toolbar.*
-import retrofit2.Call
 import java.io.File
 
 class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
@@ -192,13 +191,12 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 setCheckSuggestUsers(user)
             }
 
-            if (!hutang.debtorFamilyId.isEmpty()) {
+            if (hutang.debtorFamilyId.isNotEmpty()) {
                 iv_hutang_add_family_clear.visibility = View.VISIBLE
                 et_hutang_add_user_family.setText(hutang.debtorFamilyName)
             } else {
                 iv_hutang_add_family_clear.visibility = View.GONE
             }
-
         } else {
             if (hutang.debtorId.isEmpty() || hutang.debtorId.equals(UserPreference.getInstance().uid, true)) {
                 et_hutang_add_user.setText(hutang.debtorName)
@@ -213,7 +211,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 setCheckSuggestUsers(user)
             }
 
-            if (!hutang.creditorFamilyId.isEmpty()) {
+            if (hutang.creditorFamilyId.isNotEmpty()) {
                 iv_hutang_add_family_clear.visibility = View.VISIBLE
                 et_hutang_add_user_family.setText(hutang.creditorFamilyName)
             } else {
@@ -547,6 +545,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             } else if (hutang.debtorFamilyId.isNotEmpty() && userInvite.uId.equals(hutang.debtorFamilyId, true)) {
                 showSnackbar(getString(R.string.message_its_you_family))
                 userInvite = User()
+            } else {
+                iv_hutang_add_user_clear.visibility = View.VISIBLE
+                et_hutang_add_user.setText(userInvite.name)
             }
         } else {
             iv_hutang_add_user_clear.visibility = View.VISIBLE
@@ -586,7 +587,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             Log.d("Lihat", "setSuggestUserFamily HutangAddEditActivity : " + (parent.adapter.getItem(position) as User).uId)
             Log.d("Lihat", "setSuggestUserFamily HutangAddEditActivity : " + userSuggest[position])
 
-            if (mPresenter.getRadioGroupIndex(rg_hutang_add_user)==0){
+            if (mPresenter.getRadioGroupIndex(rg_hutang_add_user) == 0) {
                 hutang.debtorFamilyName = (parent.adapter.getItem(position) as User).name
                 hutang.debtorFamilyId = (parent.adapter.getItem(position) as User).uId
 
@@ -605,7 +606,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 } else {
                     iv_hutang_add_family_clear.visibility = View.VISIBLE
                 }
-            }else{
+            } else {
                 hutang.creditorFamilyName = (parent.adapter.getItem(position) as User).name
                 hutang.creditorFamilyId = (parent.adapter.getItem(position) as User).uId
 
@@ -643,21 +644,21 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         Utils.showIntroductionDialog(this, "", "Konfirmasi", message, "Iya", "Tidak", false, -1, object : Utils.IntroductionButtonListener {
             override fun onFirstButtonClick() {
                 FirebaseStorageUtil.deleteImages(this@HutangAddEditActivity, hutang.hutangBuktiGambar,
-                        object : FirebaseStorageUtil.DoneRemoveListener {
-                            override fun isFinised() {
-                                if (isChooseImage)
-                                    pictureUtil2.chooseGetImageDialog(activity, imageView)
+                    object : FirebaseStorageUtil.DoneRemoveListener {
+                        override fun isFinised() {
+                            if (isChooseImage)
+                                pictureUtil2.chooseGetImageDialog(activity, imageView)
 
-                                removeImagePath(0)
-                                removeImagePath(1)
-                                hutang.hutangBuktiGambar!!.clear()
-                                hutang.hutangBuktiGambar = null
-                            }
+                            removeImagePath(0)
+                            removeImagePath(1)
+                            hutang.hutangBuktiGambar!!.clear()
+                            hutang.hutangBuktiGambar = null
+                        }
 
-                            override fun isFailed(message: String?) {
-                                showSnackbar(message)
-                            }
-                        })
+                        override fun isFailed(message: String?) {
+                            showSnackbar(message)
+                        }
+                    })
             }
 
             override fun onSecondButtonClick() {}
@@ -762,16 +763,16 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                         if (isEdit && hutang.hutangBuktiGambar != null) {
                             if (hutang.hutangBuktiGambar!!.size > 0) {
                                 FirebaseStorageUtil.deleteImages(this@HutangAddEditActivity, hutang.hutangBuktiGambar,
-                                        object : FirebaseStorageUtil.DoneRemoveListener {
-                                            override fun isFinised() {
-                                                hutang.hutangBuktiGambar = imageDownloadUrls
-                                                mPresenter.saveEditHutang(hutang, isEdit)
-                                            }
+                                    object : FirebaseStorageUtil.DoneRemoveListener {
+                                        override fun isFinised() {
+                                            hutang.hutangBuktiGambar = imageDownloadUrls
+                                            mPresenter.saveEditHutang(hutang, isEdit)
+                                        }
 
-                                            override fun isFailed(message: String?) {
-                                                showSnackbar(message)
-                                            }
-                                        })
+                                        override fun isFailed(message: String?) {
+                                            showSnackbar(message)
+                                        }
+                                    })
                             } else {
                                 hutang.hutangBuktiGambar = imageDownloadUrls
                                 mPresenter.saveEditHutang(hutang, isEdit)

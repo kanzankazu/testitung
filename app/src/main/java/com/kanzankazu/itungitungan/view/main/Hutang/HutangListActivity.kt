@@ -230,14 +230,13 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 override fun onFirstButtonClick() {
                     if (!isHasReqDelete) {
                         mPresenter.requestHutangHapus(hutang, false)
-                        if (hutang.hutangBuktiGambar!!.isNotEmpty()) {
+                        if (!hutang.hutangBuktiGambar.isNullOrEmpty()) {
                             mPresenter.hapusHutangCheckImage(hutang)
                         }
                     } else {
                         mPresenter.requestHutangHapus(hutang, true)
                     }
                 }
-
                 override fun onSecondButtonClick() {}
             }
         )

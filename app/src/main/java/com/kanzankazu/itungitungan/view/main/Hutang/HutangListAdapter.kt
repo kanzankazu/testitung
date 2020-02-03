@@ -396,15 +396,19 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             val filterResults = FilterResults()
 
             if (!TextUtils.isEmpty(charSequence)) {
-                val arrayList1 = java.util.ArrayList<Hutang>()
+                val arrayList1 = ArrayList<Hutang>()
 
                 for (subject in mainModel) {
                     if (subject.hutangRadioIndex == 0) {//saya berhutang(piutang)
-                        if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) || subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) || subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                            subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                            subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
                             arrayList1.add(subject)
                         }
                     } else {// saya pemberi hutang(penghutang)
-                        if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) || subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) || subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                            subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                            subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
                             arrayList1.add(subject)
                         }
                     }
