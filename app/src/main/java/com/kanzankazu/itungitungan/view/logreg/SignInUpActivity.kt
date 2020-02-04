@@ -36,13 +36,13 @@ class SignInUpActivity :
     FirebaseDatabaseUtil.ValueListenerString {
 
     private var viewPagerPosition: Int = 0
-    var mPresenter = SignInUpPresenter(this,this)
+    var mPresenter = SignInUpPresenter(this, this)
     private lateinit var loginGoogleUtil: FirebaseLoginGoogleUtil
     private lateinit var loginFacebookUtil: FirebaseLoginFacebookUtil
     private lateinit var loginEmailPasswordUtil: FirebaseLoginEmailPasswordUtil
     private lateinit var mGoogleApiClient: GoogleApiClient
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-    private lateinit var name: String
+    private var name: String = ""
     private lateinit var fragmentUtil: FragmentUtil
     private lateinit var viewPager: ViewPager
     private lateinit var slidePagerAdapter: FragmentUtil.SlidePagerAdapter
@@ -95,13 +95,13 @@ class SignInUpActivity :
 
         val userFirebaseSignIn: User = user
         FirebaseDatabaseHandler.getUserByUid(userFirebaseSignIn.uId, object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
-            override fun onSuccessDataExist(dataSnapshot: DataSnapshot?, isExsist: Boolean?) {
-                if (isExsist!!) {
-                    val userInDatabase = dataSnapshot?.getValue(User::class.java) as User
-                    mPresenter.signInUpControl(false, false, userInDatabase, name, this@SignInUpActivity)//SignIn
+            override fun onSuccessDataExist(dataSnapshot: DataSnapshot, isExsist: Boolean) {
+                if (isExsist) {
+                    val userInDatabase = dataSnapshot.getValue(User::class.java) as User
+                    mPresenter.signInUpControl(false, false, userInDatabase, userInDatabase.name, this@SignInUpActivity)//SignIn
                 } else {
                     userFirebaseSignIn.emailVerified = true
-                    mPresenter.signInUpControl(false, true, userFirebaseSignIn, name, this@SignInUpActivity)
+                    mPresenter.signInUpControl(false, true, userFirebaseSignIn, userFirebaseSignIn.name, this@SignInUpActivity)//SignIn First
                 }
             }
 
@@ -136,11 +136,11 @@ class SignInUpActivity :
         etSignUpPassword.setText("")
 
         FirebaseDatabaseHandler.isExistUser(userFirebaseSignUp, object : FirebaseDatabaseUtil.ValueListenerTrueFalse {
-            override fun onSuccessExist(isExists: Boolean?) {
-                if (isExists!!) {
+            override fun onSuccessExist(isExists: Boolean) {
+                if (isExists) {
                     showSnackbar(getString(R.string.message_database_data_exist))
                 } else {
-                    mPresenter.signInUpControl(true, true, userFirebaseSignUp, name, this@SignInUpActivity)
+                    mPresenter.signInUpControl(true, true, userFirebaseSignUp, userFirebaseSignUp.name, this@SignInUpActivity)//SignUp first
                 }
             }
 
@@ -193,9 +193,6 @@ class SignInUpActivity :
         fragmentUtil = FragmentUtil(this, -1)
         viewPager = findViewById(R.id.vp_signInUp)
         slidePagerAdapter = fragmentUtil.setupTabLayoutViewPager(null, null, null, viewPager, SignInFragment.newInstance(), SignUpFragment.newInstance())
-
-        Log.d("Lihat", "initView SignInUpActivity " + viewPager.currentItem)
-        Log.d("Lihat", "initView SignInUpActivity " + slidePagerAdapter.count)
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -257,6 +254,7 @@ class SignInUpActivity :
     }
 
     fun moveToMain() {
+        UserPreference.getInstance().isLogin = true
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }

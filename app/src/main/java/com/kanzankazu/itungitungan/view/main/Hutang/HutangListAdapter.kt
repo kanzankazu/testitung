@@ -62,12 +62,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             isLunas = hutang.statusLunas
 
             builder = TextDrawable.builder()
-                    .beginConfig()
-                    .withBorder(4)
-                    .width(80)
-                    .height(80)
-                    .endConfig()
-                    .roundRect(20)
+                .beginConfig()
+                .withBorder(4)
+                .width(80)
+                .height(80)
+                .endConfig()
+                .roundRect(20)
 
             checkPersetujuan(hutang)
             setPersetujuan(hutang)
@@ -283,9 +283,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 }
 
                 val approveCreditor = Collections.frequency(listStatCreditor, "approve")
-                val upapproveCreditor = Collections.frequency(listStatCreditor, "upapprove")
                 val approveDebtor = Collections.frequency(listStatDebtor, "approve")
-                val upapproveDebtor = Collections.frequency(listStatDebtor, "upapprove")
 
                 approvePayCreditor = approveCreditor == hutang.hutangPembayaranSub.size
                 approvePayDebtor = approveDebtor == hutang.hutangPembayaranSub.size
@@ -302,9 +300,13 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                         itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
                         itemView.tv_item_hutang_list_apprv_piutang.text = "Persetujuan Piutang Hapus"
                     } else {
-                        if (!approvePayCreditor && hutang.debtorId.isNotEmpty()) {
-                            itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
-                            itemView.tv_item_hutang_list_apprv_piutang.text = "Persetujuan Piutang Pembayaran"
+                        if (listStatCreditor.isNotEmpty()) {
+                            if (!approvePayCreditor && hutang.debtorId.isNotEmpty()) {
+                                itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
+                                itemView.tv_item_hutang_list_apprv_piutang.text = "Persetujuan Piutang Pembayaran"
+                            } else {
+                                itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
+                            }
                         } else {
                             itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
                         }
@@ -323,12 +325,17 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                         itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
                         itemView.tv_item_hutang_list_apprv_penghutang.text = "Persetujuan Penghutang Hapus"
                     } else {
-                        if (!approvePayDebtor && hutang.creditorId.isNotEmpty()) {
-                            itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
-                            itemView.tv_item_hutang_list_apprv_penghutang.text = "Persetujuan Penghutang Hapus"
+                        if (listStatDebtor.isNotEmpty()) {
+                            if (!approvePayDebtor && hutang.creditorId.isNotEmpty()) {
+                                itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
+                                itemView.tv_item_hutang_list_apprv_penghutang.text = "Persetujuan Penghutang Pembayaran"
+                            } else {
+                                itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
+                            }
                         } else {
                             itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
-                        }                    }
+                        }
+                    }
                 }
             }
         }
@@ -361,25 +368,25 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
 
         private fun setNormalOnClickListener(hutang: Hutang) {
             val strings: Array<String> =
-                    if (isIFamily && !isLunas && hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
-                        arrayOf("Detail", "Lihat")
-                    } else if (isIFamily && !isLunas && !hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
-                        arrayOf("Lihat")
-                    } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPenghutang) {
-                        arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
-                    } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPenghutang) {
-                        arrayOf("Lihat", "Bayar", "Hapus")
-                    } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPiutang) {
-                        arrayOf("Ubah", "Lihat", "Hapus")
-                    } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPiutang) {
-                        arrayOf("Lihat", "Hapus")
-                    } else if (!isIFamily && isLunas && (isIPenghutang || isIPiutang)) {
-                        arrayOf("Lihat")
-                    } else if (isIFamily && isLunas && (!isIPenghutang || !isIPiutang)) {
-                        arrayOf("Lihat")
-                    } else {
-                        arrayOf("Lihat")
-                    }
+                if (isIFamily && !isLunas && hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                    arrayOf("Detail", "Lihat")
+                } else if (isIFamily && !isLunas && !hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                    arrayOf("Lihat")
+                } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPenghutang) {
+                    arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
+                } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPenghutang) {
+                    arrayOf("Lihat", "Bayar", "Hapus")
+                } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPiutang) {
+                    arrayOf("Ubah", "Lihat", "Hapus")
+                } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPiutang) {
+                    arrayOf("Lihat", "Hapus")
+                } else if (!isIFamily && isLunas && (isIPenghutang || isIPiutang)) {
+                    arrayOf("Lihat")
+                } else if (isIFamily && isLunas && (!isIPenghutang || !isIPiutang)) {
+                    arrayOf("Lihat")
+                } else {
+                    arrayOf("Lihat")
+                }
             Utils.listDialog(mActivity, strings) { _, which ->
                 when (strings[which]) {
                     "Ubah" -> {
@@ -437,14 +444,16 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 for (subject in mainModel) {
                     if (subject.hutangRadioIndex == 0) {//saya berhutang(piutang)
                         if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                                subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                                subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                            subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                            subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())
+                        ) {
                             arrayList1.add(subject)
                         }
                     } else {// saya pemberi hutang(penghutang)
                         if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                                subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                                subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                            subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                            subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())
+                        ) {
                             arrayList1.add(subject)
                         }
                     }

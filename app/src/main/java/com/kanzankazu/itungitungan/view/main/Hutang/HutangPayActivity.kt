@@ -73,33 +73,34 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
     }
 
     override fun onClick(v: View?) {
-        when (v) {
-            tv_hutang_pay -> {
-                DialogUtil.makeDialogStandart2Button(
-                        this@HutangPayActivity,
-                        "Konfirmasi",
-                        "Apa data ini sudah benar, dan ingin melanjutkan pembayaran?",
-                        false,
-                        "Iya",
-                        "Tidak",
-                        object : DialogUtil.DialogStandart2Listener {
-                            override fun onClickButton1() {
-                                mPresenter.saveSubHutangValidate(
-                                        isNew,
-                                        huCil,
-                                        hutang,
-                                        tv_hutang_pay_cicilan_ke,
-                                        et_hutang_pay_nominal,
-                                        et_hutang_pay_note,
-                                        imageListAdapter,
-                                        this@HutangPayActivity
-                                )
-                            }
+        if (v == tv_hutang_pay) dialogConfirmSave()
+    }
 
-                            override fun onClickButton2() {}
-                        })
-            }
-        }
+    private fun dialogConfirmSave() {
+        DialogUtil.makeDialogStandart2Button(
+            this@HutangPayActivity,
+            "Konfirmasi",
+            "Apa data ini sudah benar, dan ingin melanjutkan pembayaran?",
+            false,
+            "Iya",
+            "Tidak",
+            object : DialogUtil.DialogStandart2Listener {
+                override fun onClickButton1() {
+                    mPresenter.saveSubHutangValidate(
+                        isNew,
+                        huCil,
+                        hutang,
+                        tv_hutang_pay_cicilan_ke,
+                        et_hutang_pay_nominal,
+                        et_hutang_pay_note,
+                        imageListAdapter,
+                        this@HutangPayActivity
+                    )
+                }
+
+                override fun onClickButton2() {}
+            })
+
     }
 
 

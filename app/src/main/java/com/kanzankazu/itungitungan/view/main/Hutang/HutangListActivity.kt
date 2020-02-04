@@ -237,6 +237,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                         mPresenter.requestHutangHapus(hutang, true)
                     }
                 }
+
                 override fun onSecondButtonClick() {}
             }
         )
@@ -244,7 +245,12 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     private fun detailDialog(hutang: Hutang, isApproveNew: Boolean, isApproveEdit: Boolean, isApproveDelete: Boolean, isApprovePay: Boolean) {
-        try {
+
+        val fm = supportFragmentManager
+        val hutangDetailDialog = HutangDetailDialog.newInstance(hutang,isApproveNew, isApproveEdit, isApproveDelete, isApprovePay)
+        hutangDetailDialog.show(fm, "fragment_detail")
+
+        /*try {
             //val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
             //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             //dialog.setContentView(R.layout.layout_hutang_detail_dialog)
@@ -333,6 +339,12 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             tvHutangDetailDialogPenghutangName.text = hutang.debtorName
             tvHutangDetailDialogPenghutangEmail.text = hutang.debtorEmail
 
+            if (!hutang.hutangPembayaranSub.isNullOrEmpty()) {
+                cv_hutang_detail_pembayaran.visibility = View.VISIBLE
+            } else {
+                cv_hutang_detail_pembayaran.visibility = View.GONE
+            }
+
             if (hutang.hutangBuktiGambar != null) {
                 cvHutangDetailDialogPenghutangImage.visibility = View.VISIBLE
                 when {
@@ -408,8 +420,6 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-
-
+        }*/
     }
 }

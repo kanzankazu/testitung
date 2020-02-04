@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,16 +48,13 @@ public class DialogUtil {
         dialog.setMessage(message);
         dialog.setCancelable(cancelable);
         dialog.setPositiveButton(textButton1, (dialogInterface, i) -> {
-            //code here
             listener.onClickButton1();
             dialogInterface.dismiss();
         });
-        if (!TextUtils.isEmpty(textButton2)) {
-            dialog.setNegativeButton(textButton2, (dialogInterface, i) -> {
-                listener.onClickButton2();
-                dialogInterface.dismiss();
-            });
-        }
+        dialog.setNegativeButton(textButton2, (dialogInterface, i) -> {
+            listener.onClickButton2();
+            dialogInterface.dismiss();
+        });
         dialog.show();
     }
 

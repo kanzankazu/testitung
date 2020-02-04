@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:thickness="0dp"
+    android:layout_width="wrap_content"
     android:shape="rectangle"
-    android:layout_width="wrap_content">
-    <corners android:radius="@dimen/padding_margin_2dp"/>
-    <stroke android:width="@dimen/padding_margin_1dp"
+    android:thickness="0dp">
+    <corners android:radius="@dimen/padding_margin_10dp" />
+    <stroke
+        android:width="@dimen/padding_margin_1dp"
         android:color="@color/cyan" />
-    <solid
-        android:color="@color/color_off_white"/>
+    <solid android:color="@color/color_off_white" />
 
 </shape>
