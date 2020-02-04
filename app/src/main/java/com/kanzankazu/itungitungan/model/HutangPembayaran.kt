@@ -8,7 +8,7 @@ data class HutangPembayaran(
         var hIdSub: String = "",
         var hId: String = "",
         var paymentTo: Int = 1,
-        var paymentEvidence: MutableList<String> = mutableListOf(),
+        var paymentProofImage: MutableList<String> = mutableListOf(),
         var paymentNominal: String = "0",
         var paymentDesc: String = "",
         var approvalCreditor: Boolean = false,

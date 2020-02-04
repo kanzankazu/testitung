@@ -38,7 +38,6 @@ import java.io.File
 class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private var hutang: Hutang = Hutang()
     private var isEdit: Boolean = false
-    private var pickAccount: Int = -1
     private var positionImage: Int = -1
     private var mCurrentPhotoPath0: String? = ""
     private var mCurrentPhotoPath1: String? = ""
@@ -84,10 +83,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             }
         } else if (requestCode == AndroidUtil.REQ_CODE_PICK_EMAIL_ACCOUNT) {
             val emailAccountResult = AndroidUtil.pickEmailAccountResult(requestCode, resultCode, data)
-            setSuggestUser(emailAccountResult, pickAccount)
+            setSuggestUser(emailAccountResult)
         } else if (requestCode == AndroidUtil.REQ_CODE_PICK_CONTACT) {
             val phoneAccountResult = AndroidUtil.pickPhoneAccountResult(requestCode, resultCode, data, this, true)
-            setSuggestUser(phoneAccountResult, pickAccount)
+            setSuggestUser(phoneAccountResult)
         }
     }
 
@@ -502,9 +501,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
     }
 
-    private fun setSuggestUser(resultAccount: String, pickAccount: Int) {
+    private fun setSuggestUser(resultAccount: String) {
         showProgressDialog()
-        if (pickAccount == 0) {
+        if (!InputValidUtil.isEmail(resultAccount)) {
             FirebaseDatabaseHandler.getUserByPhone(this, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
                 override fun onSuccessData(dataSnapshot: Any?) {
                     dismissProgressDialog()
@@ -676,13 +675,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
         val chooseImageDialog = AlertDialog.Builder(this)
         chooseImageDialog.setItems(items) { _: DialogInterface?, position: Int ->
-            Log.d("Lihat", "chooseDialogPickUserData HutangAddEditActivity : $position")
-            pickAccount = if (items[position] == "Pilih Kontak") {
+            if (items[position] == "Pilih Kontak") {
                 AndroidUtil.pickPhoneAccount(this)
-                0
             } else {
                 AndroidUtil.pickEmailAccount(this)
-                1
             }
         }
         chooseImageDialog.show()

@@ -181,10 +181,10 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
                     when (status) {
                         Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
                         Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
-                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkan dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan)
+                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkan dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkan)
                     },
                     false) {
-                saveValidateImageData(imageListAdapter, isNew,hutang,huCil,listener)
+                saveValidateImageData(imageListAdapter, isNew, hutang, huCil, listener)
             }
         } else {
             mView.showSnackbarView(mActivity.getString(R.string.message_validation_failed))
@@ -220,7 +220,7 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
     override fun saveImageData(hutang: Hutang, huCil: HutangPembayaran, imageLocalUri: MutableList<Uri>, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
         FirebaseStorageUtil.uploadImages(mActivity, "HUTANG_PAY", imageLocalUri as ArrayList<Uri>?, object : FirebaseStorageUtil.DoneListener {
             override fun isFinised(imageDownloadUrls: ArrayList<String>) {
-                huCil.paymentEvidence = imageDownloadUrls
+                huCil.paymentProofImage = imageDownloadUrls
                 mView.showSnackbarView(mActivity.getString(R.string.message_image_save_success))
                 saveUpdateData(hutang, huCil, listener)
             }

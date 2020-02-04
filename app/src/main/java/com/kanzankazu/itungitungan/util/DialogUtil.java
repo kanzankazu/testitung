@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 
 public class DialogUtil {
 
-    public static void makeDialogStandart(Activity activity, String title, String message, Boolean cancelable, dialogStandartListener listener) {
+    public static void makeDialogStandart(Activity activity, String title, String message, Boolean cancelable, DialogStandartListener listener) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
         dialog.setTitle(title);
         dialog.setMessage(message);
@@ -43,7 +43,7 @@ public class DialogUtil {
         dialog.show();
     }
 
-    public static void makeDialogStandart2Button(Activity activity, String title, String message, Boolean cancelable, String textButton1, String textButton2, dialogStandart2Listener listener) {
+    public static void makeDialogStandart2Button(Activity activity, String title, String message, Boolean cancelable, String textButton1, String textButton2, DialogStandart2Listener listener) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
         dialog.setTitle(title);
         dialog.setMessage(message);
@@ -96,7 +96,7 @@ public class DialogUtil {
     android:drawableRight="@null"
     android:ellipsize="marquee" />
     * */
-    public static AlertDialog setupRadioAlertDialog(Activity activity, String title, CharSequence[] radioButtonData, int checkedIndex, int identifier, String mode, dialogRadioListener listener) {
+    public static AlertDialog setupRadioAlertDialog(Activity activity, String title, CharSequence[] radioButtonData, int checkedIndex, int identifier, String mode, DialogRadioListener listener) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
 
         TextView titleTv = new TextView(activity);
@@ -119,7 +119,7 @@ public class DialogUtil {
         return dialogBuilder.create();
     }
 
-    public static void setupCustomAlertDialog(Activity activity, @LayoutRes int layout, @AnimatorRes int anim, Boolean isCancelable, dialogCustomListener listener) {
+    public static void setupCustomAlertDialog(Activity activity, @LayoutRes int layout, @AnimatorRes int anim, Boolean isCancelable, DialogCustomListener listener) {
         View dialogView = activity.getLayoutInflater().inflate(layout, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setView(dialogView);
@@ -279,21 +279,21 @@ public class DialogUtil {
         return list.toArray(new CharSequence[list.size()]);
     }
 
-    public interface dialogStandartListener {
+    public interface DialogStandartListener {
         void onClickButton();
     }
 
-    public interface dialogStandart2Listener {
+    public interface DialogStandart2Listener {
         void onClickButton1();
 
         void onClickButton2();
     }
 
-    public interface dialogRadioListener {
+    public interface DialogRadioListener {
         void onRadioButtonClick(int index, int identifier, String mode);
     }
 
-    public interface dialogCustomListener {
+    public interface DialogCustomListener {
         void customDialogContent(View view, AlertDialog mAlertDialog);
     }
 }

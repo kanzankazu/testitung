@@ -1,5 +1,6 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -181,7 +182,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                         setViewPersetujuan(false, false, false, false, false, hutang)
                         return false
                     } else {
-                        if ((!hutang.creditorId.isNullOrEmpty() && hutang.debtorId.isNullOrEmpty()) || (hutang.creditorId.isNullOrEmpty() && !hutang.debtorId.isNullOrEmpty())) {
+                        if ((hutang.creditorId.isNotEmpty() && hutang.debtorId.isEmpty()) || (hutang.creditorId.isEmpty() && hutang.debtorId.isNotEmpty())) {
                             setViewPersetujuan(false, false, false, false, false, hutang)
                             return false
                         } else {
@@ -203,7 +204,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                     setViewPersetujuan(false, false, false, false, false, hutang)
                     return false
                 } else {
-                    if ((!hutang.creditorId.isNullOrEmpty() && hutang.debtorId.isNullOrEmpty()) || (hutang.creditorId.isNullOrEmpty() && !hutang.debtorId.isNullOrEmpty())) {
+                    if ((hutang.creditorId.isNotEmpty() && hutang.debtorId.isEmpty()) || (hutang.creditorId.isEmpty() && hutang.debtorId.isNotEmpty())) {
                         setViewPersetujuan(false, false, false, false, false, hutang)
                         return false
                     } else {
@@ -223,7 +224,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                     setViewPersetujuan(false, false, false, false, false, hutang)
                     return false
                 } else {
-                    if ((!hutang.creditorId.isNullOrEmpty() && hutang.debtorId.isNullOrEmpty()) || (hutang.creditorId.isNullOrEmpty() && !hutang.debtorId.isNullOrEmpty())) {
+                    if ((hutang.creditorId.isNotEmpty() && hutang.debtorId.isEmpty()) || (hutang.creditorId.isEmpty() && hutang.debtorId.isNotEmpty())) {
                         setViewPersetujuan(false, false, false, false, false, hutang)
                         return false
                     } else {
@@ -265,35 +266,69 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         }
 
         private fun setPersetujuan(hutang: Hutang) {
-            if (!hutang.creditorApprovalNew && !hutang.debtorId.isNullOrEmpty()) {
+            var approvePayCreditor = false
+            var approvePayDebtor = false
+            val listStatCreditor = mutableListOf<String>()
+            val listStatDebtor = mutableListOf<String>()
+            for (hutangSub in hutang.hutangPembayaranSub) {
+                if (hutangSub.approvalCreditor) {
+                    listStatCreditor.add("approve")
+                } else {
+                    listStatCreditor.add("upapprove")
+                }
+                if (hutangSub.approvalDebtor) {
+                    listStatDebtor.add("approve")
+                } else {
+                    listStatDebtor.add("upapprove")
+                }
+
+                val approveCreditor = Collections.frequency(listStatCreditor, "approve")
+                val upapproveCreditor = Collections.frequency(listStatCreditor, "upapprove")
+                val approveDebtor = Collections.frequency(listStatDebtor, "approve")
+                val upapproveDebtor = Collections.frequency(listStatDebtor, "upapprove")
+
+                approvePayCreditor = approveCreditor == hutang.hutangPembayaranSub.size
+                approvePayDebtor = approveDebtor == hutang.hutangPembayaranSub.size
+            }
+
+            if (!hutang.creditorApprovalNew && hutang.debtorId.isNotEmpty()) {
                 itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
             } else {
-                if (hutang.creditorApprovalEdit != null && !hutang.creditorApprovalEdit && !hutang.debtorId.isNullOrEmpty()) {
+                if (!hutang.creditorApprovalEdit && hutang.debtorId.isNotEmpty()) {
                     itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
                     itemView.tv_item_hutang_list_apprv_piutang.text = "Persetujuan Piutang Perubahan"
                 } else {
-                    if (hutang.creditorApprovalDelete != null && !hutang.creditorApprovalDelete && !hutang.debtorId.isNullOrEmpty()) {
+                    if (!hutang.creditorApprovalDelete && hutang.debtorId.isNotEmpty()) {
                         itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
                         itemView.tv_item_hutang_list_apprv_piutang.text = "Persetujuan Piutang Hapus"
                     } else {
-                        itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
+                        if (!approvePayCreditor && hutang.debtorId.isNotEmpty()) {
+                            itemView.cv_item_hutang_list_apprv_piutang.visibility = View.VISIBLE
+                            itemView.tv_item_hutang_list_apprv_piutang.text = "Persetujuan Piutang Pembayaran"
+                        } else {
+                            itemView.cv_item_hutang_list_apprv_piutang.visibility = View.GONE
+                        }
                     }
                 }
             }
 
-            if (!hutang.debtorApprovalNew && !hutang.creditorId.isNullOrEmpty()) {
+            if (!hutang.debtorApprovalNew && hutang.creditorId.isNotEmpty()) {
                 itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
             } else {
-                if (hutang.debtorApprovalEdit != null && !hutang.debtorApprovalEdit && !hutang.creditorId.isNullOrEmpty()) {
+                if (!hutang.debtorApprovalEdit && hutang.creditorId.isNotEmpty()) {
                     itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
                     itemView.tv_item_hutang_list_apprv_penghutang.text = "Persetujuan Penghutang Perubahan"
                 } else {
-                    if (hutang.debtorApprovalDelete != null && !hutang.debtorApprovalDelete && !hutang.creditorId.isNullOrEmpty()) {
+                    if (!hutang.debtorApprovalDelete && hutang.creditorId.isNotEmpty()) {
                         itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
                         itemView.tv_item_hutang_list_apprv_penghutang.text = "Persetujuan Penghutang Hapus"
                     } else {
-                        itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
-                    }
+                        if (!approvePayDebtor && hutang.creditorId.isNotEmpty()) {
+                            itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.VISIBLE
+                            itemView.tv_item_hutang_list_apprv_penghutang.text = "Persetujuan Penghutang Hapus"
+                        } else {
+                            itemView.cv_item_hutang_list_apprv_penghutang.visibility = View.GONE
+                        }                    }
                 }
             }
         }
@@ -360,7 +395,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                         mView.onHutangBayarClick(hutang)
                     }
                     "Hapus" -> {
-                        mView.onHutangHapusClick(hutang, position, (!hutang.creditorApprovalDelete || !hutang.debtorApprovalDelete))
+                        mView.onHutangHapusClick(hutang, adapterPosition, (!hutang.creditorApprovalDelete || !hutang.debtorApprovalDelete))
                     }
                 }
             }
@@ -389,6 +424,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
     }
 
     private inner class SubjectDataFilter : Filter() {
+        @SuppressLint("DefaultLocale")
         override fun performFiltering(charSequence: CharSequence): FilterResults {
             var charSequence = charSequence
 
@@ -401,14 +437,14 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 for (subject in mainModel) {
                     if (subject.hutangRadioIndex == 0) {//saya berhutang(piutang)
                         if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                            subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                            subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                                subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                                subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
                             arrayList1.add(subject)
                         }
                     } else {// saya pemberi hutang(penghutang)
                         if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                            subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                            subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                                subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                                subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
                             arrayList1.add(subject)
                         }
                     }

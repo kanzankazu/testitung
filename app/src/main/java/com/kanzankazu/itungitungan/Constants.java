@@ -38,7 +38,6 @@ public class Constants {
         String IS_MAINTENANCE = "is_maintenance";
         String CURRENT_VERSION = "current_version";
         String MIN_VERSION = "min_version";
-
     }
 
     public interface FirebaseDatabase {

@@ -276,6 +276,8 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             val ivHutangDetailDialogPenghutang1 = dialogView.findViewById<ImageView>(R.id.iv_hutang_detail_dialog_piutang_1)
             val tvHutangDetailDialogSubmitTidak = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_tidak)
             val tvHutangDetailDialogSubmitSetuju = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_setuju)
+            val cv_hutang_detail_pembayaran = dialogView.findViewById<CardView>(R.id.cv_hutang_detail_pembayaran)
+            val rv_hutang_detail_pembayaran = dialogView.findViewById<RecyclerView>(R.id.rv_hutang_detail_pembayaran)
 
             when {
                 isApproveNew -> {

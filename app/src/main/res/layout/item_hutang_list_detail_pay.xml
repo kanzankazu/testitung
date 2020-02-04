@@ -1,46 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/padding_margin_10dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/padding_margin_5dp"
+        android:background="@color/colorPrimaryDark" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/padding_margin_5dp">
+        android:layout_marginTop="@dimen/padding_margin_5dp"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/iv_splash"
-            android:layout_width="@dimen/padding_margin_50dp"
-            android:layout_height="@dimen/padding_margin_50dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginRight="@dimen/padding_margin_10dp"
-            android:src="@drawable/ic_profile" />
-
-        <LinearLayout
+        <TextView
+            style="@style/TvStandart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:animateLayoutChanges="true"
             android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/TvStandartCenter"
-                android:layout_marginBottom="@dimen/padding_margin_5dp"
-                android:text="Makan Siang"
-                android:textSize="@dimen/padding_margin_20dp" />
-
-        </LinearLayout>
+            android:text="Nominal dibayarkan"
+            android:textSize="@dimen/small_font_size" />
 
         <TextView
-            style="@style/TvStandartCenter"
-            android:layout_width="wrap_content"
-            android:layout_margin="@dimen/padding_margin_10dp"
-            android:text="500.000"
-            android:textColor="@color/green"
-            android:textSize="@dimen/padding_margin_20dp" />
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/medium_font_size"
+            tools:text="Rp 1.000" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_margin_5dp"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Pembayaran Ke"
+            android:textSize="@dimen/small_font_size" />
+
+        <TextView
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/small_font_size"
+            tools:text="1" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_margin_5dp"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Keterangan"
+            android:textSize="@dimen/small_font_size" />
+
+        <TextView
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/small_font_size"
+            tools:text="Terima kasih" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_margin_10dp"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Persetujuan Penghutang"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/small_font_size" />
+
+        <TextView
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Persetujuan Piutang"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/small_font_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_margin_5dp"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Setuju"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/medium_font_size" />
+
+        <TextView
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Setuju"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/medium_font_size" />
 
     </LinearLayout>
 
