@@ -33,6 +33,7 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
     private var isApproveDelete: Boolean = false
     private var isApprovePay: Boolean = false
     private var hutang = Hutang()
+    private lateinit var detailDialogPayAdapter: HutangDetailDialogPayAdapter
 
     private lateinit var mPresenter: HutangDetailDialogPresenter
 
@@ -189,6 +190,12 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
             }
         }
 
+        tv_hutang_detail_dialog_status.text = when {
+            hutang.statusLunas -> "LUNAS"
+            hutang.hutangPembayaranSub.size > 0 -> "PROSES PEMBAYARAN"
+            else -> "PROSES MENUNGGU PEMBAYARAN"
+        }
+
         tv_hutang_detail_dialog_nominal.text = Utils.setRupiah(hutang.hutangNominal)
         tv_hutang_detail_dialog_pinjam_date.text = hutang.hutangPinjam
         if (hutang.hutangCicilanIs) {
@@ -247,8 +254,8 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
     private fun setPembayaranAdapter(hutangPembayaranSub: MutableList<HutangPembayaran>) {
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         rv_hutang_detail_pembayaran.layoutManager = linearLayoutManager
-        loanStatusAdapter = HutangDetailDialogPayAdapter(this, this)
-        rv_hutang_detail_pembayaran.adapter = loanStatusAdapter
+        detailDialogPayAdapter = HutangDetailDialogPayAdapter(activity, this, hutangPembayaranSub)
+        rv_hutang_detail_pembayaran.adapter = detailDialogPayAdapter
     }
 
     private fun initListener() {
