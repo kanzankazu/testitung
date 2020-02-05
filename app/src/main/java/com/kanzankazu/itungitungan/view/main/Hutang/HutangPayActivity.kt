@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_hutang_pay.*
 import java.io.File
 
 
-class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickListener, FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
     private var mPresenter: HutangPayPresenter = HutangPayPresenter(this, this)
     private var isNew: Boolean = false
     private var huCil: HutangPembayaran = HutangPembayaran()
@@ -71,38 +71,6 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
     override fun dismissProgressDialogView() {
         dismissProgressDialog()
     }
-
-    override fun onClick(v: View?) {
-        if (v == tv_hutang_pay) dialogConfirmSave()
-    }
-
-    private fun dialogConfirmSave() {
-        DialogUtil.makeDialogStandart2Button(
-            this@HutangPayActivity,
-            "Konfirmasi",
-            "Apa data ini sudah benar, dan ingin melanjutkan pembayaran?",
-            false,
-            "Iya",
-            "Tidak",
-            object : DialogUtil.DialogStandart2Listener {
-                override fun onClickButton1() {
-                    mPresenter.saveSubHutangValidate(
-                        isNew,
-                        huCil,
-                        hutang,
-                        tv_hutang_pay_cicilan_ke,
-                        et_hutang_pay_nominal,
-                        et_hutang_pay_note,
-                        imageListAdapter,
-                        this@HutangPayActivity
-                    )
-                }
-
-                override fun onClickButton2() {}
-            })
-
-    }
-
 
     override fun checkData(isFocus: Boolean): Boolean {
         return if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_pay_nominal, et_hutang_pay_nominal, isFocus)) false
@@ -160,6 +128,8 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
     }
 
     private fun setBundleData() {
+
+
         nominalTotalPembayaran = if (hutang.hutangCicilanIs) {
             hutang.hutangCicilanNominal.toInt() * hutang.hutangCicilanBerapaKali.toInt()
         } else {
@@ -175,7 +145,11 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
         if (hutang.hutangCicilanIs) {
             tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
             ll_hutang_pay_cicilan.visibility = View.VISIBLE
-            tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_to, (hutang.hutangPembayaranSub.size + 1).toString(), hutang.hutangCicilanBerapaKali)
+            if (hutang.hutangCicilanIs) {
+                tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_to_cicilan, (hutang.hutangPembayaranSub.size + 1).toString(), hutang.hutangCicilanBerapaKali)
+            } else {
+                tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_to, (hutang.hutangPembayaranSub.size + 1).toString())
+            }
             tv_hutang_pay_cicilan_type.text = hutang.hutangCicilanBerapaKaliType
             if (!hutang.hutangCicilanIsBayarKapanSaja) {
                 ll_hutang_pay_due_dt.visibility = View.VISIBLE
@@ -189,8 +163,38 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, View.OnClickLi
         }
     }
 
+    private fun dialogConfirmSave() {
+        DialogUtil.showIntroductionDialog(
+            this,
+            "",
+            "Konfirmasi",
+            "Apa data ini sudah benar, dan ingin melanjutkan pembayaran?",
+            "Iya",
+            "Tidak",
+            false,
+            -1,
+            object : DialogUtil.IntroductionButtonListener {
+                override fun onFirstButtonClick() {
+                    mPresenter.saveSubHutangValidate(isNew, huCil, hutang, tv_hutang_pay_cicilan_ke, et_hutang_pay_nominal, et_hutang_pay_note, imageListAdapter, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                        override fun onSuccessSaveUpdate(message: String?) {
+                            showSnackbar(message)
+                            finish()
+                        }
+
+                        override fun onFailureSaveUpdate(message: String?) {
+                            showSnackbar(message)
+                        }
+                    })
+
+                }
+
+                override fun onSecondButtonClick() {}
+            }
+        )
+    }
+
     private fun setListener() {
-        tv_hutang_pay.setOnClickListener(this)
+        tv_hutang_pay.setOnClickListener { dialogConfirmSave() }
         iv_hutang_pay_image_add.setOnClickListener { pictureUtil2 = mPresenter.addImage() }
     }
 }

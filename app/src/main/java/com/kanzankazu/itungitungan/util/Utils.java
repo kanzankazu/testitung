@@ -769,7 +769,6 @@ public class Utils {
 
     public interface DialogButtonListener {
         void onDialogButtonClick();
-
     }
 
     public interface IntroductionButtonListener {

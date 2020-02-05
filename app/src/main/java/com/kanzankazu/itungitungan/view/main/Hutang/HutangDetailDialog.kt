@@ -141,7 +141,7 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mPresenter = HutangDetailDialogPresenter(activity as AppCompatActivity)
+        mPresenter = HutangDetailDialogPresenter(activity as AppCompatActivity, this)
 
         initView()
         initListener()

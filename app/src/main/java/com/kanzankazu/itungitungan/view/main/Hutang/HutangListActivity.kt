@@ -1,11 +1,8 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
@@ -14,18 +11,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Utils
-import com.kanzankazu.itungitungan.util.widget.gallery2.DepthPageTransformer
-import com.kanzankazu.itungitungan.util.widget.gallery2.GalleryDetailPagerAdapter
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_hutang_list.*
 import kotlinx.android.synthetic.main.app_toolbar.*
@@ -97,7 +87,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     override fun onHutangHapusClick(hutang: Hutang, position: Int, isHasReqDelete: Boolean) {
-        removeDeleteDialog(hutang, position, isHasReqDelete)
+        removeDeleteDialog(hutang, isHasReqDelete)
     }
 
     override fun onHutangFilter(hutangs: MutableList<Hutang>) {
@@ -211,7 +201,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         startActivity(intent)
     }
 
-    private fun removeDeleteDialog(hutang: Hutang, position: Int, isHasReqDelete: Boolean) {
+    private fun removeDeleteDialog(hutang: Hutang, isHasReqDelete: Boolean) {
         Utils.showIntroductionDialog(
             this,
             "",

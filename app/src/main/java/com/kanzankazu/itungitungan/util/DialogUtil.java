@@ -136,7 +136,18 @@ public class DialogUtil {
 
     }
 
-    public static void showIntroductionDialog(Activity mActivity, String imageUrl, String title, String message, String titleButton1, String titleButton2, boolean isCancelable, int assetHardCode, final Utils.IntroductionButtonListener introductionButtonListener) {
+    /**
+     * @param mActivity                  inisialisasi class
+     * @param introductionButtonListener action untuk titleButton1 & titleButton2 / (tombol silang, jika titleButton 2 kosong), dan jika tidak di isi secara default akan menutup popup
+     * @param imageUrl                   gambar yang di tampilkan (berbentuk string URL)
+     * @param title                      text untuk judul popup dialog
+     * @param message                    text untuk isi dari popup dialog
+     * @param titleButton1               text untuk tombol utama
+     * @param titleButton2               text untuk tombol ke 2
+     * @param isCancelable               apakah bisa di tutup, dan jika bisa akan ada tanda silang di pojok kanan atas
+     * @param assetHardCode              gambar yang di tampilkan jika `imageUrl` tidak ada (berbentuk int drawable / atau resourceId)
+     */
+    public static void showIntroductionDialog(Activity mActivity, String imageUrl, String title, String message, String titleButton1, String titleButton2, boolean isCancelable, int assetHardCode, IntroductionButtonListener introductionButtonListener) {
         if (!mActivity.isFinishing()) {
             android.app.AlertDialog alertDialog;
             View dialogView = mActivity.getLayoutInflater().inflate(R.layout.popup_introduction, null);
@@ -219,29 +230,7 @@ public class DialogUtil {
         }
     }
 
-    public static void showRetryDialog(Activity mActivity, final Utils.DialogButtonListener dialogButtonListener) {
-        if (!mActivity.isFinishing()) {
-            android.app.Dialog dialog = new android.app.AlertDialog.Builder(mActivity)
-                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_error_dialog, null))
-                    .setCancelable(false)
-                    .show();
-
-            ImageView ivDialog = ButterKnife.findById(dialog, R.id.image_booking_complete);
-            TextView tvDescDialog = ButterKnife.findById(dialog, R.id.tv_booking_complete);
-            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
-
-            ivDialog.setImageResource(R.drawable.ic_no_internet);
-            tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
-            tvCloseDialog.setTextColor(ContextCompat.getColor(mActivity, R.color.cyan));
-            tvCloseDialog.setText(mActivity.getResources().getString(R.string.confirm_retry));
-            tvCloseDialog.setOnClickListener(v -> {
-                dialogButtonListener.onDialogButtonClick();
-                dialog.dismiss();
-            });
-        }
-    }
-
-    public static void showConfirmationDialog(Activity mActivity, String dialogTitle, String dialogDescription, final Utils.DialogButtonListener dialogButtonListener) {
+    public static void showConfirmationDialog(Activity mActivity, String dialogTitle, String dialogDescription, DialogButtonListener dialogButtonListener) {
         if (!mActivity.isFinishing()) {
             android.app.Dialog dialog = new android.app.AlertDialog.Builder(mActivity)
                     .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_confirmation_dialog, null))
@@ -261,6 +250,28 @@ public class DialogUtil {
             }
             tvCloseDialog.setOnClickListener(v -> dialog.dismiss());
             tvCloseDialogOk.setOnClickListener(view -> {
+                dialogButtonListener.onDialogButtonClick();
+                dialog.dismiss();
+            });
+        }
+    }
+
+    public static void showRetryDialog(Activity mActivity, DialogButtonListener dialogButtonListener) {
+        if (!mActivity.isFinishing()) {
+            android.app.Dialog dialog = new android.app.AlertDialog.Builder(mActivity)
+                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_error_dialog, null))
+                    .setCancelable(false)
+                    .show();
+
+            ImageView ivDialog = ButterKnife.findById(dialog, R.id.image_booking_complete);
+            TextView tvDescDialog = ButterKnife.findById(dialog, R.id.tv_booking_complete);
+            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
+
+            ivDialog.setImageResource(R.drawable.ic_no_internet);
+            tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
+            tvCloseDialog.setTextColor(ContextCompat.getColor(mActivity, R.color.cyan));
+            tvCloseDialog.setText(mActivity.getResources().getString(R.string.confirm_retry));
+            tvCloseDialog.setOnClickListener(v -> {
                 dialogButtonListener.onDialogButtonClick();
                 dialog.dismiss();
             });
@@ -292,4 +303,17 @@ public class DialogUtil {
     public interface DialogCustomListener {
         void customDialogContent(View view, AlertDialog mAlertDialog);
     }
+
+    public interface DialogButtonListener {
+        void onDialogButtonClick();
+    }
+
+    public interface IntroductionButtonListener {
+
+        void onFirstButtonClick();
+
+        void onSecondButtonClick();
+
+    }
+
 }

@@ -85,10 +85,12 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             huCil.hId = hutang.hId
             if (hutang.hutangCicilanIs) {
                 huCil.paymentTo = tv_hutang_pay_cicilan_ke.text.toString().split(" dari ")[0].toInt()
+            } else {
+                huCil.paymentTo = tv_hutang_pay_cicilan_ke.text.toString().toInt()
             }
             huCil.paymentNominal = Utils.getRupiahToString(et_hutang_pay_nominal)
             huCil.paymentDesc = et_hutang_pay_note.text.toString().trim()
-            huCil.approvalCreditor = false
+            huCil.approvalCreditor = hutang.creditorId.isEmpty()
             huCil.approvalDebtor = true
 
             //Start checkNominal
@@ -111,49 +113,85 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
                 status = Constants.Hutang.Status.Lunas
             } else if (nominalSudahDiBayarkan + nominalYangDiBayarkan > nominalTotalPembayaran) {
                 if (hutang.debtorId.equals(UserPreference.getInstance().uid, true)) {
-                    hutang.hutangRadioIndex = 1
-                    hutang.creditorId = UserPreference.getInstance().uid
-                    hutang.creditorName = UserPreference.getInstance().name
-                    hutang.creditorEmail = UserPreference.getInstance().email
-                    hutang.creditorApprovalNew = true
-                    hutang.creditorApprovalEdit = true
-                    hutang.creditorApprovalDelete = true
+                    val tempHutangRadioIndex = 1
+                    val tempCreditorId = UserPreference.getInstance().uid
+                    val tempCreditorEmail = UserPreference.getInstance().name
+                    val tempCreditorName = UserPreference.getInstance().email
+                    val tempCreditorApprovalNew = true
+                    val tempCreditorApprovalEdit = true
+                    val tempCreditorApprovalDelete = true
 
-                    hutang.debtorId = if (hutang.creditorId.isNotEmpty()) hutang.creditorId else ""
-                    hutang.debtorEmail = if (hutang.creditorEmail.isNotEmpty()) hutang.creditorEmail else ""
-                    hutang.debtorName = hutang.creditorName
-                    hutang.debtorApprovalNew = if (isNew) hutang.debtorApprovalNew else hutang.debtorId.isEmpty()
-                    hutang.debtorApprovalEdit = if (!isNew) !isNew else hutang.debtorId.isEmpty()
-                    hutang.debtorApprovalDelete = true
+                    val tempDebtorId = if (hutang.creditorId.isNotEmpty()) hutang.creditorId else ""
+                    val tempDebtorName = if (hutang.creditorEmail.isNotEmpty()) hutang.creditorEmail else ""
+                    val tempDebtorEmail = hutang.creditorName
+                    val tempDebtorApprovalNew = if (isNew) hutang.debtorApprovalNew else hutang.debtorId.isEmpty()
+                    val tempDebtorApprovalEdit = if (!isNew) !isNew else hutang.debtorId.isEmpty()
+                    val tempDebtorApprovalDelete = true
 
                     val tempDebtorFamilyId = hutang.creditorFamilyId
                     val tempDebtorFamilyName = hutang.creditorFamilyName
                     val tempCreditorFamilyId = hutang.debtorFamilyId
                     val tempCreditorFamilyName = hutang.debtorFamilyName
+
+
+
+                    hutang.hutangRadioIndex = tempHutangRadioIndex
+                    hutang.creditorId = tempCreditorId
+                    hutang.creditorName = tempCreditorEmail
+                    hutang.creditorEmail = tempCreditorName
+                    hutang.creditorApprovalNew = tempCreditorApprovalNew
+                    hutang.creditorApprovalEdit = tempCreditorApprovalEdit
+                    hutang.creditorApprovalDelete = tempCreditorApprovalDelete
+
+                    hutang.debtorId = tempDebtorId
+                    hutang.debtorEmail = tempDebtorName
+                    hutang.debtorName = tempDebtorEmail
+                    hutang.debtorApprovalNew = tempDebtorApprovalNew
+                    hutang.debtorApprovalEdit = tempDebtorApprovalEdit
+                    hutang.debtorApprovalDelete = tempDebtorApprovalDelete
+
                     hutang.debtorFamilyId = tempDebtorFamilyId
                     hutang.debtorFamilyName = tempDebtorFamilyName
                     hutang.creditorFamilyId = tempCreditorFamilyId
                     hutang.creditorFamilyName = tempCreditorFamilyName
                 } else {
-                    hutang.hutangRadioIndex = 0
-                    hutang.debtorId = UserPreference.getInstance().uid
-                    hutang.debtorName = UserPreference.getInstance().name
-                    hutang.debtorEmail = UserPreference.getInstance().email
-                    hutang.debtorApprovalNew = true
-                    hutang.debtorApprovalEdit = true
-                    hutang.debtorApprovalDelete = true
+                    val tempHutangRadioIndex = 0
+                    val tempDebtorId = UserPreference.getInstance().uid
+                    val tempDebtorName = UserPreference.getInstance().name
+                    val tempDebtorEmail = UserPreference.getInstance().email
+                    val tempDebtorApprovalNew = true
+                    val tempDebtorApprovalEdit = true
+                    val tempDebtorApprovalDelete = true
 
-                    hutang.creditorId = if (hutang.debtorId.isNotEmpty()) hutang.debtorId else ""
-                    hutang.creditorEmail = if (hutang.debtorEmail.isNotEmpty()) hutang.debtorEmail else ""
-                    hutang.creditorName = hutang.debtorName
-                    hutang.creditorApprovalNew = if (isNew) hutang.creditorApprovalNew else hutang.creditorId.isEmpty()
-                    hutang.creditorApprovalEdit = if (!isNew) !isNew else hutang.creditorId.isEmpty()
-                    hutang.creditorApprovalDelete = true
+                    val tempCreditorId = if (hutang.debtorId.isNotEmpty()) hutang.debtorId else ""
+                    val tempCreditorEmail = if (hutang.debtorEmail.isNotEmpty()) hutang.debtorEmail else ""
+                    val tempCreditorName = hutang.debtorName
+                    val tempCreditorApprovalNew = if (isNew) hutang.creditorApprovalNew else hutang.creditorId.isEmpty()
+                    val tempCreditorApprovalEdit = if (!isNew) !isNew else hutang.creditorId.isEmpty()
+                    val tempCreditorApprovalDelete = true
 
                     val tempDebtorFamilyId = hutang.creditorFamilyId
                     val tempDebtorFamilyName = hutang.creditorFamilyName
                     val tempCreditorFamilyId = hutang.debtorFamilyId
                     val tempCreditorFamilyName = hutang.debtorFamilyName
+
+
+
+                    hutang.hutangRadioIndex = tempHutangRadioIndex
+                    hutang.debtorId = tempDebtorId
+                    hutang.debtorName = tempDebtorName
+                    hutang.debtorEmail = tempDebtorEmail
+                    hutang.debtorApprovalNew = tempDebtorApprovalNew
+                    hutang.debtorApprovalEdit = tempDebtorApprovalEdit
+                    hutang.debtorApprovalDelete = tempDebtorApprovalDelete
+
+                    hutang.creditorId = tempCreditorId
+                    hutang.creditorEmail = tempCreditorEmail
+                    hutang.creditorName = tempCreditorName
+                    hutang.creditorApprovalNew = tempCreditorApprovalNew
+                    hutang.creditorApprovalEdit = tempCreditorApprovalEdit
+                    hutang.creditorApprovalDelete = tempCreditorApprovalDelete
+
                     hutang.debtorFamilyId = tempDebtorFamilyId
                     hutang.debtorFamilyName = tempDebtorFamilyName
                     hutang.creditorFamilyId = tempCreditorFamilyId
@@ -175,15 +213,15 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             }
             //End checkNominal
 
-            DialogUtil.makeDialogStandart(
-                    mActivity,
-                    "Info",
-                    when (status) {
-                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
-                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
-                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkan dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkan)
-                    },
-                    false) {
+            DialogUtil.showConfirmationDialog(
+                mActivity,
+                "Info",
+                when (status) {
+                    Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+                    Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+                    else -> "anda sudah membayar Rp.$nominalYangDiBayarkan dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkan)
+                }
+            ) {
                 saveValidateImageData(imageListAdapter, isNew, hutang, huCil, listener)
             }
         } else {
@@ -237,12 +275,11 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
 
         mInteractor.UpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
             override fun onSuccessSaveUpdate(message: String?) {
-                mView.showSnackbarView(message)
-                mActivity.finish()
+                listener.onSuccessSaveUpdate(message)
             }
 
             override fun onFailureSaveUpdate(message: String?) {
-                mView.showSnackbarView(message)
+                listener.onFailureSaveUpdate(message)
             }
         })
     }

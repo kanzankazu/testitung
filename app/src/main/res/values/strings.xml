@@ -88,7 +88,8 @@
     <string name="note">Catatan</string>
     <string name="due_date">Tanggal jatuh tempo :</string>
     <string name="installment">Cicilan ke :</string>
-    <string name="hutang_pay_to">%s dari %s</string>
+    <string name="hutang_pay_to_cicilan">%s dari %s</string>
+    <string name="hutang_pay_to">%s</string>
 
 
 </resources>
