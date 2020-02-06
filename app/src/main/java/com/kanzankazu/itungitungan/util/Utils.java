@@ -762,9 +762,6 @@ public class Utils {
                 .endConfig()
                 .roundRect(20);
         return builder.build(Utils.getInitialName(string), color);
-
-
-
     }
 
     public interface DialogButtonListener {

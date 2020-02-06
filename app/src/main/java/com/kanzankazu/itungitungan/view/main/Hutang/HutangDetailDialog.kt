@@ -26,6 +26,7 @@ import java.util.*
 /**
  * Created by Faisal Bahri on 2020-02-04.
  */
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
 
     private var isApproveNew: Boolean = false
@@ -87,6 +88,7 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
         val dialog = super.onCreateDialog(savedInstanceState)
         // request a window without the title
         dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.window.attributes.windowAnimations = R.style.AnimationRTL
         return dialog
     }
 
@@ -190,10 +192,19 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
             }
         }
 
-        tv_hutang_detail_dialog_status.text = when {
-            hutang.statusLunas -> "LUNAS"
-            hutang.hutangPembayaranSub.size > 0 -> "PROSES PEMBAYARAN"
-            else -> "PROSES MENUNGGU PEMBAYARAN"
+        when {
+            hutang.statusLunas -> {
+                tv_hutang_detail_dialog_status.text = "LUNAS"
+                tv_hutang_detail_dialog_status.setTextColor(resources.getColor(R.color.green))
+            }
+            hutang.hutangPembayaranSub.size > 0 -> {
+                tv_hutang_detail_dialog_status.text = "PROSES PEMBAYARAN"
+                tv_hutang_detail_dialog_status.setTextColor(resources.getColor(R.color.yellow))
+            }
+            else -> {
+                tv_hutang_detail_dialog_status.text = "PROSES MENUNGGU PEMBAYARAN"
+                tv_hutang_detail_dialog_status.setTextColor(resources.getColor(R.color.red))
+            }
         }
 
         tv_hutang_detail_dialog_nominal.text = Utils.setRupiah(hutang.hutangNominal)
@@ -219,10 +230,13 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
         tv_hutang_detail_dialog_penghutang_email.text = hutang.debtorEmail
 
         if (!hutang.hutangPembayaranSub.isNullOrEmpty()) {
-            cv_hutang_detail_pembayaran.visibility = View.VISIBLE
+            cv_hutang_detail_pay.visibility = View.VISIBLE
+            cv_hutang_detail_pay_nominal_sudah.visibility = View.VISIBLE
             setPembayaranAdapter(hutang.hutangPembayaranSub)
+            setPembayaranTotal(hutang.hutangPembayaranSub)
         } else {
-            cv_hutang_detail_pembayaran.visibility = View.GONE
+            cv_hutang_detail_pay.visibility = View.GONE
+            cv_hutang_detail_pay_nominal_sudah.visibility = View.GONE
         }
 
         if (hutang.hutangBuktiGambar != null) {
@@ -256,6 +270,14 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
         rv_hutang_detail_pembayaran.layoutManager = linearLayoutManager
         detailDialogPayAdapter = HutangDetailDialogPayAdapter(activity, this, hutangPembayaranSub)
         rv_hutang_detail_pembayaran.adapter = detailDialogPayAdapter
+    }
+
+    private fun setPembayaranTotal(hutangPembayaranSub: MutableList<HutangPembayaran>) {
+        var totalPembayaran = 0
+        for (data in hutangPembayaranSub) {
+            totalPembayaran += data.paymentNominal.toInt()
+        }
+        tv_hutang_list_detail_pay_nominal_sudah.text = Utils.setRupiah(totalPembayaran.toString())
     }
 
     private fun initListener() {

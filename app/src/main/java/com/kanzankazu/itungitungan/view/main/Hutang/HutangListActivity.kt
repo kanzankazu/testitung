@@ -1,7 +1,6 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -26,7 +25,9 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     private var hutangNominal: Int = 0
     private var piutangNominal: Int = 0
     private var mPresenter: HutangListPresenter = HutangListPresenter(this, this)
-    private lateinit var hutangListAdapter: HutangListAdapter
+    private lateinit var hutangListMineAdapter: HutangListAdapter
+    private lateinit var hutangListFamilyAdapter: HutangListAdapter
+    private lateinit var hutangListLunasAdapter: HutangListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,8 +118,31 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         detailDialog(hutang, false, false, false, true)
     }
 
-    override fun setAllHutangs(hutangs: ArrayList<Hutang>) {
-        hutangListAdapter.setData(hutangs)
+    override fun setAllHutangsMine(hutangs: ArrayList<Hutang>) {
+        if (hutangs.isNotEmpty()) {
+            toggleEmptyDataLayout(tv_hutang_list_mine_empty, rv_hutang_list_mine, false)
+            hutangListMineAdapter.setData(hutangs)
+        } else {
+            toggleEmptyDataLayout(tv_hutang_list_mine_empty, rv_hutang_list_mine, true)
+        }
+    }
+
+    override fun setAllHutangsFamily(hutangs: ArrayList<Hutang>) {
+        if (hutangs.isNotEmpty()) {
+            toggleEmptyDataLayout(tv_hutang_list_family_empty, rv_hutang_list_family, false)
+            hutangListFamilyAdapter.setData(hutangs)
+        } else {
+            toggleEmptyDataLayout(tv_hutang_list_family_empty, rv_hutang_list_family, true)
+        }
+    }
+
+    override fun setAllHutangsLunas(hutangs: ArrayList<Hutang>) {
+        if (hutangs.isNotEmpty()) {
+            toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, false)
+            hutangListLunasAdapter.setData(hutangs)
+        } else {
+            toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, true)
+        }
     }
 
     override fun setZeroHutangs() {
@@ -145,13 +169,15 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     private fun setView() {
-        setRecyclerView()
+        hutangListMineAdapter = setRecyclerViewAdapter(rv_hutang_list_mine)
+        hutangListFamilyAdapter = setRecyclerViewAdapter(rv_hutang_list_family)
+        hutangListLunasAdapter = setRecyclerViewAdapter(rv_hutang_list_lunas)
 
         mPresenter.getAllHutang()
     }
 
     private fun setListener() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             rv_hutang_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -162,7 +188,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                     }
                 }
             })
-        }
+        }*/
 
         et_hutang_list_search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -178,21 +204,32 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                     ib_hutang_list_search_clear.visibility = View.GONE
                 }
 
-                hutangListAdapter.getFilter().filter(s.toString().trim())
+                hutangListMineAdapter.getFilter().filter(s.toString().trim())
+                hutangListFamilyAdapter.getFilter().filter(s.toString().trim())
+                hutangListLunasAdapter.getFilter().filter(s.toString().trim())
             }
         })
 
         ib_hutang_list_search_clear.setOnClickListener { et_hutang_list_search.text.clear() }
     }
 
-    private fun setRecyclerView() {
+    private fun setRecyclerViewAdapter(recyclerView: RecyclerView): HutangListAdapter {
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        rv_hutang_list.layoutManager = linearLayoutManager
-        //toggleEmptyDataLayout(false)
-        hutangListAdapter = HutangListAdapter(this, this)
-        rv_hutang_list.adapter = hutangListAdapter
-        //swipe_refresh.setColorSchemeResources(R.color.cyan)
-        //swipe_refresh.setOnRefreshListener(this)
+        recyclerView.layoutManager = linearLayoutManager
+        val hutangListAdapter = HutangListAdapter(this, this)
+        recyclerView.adapter = hutangListAdapter
+
+        return hutangListAdapter
+    }
+
+    private fun toggleEmptyDataLayout(viewEmpty: View, viewTarget: View, isEmptyData: Boolean) {
+        if (isEmptyData) {
+            viewEmpty.visibility = View.VISIBLE
+            viewTarget.visibility = View.GONE
+        } else {
+            viewTarget.visibility = View.VISIBLE
+            viewEmpty.visibility = View.GONE
+        }
     }
 
     private fun moveToHutangAdd(hutang: Hutang) {
@@ -203,33 +240,33 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private fun removeDeleteDialog(hutang: Hutang, isHasReqDelete: Boolean) {
         Utils.showIntroductionDialog(
-            this,
-            "",
-            "Konfirmasi",
-            if (isHasReqDelete) {
-                "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
-            } else {
-                "Apakah anda yakin ingin menghapus data ini?"
-            }
-            ,
-            "Ya",
-            "Tidak",
-            false,
-            -1,
-            object : Utils.IntroductionButtonListener {
-                override fun onFirstButtonClick() {
-                    if (!isHasReqDelete) {
-                        mPresenter.requestHutangHapus(hutang, false)
-                        if (!hutang.hutangBuktiGambar.isNullOrEmpty()) {
-                            mPresenter.hapusHutangCheckImage(hutang)
-                        }
-                    } else {
-                        mPresenter.requestHutangHapus(hutang, true)
-                    }
+                this,
+                "",
+                "Konfirmasi",
+                if (isHasReqDelete) {
+                    "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
+                } else {
+                    "Apakah anda yakin ingin menghapus data ini?"
                 }
+                ,
+                "Ya",
+                "Tidak",
+                false,
+                -1,
+                object : Utils.IntroductionButtonListener {
+                    override fun onFirstButtonClick() {
+                        if (!isHasReqDelete) {
+                            mPresenter.requestHutangHapus(hutang, false)
+                            if (!hutang.hutangBuktiGambar.isNullOrEmpty()) {
+                                mPresenter.hapusHutangCheckImage(hutang)
+                            }
+                        } else {
+                            mPresenter.requestHutangHapus(hutang, true)
+                        }
+                    }
 
-                override fun onSecondButtonClick() {}
-            }
+                    override fun onSecondButtonClick() {}
+                }
         )
 
     }
@@ -237,179 +274,8 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     private fun detailDialog(hutang: Hutang, isApproveNew: Boolean, isApproveEdit: Boolean, isApproveDelete: Boolean, isApprovePay: Boolean) {
 
         val fm = supportFragmentManager
-        val hutangDetailDialog = HutangDetailDialog.newInstance(hutang,isApproveNew, isApproveEdit, isApproveDelete, isApprovePay)
+        val hutangDetailDialog = HutangDetailDialog.newInstance(hutang, isApproveNew, isApproveEdit, isApproveDelete, isApprovePay)
         hutangDetailDialog.show(fm, "fragment_detail")
 
-        /*try {
-            //val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
-            //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            //dialog.setContentView(R.layout.layout_hutang_detail_dialog)
-            //dialog.setCancelable(false)
-            val alertDialog: AlertDialog
-            val dialogView = layoutInflater.inflate(R.layout.layout_hutang_detail_dialog, null)
-            val builder = AlertDialog.Builder(this)
-            builder.setView(dialogView)
-
-            val flHutangDetailDialogImage = dialogView.findViewById<FrameLayout>(R.id.fl_hutang_detail_dialog_image)
-            val ivHutangDetailDialogPiutangPreview = dialogView.findViewById<ViewPager>(R.id.iv_hutang_detail_dialog_piutang_preview)
-            val ivHutangDetailDialogPiutangPreviewClose = dialogView.findViewById<ImageView>(R.id.iv_hutang_detail_dialog_piutang_preview_close)
-            val llHutangDetailDialog = dialogView.findViewById<LinearLayout>(R.id.ll_hutang_detail_dialog)
-            val tvHutangDetailDialogTitle = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_Title)
-            val tvHutangDetailDialogNominal = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_nominal)
-            val tvHutangDetailDialogCicilanNominal = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan_nominal)
-            val tvHutangDetailDialogPinjamDate = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_pinjam_date)
-            val llHutangDetailDialogCicilan = dialogView.findViewById<LinearLayout>(R.id.ll_hutang_detail_dialog_cicilan)
-            val tvHutangDetailDialogCicilan = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan)
-            val tvHutangDetailDialogCicilanDuedate = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_cicilan_duedate)
-            val tvHutangDetailDialogKeperluan = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_keperluan)
-            val tvHutangDetailDialogCatatan = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_catatan)
-            val tvHutangDetailDialogPiutangName = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_piutang_name)
-            val tvHutangDetailDialogPiutangEmail = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_piutang_email)
-            val tvHutangDetailDialogPenghutangName = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_penghutang_name)
-            val tvHutangDetailDialogPenghutangEmail = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_penghutang_email)
-            val cvHutangDetailDialogPenghutangImage = dialogView.findViewById<CardView>(R.id.cv_hutang_detail_dialog_piutang_image)
-            val ivHutangDetailDialogPenghutang0 = dialogView.findViewById<ImageView>(R.id.iv_hutang_detail_dialog_piutang_0)
-            val ivHutangDetailDialogPenghutang1 = dialogView.findViewById<ImageView>(R.id.iv_hutang_detail_dialog_piutang_1)
-            val tvHutangDetailDialogSubmitTidak = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_tidak)
-            val tvHutangDetailDialogSubmitSetuju = dialogView.findViewById<TextView>(R.id.tv_hutang_detail_dialog_submit_setuju)
-            val cv_hutang_detail_pembayaran = dialogView.findViewById<CardView>(R.id.cv_hutang_detail_pembayaran)
-            val rv_hutang_detail_pembayaran = dialogView.findViewById<RecyclerView>(R.id.rv_hutang_detail_pembayaran)
-
-            when {
-                isApproveNew -> {
-                    tvHutangDetailDialogTitle.text = "Persetujuan HUTANG Piutang Baru"
-                    tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
-                    tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
-                }
-                isApproveEdit -> {
-                    tvHutangDetailDialogTitle.text = "Persetujuan HUTANG Piutang Ubah"
-                    tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
-                    tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
-                }
-                isApproveDelete -> {
-                    tvHutangDetailDialogTitle.text = "Persetujuan HUTANG Piutang Hapus"
-                    tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
-                    tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
-                }
-                isApprovePay -> {
-                    tvHutangDetailDialogTitle.text = "Persetujuan Pembayaran Hutang"
-                    tvHutangDetailDialogSubmitTidak.visibility = View.VISIBLE
-                    tvHutangDetailDialogSubmitSetuju.visibility = View.VISIBLE
-                }
-                else -> {
-                    tvHutangDetailDialogTitle.text = "Detail HUTANG Piutang"
-                    tvHutangDetailDialogSubmitTidak.text = "TUTUP"
-                    tvHutangDetailDialogSubmitSetuju.text = "DETAIL"
-                    if (!hutang.hutangEditableis) {
-                        tvHutangDetailDialogSubmitSetuju.isClickable = false
-                        tvHutangDetailDialogSubmitSetuju.isEnabled = false
-                    }
-                }
-            }
-
-            tvHutangDetailDialogNominal.text = Utils.setRupiah(hutang.hutangNominal)
-            tvHutangDetailDialogPinjamDate.text = hutang.hutangPinjam
-            if (hutang.hutangCicilanIs) {
-                llHutangDetailDialogCicilan.visibility = View.VISIBLE
-                tvHutangDetailDialogCicilanNominal.text = Utils.setRupiah(hutang.hutangCicilanNominal)
-                tvHutangDetailDialogCicilan.text = getString(R.string.installment_count, hutang.hutangCicilanBerapaKali, hutang.hutangCicilanBerapaKaliType)
-
-                if (!hutang.hutangCicilanIsBayarKapanSaja) {
-                    tvHutangDetailDialogCicilanDuedate.text = hutang.hutangCicilanTanggalAkhir
-                } else if (hutang.hutangCicilanIsBayarKapanSaja) {
-                    tvHutangDetailDialogCicilanDuedate.visibility = View.GONE
-                }
-            } else {
-                llHutangDetailDialogCicilan.visibility = View.GONE
-            }
-            tvHutangDetailDialogKeperluan.text = hutang.hutangKeperluan
-            tvHutangDetailDialogCatatan.text = hutang.hutangCatatan
-            tvHutangDetailDialogPiutangName.text = hutang.creditorName
-            tvHutangDetailDialogPiutangEmail.text = hutang.creditorEmail
-            tvHutangDetailDialogPenghutangName.text = hutang.debtorName
-            tvHutangDetailDialogPenghutangEmail.text = hutang.debtorEmail
-
-            if (!hutang.hutangPembayaranSub.isNullOrEmpty()) {
-                cv_hutang_detail_pembayaran.visibility = View.VISIBLE
-            } else {
-                cv_hutang_detail_pembayaran.visibility = View.GONE
-            }
-
-            if (hutang.hutangBuktiGambar != null) {
-                cvHutangDetailDialogPenghutangImage.visibility = View.VISIBLE
-                when {
-                    hutang.hutangBuktiGambar!!.size == 1 -> {
-                        Glide.with(this).load(hutang.hutangBuktiGambar!![0]).into(ivHutangDetailDialogPenghutang0)
-                        ivHutangDetailDialogPenghutang0.visibility = View.VISIBLE
-                        ivHutangDetailDialogPenghutang1.visibility = View.GONE
-                    }
-                    hutang.hutangBuktiGambar!!.size == 2 -> {
-                        ivHutangDetailDialogPenghutang0.visibility = View.VISIBLE
-                        ivHutangDetailDialogPenghutang1.visibility = View.VISIBLE
-                        Glide.with(this).load(hutang.hutangBuktiGambar!![0]).into(ivHutangDetailDialogPenghutang0)
-                        Glide.with(this).load(hutang.hutangBuktiGambar!![1]).into(ivHutangDetailDialogPenghutang1)
-                    }
-                    else -> {
-                        ivHutangDetailDialogPenghutang0.visibility = View.GONE
-                        ivHutangDetailDialogPenghutang1.visibility = View.GONE
-                    }
-                }
-            } else {
-                cvHutangDetailDialogPenghutangImage.visibility = View.GONE
-            }
-
-            val showHidePreview = { isShow: Boolean ->
-                if (isShow) {
-                    flHutangDetailDialogImage.visibility = View.VISIBLE
-                    llHutangDetailDialog.visibility = View.GONE
-                } else {
-                    flHutangDetailDialogImage.visibility = View.GONE
-                    llHutangDetailDialog.visibility = View.VISIBLE
-                }
-            }
-
-            val imageClickShow = View.OnClickListener {
-                showHidePreview(true)
-
-                val posData = if (it == ivHutangDetailDialogPenghutang0) 0 else 1
-
-                val mGalleryDetailPagerAdapter = GalleryDetailPagerAdapter(this, hutang.hutangBuktiGambar as ArrayList<String>?)
-                ivHutangDetailDialogPiutangPreview.setPageTransformer(true, DepthPageTransformer())
-                ivHutangDetailDialogPiutangPreview.adapter = mGalleryDetailPagerAdapter
-                ivHutangDetailDialogPiutangPreview.offscreenPageLimit = 2
-                ivHutangDetailDialogPiutangPreview.currentItem = posData
-            }
-
-            alertDialog = builder.create()
-            alertDialog.setCancelable(false)
-            alertDialog.setCanceledOnTouchOutside(false)
-
-            if (alertDialog.window != null)
-                alertDialog.window.attributes.windowAnimations = R.style.PauseDialogAnimation
-
-            alertDialog.show()
-
-            ivHutangDetailDialogPiutangPreviewClose.setOnClickListener { showHidePreview(false) }
-            ivHutangDetailDialogPenghutang0.setOnClickListener(imageClickShow)
-            ivHutangDetailDialogPenghutang1.setOnClickListener(imageClickShow)
-            tvHutangDetailDialogSubmitSetuju.setOnClickListener {
-                alertDialog.dismiss()
-                when {
-                    isApproveNew -> mPresenter.approveHutangNew(hutang, false)
-                    isApproveEdit -> mPresenter.approveHutangEdit(hutang, false)
-                    isApproveDelete -> mPresenter.approveHutangHapus(hutang)
-                    isApprovePay -> mPresenter.approveHutangCicilanPay(hutang)
-                    else -> moveToHutangAdd(hutang)
-                }
-            }
-            tvHutangDetailDialogSubmitTidak.setOnClickListener {
-                alertDialog.dismiss()
-                when {
-                    isApproveDelete -> mPresenter.requestHutangHapus(hutang, true)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }*/
     }
 }

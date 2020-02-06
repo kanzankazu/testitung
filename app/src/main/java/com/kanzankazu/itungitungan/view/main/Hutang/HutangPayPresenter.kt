@@ -214,13 +214,13 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             //End checkNominal
 
             DialogUtil.showConfirmationDialog(
-                mActivity,
-                "Info",
-                when (status) {
-                    Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
-                    Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
-                    else -> "anda sudah membayar Rp.$nominalYangDiBayarkan dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkan)
-                }
+                    mActivity,
+                    "Info",
+                    when (status) {
+                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkan dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkan)
+                    }
             ) {
                 saveValidateImageData(imageListAdapter, isNew, hutang, huCil, listener)
             }
@@ -270,7 +270,7 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
     }
 
     override fun saveUpdateData(hutang: Hutang, huCil: HutangPembayaran, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
-        hutang.hutangEditableis = false
+        hutang.hutangEditableis = hutang.creditorId.isEmpty()
         hutang.hutangPembayaranSub.add(huCil)
 
         mInteractor.UpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {

@@ -30,22 +30,38 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
 
                 mView.setZeroHutangs()
 
+
                 val hutangs = ArrayList<Hutang>()
+                val hutangMine = ArrayList<Hutang>()
+                val hutangFamily = ArrayList<Hutang>()
+                val hutangLunas = ArrayList<Hutang>()
                 for (snapshot in dataSnapshot.children) {
                     val hutang = snapshot.getValue(Hutang::class.java)
                     if (hutang != null) {
                         if (
-                            hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) ||
-                            (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
-                            (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
+                                hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) ||
+                                (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
+                                (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
                         ) {
-                            hutangs.add(hutang)
+
+                            if (hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
+                                hutangMine.add(hutang)
+                            } else if (
+                                    (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
+                                    (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
+                            ) {
+                                hutangFamily.add(hutang)
+                            } else if (hutang.statusLunas) {
+                                hutangLunas.add(hutang)
+                            }
                             mView.setTotalPiuHutang(hutang)//from database
                         }
                     }
                 }
 
-                mView.setAllHutangs(hutangs)
+                mView.setAllHutangsMine(hutangMine)
+                mView.setAllHutangsFamily(hutangFamily)
+                mView.setAllHutangsLunas(hutangLunas)
             }
 
             override fun onFailureData(message: String?) {

@@ -62,12 +62,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             isLunas = hutang.statusLunas
 
             builder = TextDrawable.builder()
-                .beginConfig()
-                .withBorder(4)
-                .width(80)
-                .height(80)
-                .endConfig()
-                .roundRect(20)
+                    .beginConfig()
+                    .withBorder(4)
+                    .width(80)
+                    .height(80)
+                    .endConfig()
+                    .roundRect(20)
 
             checlPersetujuanLabel(hutang)
             checkPersetujuanAlphaClick(hutang)
@@ -119,6 +119,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             }
 
             if (isIFamily) {
+                itemView.iv_hutang_list_is_family.visibility = View.VISIBLE
+            } else {
+                itemView.iv_hutang_list_is_family.visibility = View.GONE
+            }
+
+            if (hutang.hutangPembayaranSub.isNotEmpty()) {
                 itemView.iv_hutang_list_is_family.visibility = View.VISIBLE
             } else {
                 itemView.iv_hutang_list_is_family.visibility = View.GONE
@@ -367,25 +373,25 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
 
         private fun setNormalOnClickListener(hutang: Hutang) {
             val strings: Array<String> =
-                if (isIFamily && !isLunas && hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
-                    arrayOf("Detail", "Lihat")
-                } else if (isIFamily && !isLunas && !hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
-                    arrayOf("Lihat")
-                } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPenghutang) {
-                    arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
-                } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPenghutang) {
-                    arrayOf("Lihat", "Bayar", "Hapus")
-                } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPiutang) {
-                    arrayOf("Ubah", "Lihat", "Hapus")
-                } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPiutang) {
-                    arrayOf("Lihat", "Hapus")
-                } else if (!isIFamily && isLunas && (isIPenghutang || isIPiutang)) {
-                    arrayOf("Lihat")
-                } else if (isIFamily && isLunas && (!isIPenghutang || !isIPiutang)) {
-                    arrayOf("Lihat")
-                } else {
-                    arrayOf("Lihat")
-                }
+                    if (isIFamily && !isLunas && hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Detail", "Lihat")
+                    } else if (isIFamily && !isLunas && !hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPenghutang) {
+                        arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
+                    } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPenghutang) {
+                        arrayOf("Lihat", "Bayar", "Hapus")
+                    } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPiutang) {
+                        arrayOf("Ubah", "Lihat", "Hapus")
+                    } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPiutang) {
+                        arrayOf("Lihat", "Hapus")
+                    } else if (!isIFamily && isLunas && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else if (isIFamily && isLunas && (!isIPenghutang || !isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else {
+                        arrayOf("Lihat")
+                    }
             Utils.listDialog(mActivity, strings) { _, which ->
                 when (strings[which]) {
                     "Ubah" -> {
@@ -443,15 +449,15 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 for (subject in mainModel) {
                     if (subject.hutangRadioIndex == 0) {//saya berhutang(piutang)
                         if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                            subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                            subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())
+                                subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                                subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())
                         ) {
                             arrayList1.add(subject)
                         }
                     } else {// saya pemberi hutang(penghutang)
                         if (subject.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                            subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
-                            subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())
+                                subject.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()) ||
+                                subject.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())
                         ) {
                             arrayList1.add(subject)
                         }

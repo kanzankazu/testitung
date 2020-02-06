@@ -40,7 +40,6 @@
             android:id="@+id/ll_hutang_detail_dialog"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:orientation="vertical"
             android:padding="@dimen/padding_margin_10dp">
 
@@ -84,6 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Rp. 0"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/Big_font_size" />
 
             </LinearLayout>
@@ -124,6 +124,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Rp. 0"
+                        android:textColor="@color/colorPrimaryDark"
                         android:textSize="@dimen/medium_font_size" />
 
                 </LinearLayout>
@@ -308,15 +309,15 @@
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
-                android:id="@+id/cv_hutang_detail_pembayaran"
+                android:id="@+id/cv_hutang_detail_pay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:visibility="gone"
-                tools:visibility="visible"
                 android:background="@color/colorAccent"
+                android:visibility="gone"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                app:cardElevation="5dp"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -328,7 +329,7 @@
                         android:id="@+id/rv_hutang_detail_pembayaran"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        tools:itemCount="2"
+                        tools:itemCount="1"
                         tools:listitem="@layout/item_hutang_list_detail_pay" />
 
                 </LinearLayout>
@@ -336,15 +337,57 @@
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
+                android:id="@+id/cv_hutang_detail_pay_nominal_sudah"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@color/colorAccent"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_margin_5dp"
+                    android:animateLayoutChanges="true"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_margin_10dp">
+
+                    <TextView
+                        style="@style/TvStandart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Nominal sudah dibayarkan"
+                        android:textSize="@dimen/small_font_size" />
+
+                    <TextView
+                        android:id="@+id/tv_hutang_list_detail_pay_nominal_sudah"
+                        style="@style/TvStandart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/medium_font_size"
+                        tools:text="Rp 1.000" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
                 android:id="@+id/cv_hutang_detail_dialog_piutang_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:visibility="gone"
-                tools:visibility="visible"
                 android:background="@color/colorAccent"
+                android:visibility="gone"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                app:cardElevation="5dp"
+                tools:visibility="visible">
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"

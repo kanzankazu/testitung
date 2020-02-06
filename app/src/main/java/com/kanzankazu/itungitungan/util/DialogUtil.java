@@ -1,12 +1,10 @@
 package com.kanzankazu.itungitungan.util;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.AnimatorRes;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
@@ -28,47 +26,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 
 public class DialogUtil {
-
-    public static void makeDialogStandart(Activity activity, String title, String message, Boolean cancelable, DialogStandartListener listener) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
-        dialog.setTitle(title);
-        dialog.setMessage(message);
-        dialog.setCancelable(cancelable);
-        dialog.setPositiveButton("OK", (dialogInterface, i) -> {
-            //code here
-            listener.onClickButton();
-            dialogInterface.dismiss();
-        });
-        dialog.show();
-    }
-
-    public static void makeDialogStandart2Button(Activity activity, String title, String message, Boolean cancelable, String textButton1, String textButton2, DialogStandart2Listener listener) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
-        dialog.setTitle(title);
-        dialog.setMessage(message);
-        dialog.setCancelable(cancelable);
-        dialog.setPositiveButton(textButton1, (dialogInterface, i) -> {
-            listener.onClickButton1();
-            dialogInterface.dismiss();
-        });
-        dialog.setNegativeButton(textButton2, (dialogInterface, i) -> {
-            listener.onClickButton2();
-            dialogInterface.dismiss();
-        });
-        dialog.show();
-    }
-
-    public static void makeDialogStandart2Button(Activity activity, View view, String title, Boolean twoButton, @Nullable DialogInterface.OnClickListener positiveListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setView(view);
-        builder.setTitle(title);
-        if (twoButton) {
-            builder.setPositiveButton(activity.getText(R.string.confirm_yes), positiveListener != null ? positiveListener : (DialogInterface.OnClickListener) (dialogInterface, i) -> {
-                dialogInterface.dismiss();
-            });
-        }
-        builder.setNegativeButton(activity.getText(R.string.confirm_no), (dialogInterface, i) -> dialogInterface.dismiss());
-    }
 
     /*
     *
@@ -126,7 +83,7 @@ public class DialogUtil {
 
         if (anim != 0) {
             if (alertDialog.getWindow() != null) {
-                alertDialog.getWindow().getAttributes().windowAnimations = R.style.PauseDialogAnimation;
+                alertDialog.getWindow().getAttributes().windowAnimations = R.style.AnimationRTL;
             }
         }
 

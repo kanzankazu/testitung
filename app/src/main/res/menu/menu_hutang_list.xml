@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menuHutangListAdd"
-        android:icon="@drawable/ic_add_user"
+        android:icon="@drawable/ic_hutang"
         android:menuCategory="system"
         android:title="@string/app_name"
         android:visible="true"
-        app:showAsAction="always|withText" />
+        app:showAsAction="always" />
 </menu>

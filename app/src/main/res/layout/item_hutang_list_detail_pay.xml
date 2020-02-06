@@ -65,6 +65,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:textColor="@color/Black"
             android:textSize="@dimen/small_font_size"
             tools:text="1" />
 
@@ -94,6 +95,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:textColor="@color/Black"
             android:textSize="@dimen/small_font_size"
             tools:text="Terima kasih" />
 
@@ -111,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:text="Persetujuan Penghutang"
             android:textColor="@color/Black"
             android:textSize="@dimen/small_font_size" />
@@ -158,5 +160,14 @@
             android:textSize="@dimen/medium_font_size" />
 
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_hutang_list_detail_pay_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/padding_margin_5dp"
+        android:orientation="horizontal"
+        tools:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/item_image_add" />
 
 </LinearLayout>

@@ -16,7 +16,9 @@ interface HutangListContract {
         fun onHutangApproveEditClick(hutang: Hutang)
         fun onHutangApproveDeleteClick(hutang: Hutang)
         fun onHutangApprovePayClick(hutang: Hutang)
-        fun setAllHutangs(hutangs: ArrayList<Hutang>)
+        fun setAllHutangsMine(hutangs: ArrayList<Hutang>)
+        fun setAllHutangsFamily(hutangs: ArrayList<Hutang>)
+        fun setAllHutangsLunas(hutangs: ArrayList<Hutang>)
         fun setTotalPiuHutang(hutang: Hutang)
         fun setZeroHutangs()
 

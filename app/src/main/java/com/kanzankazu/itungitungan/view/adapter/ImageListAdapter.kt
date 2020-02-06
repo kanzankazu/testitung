@@ -51,7 +51,7 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
             }
             else -> {
                 val h = p0 as ImageAddViewHolder
-                h.setView(datas[position])
+                h.setView()
                 h.setOnClickListener(datas[position], position)
             }
         }
@@ -129,7 +129,7 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
     }
 
     inner class ImageAddViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun setView(data: ImageModel) {}
+        fun setView() {}
 
         fun setOnClickListener(data: ImageModel, position: Int) {
             itemView.civ_item_image_add.setOnClickListener {

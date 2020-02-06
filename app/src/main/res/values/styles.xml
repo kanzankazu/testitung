@@ -193,13 +193,23 @@
     </style>
 
     <!--Animate-->
-    <style name="PauseDialog">
-        <item name="android:windowAnimationStyle">@style/PauseDialogAnimation</item>
+    <style name="DialogRTL">
+        <item name="android:windowAnimationStyle">@style/AnimationRTL</item>
     </style>
 
-    <style name="PauseDialogAnimation">
+    <style name="AnimationRTL">
         <item name="android:windowEnterAnimation">@anim/masuk_dari_kanan_ke_kiri</item>
         <item name="android:windowExitAnimation">@anim/keluar_ke_kiri</item>
+    </style>
+
+    <style name="AnimationGrow">
+        <item name="android:windowEnterAnimation">@anim/grow_in</item>
+        <item name="android:windowExitAnimation">@anim/grow_out</item>
+    </style>
+
+    <style name="AnimationFade">
+        <item name="android:windowEnterAnimation">@anim/fadein_fast</item>
+        <item name="android:windowExitAnimation">@anim/fadeout_fast</item>
     </style>
 
 </resources>
