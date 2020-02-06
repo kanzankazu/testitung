@@ -1,159 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/cl_root_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_root_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:background="@color/color_white"
-                app:contentScrim="@color/colorPrimaryDark"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@color/color_white"
+            app:contentScrim="@color/colorPrimaryDark"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_collapseMode="parallax">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="parallax">
 
                 <ImageView
-                        android:id="@+id/main.imageview.placeholder"
-                        android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/ic_launcher_background" />
+                    android:id="@+id/main.imageview.placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_launcher_background"
+                    tools:src="@tools:sample/backgrounds/scenic" />
 
                 <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#613C5730" />
-            </FrameLayout>
-
-            <FrameLayout
-                    android:id="@+id/fl_background"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fitsSystemWindows="true"
-                    app:layout_collapseMode="parallax"
-                    app:layout_collapseParallaxMultiplier="0.7" />
-
-            <android.support.v7.widget.Toolbar
-                    android:id="@+id/anim_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                    android:background="#613C5730" />
+            </FrameLayout>
 
             <FrameLayout
-                    android:id="@+id/stuff_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                android:id="@+id/fl_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.7" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/anim_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <FrameLayout
+                android:id="@+id/stuff_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <TextView
-                        android:id="@+id/title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:text="@string/app_name"
-                        android:textAllCaps="true"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:visibility="invisible" />
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="@string/app_name"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:visibility="invisible" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/imgb_avatar_wrap"
-                        android:layout_width="135dp"
-                        android:layout_height="135dp"
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:src="@drawable/ic_profile"
-                        app:civ_border_color="@color/color_white" />
+                    android:id="@+id/imgb_avatar_wrap"
+                    android:layout_width="135dp"
+                    android:layout_height="135dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:src="@drawable/ic_profile"
+                    app:civ_border_color="@color/color_white" />
 
             </FrameLayout>
 
             <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/tv_profile_name_single"
-                    android:layout_width="wrap_content"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_gravity="center_horizontal"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    android:text="Heath Ledger"
-                    android:textAllCaps="true"
-                    android:textColor="@color/color_white"
-                    android:textSize="17sp"
-                    android:visibility="invisible"
-                    app:layout_collapseMode="pin"
-                    tools:visibility="visible" />
+                android:id="@+id/tv_profile_name_single"
+                android:layout_width="wrap_content"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="center_horizontal"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="Heath Ledger"
+                android:textAllCaps="true"
+                android:textColor="@color/color_white"
+                android:textSize="17sp"
+                android:visibility="invisible"
+                app:layout_collapseMode="pin"
+                tools:visibility="visible" />
 
             <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/tv_profile_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="8dp"
-                    android:ellipsize="marquee"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:scrollHorizontally="true"
-                    android:text="Heath Andrew Ledger"
-                    android:textAllCaps="true"
-                    android:textColor="@color/color_white"
-                    android:textSize="24sp"
-                    app:layout_collapseMode="pin"
-                    tools:visibility="visible" />
+                android:id="@+id/tv_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:maxLines="2"
+                android:scrollHorizontally="true"
+                android:text="Heath Andrew Ledger"
+                android:textAllCaps="true"
+                android:textColor="@color/color_white"
+                android:textSize="24sp"
+                app:layout_collapseMode="pin"
+                tools:visibility="visible" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/color_white"
-            android:scrollbars="none"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:scrollbars="none"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="8dp"
-                    app:cardElevation="8dp"
-                    app:contentPadding="16dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                app:cardElevation="8dp"
+                app:contentPadding="16dp">
 
                 <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingExtra="8dp"
-                        android:text="Heath Andrew Ledger[a] (4 April 1979 – 22 January 2008) was an Australian actor and music video director. After performing roles in several Australian television and film productions during the 1990s, Ledger left for the United States in 1998 to further develop his film career. His work comprised nineteen films, including 10 Things I Hate About You (1999), The Patriot (2000), A Knight's Tale (2001), Monster's Ball (2001), Lords of Dogtown (2005), Brokeback Mountain (2005), Casanova (2005), The Dark Knight (2008), and The Imaginarium of Doctor Parnassus (2009), the latter two being posthumous releases. He also produced and directed music videos and aspired to be a film director."
-                        android:textSize="18sp" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8dp"
+                    android:text="Heath Andrew Ledger[a] (4 April 1979 – 22 January 2008) was an Australian actor and music video director. After performing roles in several Australian television and film productions during the 1990s, Ledger left for the United States in 1998 to further develop his film career. His work comprised nineteen films, including 10 Things I Hate About You (1999), The Patriot (2000), A Knight's Tale (2001), Monster's Ball (2001), Lords of Dogtown (2005), Brokeback Mountain (2005), Casanova (2005), The Dark Knight (2008), and The Imaginarium of Doctor Parnassus (2009), the latter two being posthumous releases. He also produced and directed music videos and aspired to be a film director."
+                    android:textSize="18sp" />
             </android.support.v7.widget.CardView>
 
             <Button
-                    android:id="@+id/b_go_demo_1"
-                    style="@style/Widget.AppCompat.Button.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="demo1" />
+                android:id="@+id/b_go_demo_1"
+                style="@style/Widget.AppCompat.Button.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="demo1" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

@@ -84,12 +84,14 @@
     <string name="installment_duedate">tanggal jatuh tempo : %s</string>
     <string name="hutang_info_undang_penghutang_piutang">* Pastikan piutang/penghutang yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (tekan tombol tambah sebelah kanan)</string>
     <string name="hutang_info_undang_keluarga">* Pastikan keluarga yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (masukkan Nama / Email undangan)</string>
+    <string name="hutang_info_pay">* Pastikan data hutang anda sudah di setujui kedua belah pihak, karena data hutang tidak bisa di ubah oleh siapapun dengan menggeser tombol di bawah gambar atau setelah melakukan pembayaran pertama oleh peminjam</string>
     <string name="pay_date">Tanggal Pembayaran</string>
     <string name="note">Catatan</string>
     <string name="due_date">Tanggal jatuh tempo :</string>
     <string name="installment">Cicilan ke :</string>
     <string name="hutang_pay_to_cicilan">%s dari %s</string>
     <string name="hutang_pay_to">%s</string>
+    <string name="message_share" />
 
 
 </resources>

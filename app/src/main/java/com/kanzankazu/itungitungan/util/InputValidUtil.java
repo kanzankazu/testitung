@@ -240,7 +240,7 @@ public class InputValidUtil {
     }
 
     public static boolean isLenghtCharOver(String stringValue, int minChar) {
-        return stringValue.length() >= minChar;
+        return stringValue.length() > minChar;
     }
 
     public static boolean isRadioGroupChecked(RadioGroup radioGroup) {

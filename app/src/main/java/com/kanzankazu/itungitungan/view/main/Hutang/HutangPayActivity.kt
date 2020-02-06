@@ -146,17 +146,17 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
 
         et_hutang_pay_nominal.isEnabled = hutang.creditorId.isNotEmpty()
         et_hutang_pay_nominal.setText(
-                if (hutang.hutangCicilanIs) {
-                    if (hutang.hutangPembayaranSub.isNullOrEmpty()) {
-                        Utils.setRupiah(hutang.hutangCicilanNominal)
-                    } else {
-                        val nominalTotalPembayaranPer = nominalTotalPembayaran * (hutang.hutangPembayaranSub.size + 1)
-                        val nominalKurangPembayaran = nominalTotalPembayaranPer - nominalSudahDiBayarkan
-                        Utils.setRupiah(nominalKurangPembayaran.toString())
-                    }
+            if (hutang.hutangCicilanIs) {
+                if (hutang.hutangPembayaranSub.isNullOrEmpty()) {
+                    Utils.setRupiah(hutang.hutangCicilanNominal)
                 } else {
-                    Utils.setRupiah((nominalTotalPembayaran - nominalSudahDiBayarkan).toString())
+                    val nominalCicilanPerPembayaran = hutang.hutangCicilanNominal.toInt() * (hutang.hutangPembayaranSub.size + 1)
+                    val nominalKurangPembayaran = nominalCicilanPerPembayaran - nominalSudahDiBayarkan
+                    Utils.setRupiah(nominalKurangPembayaran.toString())
                 }
+            } else {
+                Utils.setRupiah((nominalTotalPembayaran - nominalSudahDiBayarkan).toString())
+            }
         )
 
         if (hutang.hutangCicilanIs) {
@@ -182,31 +182,31 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
 
     private fun dialogConfirmSave() {
         DialogUtil.showIntroductionDialog(
-                this,
-                "",
-                "Konfirmasi",
-                "Apa data ini sudah benar, dan ingin melanjutkan pembayaran?",
-                "Iya",
-                "Tidak",
-                false,
-                -1,
-                object : DialogUtil.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        mPresenter.saveSubHutangValidate(isNew, huCil, hutang, tv_hutang_pay_cicilan_ke, et_hutang_pay_nominal, et_hutang_pay_note, imageListAdapter, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-                            override fun onSuccessSaveUpdate(message: String?) {
-                                showSnackbar(message)
-                                finish()
-                            }
+            this,
+            "",
+            "Konfirmasi",
+            "Apa data ini sudah benar, dan ingin melanjutkan pembayaran?",
+            "Iya",
+            "Tidak",
+            false,
+            -1,
+            object : DialogUtil.IntroductionButtonListener {
+                override fun onFirstButtonClick() {
+                    mPresenter.saveSubHutangValidate(isNew, huCil, hutang, tv_hutang_pay_cicilan_ke, et_hutang_pay_nominal, et_hutang_pay_note, imageListAdapter, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                        override fun onSuccessSaveUpdate(message: String?) {
+                            showSnackbar(message)
+                            finish()
+                        }
 
-                            override fun onFailureSaveUpdate(message: String?) {
-                                showSnackbar(message)
-                            }
-                        })
+                        override fun onFailureSaveUpdate(message: String?) {
+                            showSnackbar(message)
+                        }
+                    })
 
-                    }
-
-                    override fun onSecondButtonClick() {}
                 }
+
+                override fun onSecondButtonClick() {}
+            }
         )
     }
 

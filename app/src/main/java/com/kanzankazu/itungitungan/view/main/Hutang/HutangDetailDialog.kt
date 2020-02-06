@@ -185,7 +185,7 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
                 tv_hutang_detail_dialog_Title.text = "Detail HUTANG Piutang"
                 tv_hutang_detail_dialog_submit_tidak.text = "TUTUP"
                 tv_hutang_detail_dialog_submit_setuju.text = "DETAIL"
-                if (!hutang.hutangEditableis) {
+                if (!hutang.hutangEditableis || hutang.statusLunas) {
                     tv_hutang_detail_dialog_submit_setuju.isClickable = false
                     tv_hutang_detail_dialog_submit_setuju.isEnabled = false
                 }
@@ -199,7 +199,7 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
             }
             hutang.hutangPembayaranSub.size > 0 -> {
                 tv_hutang_detail_dialog_status.text = "PROSES PEMBAYARAN"
-                tv_hutang_detail_dialog_status.setTextColor(resources.getColor(R.color.yellow))
+                tv_hutang_detail_dialog_status.setTextColor(resources.getColor(R.color.colorPrimaryDark))
             }
             else -> {
                 tv_hutang_detail_dialog_status.text = "PROSES MENUNGGU PEMBAYARAN"

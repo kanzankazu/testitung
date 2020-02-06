@@ -14,7 +14,7 @@
         tools:src="@tools:sample/avatars" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/civ_item_image_remove"
+        android:id="@+id/civ_profile_photo_edit"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_gravity="top|end"

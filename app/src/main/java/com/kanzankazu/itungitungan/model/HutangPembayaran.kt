@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class HutangPembayaran(
         var hIdSub: String = "",
         var hId: String = "",
-        var paymentTo: Int = 1,
+        var paymentTo: Int = 0,
         var paymentProofImage: MutableList<String> = mutableListOf(),
         var paymentNominal: String = "0",
         var paymentDesc: String = "",

@@ -1,7 +1,7 @@
 package com.kanzankazu.itungitungan.view.main
 
 import android.content.Intent
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -16,6 +16,8 @@ import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import com.kanzankazu.itungitungan.view.main.ProfileSub.AccountActivity
 import kotlinx.android.synthetic.main.fragment_profile.*
+import java.io.File
+
 
 /**
  * Created by Faisal Bahri on 2019-11-05.
@@ -92,7 +94,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
                 Utils.intentTo(mActivity, AccountActivity::class.java, false)
             }
             1 -> {
-                showSnackbar("1")
+                shareApps()
             }
             2 -> {
                 showSnackbar("2")
@@ -110,6 +112,49 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
                 showSnackbar("6")
             }
         }
+    }
+
+    private fun shareApps() {
+        //Share text:
+        val intentText = Intent()
+        intentText.action = Intent.ACTION_SEND
+        intentText.type = "text/plain"
+        intentText.putExtra(Intent.EXTRA_TEXT, R.string.message_share)
+        startActivity(Intent.createChooser(intentText, "Share via"))
+
+        //via Email:
+        /*val intent2 = Intent()
+        intent2.action = Intent.ACTION_SEND
+        intent2.type = "message/rfc822"
+        intent2.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>(EMAIL1, EMAIL2))
+        intent2.putExtra(Intent.EXTRA_SUBJECT, "Email Subject")
+        intent2.putExtra(Intent.EXTRA_TEXT, "Your text here")
+        startActivity(intent2)*/
+
+        //Share Files:
+        //Image:
+        /*val isPNG = path.toLowerCase().endsWith(".png")
+        val i = Intent(Intent.ACTION_SEND)
+        if (isPNG) {
+            i.type = "image/png"
+        } else {
+            i.type = "image/jpeg"
+        }
+
+        val imgUri = Uri.fromFile(File(path))//Absolute Path of image
+        i.putExtra(Intent.EXTRA_STREAM, imgUri)//Uri of image
+        startActivity(Intent.createChooser(i, "Share via"))*/
+
+        //APK:
+        /*val f = File(path1)
+        if (f.exists()) {
+            val intent2 = Intent()
+            intent2.action = Intent.ACTION_SEND
+            intent2.type = "application/vnd.android.package-archive"//APk file type
+            intent2.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f))
+            startActivity(Intent.createChooser(intent2, "Share via"))
+        }*/
+
     }
 
     private fun initParam() {

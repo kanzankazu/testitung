@@ -83,14 +83,9 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             }
             huCil.hIdSub = hutang.hId + "_" + Date()
             huCil.hId = hutang.hId
-            if (hutang.hutangCicilanIs) {
-                huCil.paymentTo = tv_hutang_pay_cicilan_ke.text.toString().split(" dari ")[0].toInt()
-            } else {
-                huCil.paymentTo = tv_hutang_pay_cicilan_ke.text.toString().toInt()
-            }
+            huCil.paymentTo = hutang.hutangPembayaranSub.size + 1
             huCil.paymentNominal = Utils.getRupiahToString(et_hutang_pay_nominal)
             huCil.paymentDesc = et_hutang_pay_note.text.toString().trim()
-            huCil.approvalCreditor = hutang.creditorId.isEmpty()
             huCil.approvalDebtor = true
 
             //Start checkNominal
@@ -214,14 +209,15 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             //End checkNominal
 
             DialogUtil.showConfirmationDialog(
-                    mActivity,
-                    "Info",
-                    when (status) {
-                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
-                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
-                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkan dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkan)
-                    }
+                mActivity,
+                "Info",
+                when (status) {
+                    Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+                    Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+                    else -> "anda sudah membayar Rp.$nominalYangDiBayarkan dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkan)
+                }
             ) {
+                huCil.approvalCreditor = status.equals(Constants.Hutang.Status.Lunas, true)
                 saveValidateImageData(imageListAdapter, isNew, hutang, huCil, listener)
             }
         } else {

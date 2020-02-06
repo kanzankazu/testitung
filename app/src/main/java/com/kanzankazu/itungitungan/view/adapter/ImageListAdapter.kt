@@ -121,7 +121,7 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
         }
 
         fun setOnClickListener(data: ImageModel, position: Int) {
-            itemView.civ_item_image_remove.setOnClickListener {
+            itemView.civ_profile_photo_edit.setOnClickListener {
                 mView.onImageListRemove(data, position)
             }
         }

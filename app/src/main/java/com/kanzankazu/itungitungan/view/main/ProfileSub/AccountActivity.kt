@@ -15,6 +15,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.view.base.BaseActivity
+import kotlin.math.abs
 
 class AccountActivity : BaseActivity() {
 
@@ -54,12 +55,12 @@ class AccountActivity : BaseActivity() {
         appBarLayout.addOnOffsetChangedListener(
                 AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
                     if (isCalculated.not()) {
-                        startAvatarAnimatePointY = Math.abs((appBarLayout.height - EXPAND_AVATAR_SIZE - toolbar.height / 2) / appBarLayout.totalScrollRange)
+                        startAvatarAnimatePointY = abs((appBarLayout.height - EXPAND_AVATAR_SIZE - toolbar.height / 2) / appBarLayout.totalScrollRange)
                         animateWeigt = 1 / (1 - startAvatarAnimatePointY)
                         isCalculated = true
                     }
 
-                    val offset = Math.abs(i / appBarLayout.totalScrollRange.toFloat())
+                    val offset = abs(i / appBarLayout.totalScrollRange.toFloat())
                     updateViews(offset)
                 })
 
