@@ -1,5 +1,6 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.UserPreference
@@ -25,6 +26,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     override fun getAllHutang() {
         mView.showProgressDialogView()
         FirebaseDatabaseHandler.getHutangs(false, object : FirebaseDatabaseUtil.ValueListenerData {
+            @SuppressLint("DefaultLocale")
             override fun onSuccessData(dataSnapshot: DataSnapshot) {
                 mView.dismissProgressDialogView()
 
@@ -45,14 +47,17 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                         ) {
 
                             if (hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
-                                hutangMine.add(hutang)
-                            } else if (
-                                    (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
-                                    (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
-                            ) {
-                                hutangFamily.add(hutang)
-                            } else if (hutang.statusLunas) {
-                                hutangLunas.add(hutang)
+                                if (hutang.statusLunas) {
+                                    hutangLunas.add(hutang)
+                                } else {
+                                    hutangMine.add(hutang)
+                                }
+                            } else {
+                                if (hutang.statusLunas) {
+                                    hutangLunas.add(hutang)
+                                } else {
+                                    hutangFamily.add(hutang)
+                                }
                             }
                             mView.setTotalPiuHutang(hutang)//from database
                         }
