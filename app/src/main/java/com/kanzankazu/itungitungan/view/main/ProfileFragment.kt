@@ -1,7 +1,6 @@
 package com.kanzankazu.itungitungan.view.main
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -16,7 +15,7 @@ import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import com.kanzankazu.itungitungan.view.main.ProfileSub.AccountActivity
 import kotlinx.android.synthetic.main.fragment_profile.*
-import java.io.File
+import kotlinx.android.synthetic.main.item_image.*
 
 
 /**
@@ -77,14 +76,14 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     }
 
     override fun setProfileOptionList() {
-        val profileModels = arrayListOf<ProfileModel>()
-        profileModels.add(ProfileModel(R.drawable.ic_profile, mActivity.getString(R.string.account), true))
-        profileModels.add(ProfileModel(R.drawable.ic_share, mActivity.getString(R.string.share_friend_family), true))
-        profileModels.add(ProfileModel(R.drawable.ic_idea, mActivity.getString(R.string.idea), true))
-        profileModels.add(ProfileModel(R.drawable.ic_help, mActivity.getString(R.string.help), true))
-        profileModels.add(ProfileModel(R.drawable.ic_donate, mActivity.getString(R.string.donate), true))
-        profileModels.add(ProfileModel(R.drawable.ic_rate_app, mActivity.getString(R.string.give_star), true))
-        profileModels.add(ProfileModel(R.drawable.ic_info, mActivity.getString(R.string.about), true))
+        val profileModels = arrayListOf<ProfileAccountModel>()
+        profileModels.add(ProfileAccountModel(R.drawable.ic_profile, mActivity.getString(R.string.account), "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_share, mActivity.getString(R.string.share_friend_family), "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_idea, mActivity.getString(R.string.idea), "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_help, mActivity.getString(R.string.help), "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_donate, mActivity.getString(R.string.donate), "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_rate_app, mActivity.getString(R.string.give_star), "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_info, mActivity.getString(R.string.about), "", true))
         profileListAdapter.setData(profileModels)
     }
 
@@ -94,7 +93,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
                 Utils.intentTo(mActivity, AccountActivity::class.java, false)
             }
             1 -> {
-                shareApps()
+                share()
             }
             2 -> {
                 showSnackbar("2")
@@ -114,12 +113,13 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         }
     }
 
-    private fun shareApps() {
+    private fun share() {
+
         //Share text:
         val intentText = Intent()
         intentText.action = Intent.ACTION_SEND
         intentText.type = "text/plain"
-        intentText.putExtra(Intent.EXTRA_TEXT, R.string.message_share)
+        intentText.putExtra(Intent.EXTRA_TEXT, R.string.share_friend_family_message)
         startActivity(Intent.createChooser(intentText, "Share via"))
 
         //via Email:
@@ -181,7 +181,6 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     private fun initListener() {
         iv_profile_settings.setOnClickListener { }
         civ_profile_photo.setOnClickListener { }
-        civ_profile_photo_edit.setOnClickListener { }
         cv_profile_signout.setOnClickListener {
             showProgressDialog()
             loginUtil.signOut(true)
@@ -189,7 +188,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     }
 
     private fun setProfileData() {
-        tv_profile_name.text = UserPreference.getInstance().name
+        tv_account_user_name_long.text = UserPreference.getInstance().name
         tv_profile_email.text = UserPreference.getInstance().email
     }
 }

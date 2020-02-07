@@ -20,6 +20,9 @@ import java.util.Locale;
  * <li>Always use locale US instead of default to make DecimalFormat work well in all language</li>
  */
 public class CurrencyEditText extends android.support.v7.widget.AppCompatEditText {
+
+    public static int validationLimit = 5;
+
     private static String prefix = "Rp ";
     private static final int MAX_LENGTH = 14;
     private static final int MAX_DECIMAL = 0;
@@ -37,7 +40,7 @@ public class CurrencyEditText extends android.support.v7.widget.AppCompatEditTex
         super(context, attrs, defStyleAttr);
         this.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 //        this.setHint(prefix);
-        this.setFilters(new InputFilter[] { new InputFilter.LengthFilter(MAX_LENGTH) });
+        this.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_LENGTH)});
     }
 
     @Override
@@ -85,11 +88,12 @@ public class CurrencyEditText extends android.support.v7.widget.AppCompatEditTex
         }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) { }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable editable) {
-            if(editable.toString().startsWith("Rp ") && !editable.toString().contains("Rp 0") && !editable.toString().contains("Rp .")){
+            if (editable.toString().startsWith("Rp ") && !editable.toString().contains("Rp 0") && !editable.toString().contains("Rp .")) {
                 String str = editable.toString().replaceAll("\\.", ",");
                 if (str.length() < prefix.length()) {
                     editText.setText(prefix);
@@ -116,17 +120,14 @@ public class CurrencyEditText extends android.support.v7.widget.AppCompatEditTex
                     formattedString = formatInteger(cleanString);
                 }
 
-                formattedString = formattedString.replaceAll(",",".");
+                formattedString = formattedString.replaceAll(",", ".");
                 editText.removeTextChangedListener(this); // Remove listener
                 editText.setText(formattedString);
                 handleSelection();
                 editText.addTextChangedListener(this); // Add back the listener
-            }
-            else{
+            } else {
                 editText.setText(initialEditText);
             }
-
-
         }
 
         private String formatInteger(String str) {

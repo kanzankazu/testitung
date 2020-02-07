@@ -140,8 +140,10 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         if (hutangs.isNotEmpty()) {
             toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, false)
             hutangListLunasAdapter.setData(hutangs)
+            iv_hutang_list_mine_lunas_show_hide.visibility = View.VISIBLE
         } else {
             toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, true)
+            iv_hutang_list_mine_lunas_show_hide.visibility = View.GONE
         }
     }
 
@@ -177,18 +179,21 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     private fun setListener() {
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            rv_hutang_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    if (recyclerView.canScrollVertically(-1)) {
-                        toolbar.elevation = 0f
-                    } else {
-                        toolbar.elevation = 50f
-                    }
+
+        var viewShown = false
+        ll_hutang_list_mine_lunas_show_hide.setOnClickListener {
+            if (hutangListLunasAdapter.getData().isNotEmpty()){
+                if (viewShown) {
+                    viewShown = false
+                    Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropup)
+                    rv_hutang_list_lunas.visibility = View.GONE
+                } else {
+                    viewShown = true
+                    Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropdown)
+                    rv_hutang_list_lunas.visibility = View.VISIBLE
                 }
-            })
-        }*/
+            }
+        }
 
         et_hutang_list_search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -240,33 +245,33 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private fun removeDeleteDialog(hutang: Hutang, isHasReqDelete: Boolean) {
         Utils.showIntroductionDialog(
-                this,
-                "",
-                "Konfirmasi",
-                if (isHasReqDelete) {
-                    "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
-                } else {
-                    "Apakah anda yakin ingin menghapus data ini?"
-                }
-                ,
-                "Ya",
-                "Tidak",
-                false,
-                -1,
-                object : Utils.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        if (!isHasReqDelete) {
-                            mPresenter.requestHutangHapus(hutang, false)
-                            if (!hutang.hutangBuktiGambar.isNullOrEmpty()) {
-                                mPresenter.hapusHutangCheckImage(hutang)
-                            }
-                        } else {
-                            mPresenter.requestHutangHapus(hutang, true)
+            this,
+            "",
+            "Konfirmasi",
+            if (isHasReqDelete) {
+                "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
+            } else {
+                "Apakah anda yakin ingin menghapus data ini?"
+            }
+            ,
+            "Ya",
+            "Tidak",
+            false,
+            -1,
+            object : Utils.IntroductionButtonListener {
+                override fun onFirstButtonClick() {
+                    if (!isHasReqDelete) {
+                        mPresenter.requestHutangHapus(hutang, false)
+                        if (!hutang.hutangBuktiGambar.isNullOrEmpty()) {
+                            mPresenter.hapusHutangCheckImage(hutang)
                         }
+                    } else {
+                        mPresenter.requestHutangHapus(hutang, true)
                     }
-
-                    override fun onSecondButtonClick() {}
                 }
+
+                override fun onSecondButtonClick() {}
+            }
         )
 
     }

@@ -91,14 +91,14 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             if (hutang.hutangCicilanIs) {
                 if (hutang.hutangCicilanBerapaKali.isNotEmpty() && hutang.hutangCicilanNominal.isNotEmpty()) {
                     itemView.cv_item_hutang_list_installment.visibility = View.VISIBLE
-                    itemView.tv_hutang_list_nominal_installment_count.text = mActivity.getString(R.string.installment_count, hutang.hutangCicilanBerapaKali, hutang.hutangCicilanBerapaKaliType)
+                    itemView.tv_hutang_list_nominal_installment_count.text = mActivity.getString(R.string.hutang_dialog_detail_installment_count_per, hutang.hutangCicilanBerapaKali, hutang.hutangCicilanBerapaKaliType)
                     itemView.tv_hutang_list_nominal_installment_nominal.text = Utils.setRupiah(hutang.hutangCicilanNominal)
                 } else {
                     itemView.cv_item_hutang_list_installment.visibility = View.GONE
                 }
                 if (hutang.hutangCicilanTanggalAkhir.isNotEmpty()) {
                     itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.VISIBLE
-                    itemView.tv_hutang_list_nominal_installment_due_date.text = mActivity.getString(R.string.installment_duedate, hutang.hutangCicilanTanggalAkhir)
+                    itemView.tv_hutang_list_nominal_installment_due_date.text = mActivity.getString(R.string.hutang_dialog_detail_installment_duedate, hutang.hutangCicilanTanggalAkhir)
                 } else {
                     itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.GONE
                 }
@@ -423,6 +423,10 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             subjectDataFilter = SubjectDataFilter()
         }
         return subjectDataFilter as SubjectDataFilter
+    }
+
+    fun getData(): MutableList<Hutang> {
+        return mainModel
     }
 
     private inner class SubjectDataFilter : Filter() {

@@ -28,6 +28,7 @@ import com.kanzankazu.itungitungan.util.PictureUtil2
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil
 import com.kanzankazu.itungitungan.util.android.AndroidUtil
+import com.kanzankazu.itungitungan.util.widget.view.CurrencyEditText
 import com.kanzankazu.itungitungan.view.adapter.UserSuggestAdapter
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import id.otomoto.otr.utils.Utility
@@ -119,7 +120,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     override fun checkData(isFocus: Boolean): Boolean {
         if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, isFocus)) return false
-        else if (!InputValidUtil.isLenghtCharOver("Data kurang dari 6", til_hutang_add_nominal, et_hutang_add_nominal, 5)) return false
+        else if (!InputValidUtil.isLenghtCharOver("Data kurang dari 6", til_hutang_add_nominal, et_hutang_add_nominal, CurrencyEditText.validationLimit)) return false
         else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, isFocus)) return false
         else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, isFocus)) return false
         else if (sw_hutang_add_installment.isChecked) {
@@ -323,7 +324,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                calculateNominalCountCheck()
+                calculateNominalCount()
             }
         }
 
@@ -332,6 +333,17 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         et_hutang_add_date.addTextChangedListener(watcherValidate)
         et_hutang_add_installment_due_date.addTextChangedListener(watcherValidate)
 
+        et_hutang_add_nominal.setOnEditorActionListener { _, p1, _ ->
+            if (p1 == EditorInfo.IME_ACTION_NEXT) {
+                calculateNominalCount()
+            }
+            false
+        }
+        et_hutang_add_nominal.setOnFocusChangeListener { _, b ->
+            if (!b) {
+                calculateNominalCount()
+            }
+        }
         et_hutang_add_installment_count.addTextChangedListener(watcherValidateInstallmentCount)
 
         rg_hutang_add_user.setOnCheckedChangeListener { radioGroup, _ ->
@@ -341,18 +353,19 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             Log.d("Lihat", "setListener HutangAddEditActivity : $index")
 
             if (index == 0) {
-                til_hutang_add_user.hint = getString(R.string.invite_piutang)
+                til_hutang_add_user.hint = getString(R.string.hutang_invite_piutang)
             } else {
-                til_hutang_add_user.hint = getString(R.string.invite_penghutang)
+                til_hutang_add_user.hint = getString(R.string.hutang_invite_penghutang)
             }
         }
         sw_hutang_add_installment.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                if (et_hutang_add_nominal.length() > 5) {
+                if (InputValidUtil.isLenghtCharOver(et_hutang_add_nominal, CurrencyEditText.validationLimit)) {
                     ll_hutang_add_installment.visibility = View.VISIBLE
                 } else {
                     sw_hutang_add_installment.isChecked = false
                     checkData(true)
+                    showSnackbar(getString(R.string.message_field_empty_nominal))
                 }
             } else {
                 ll_hutang_add_installment.visibility = View.GONE
@@ -399,7 +412,10 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             }
         }
         iv_hutang_add_user.setOnClickListener { chooseDialogPickUserData() }
-        tv_hutang_add_simpan.setOnClickListener { dialogConfirmSave() }
+        tv_hutang_add_simpan.setOnClickListener {
+            calculateNominalCount()
+            dialogConfirmSave()
+        }
 
         civ_hutang_add_image_0.setOnClickListener { chooseDialogPickImage(this, civ_hutang_add_image_0, 0) }
         civ_hutang_remove_image_0.setOnClickListener {
@@ -411,28 +427,24 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
     }
 
-    private fun calculateNominalCountCheck() {
-        if (sw_hutang_add_installment.isChecked) {
-            calculateNominalCount()
+    private fun calculateNominalCount() {
+        if (InputValidUtil.isLenghtCharOver(et_hutang_add_nominal, CurrencyEditText.validationLimit) && sw_hutang_add_installment.isChecked) {
+            val nominalPembayaran: Int = if (!et_hutang_add_nominal.text.toString().trim().equals("Rp ", true)) Utils.getRupiahToString(et_hutang_add_nominal).toInt() else "1".toInt()
+            val installmentCount: Int = if (et_hutang_add_installment_count.text.toString().isNotEmpty()) et_hutang_add_installment_count.text.toString().trim().toInt() else "1".toInt()
+            if (installmentCount < 1) {
+                til_hutang_add_installment_nominal.visibility = View.GONE
+            } else {
+                if (nominalPembayaran <= 1) {
+                    et_hutang_add_nominal.requestFocus()
+                } else {
+                    val i = nominalPembayaran / installmentCount
+                    et_hutang_add_installment_nominal.setText(Utils.setRupiah(i.toString()))
+                }
+                til_hutang_add_installment_nominal.visibility = View.VISIBLE
+            }
         } else {
             sw_hutang_add_installment.isChecked = false
-            checkData(false)
-        }
-    }
-
-    private fun calculateNominalCount() {
-        val nominalPembayaran: Int = if (et_hutang_add_nominal.text.toString().isNotEmpty() && !et_hutang_add_nominal.text.toString().trim().equals("Rp", true)) Utils.getRupiahToString(et_hutang_add_nominal).toInt() else "1".toInt()
-        val installmentCount: Int = if (et_hutang_add_installment_count.text.toString().isNotEmpty()) et_hutang_add_installment_count.text.toString().trim().toInt() else "1".toInt()
-        if (installmentCount < 1) {
-            til_hutang_add_installment_nominal.visibility = View.GONE
-        } else {
-            if (nominalPembayaran <= 1) {
-                et_hutang_add_nominal.requestFocus()
-            } else {
-                val i = nominalPembayaran / installmentCount
-                et_hutang_add_installment_nominal.setText(Utils.setRupiah(i.toString()))
-            }
-            til_hutang_add_installment_nominal.visibility = View.VISIBLE
+            showSnackbar(getString(R.string.message_field_empty_nominal))
         }
     }
 
@@ -738,7 +750,6 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 if (!hutang.hutangCicilanIsBayarKapanSaja) {
                     hutang.hutangCicilanTanggalAkhir = et_hutang_add_installment_due_date.text.toString().trim()
                 }
-                calculateNominalCount()
             } else {
                 hutang.hutangCicilanBerapaKali = ""
                 hutang.hutangCicilanBerapaKaliType = ""

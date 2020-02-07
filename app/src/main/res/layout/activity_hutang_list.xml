@@ -238,17 +238,36 @@
                 android:id="@+id/ll_hutang_list_mine_lunas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_margin_5dp"
                 android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_hutang_list_mine_lunas_title"
-                    style="@style/TvStandartCenter"
+                <LinearLayout
+                    android:id="@+id/ll_hutang_list_mine_lunas_show_hide"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/padding_margin_5dp"
-                    android:text="Hutang Lunas"
-                    android:textColor="@color/colorPrimaryDark" />
+                    android:animateLayoutChanges="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_hutang_list_mine_lunas_title"
+                        style="@style/TvStandartCenter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/padding_margin_5dp"
+                        android:layout_weight="1"
+                        android:text="Hutang Lunas"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                    <ImageView
+                        android:id="@+id/iv_hutang_list_mine_lunas_show_hide"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_dropup"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"

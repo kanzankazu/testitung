@@ -163,7 +163,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
             tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
             ll_hutang_pay_cicilan.visibility = View.VISIBLE
             if (hutang.hutangCicilanIs) {
-                tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_to_cicilan, (hutang.hutangPembayaranSub.size + 1).toString(), hutang.hutangCicilanBerapaKali)
+                tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_installment_to, (hutang.hutangPembayaranSub.size + 1).toString(), hutang.hutangCicilanBerapaKali)
             } else {
                 tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_to, (hutang.hutangPembayaranSub.size + 1).toString())
             }

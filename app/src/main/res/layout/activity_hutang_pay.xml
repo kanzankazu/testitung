@@ -88,7 +88,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/installment"
+                        android:text="@string/hutang_installment_to"
                         android:textColor="@color/Black"
                         android:textStyle="bold" />
 
@@ -122,7 +122,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/due_date"
+                        android:text="@string/hutang_due_date"
                         android:textColor="@color/Black"
                         android:textStyle="bold" />
 
@@ -187,7 +187,7 @@
                         style="@style/EtMultiline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/note" />
+                        android:hint="@string/hutang_note" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 

@@ -212,7 +212,7 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
         if (hutang.hutangCicilanIs) {
             ll_hutang_detail_dialog_cicilan.visibility = View.VISIBLE
             tv_hutang_detail_dialog_cicilan_nominal.text = Utils.setRupiah(hutang.hutangCicilanNominal)
-            tv_hutang_detail_dialog_cicilan.text = getString(R.string.installment_count, hutang.hutangCicilanBerapaKali, hutang.hutangCicilanBerapaKaliType)
+            tv_hutang_detail_dialog_cicilan.text = getString(R.string.hutang_dialog_detail_installment_count_per, hutang.hutangCicilanBerapaKali, hutang.hutangCicilanBerapaKaliType)
 
             if (!hutang.hutangCicilanIsBayarKapanSaja) {
                 tv_hutang_detail_dialog_cicilan_duedate.text = hutang.hutangCicilanTanggalAkhir

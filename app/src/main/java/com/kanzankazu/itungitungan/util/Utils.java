@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.ArrayRes;
+import android.support.annotation.DrawableRes;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -746,10 +747,10 @@ public class Utils {
 
     /**
      * implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-     * @return
-     * @param string = bisa apa saja
      *
-     * bisa di pasang di Imageview dengan (imageView.setImageDrawable(textDrawable))
+     * @param string = bisa apa saja, dipasang di Imageview dengan (imageView.setImageDrawable(textDrawable))
+     *
+     * @return TextDrawable
      */
     public static TextDrawable getInitialNameDrawable(String string) {
         ColorGenerator generator = ColorGenerator.MATERIAL;
@@ -762,6 +763,10 @@ public class Utils {
                 .endConfig()
                 .roundRect(20);
         return builder.build(Utils.getInitialName(string), color);
+    }
+
+    public static void setDrawableImageView(Activity activity, ImageView imageView, @DrawableRes int icon) {
+        imageView.setImageDrawable(activity.getResources().getDrawable(icon));
     }
 
     public interface DialogButtonListener {

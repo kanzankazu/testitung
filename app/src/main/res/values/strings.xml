@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ItungItungan</string>
+    <string name="app_name">Itung - Itungan</string>
     <string name="package_name">com.kanzankazu.itungitungan</string>
     <string name="app_version">%s_%s</string>
 
@@ -23,6 +23,7 @@
 
     <!--Message-->
     <string name="message_field_empty">Data ini tidak boleh kosong</string>
+    <string name="message_field_empty_nominal">Nominal tidak boleh kosong</string>
     <string name="message_radio_empty">Anda belum memilih!!!</string>
     <string name="message_field_email_wrong_format">Format email salah [***@***.***]</string>
     <string name="message_field_email_phone_wrong_format">Kolom ini untuk email dan no.Hp</string>
@@ -65,6 +66,8 @@
     <string name="save">Simpan</string>
     <string name="account">Akun</string>
     <string name="share_friend_family">Bagikan ke teman dan keluarga</string>
+    <string name="share_friend_family_title">Bagikan ke teman dan keluarga dengan</string>
+    <string name="share_friend_family_message">Hay saya pakai Aplikasi Itung - Itungan nih!!! Aplikasi ini membantu untuk perhitungan semua kebutuhan keseharian anda dan anda bisa berbagi perhitungan dengan keluarga, teman atau orang lain. silahkan unduh aplikasi link ini : %s </string>
     <string name="help">Bantuan</string>
     <string name="profile">Profil</string>
     <string name="inbox">Pesan</string>
@@ -77,21 +80,19 @@
     <string name="t_message">Your message</string>
 
     <!--Hutang-->
-    <string name="invite_piutang">Undang Piutang *</string>
-    <string name="invite_penghutang">Undang Penghutang *</string>
-    <string name="invite_keluarga">Undang Keluarga</string>
-    <string name="installment_count">%s x Cicilan / %s</string>
-    <string name="installment_duedate">tanggal jatuh tempo : %s</string>
-    <string name="hutang_info_undang_penghutang_piutang">* Pastikan piutang/penghutang yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (tekan tombol tambah sebelah kanan)</string>
-    <string name="hutang_info_undang_keluarga">* Pastikan keluarga yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (masukkan Nama / Email undangan)</string>
-    <string name="hutang_info_pay">* Pastikan data hutang anda sudah di setujui kedua belah pihak, karena data hutang tidak bisa di ubah oleh siapapun dengan menggeser tombol di bawah gambar atau setelah melakukan pembayaran pertama oleh peminjam</string>
-    <string name="pay_date">Tanggal Pembayaran</string>
-    <string name="note">Catatan</string>
-    <string name="due_date">Tanggal jatuh tempo :</string>
-    <string name="installment">Cicilan ke :</string>
-    <string name="hutang_pay_to_cicilan">%s dari %s</string>
+    <string name="hutang_dialog_detail_installment_count_per">%s x Cicilan / %s</string>
+    <string name="hutang_dialog_detail_installment_duedate">tanggal jatuh tempo : %s</string>
+    <string name="hutang_pay_installment_to">%s dari %s</string>
     <string name="hutang_pay_to">%s</string>
-    <string name="message_share" />
-
+    <string name="hutang_invite_piutang">Undang Piutang *</string>
+    <string name="hutang_invite_penghutang">Undang Penghutang *</string>
+    <string name="hutang_invite_keluarga">Undang Keluarga</string>
+    <string name="hutang_invite_info_penghutang_piutang">* Pastikan piutang/penghutang yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (tekan tombol tambah sebelah kanan)</string>
+    <string name="hutang_invite_info_keluarga">* Pastikan keluarga yang anda undang sudah terdaftar di aplikasi ini, dan ini bisa di isi bebas tanpa undangan (masukkan Nama / Email undangan)</string>
+    <string name="hutang_info_pay">* Pastikan data hutang anda sudah di setujui kedua belah pihak, karena data hutang tidak bisa di ubah oleh siapapun dengan menggeser tombol di bawah gambar atau setelah melakukan pembayaran pertama oleh peminjam</string>
+    <string name="hutang_due_date">Tanggal jatuh tempo :</string>
+    <string name="hutang_installment_to">Cicilan ke :</string>
+    <string name="hutang_pay_date">Tanggal Pembayaran</string>
+    <string name="hutang_note">Catatan</string>
 
 </resources>

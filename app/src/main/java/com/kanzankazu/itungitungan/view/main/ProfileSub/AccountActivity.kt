@@ -4,32 +4,31 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
 import android.view.animation.AnticipateOvershootInterpolator
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.view.base.BaseActivity
+import kotlinx.android.synthetic.main.activity_account.*
 import kotlin.math.abs
 
 class AccountActivity : BaseActivity() {
 
-    private lateinit var ivAvatar: ImageView
-    private lateinit var toolbar: Toolbar
-    private lateinit var appBarLayout: AppBarLayout
-    private lateinit var titleToolbarText: AppCompatTextView
-    private lateinit var titleToolbarTextSingle: AppCompatTextView
-    private lateinit var collapsingAvatarContainer: FrameLayout
-    private lateinit var background: FrameLayout
+    private lateinit var iv_account_user_image: ImageView
+    private lateinit var toolbar_account: Toolbar
+    private lateinit var appbarlayout_account: AppBarLayout
+    private lateinit var tv_account_user_name_long: AppCompatTextView
+    private lateinit var tv_account_user_name_short: AppCompatTextView
+    private lateinit var fl_account_stuff_container: FrameLayout
+    private lateinit var fl_account_background: FrameLayout
 
-    private var EXPAND_AVATAR_SIZE: Float = 0F
-    private var COLLAPSE_IMAGE_SIZE: Float = 0F
-    private var margin: Float = 0F
+    private var EXPAND_AVATAR_SIZE: Float = 135f
+    private var COLLAPSE_IMAGE_SIZE: Float = 45f
+    private var margin: Float = 8f
     private var cashCollapseState: Pair<Int, Int>? = null
     private var startAvatarAnimatePointY: Float = 0F
     private var animateWeigt: Float = 0F
@@ -39,55 +38,63 @@ class AccountActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
 
-        /**/
-        EXPAND_AVATAR_SIZE = 135f
-        COLLAPSE_IMAGE_SIZE = 45f
-        margin = 8f
-        collapsingAvatarContainer = findViewById(R.id.stuff_container)
-        appBarLayout = findViewById(R.id.app_bar_layout)
-        toolbar = findViewById(R.id.anim_toolbar)
-        toolbar.visibility = View.INVISIBLE
-        ivAvatar = findViewById(R.id.imgb_avatar_wrap)
-        titleToolbarText = findViewById(R.id.tv_profile_name)
-        titleToolbarTextSingle = findViewById(R.id.tv_profile_name_single)
-        background = findViewById(R.id.fl_background)
-        /**/
-        appBarLayout.addOnOffsetChangedListener(
-                AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
-                    if (isCalculated.not()) {
-                        startAvatarAnimatePointY = abs((appBarLayout.height - EXPAND_AVATAR_SIZE - toolbar.height / 2) / appBarLayout.totalScrollRange)
-                        animateWeigt = 1 / (1 - startAvatarAnimatePointY)
-                        isCalculated = true
-                    }
-
-                    val offset = abs(i / appBarLayout.totalScrollRange.toFloat())
-                    updateViews(offset)
-                })
-
-        findViewById<Button>(R.id.b_go_demo_1).setOnClickListener {
-            finish()
-        }
+        setView()
+        setListener()
     }
 
-    private fun updateViews(percentOffset: Float) {
+    private fun setView() {
+        setCollapseView()
+
+
+    }
+
+    private fun setCollapseView() {
+        appbarlayout_account = findViewById(R.id.appbarlayout_account)
+        toolbar_account = findViewById(R.id.toolbar_account)
+        toolbar_account.visibility = View.INVISIBLE
+        fl_account_stuff_container = findViewById(R.id.fl_account_stuff_container)
+        iv_account_user_image = findViewById(R.id.iv_account_user_image)
+        tv_account_user_name_long = findViewById(R.id.tv_account_user_name_long)
+        tv_account_user_name_short = findViewById(R.id.tv_account_user_name_short)
+        fl_account_background = findViewById(R.id.fl_account_background)
+    }
+
+    private fun setListener() {
+        appbarlayout_account.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
+            if (isCalculated.not()) {
+                startAvatarAnimatePointY = abs((appBarLayout.height - EXPAND_AVATAR_SIZE - toolbar_account.height / 2) / appBarLayout.totalScrollRange)
+                animateWeigt = 1 / (1 - startAvatarAnimatePointY)
+                isCalculated = true
+            }
+
+            val offset = abs(i / appBarLayout.totalScrollRange.toFloat())
+            updateToolbarViewImage(offset)
+        })
+
+        b_account_save.setOnClickListener { finish() }
+    }
+
+    private fun updateToolbarViewImage(percentOffset: Float) {
         /* Collapsing avatar transparent*/
         when {
             percentOffset > mUpperLimitTransparently -> {
                 //avatarContainerView.alpha = 0.0f
-                titleToolbarText.alpha = 0.0F
+                tv_account_user_name_long.alpha = 0.0F
             }
 
             percentOffset < mUpperLimitTransparently -> {
                 //  avatarContainerView.alpha = 1 - percentOffset
-                titleToolbarText.alpha = 1f
+                tv_account_user_name_long.alpha = 1f
             }
         }
 
         /*Collapsed/expended sizes for views*/
         val result: Pair<Int, Int> = when {
             percentOffset < ABROAD -> {
-                Pair(TO_EXPANDED_STATE, cashCollapseState?.second
-                        ?: WAIT_FOR_SWITCH)
+                Pair(
+                    TO_EXPANDED_STATE, cashCollapseState?.second
+                        ?: WAIT_FOR_SWITCH
+                )
             }
             else -> {
                 Pair(TO_COLLAPSED_STATE, cashCollapseState?.second ?: WAIT_FOR_SWITCH)
@@ -102,28 +109,28 @@ class AccountActivity : BaseActivity() {
                 cashCollapseState != null && cashCollapseState != this -> {
                     when (first) {
                         TO_EXPANDED_STATE -> {
-                            translationY = toolbar.height.toFloat()
-                            headContainerHeight = appBarLayout.totalScrollRange.toFloat()
+                            translationY = toolbar_account.height.toFloat()
+                            headContainerHeight = appbarlayout_account.totalScrollRange.toFloat()
                             currentImageSize = EXPAND_AVATAR_SIZE.toInt()
                             /**/
-                            titleToolbarText.visibility = View.VISIBLE
-                            titleToolbarTextSingle.visibility = View.INVISIBLE
-                            background.setBackgroundColor(ContextCompat.getColor(this@AccountActivity, R.color.color_transparent))
+                            tv_account_user_name_long.visibility = View.VISIBLE
+                            tv_account_user_name_short.visibility = View.INVISIBLE
+                            fl_account_background.setBackgroundColor(ContextCompat.getColor(this@AccountActivity, R.color.color_transparent))
                             /**/
-                            ivAvatar.translationX = 0f
+                            iv_account_user_image.translationX = 0f
                         }
 
                         TO_COLLAPSED_STATE -> {
-                            background.setBackgroundColor(ContextCompat.getColor(this@AccountActivity, R.color.colorPrimary))
+                            fl_account_background.setBackgroundColor(ContextCompat.getColor(this@AccountActivity, R.color.colorPrimary))
                             currentImageSize = COLLAPSE_IMAGE_SIZE.toInt()
-                            translationY = appBarLayout.totalScrollRange.toFloat() - (toolbar.height - COLLAPSE_IMAGE_SIZE) / 2
-                            headContainerHeight = toolbar.height.toFloat()
-                            translationX = appBarLayout.width / 2f - COLLAPSE_IMAGE_SIZE / 2 - margin * 2
+                            translationY = appbarlayout_account.totalScrollRange.toFloat() - (toolbar_account.height - COLLAPSE_IMAGE_SIZE) / 2
+                            headContainerHeight = toolbar_account.height.toFloat()
+                            translationX = appbarlayout_account.width / 2f - COLLAPSE_IMAGE_SIZE / 2 - margin * 2
                             /**/
-                            ValueAnimator.ofFloat(ivAvatar.translationX, translationX).apply {
+                            ValueAnimator.ofFloat(iv_account_user_image.translationX, translationX).apply {
                                 addUpdateListener {
                                     if (cashCollapseState!!.first == TO_COLLAPSED_STATE) {
-                                        ivAvatar.translationX = it.animatedValue as Float
+                                        iv_account_user_image.translationX = it.animatedValue as Float
                                     }
                                 }
                                 interpolator = AnticipateOvershootInterpolator()
@@ -132,26 +139,26 @@ class AccountActivity : BaseActivity() {
                                 start()
                             }
                             /**/
-                            titleToolbarText.visibility = View.INVISIBLE
-                            titleToolbarTextSingle.apply {
+                            tv_account_user_name_long.visibility = View.INVISIBLE
+                            tv_account_user_name_short.apply {
                                 visibility = View.VISIBLE
                                 alpha = 0.2f
                                 this.translationX = width.toFloat() / 2
                                 animate().translationX(0f)
-                                        .setInterpolator(AnticipateOvershootInterpolator())
-                                        .alpha(1.0f)
-                                        .setStartDelay(69)
-                                        .setDuration(450)
-                                        .setListener(null)
+                                    .setInterpolator(AnticipateOvershootInterpolator())
+                                    .alpha(1.0f)
+                                    .setStartDelay(69)
+                                    .setDuration(450)
+                                    .setListener(null)
                             }
                         }
                     }
 
-                    ivAvatar.apply {
+                    iv_account_user_image.apply {
                         layoutParams.height = currentImageSize
                         layoutParams.width = currentImageSize
                     }
-                    collapsingAvatarContainer.apply {
+                    fl_account_stuff_container.apply {
                         layoutParams.height = headContainerHeight.toInt()
                         this.translationY = translationY
                         requestLayout()
@@ -161,11 +168,11 @@ class AccountActivity : BaseActivity() {
                 }
                 else -> {
                     /* Collapse avatar img*/
-                    ivAvatar.apply {
+                    iv_account_user_image.apply {
                         if (percentOffset > startAvatarAnimatePointY) {
 
                             val animateOffset = (percentOffset - startAvatarAnimatePointY) * animateWeigt
-                            Log.d("Lihat", "updateViews AccountActivity : " + animateOffset)
+                            Log.d("Lihat", "updateToolbarViewImage AccountActivity : " + animateOffset)
                             val avatarSize = EXPAND_AVATAR_SIZE - (EXPAND_AVATAR_SIZE - COLLAPSE_IMAGE_SIZE) * animateOffset
 
                             this.layoutParams.also {

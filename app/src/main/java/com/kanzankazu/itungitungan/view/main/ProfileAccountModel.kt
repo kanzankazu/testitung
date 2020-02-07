@@ -7,8 +7,9 @@ import kotlinx.android.parcel.Parcelize
  * Created by Faisal Bahri on 2019-12-05.
  */
 @Parcelize
-data class ProfileModel(
+data class ProfileAccountModel(
     var icon: Int = 0,
     var title: String = "",
+    var desc: String,
     var isShow: Boolean
 ) : Parcelable

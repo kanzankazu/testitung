@@ -221,7 +221,7 @@ public class InputValidUtil {
         }
     }
 
-    public static boolean isLenghtCharOver(final String errorMessage,TextInputLayout textInputLayout, EditText editText, int minChar) {
+    public static boolean isLenghtCharOver(final String errorMessage, TextInputLayout textInputLayout, EditText editText, int minChar) {
         String s = editText.getText().toString().trim();
         if (isLenghtCharOver(s, minChar)) {
             textInputLayout.setErrorEnabled(false);
@@ -234,6 +234,7 @@ public class InputValidUtil {
             return false;
         }
     }
+
     public static boolean isLenghtCharOver(EditText editText, int minChar) {
         String s = editText.getText().toString().trim();
         return isLenghtCharOver(s, minChar);

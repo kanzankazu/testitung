@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar_layout"
+        android:id="@+id/appbarlayout_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -26,11 +26,10 @@
                 app:layout_collapseMode="parallax">
 
                 <ImageView
-                    android:id="@+id/main.imageview.placeholder"
+                    android:id="@+id/iv_account_background"
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_launcher_background"
                     tools:src="@tools:sample/backgrounds/scenic" />
 
                 <FrameLayout
@@ -40,7 +39,7 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/fl_background"
+                android:id="@+id/fl_account_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -48,14 +47,14 @@
                 app:layout_collapseParallaxMultiplier="0.7" />
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/anim_toolbar"
+                android:id="@+id/toolbar_account"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
             <FrameLayout
-                android:id="@+id/stuff_container"
+                android:id="@+id/fl_account_stuff_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -69,10 +68,11 @@
                     android:textAllCaps="true"
                     android:textColor="@android:color/white"
                     android:textSize="14sp"
-                    android:visibility="invisible" />
+                    android:visibility="invisible"
+                    tools:visibility="visible" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/imgb_avatar_wrap"
+                    android:id="@+id/iv_account_user_image"
                     android:layout_width="135dp"
                     android:layout_height="135dp"
                     android:layout_gravity="bottom|center_horizontal"
@@ -82,7 +82,7 @@
             </FrameLayout>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_profile_name_single"
+                android:id="@+id/tv_account_user_name_short"
                 android:layout_width="wrap_content"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="center_horizontal"
@@ -90,16 +90,16 @@
                 android:gravity="center"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="Heath Ledger"
+                android:text="@string/app_name"
                 android:textAllCaps="true"
                 android:textColor="@color/color_white"
                 android:textSize="17sp"
-                android:visibility="invisible"
                 app:layout_collapseMode="pin"
                 tools:visibility="visible" />
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_profile_name"
+                android:id="@+id/tv_account_user_name_long"
+                style="@style/TvStandartCenter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -108,12 +108,11 @@
                 android:gravity="center"
                 android:maxLines="2"
                 android:scrollHorizontally="true"
-                android:text="Heath Andrew Ledger"
+                android:text="@string/app_name"
                 android:textAllCaps="true"
                 android:textColor="@color/color_white"
                 android:textSize="24sp"
-                app:layout_collapseMode="pin"
-                tools:visibility="visible" />
+                app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -133,28 +132,92 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="8dp"
-                app:cardElevation="8dp"
-                app:contentPadding="16dp">
+                android:layout_margin="@dimen/padding_margin_8dp"
+                app:contentPadding="@dimen/padding_margin_8dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:lineSpacingExtra="8dp"
-                    android:text="Heath Andrew Ledger[a] (4 April 1979 – 22 January 2008) was an Australian actor and music video director. After performing roles in several Australian television and film productions during the 1990s, Ledger left for the United States in 1998 to further develop his film career. His work comprised nineteen films, including 10 Things I Hate About You (1999), The Patriot (2000), A Knight's Tale (2001), Monster's Ball (2001), Lords of Dogtown (2005), Brokeback Mountain (2005), Casanova (2005), The Dark Knight (2008), and The Imaginarium of Doctor Parnassus (2009), the latter two being posthumous releases. He also produced and directed music videos and aspired to be a film director."
-                    android:textSize="18sp" />
-            </android.support.v7.widget.CardView>
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical">
 
-            <Button
-                android:id="@+id/b_go_demo_1"
-                style="@style/Widget.AppCompat.Button.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="demo1" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/til_account_user_name"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padding_margin_8dp">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_account_user_name"
+                            style="@style/EtText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Nama"
+                            tools:text="@tools:sample/full_names" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/til_account_user_email"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padding_margin_8dp">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_account_user_email"
+                            style="@style/EtText.Email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Email"
+                            tools:text="@tools:sample/us_phones" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/til_account_user_phone"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padding_margin_8dp">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_account_user_phone"
+                            style="@style/EtNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="No. Hp"
+                            tools:text="@tools:sample/us_phones" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_account_option"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/padding_margin_8dp"
+                        android:visibility="gone"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_title_desc_icon_option"
+                        tools:visibility="visible" />
+
+                    <Button
+                        android:id="@+id/b_account_save"
+                        style="@style/TvBottomButtonPrimaryDark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/save" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
