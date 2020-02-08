@@ -1,10 +1,8 @@
 package com.kanzankazu.itungitungan.util;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -16,7 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.annotation.ArrayRes;
 import android.support.annotation.DrawableRes;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
@@ -31,18 +28,13 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.kanzankazu.itungitungan.BuildConfig;
 import com.kanzankazu.itungitungan.R;
@@ -57,14 +49,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import butterknife.ButterKnife;
-
 /**
  * Created by Faisal Bahri on 2019-11-05.
  */
 public class Utils {
     public static int widthDisplay, heightDisplay;
-
     public static boolean showingDialogOnce = false;
 
     public static void getDisplaySize(Activity activity) {
@@ -97,7 +86,6 @@ public class Utils {
 
     //NON REAL - APP ONLY
     public static int getNonRealHeightDisplay(Activity activity) {
-
         System.out.println("HEIGHT NON REAL = " + (heightDisplay - getStatusBarHeight(activity)));
         return heightDisplay - getStatusBarHeight(activity);
     }
@@ -114,30 +102,6 @@ public class Utils {
 
         return result;
     }
-
-        /*public static void initCustomToolbar(final AppCompatActivity mActivity, Toolbar toolbar) {
-
-            if (!(mActivity instanceof BookingDetailActivity)) { //IF ACTIVITY BESIDE DETAIL
-                LayoutInflater inflater = LayoutInflater.from(mActivity);
-                View customView = inflater.inflate(R.layout.custom_view_action_bar_booking_step, null);
-
-                toolbar.addView(customView);
-                TextView step3Title = customView.findViewById(R.id.tv_title_step_three);
-                TextView tvConfirmation = customView.findViewById(R.id.tv_action_step_three);
-                TextView step2Title = customView.findViewById(R.id.tv_title_step_two);
-                TextView tvPilihPromo = customView.findViewById(R.id.tv_action_step_two);
-                ImageView arrow2 = customView.findViewById(R.id.arrow2);
-
-                if (mActivity instanceof BookingAbstractActivity) {
-                    step2Title.setTextColor(mActivity.getResources().getColor(R.color.White));
-                    tvPilihPromo.setTextColor(mActivity.getResources().getColor(R.color.White));
-                    arrow2.setColorFilter(ContextCompat.getColor(mActivity, R.color.White), PorterDuff.Mode.SRC_ATOP);
-                    step3Title.setTextColor(mActivity.getResources().getColor(R.color.cyan));
-                    tvConfirmation.setTextColor(mActivity.getResources().getColor(R.color.cyan));
-                }
-
-            }
-        }*/
 
     public static void setupAppToolbarForActivity(final AppCompatActivity mActivity, Toolbar toolbar) {
         mActivity.setSupportActionBar(toolbar);
@@ -186,6 +150,9 @@ public class Utils {
 
     public static void overridePendingTransition(Activity mActivity) {
         mActivity.overridePendingTransition(0, 0);
+    }
+    public static void overridePendingTransition(Activity mActivity, int enterAnim, int exitAnim) {
+        mActivity.overridePendingTransition(enterAnim, exitAnim);
     }
 
     public static void showSnackBar(View view, String message) {
@@ -286,222 +253,6 @@ public class Utils {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showFetchErrorDialog(Activity activity) {
-        try {
-            final android.app.Dialog dialog;
-            dialog = new android.app.Dialog(activity);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.layout_error_dialog);
-            dialog.setCancelable(false);
-
-            ImageView ivDialog = dialog.findViewById(R.id.image_booking_complete);
-            TextView tvDescDialog = dialog.findViewById(R.id.tv_booking_complete);
-            TextView tvCloseDialog = dialog.findViewById(R.id.btn_close_dialog);
-
-            ivDialog.setImageResource(R.drawable.ic_no_internet);
-            tvDescDialog.setText("Mohon coba beberapa saat lagi");
-            tvCloseDialog.setTextColor(ContextCompat.getColor(activity, R.color.color_blue_A400));
-            tvCloseDialog.setText("Ok");
-            tvCloseDialog.setOnClickListener(v -> {
-                dialog.dismiss();
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(1);
-                FirebaseAnalyticsUtil.getInstance().firebaseRemoteConfigError();
-            });
-
-            dialog.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void showErrorDialog(final Activity activity, String errorMessage, boolean isShow, final DialogButtonListener dialogButtonListener) {
-        try {
-            final android.app.Dialog dialog;
-            dialog = new android.app.Dialog(activity);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.layout_error_dialog);
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-
-            ImageView ivDialog = dialog.findViewById(R.id.image_booking_complete);
-            TextView tvDescDialog = dialog.findViewById(R.id.tv_booking_complete);
-            TextView tvCloseDialog = dialog.findViewById(R.id.btn_close_dialog);
-
-            ivDialog.setImageResource(R.drawable.ic_no_internet);
-            tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
-            tvCloseDialog.setTextColor(ContextCompat.getColor(activity, R.color.color_blue_A400));
-            tvCloseDialog.setText(activity.getString(R.string.confirm_retry));
-            tvCloseDialog.setOnClickListener(v -> {
-                dialog.dismiss();
-                dialogButtonListener.onDialogButtonClick();
-            });
-
-            if (!isShow) {
-                dialog.show();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void showIntroductionDialog(Activity mActivity, String imageUrl, String title, String message, String titleButton1, String titleButton2, boolean isCancelable, int assetHardCode, final IntroductionButtonListener introductionButtonListener) {
-        if (!mActivity.isFinishing()) {
-            AlertDialog alertDialog;
-            View dialogView = mActivity.getLayoutInflater().inflate(R.layout.popup_introduction, null);
-            final AlertDialog.Builder popupPromo = new AlertDialog.Builder(mActivity);
-            popupPromo.setView(dialogView);
-
-            TextView tvIntroTitle = ButterKnife.findById(dialogView, R.id.tv_popup_intro_title);
-            ImageView imgIntro = ButterKnife.findById(dialogView, R.id.img_popup_intro);
-            ImageView imgClose = ButterKnife.findById(dialogView, R.id.img_popup_close);
-            TextView tvIntroMessage = ButterKnife.findById(dialogView, R.id.tv_popup_intro_message);
-            TextView tvPopupButton = ButterKnife.findById(dialogView, R.id.tv_popup_button);
-            TextView tvPopupButton2 = ButterKnife.findById(dialogView, R.id.tv_popup_button2);
-            ScrollView svIntroDesc = ButterKnife.findById(dialogView, R.id.sv_intro_desc);
-
-            LinearLayout llPopup = ButterKnife.findById(dialogView, R.id.ll_popup);
-            llPopup.setBackgroundColor(Color.parseColor("#1e3559"));
-            imgIntro.setBackgroundColor(Color.parseColor("#1e3559"));
-            tvIntroMessage.setTextColor(mActivity.getResources().getColor(R.color.color_off_white));
-            tvIntroTitle.setTextColor(mActivity.getResources().getColor(R.color.color_off_white));
-
-            tvPopupButton.setText(titleButton1);
-            tvPopupButton2.setText(titleButton2);
-
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                Glide.with(mActivity).load(imageUrl).into(imgIntro);
-            } else {
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500);
-                imgIntro.setLayoutParams(layoutParams);
-                if (assetHardCode != -1) {
-                    Glide.with(mActivity).load(assetHardCode).into(imgIntro);
-                } else {
-                    Glide.with(mActivity).load(R.mipmap.ic_launcher).into(imgIntro);
-                }
-            }
-
-            imgClose.setVisibility(isCancelable ? View.VISIBLE : View.GONE);
-
-            //Hide Title if empty
-            if (title != null) {
-                if (title.isEmpty()) {
-                    tvIntroTitle.setVisibility(View.GONE);
-                } else {
-                    tvIntroTitle.setText(title);
-                    tvIntroTitle.setVisibility(View.VISIBLE);
-                }
-            }
-            //Hide ScrollView that contain intro description if description empty
-            if (message.isEmpty()) {
-                svIntroDesc.setVisibility(View.GONE);
-            } else {
-                svIntroDesc.setVisibility(View.VISIBLE);
-                tvIntroMessage.setText(message);
-            }
-            //Hide second button if second button title is empty
-            if (titleButton2.isEmpty()) {
-                tvPopupButton2.setVisibility(View.GONE);
-            } else {
-                tvPopupButton2.setVisibility(View.VISIBLE);
-                tvPopupButton2.setText(titleButton2);
-            }
-
-            alertDialog = popupPromo.create();
-            alertDialog.setCancelable(false);
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.show();
-
-            imgClose.setOnClickListener(view -> {
-                alertDialog.dismiss();
-                Utils.showingDialogOnce = true;
-            });
-            tvPopupButton.setOnClickListener(v -> {
-                alertDialog.dismiss();
-                introductionButtonListener.onFirstButtonClick();
-                Utils.showingDialogOnce = true;
-            });
-            tvPopupButton2.setOnClickListener(v -> {
-                alertDialog.dismiss();
-                introductionButtonListener.onSecondButtonClick();
-            });
-        }
-    }
-
-    public static void showRetryDialog(Activity mActivity, final DialogButtonListener dialogButtonListener) {
-        if (!mActivity.isFinishing()) {
-            android.app.Dialog dialog = new AlertDialog.Builder(mActivity)
-                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_error_dialog, null))
-                    .setCancelable(false)
-                    .show();
-
-            ImageView ivDialog = ButterKnife.findById(dialog, R.id.image_booking_complete);
-            TextView tvDescDialog = ButterKnife.findById(dialog, R.id.tv_booking_complete);
-            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
-
-            ivDialog.setImageResource(R.drawable.ic_no_internet);
-            tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
-            tvCloseDialog.setTextColor(ContextCompat.getColor(mActivity, R.color.cyan));
-            tvCloseDialog.setText(mActivity.getResources().getString(R.string.confirm_retry));
-            tvCloseDialog.setOnClickListener(v -> {
-                dialogButtonListener.onDialogButtonClick();
-                dialog.dismiss();
-            });
-        }
-    }
-
-    public static void showConfirmationDialog(Activity mActivity, String dialogTitle, String dialogDescription, final DialogButtonListener dialogButtonListener) {
-        if (!mActivity.isFinishing()) {
-            android.app.Dialog dialog = new AlertDialog.Builder(mActivity)
-                    .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_confirmation_dialog, null))
-                    .show();
-
-            TextView tvConfirmationDialogTitle = ButterKnife.findById(dialog, R.id.tv_confirmation_text);
-            TextView tvConfirmationDialogDescription = ButterKnife.findById(dialog, R.id.tv_confirmation_description);
-            TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
-            TextView tvCloseDialogOk = ButterKnife.findById(dialog, R.id.btn_close_dialog_OK);
-
-            tvConfirmationDialogTitle.setText(dialogTitle);
-            if (dialogDescription.isEmpty()) {
-                tvConfirmationDialogDescription.setVisibility(View.GONE);
-            } else {
-                tvConfirmationDialogDescription.setVisibility(View.VISIBLE);
-                tvConfirmationDialogDescription.setText(dialogDescription);
-            }
-            tvCloseDialog.setOnClickListener(v -> dialog.dismiss());
-            tvCloseDialogOk.setOnClickListener(view -> {
-                dialogButtonListener.onDialogButtonClick();
-                dialog.dismiss();
-            });
-        }
-    }
-
-    public static void listDialog(Activity mActivity, @ArrayRes int i, DialogInterface.OnClickListener listener) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
-        alert.setItems(i, listener);
-        alert.show();
-    }
-
-    public static void listDialog(Activity mActivity, CharSequence[] charSequences, DialogInterface.OnClickListener listener) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
-        alert.setItems(charSequences, listener);
-        alert.show();
-    }
-
-    public static void listMultipleChoiceDialog(Activity mActivity, @ArrayRes int i, boolean[] booleans, DialogInterface.OnMultiChoiceClickListener listener) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
-        alert.setMultiChoiceItems(i, booleans, listener);
-        alert.show();
-    }
-
-    public static void listMultipleChoiceDialog(Activity mActivity, CharSequence[] charSequences, boolean[] booleans, DialogInterface.OnMultiChoiceClickListener listener) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
-        alert.setMultiChoiceItems(charSequences, booleans, listener);
-        alert.show();
-    }
-
     public static double roundToHalf(double d) { // Result : 2.1 -> 2, 2,2 -> 2, 2.3 -> 2.5, 2.4 -> 2.5
         return Math.round(d * 2) / 2.0;
     }
@@ -536,7 +287,7 @@ public class Utils {
         activity.startActivity(intent);
     }
 
-    public static void goToSumoAppSetting(Activity activity) {
+    public static void goToAppSetting(Activity activity) {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
@@ -544,7 +295,7 @@ public class Utils {
         activity.startActivity(intent);
     }
 
-    public static void goToSumoPlayStore(Activity mActivity) {
+    public static void goToPlayStore(Activity mActivity) {
         Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=" + mActivity.getPackageName());
         Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
         try {
@@ -554,6 +305,11 @@ public class Utils {
             Toast.makeText(mActivity, " unable to find market app", Toast.LENGTH_LONG).show();
             FirebaseAnalyticsUtil.getInstance().firebaseAppOpenPlayStoreErrorEvent();
         }
+    }
+
+    public static boolean fileExists(Context context, String fileName) {
+        File file = new File(getRootDirPath(context), fileName);
+        return (file.exists());
     }
 
     public static String getRootDirPath(Context context) {
@@ -572,11 +328,6 @@ public class Utils {
 
     public static String getBytesToMBString(Long bytes) {
         return String.format(Locale.ENGLISH, "%.2fMb", bytes / (1024.00 * 1024.00));
-    }
-
-    public static boolean fileExists(Context context, String fileName) {
-        File file = new File(getRootDirPath(context), fileName);
-        return (file.exists());
     }
 
     public static String getFileName(String url) {
@@ -749,7 +500,6 @@ public class Utils {
      * implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
      *
      * @param string = bisa apa saja, dipasang di Imageview dengan (imageView.setImageDrawable(textDrawable))
-     *
      * @return TextDrawable
      */
     public static TextDrawable getInitialNameDrawable(String string) {
@@ -766,18 +516,11 @@ public class Utils {
     }
 
     public static void setDrawableImageView(Activity activity, ImageView imageView, @DrawableRes int icon) {
-        imageView.setImageDrawable(activity.getResources().getDrawable(icon));
-    }
-
-    public interface DialogButtonListener {
-        void onDialogButtonClick();
-    }
-
-    public interface IntroductionButtonListener {
-
-        void onFirstButtonClick();
-
-        void onSecondButtonClick();
-
+        if (icon != 0) {
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setImageDrawable(activity.getResources().getDrawable(icon));
+        } else {
+            imageView.setVisibility(View.GONE);
+        }
     }
 }

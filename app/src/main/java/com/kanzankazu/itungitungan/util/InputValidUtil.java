@@ -2,9 +2,11 @@ package com.kanzankazu.itungitungan.util;
 
 import android.graphics.Typeface;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
@@ -181,11 +183,11 @@ public class InputValidUtil {
         String s = editText.getText().toString().trim();
         if (isEmail(s) || isPhoneNumber(s)) {
             textInputLayout.setErrorEnabled(false);
-            return false;
+            return true;
         } else {
             textInputLayout.setError(errorMessage);
             textInputLayout.setErrorEnabled(true);
-            return true;
+            return false;
         }
     }
 
@@ -327,6 +329,52 @@ public class InputValidUtil {
         InputFilter[] fArray = new InputFilter[1];
         fArray[0] = new InputFilter.LengthFilter(maxLength);
         editText.setFilters(fArray);
+    }
+
+    public static void creditCardTextWatcher(EditText editText) {
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Change this to what you want... ' ', '-' etc..
+                char space = ' ';
+
+                // Remove spacing char
+                if (s.length() > 0 && (s.length() % 5) == 0) {
+                    final char c = s.charAt(s.length() - 1);
+                    if (space == c) {
+                        s.delete(s.length() - 1, s.length());
+                    }
+                }
+                // Insert char where needed.
+                if (s.length() > 0 && (s.length() % 5) == 0) {
+                    char c = s.charAt(s.length() - 1);
+                    // Only if its a digit where there should be a space we insert a space
+                    if (Character.isDigit(c) && TextUtils.split(s.toString(), String.valueOf(space)).length <= 3) {
+                        s.insert(s.length() - 1, String.valueOf(space));
+                    }
+                }
+            }
+        };
+
+        editText.setOnFocusChangeListener((view, b) -> {
+            if (b) {
+                editText.addTextChangedListener(textWatcher);
+            } else {
+                editText.removeTextChangedListener(textWatcher);
+            }
+        });
+
     }
 
     public interface ActionTrueFalseListener {

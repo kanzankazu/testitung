@@ -14,6 +14,7 @@ import android.view.Window
 import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.model.HutangPembayaran
 import com.kanzankazu.itungitungan.util.Utils
@@ -27,7 +28,7 @@ import java.util.*
  * Created by Faisal Bahri on 2020-02-04.
  */
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
+class HutangDetailDialogFragment : DialogFragment(), HutangDetailDialogContract.View {
 
     private var isApproveNew: Boolean = false
     private var isApproveEdit: Boolean = false
@@ -51,13 +52,24 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
     private val imageClickShow = View.OnClickListener {
         showHidePreview(true)
 
-        val posData = if (it == iv_hutang_detail_dialog_piutang_0) 0 else 1
+        //val posData = if (it == iv_hutang_detail_dialog_piutang_0) 0 else 1
+        val listOfProofImages = mutableListOf<String>()
+        if (hutang.hutangPembayaranSub.isNotEmpty()) {
+            for (data in hutang.hutangPembayaranSub) {
+                if (data.paymentProofImage.isNotEmpty()) {
+                    listOfProofImages.addAll(data.paymentProofImage)
+                }
+            }
+        }
+        val listOfPathImage = mutableListOf<String>()
+        listOfPathImage.addAll(hutang.hutangBuktiGambar!!)
+        listOfPathImage.addAll(listOfProofImages)
 
-        val mGalleryDetailPagerAdapter = GalleryDetailPagerAdapter(activity, hutang.hutangBuktiGambar as ArrayList<String>?)
-        iv_hutang_detail_dialog_piutang_preview.setPageTransformer(true, DepthPageTransformer())
-        iv_hutang_detail_dialog_piutang_preview.adapter = mGalleryDetailPagerAdapter
-        iv_hutang_detail_dialog_piutang_preview.offscreenPageLimit = 2
-        iv_hutang_detail_dialog_piutang_preview.currentItem = posData
+        val mGalleryDetailPagerAdapter = GalleryDetailPagerAdapter(activity, listOfPathImage as ArrayList<String>?)
+        vp_hutang_detail_dialog_piutang_preview.setPageTransformer(true, DepthPageTransformer())
+        vp_hutang_detail_dialog_piutang_preview.adapter = mGalleryDetailPagerAdapter
+        vp_hutang_detail_dialog_piutang_preview.offscreenPageLimit = 2
+        //iv_hutang_detail_dialog_piutang_preview.currentItem = posData
     }
 
     companion object {
@@ -67,8 +79,8 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
         private const val IS_HUTANG_APPROVE_DELETE = "is_hutang_approve_delete"
         private const val IS_HUTANG_APPROVE_PAY = "is_hutang_approve_pay"
 
-        fun newInstance(hutang: Hutang, isApproveNew: Boolean, isApproveEdit: Boolean, isApproveDelete: Boolean, isApprovePay: Boolean): HutangDetailDialog {
-            val fragment = HutangDetailDialog()
+        fun newInstance(hutang: Hutang, isApproveNew: Boolean, isApproveEdit: Boolean, isApproveDelete: Boolean, isApprovePay: Boolean): HutangDetailDialogFragment {
+            val fragment = HutangDetailDialogFragment()
             val args = Bundle()
             args.putParcelable(HUTANG_PARAM, hutang)
             args.putBoolean(IS_HUTANG_APPROVE_NEW, isApproveNew)
@@ -80,7 +92,7 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
         }
 
         fun newInstance(): Fragment {
-            return HutangDetailDialog()
+            return HutangDetailDialogFragment()
         }
     }
 
@@ -192,6 +204,12 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
             }
         }
 
+        if (!hutang.statusLunas && hutang.debtorId.equals(UserPreference.getInstance().uid)) {
+            cv_hutang_detail_pembayaran_bayar.visibility = View.VISIBLE
+        } else {
+            cv_hutang_detail_pembayaran_bayar.visibility = View.GONE
+        }
+
         when {
             hutang.statusLunas -> {
                 tv_hutang_detail_dialog_status.text = "LUNAS"
@@ -261,8 +279,6 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
         } else {
             cv_hutang_detail_dialog_piutang_image.visibility = View.GONE
         }
-
-
     }
 
     private fun setPembayaranAdapter(hutangPembayaranSub: MutableList<HutangPembayaran>) {
@@ -285,7 +301,6 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
         iv_hutang_detail_dialog_piutang_0.setOnClickListener(imageClickShow)
         iv_hutang_detail_dialog_piutang_1.setOnClickListener(imageClickShow)
         tv_hutang_detail_dialog_submit_setuju.setOnClickListener {
-            dismiss()
             when {
                 isApproveNew -> mPresenter.approveHutangNew(hutang, false)
                 isApproveEdit -> mPresenter.approveHutangEdit(hutang, false)
@@ -293,12 +308,20 @@ class HutangDetailDialog : DialogFragment(), HutangDetailDialogContract.View {
                 isApprovePay -> mPresenter.approveHutangCicilanPay(hutang)
                 else -> moveToHutangAdd(hutang)
             }
+            dismiss()
         }
         tv_hutang_detail_dialog_submit_tidak.setOnClickListener {
-            dismiss()
             when {
                 isApproveDelete -> mPresenter.requestHutangHapus(hutang, true)
             }
+            dismiss()
+        }
+        cv_hutang_detail_pembayaran_bayar.setOnClickListener {
+            val intent = Intent(activity, HutangPayActivity::class.java)
+            intent.putExtra(Constants.Bundle.HUTANG, hutang)
+            intent.putExtra(Constants.Bundle.HUTANG_NEW, true)
+            startActivity(intent)
+            dismiss()
         }
     }
 

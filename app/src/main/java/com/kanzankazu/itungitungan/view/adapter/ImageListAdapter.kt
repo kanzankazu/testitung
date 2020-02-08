@@ -117,15 +117,16 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
 
     inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun setView(data: ImageModel) {
+            if (data.type.equals("view", true)) itemView.civ_item_image_remove_edit.visibility = View.GONE else itemView.civ_item_image_remove_edit.visibility = View.VISIBLE
+
             Glide.with(mActivity).load(data.path).into(itemView.civ_item_image)
         }
 
         fun setOnClickListener(data: ImageModel, position: Int) {
-            itemView.civ_profile_photo_edit.setOnClickListener {
-                mView.onImageListRemove(data, position)
-            }
-        }
+            if (data.type.equals("view", true)) itemView.civ_item_image.setOnClickListener { mView.onImageListView(data, position) }
 
+            itemView.civ_item_image_remove_edit.setOnClickListener { mView.onImageListRemove(data, position) }
+        }
     }
 
     inner class ImageAddViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -140,6 +141,7 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
     }
 
     interface ImageListContract {
+        fun onImageListView(data: ImageModel, position: Int)
         fun onImageListRemove(data: ImageModel, position: Int)
         fun onImageListAdd(data: ImageModel, position: Int)
     }

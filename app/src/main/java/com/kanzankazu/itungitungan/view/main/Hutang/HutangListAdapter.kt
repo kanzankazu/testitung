@@ -14,6 +14,7 @@ import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.AppUtil
+import com.kanzankazu.itungitungan.util.DialogUtil
 import com.kanzankazu.itungitungan.util.Utils
 import kotlinx.android.synthetic.main.item_hutang_list.view.*
 import java.util.*
@@ -63,12 +64,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             isLunas = hutang.statusLunas
 
             builder = TextDrawable.builder()
-                .beginConfig()
-                .withBorder(4)
-                .width(80)
-                .height(80)
-                .endConfig()
-                .roundRect(20)
+                    .beginConfig()
+                    .withBorder(4)
+                    .width(80)
+                    .height(80)
+                    .endConfig()
+                    .roundRect(20)
 
             checkPersetujuanLabel(hutang)
             checkPersetujuanAlphaClick(hutang)
@@ -312,12 +313,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         }
 
         private fun setViewIPenghutang(data: Hutang) {
-            if (AppUtil.checkStringNVisibilityView(data.creditorName, itemView.tv_hutang_list_name)) {
+            if (AppUtil.checkIsStringNotEmptyVisibilityView(data.creditorName, itemView.tv_hutang_list_name)) {
                 name = data.creditorName
                 color = generator.getColor(name)
                 textDrawable = builder?.build(Utils.getInitialName(name.trim()), color)
             }
-            if (AppUtil.checkStringNVisibilityView(data.creditorEmail, itemView.tv_hutang_list_email)) {
+            if (AppUtil.checkIsStringNotEmptyVisibilityView(data.creditorEmail, itemView.tv_hutang_list_email)) {
                 email = data.creditorEmail
             }
 
@@ -325,12 +326,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         }
 
         private fun setViewIPiutang(data: Hutang) {
-            if (AppUtil.checkStringNVisibilityView(data.debtorName, itemView.tv_hutang_list_name)) {
+            if (AppUtil.checkIsStringNotEmptyVisibilityView(data.debtorName, itemView.tv_hutang_list_name)) {
                 name = data.debtorName
                 color = generator.getColor(name)
                 textDrawable = builder?.build(Utils.getInitialName(name.trim()), color)
             }
-            if (AppUtil.checkStringNVisibilityView(data.debtorEmail, itemView.tv_hutang_list_email)) {
+            if (AppUtil.checkIsStringNotEmptyVisibilityView(data.debtorEmail, itemView.tv_hutang_list_email)) {
                 email = data.debtorEmail
             }
 
@@ -339,26 +340,26 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
 
         private fun setNormalOnClickListener(hutang: Hutang) {
             val strings: Array<String> =
-                if (isIFamily && !isLunas && hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
-                    arrayOf("Detail", "Lihat")
-                } else if (isIFamily && !isLunas && !hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
-                    arrayOf("Lihat")
-                } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPenghutang) {
-                    arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
-                } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPenghutang) {
-                    arrayOf("Lihat", "Bayar", "Hapus")
-                } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPiutang) {
-                    arrayOf("Ubah", "Lihat", "Hapus")
-                } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPiutang) {
-                    arrayOf("Lihat", "Hapus")
-                } else if (!isIFamily && isLunas && (isIPenghutang || isIPiutang)) {
-                    arrayOf("Lihat")
-                } else if (isIFamily && isLunas && (!isIPenghutang || !isIPiutang)) {
-                    arrayOf("Lihat")
-                } else {
-                    arrayOf("Lihat")
-                }
-            Utils.listDialog(mActivity, strings) { _, which ->
+                    if (isIFamily && !isLunas && hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Detail", "Lihat")
+                    } else if (isIFamily && !isLunas && !hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPenghutang) {
+                        arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
+                    } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPenghutang) {
+                        arrayOf("Lihat", "Bayar", "Hapus")
+                    } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPiutang) {
+                        arrayOf("Ubah", "Lihat", "Hapus", "Kirim Pengingat")
+                    } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPiutang) {
+                        arrayOf("Lihat", "Hapus", "Kirim Pengingat")
+                    } else if (!isIFamily && isLunas && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else if (isIFamily && isLunas && (!isIPenghutang || !isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else {
+                        arrayOf("Lihat")
+                    }
+            DialogUtil.listDialog(mActivity, strings) { _, which ->
                 when (strings[which]) {
                     "Ubah" -> {
                         mView.onHutangUbahClick(hutang)
@@ -374,6 +375,8 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                     }
                     "Hapus" -> {
                         mView.onHutangHapusClick(hutang, adapterPosition, (!hutang.creditorApprovalDelete || !hutang.debtorApprovalDelete))
+                    }
+                    "Kirim Pengingat" -> {//ONDEV
                     }
                 }
             }
@@ -434,16 +437,16 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
         override fun performFiltering(charSequence: CharSequence): FilterResults {
             var charSequence = charSequence
 
-            charSequence = charSequence.toString().toLowerCase()
+            charSequence = charSequence.toString()
             val filterResults = FilterResults()
 
             if (!TextUtils.isEmpty(charSequence)) {
                 val arrayList1 = ArrayList<Hutang>()
 
                 for (subject in mainModel) {
-                    if (subject.hutangRadioIndex == 0) {//saya berhutang(piutang)
-                        if (subject.creditorEmail.equals(charSequence.toString(),true) ||
-                            subject.creditorName.equals(charSequence.toString(),true) ||
+                    /*if (subject.hutangRadioIndex == 0) {//saya berhutang(piutang)
+                        if (subject.debtorEmail.equals(charSequence.toString(),true) ||
+                            subject.debtorName.equals(charSequence.toString(),true) ||
                             subject.hutangNominal.equals(charSequence.toString(),true)
                         ) {
                             arrayList1.add(subject)
@@ -455,7 +458,17 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                         ) {
                             arrayList1.add(subject)
                         }
+                    }*/
+                    if (
+                            charSequence.contains(subject.debtorEmail, true) ||
+                            charSequence.contains(subject.debtorName, true) ||
+                            charSequence.contains(subject.creditorEmail, true) ||
+                            charSequence.contains(subject.creditorName, true) ||
+                            charSequence.contains(subject.hutangNominal, true)
+                    ) {
+                        arrayList1.add(subject)
                     }
+
                 }
 
                 filterResults.count = arrayList1.size

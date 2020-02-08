@@ -26,6 +26,7 @@
     <string name="message_field_empty_nominal">Nominal tidak boleh kosong</string>
     <string name="message_radio_empty">Anda belum memilih!!!</string>
     <string name="message_field_email_wrong_format">Format email salah [***@***.***]</string>
+    <string name="message_field_phone_wrong_format">Format no telp/hp salah [+xx/0]*********</string>
     <string name="message_field_email_phone_wrong_format">Kolom ini untuk email dan no.Hp</string>
     <string name="message_validation_failed">Tolong Lengkapi data - data yang ada tanda *</string>
     <string name="message_signin_success">Masuk Berhasil</string>

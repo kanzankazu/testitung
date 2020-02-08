@@ -4,27 +4,18 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatTextView
-import android.support.v7.widget.Toolbar
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
 import android.view.animation.AnticipateOvershootInterpolator
-import android.widget.FrameLayout
-import android.widget.ImageView
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.view.base.BaseActivity
+import com.kanzankazu.itungitungan.view.main.ProfileAccountModel
+import com.kanzankazu.itungitungan.view.main.ProfileAccountOptionAdapter
 import kotlinx.android.synthetic.main.activity_account.*
 import kotlin.math.abs
 
-class AccountActivity : BaseActivity() {
-
-    private lateinit var iv_account_user_image: ImageView
-    private lateinit var toolbar_account: Toolbar
-    private lateinit var appbarlayout_account: AppBarLayout
-    private lateinit var tv_account_user_name_long: AppCompatTextView
-    private lateinit var tv_account_user_name_short: AppCompatTextView
-    private lateinit var fl_account_stuff_container: FrameLayout
-    private lateinit var fl_account_background: FrameLayout
+class AccountActivity : BaseActivity(), AccountContract.View {
 
     private var EXPAND_AVATAR_SIZE: Float = 135f
     private var COLLAPSE_IMAGE_SIZE: Float = 45f
@@ -33,10 +24,22 @@ class AccountActivity : BaseActivity() {
     private var startAvatarAnimatePointY: Float = 0F
     private var animateWeigt: Float = 0F
     private var isCalculated = false
+    /*private lateinit var iv_account_user_image: ImageView
+    private lateinit var toolbar_account: Toolbar
+    private lateinit var appbarlayout_account: AppBarLayout
+    private lateinit var tv_account_user_name_long: AppCompatTextView
+    private lateinit var tv_account_user_name_short: AppCompatTextView
+    private lateinit var fl_account_stuff_container: FrameLayout
+    private lateinit var fl_account_background: FrameLayout*/
+    private lateinit var optionAdapter: ProfileAccountOptionAdapter
+
+    private lateinit var mPresenter: AccountPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
+
+        mPresenter = AccountPresenter(this, this)
 
         setView()
         setListener()
@@ -45,18 +48,60 @@ class AccountActivity : BaseActivity() {
     private fun setView() {
         setCollapseView()
 
-
+        setOptionRecyclerView()
     }
 
     private fun setCollapseView() {
-        appbarlayout_account = findViewById(R.id.appbarlayout_account)
+        /*appbarlayout_account = findViewById(R.id.appbarlayout_account)
         toolbar_account = findViewById(R.id.toolbar_account)
-        toolbar_account.visibility = View.INVISIBLE
         fl_account_stuff_container = findViewById(R.id.fl_account_stuff_container)
         iv_account_user_image = findViewById(R.id.iv_account_user_image)
         tv_account_user_name_long = findViewById(R.id.tv_account_user_name_long)
         tv_account_user_name_short = findViewById(R.id.tv_account_user_name_short)
-        fl_account_background = findViewById(R.id.fl_account_background)
+        fl_account_background = findViewById(R.id.fl_account_background)*/
+        toolbar_account.visibility = View.INVISIBLE
+    }
+
+    private fun setOptionRecyclerView() {
+        val listOfProfileAccount = mutableListOf<ProfileAccountModel>()
+        listOfProfileAccount.add(ProfileAccountModel(0, "Pesan cepat", "Opsi ini untuk mempermudah anda membalas cepat saat pembayaran hutang", true))
+        listOfProfileAccount.add(ProfileAccountModel(0, "Akun Penerimaan Pembayaran", "Opsi ini untuk mempermudah peminjam melakukan pembayaran dengan via trasfer", true))
+
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rv_account_option.layoutManager = linearLayoutManager
+        optionAdapter = ProfileAccountOptionAdapter(this, object : ProfileAccountOptionAdapter.Listener {
+            override fun onItemAdapterClick(position: Int) {
+                itemAdapterClick(position)
+            }
+        })
+        rv_account_option.adapter = optionAdapter
+        optionAdapter.addDatas(listOfProfileAccount)
+    }
+
+    private fun itemAdapterClick(position: Int) {
+        when (position) {
+            0 -> {
+                showSnackbar("0")
+            }
+            1 -> {
+                showSnackbar("1")
+            }
+            2 -> {
+                showSnackbar("2")
+            }
+            3 -> {
+                showSnackbar("3")
+            }
+            4 -> {
+                showSnackbar("4")
+            }
+            5 -> {
+                showSnackbar("5")
+            }
+            6 -> {
+                showSnackbar("6")
+            }
+        }
     }
 
     private fun setListener() {
@@ -92,7 +137,7 @@ class AccountActivity : BaseActivity() {
         val result: Pair<Int, Int> = when {
             percentOffset < ABROAD -> {
                 Pair(
-                    TO_EXPANDED_STATE, cashCollapseState?.second
+                        TO_EXPANDED_STATE, cashCollapseState?.second
                         ?: WAIT_FOR_SWITCH
                 )
             }
@@ -145,11 +190,11 @@ class AccountActivity : BaseActivity() {
                                 alpha = 0.2f
                                 this.translationX = width.toFloat() / 2
                                 animate().translationX(0f)
-                                    .setInterpolator(AnticipateOvershootInterpolator())
-                                    .alpha(1.0f)
-                                    .setStartDelay(69)
-                                    .setDuration(450)
-                                    .setListener(null)
+                                        .setInterpolator(AnticipateOvershootInterpolator())
+                                        .alpha(1.0f)
+                                        .setStartDelay(69)
+                                        .setDuration(450)
+                                        .setListener(null)
                             }
                         }
                     }
@@ -172,7 +217,7 @@ class AccountActivity : BaseActivity() {
                         if (percentOffset > startAvatarAnimatePointY) {
 
                             val animateOffset = (percentOffset - startAvatarAnimatePointY) * animateWeigt
-                            Log.d("Lihat", "updateToolbarViewImage AccountActivity : " + animateOffset)
+                            Log.d("Lihat", "updateToolbarViewImage AccountActivity : $animateOffset")
                             val avatarSize = EXPAND_AVATAR_SIZE - (EXPAND_AVATAR_SIZE - COLLAPSE_IMAGE_SIZE) * animateOffset
 
                             this.layoutParams.also {

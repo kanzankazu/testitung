@@ -15,7 +15,6 @@ import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import com.kanzankazu.itungitungan.view.main.ProfileSub.AccountActivity
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.item_image.*
 
 
 /**
@@ -24,7 +23,7 @@ import kotlinx.android.synthetic.main.item_image.*
 class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
 
     private lateinit var mPresenter: ProfileFragmentPresenter
-    private lateinit var profileListAdapter: ProfileListAdapter
+    private lateinit var profileListAdapter: ProfileAccountOptionAdapter
 
     private var uid: String? = ""
     private var mParam1: String? = null
@@ -169,7 +168,11 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         loginUtil = FirebaseLoginUtil(mActivity, this)
         mPresenter = ProfileFragmentPresenter(mActivity, this)
 
-        profileListAdapter = ProfileListAdapter(mActivity, this)
+        profileListAdapter = ProfileAccountOptionAdapter(mActivity, object : ProfileAccountOptionAdapter.Listener {
+            override fun onItemAdapterClick(position: Int) {
+                itemAdapterClick(position)
+            }
+        })
         //rv_profile_settings.setRecycledViewPool(RecyclerView.RecycledViewPool())
         rv_profile_settings.layoutManager = LinearLayoutManager(mActivity)
         rv_profile_settings.adapter = profileListAdapter

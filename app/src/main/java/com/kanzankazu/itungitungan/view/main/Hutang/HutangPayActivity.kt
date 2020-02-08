@@ -101,6 +101,10 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
     private fun setView() {
         payNoteAdapter = mPresenter.initSuggestAdapter(rv_hutang_pay_note)
         imageListAdapter = mPresenter.initImageAdapter(rv_hutang_pay_image, object : ImageListAdapter.ImageListContract {
+            override fun onImageListView(data: ImageModel, position: Int) {
+
+            }
+
             override fun onImageListRemove(data: ImageModel, position: Int) {
                 imageListAdapter.removeAt(position)
             }

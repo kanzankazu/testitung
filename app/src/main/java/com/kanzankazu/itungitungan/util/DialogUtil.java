@@ -1,9 +1,12 @@
 package com.kanzankazu.itungitungan.util;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.AnimatorRes;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -42,8 +45,8 @@ public class DialogUtil {
     android:textColor="?android:attr/textColorAlertDialogListItem"
     style="@style/TextLabelStyle"
     android:gravity="center_vertical"
-    android:paddingLeft="@dimen/padding_margin_16dp"
-    android:paddingRight="@dimen/padding_margin_16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     android:checkMark="@null"
     android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
     android:drawableRight="@null"
@@ -215,7 +218,7 @@ public class DialogUtil {
 
     public static void showRetryDialog(Activity mActivity, DialogButtonListener dialogButtonListener) {
         if (!mActivity.isFinishing()) {
-            android.app.Dialog dialog = new android.app.AlertDialog.Builder(mActivity)
+            Dialog dialog = new AlertDialog.Builder(mActivity)
                     .setView(mActivity.getLayoutInflater().inflate(R.layout.layout_error_dialog, null))
                     .setCancelable(false)
                     .show();
@@ -235,6 +238,46 @@ public class DialogUtil {
         }
     }
 
+    public static void showYesNoDialog(Activity activity, String title, String message, DialogStandartTwoListener listener) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setCancelable(false);
+        AlertDialog show = alertDialog.show();
+        alertDialog.setPositiveButton(activity.getString(R.string.confirm_yes), (dialogInterface, i) -> {
+            show.dismiss();
+            listener.onClickButtonOne();
+        });
+        alertDialog.setNegativeButton(activity.getString(R.string.confirm_no), (dialogInterface, i) -> {
+            show.dismiss();
+            listener.onClickButtonTwo();
+        });
+    }
+
+    public static void listDialog(Activity mActivity, @ArrayRes int i, DialogInterface.OnClickListener listener) {
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mActivity);
+        alert.setItems(i, listener);
+        alert.show();
+    }
+
+    public static void listDialog(Activity mActivity, CharSequence[] charSequences, DialogInterface.OnClickListener listener) {
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mActivity);
+        alert.setItems(charSequences, listener);
+        alert.show();
+    }
+
+    public static void listMultipleChoiceDialog(Activity mActivity, @ArrayRes int i, boolean[] booleans, DialogInterface.OnMultiChoiceClickListener listener) {
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mActivity);
+        alert.setMultiChoiceItems(i, booleans, listener);
+        alert.show();
+    }
+
+    public static void listMultipleChoiceDialog(Activity mActivity, CharSequence[] charSequences, boolean[] booleans, DialogInterface.OnMultiChoiceClickListener listener) {
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mActivity);
+        alert.setMultiChoiceItems(charSequences, booleans, listener);
+        alert.show();
+    }
+
     public static CharSequence[] convertListStrinToCharSequenceArray(List<String> list) {
         return list.toArray(new CharSequence[list.size()]);
     }
@@ -247,10 +290,10 @@ public class DialogUtil {
         void onClickButton();
     }
 
-    public interface DialogStandart2Listener {
-        void onClickButton1();
+    public interface DialogStandartTwoListener {
+        void onClickButtonOne();
 
-        void onClickButton2();
+        void onClickButtonTwo();
     }
 
     public interface DialogRadioListener {

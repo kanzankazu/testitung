@@ -47,6 +47,8 @@ class HutangDetailDialogPayAdapter(var mActivity: FragmentActivity?, var mView: 
             itemView.tv_hutang_list_detail_pay_credit_approval.text = data.approvalCreditor.toString()
 
             imageListAdapter = initImageAdapter(mActivity, itemView.rv_hutang_list_detail_pay_image, object : ImageListAdapter.ImageListContract {
+                override fun onImageListView(data: ImageModel, position: Int) {}
+
                 override fun onImageListRemove(data: ImageModel, position: Int) {}
 
                 override fun onImageListAdd(data: ImageModel, position: Int) {}
@@ -57,7 +59,7 @@ class HutangDetailDialogPayAdapter(var mActivity: FragmentActivity?, var mView: 
 
                 val imageModels = mutableListOf<ImageModel>()
                 for (image in data.paymentProofImage) {
-                    imageModels.add(ImageModel(image, ""))
+                    imageModels.add(ImageModel(image, "view"))
                 }
 
                 imageListAdapter.addDatas(imageModels)

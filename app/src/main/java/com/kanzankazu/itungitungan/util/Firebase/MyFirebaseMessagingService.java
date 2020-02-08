@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -44,21 +45,21 @@ import java.util.Random;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private final String ADMIN_CHANNEL_ID ="admin_channel";
+    private final String ADMIN_CHANNEL_ID = "admin_channel";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData().size() > 0) {
             Map<String, String> m = remoteMessage.getData();
             List<String> list1 = new ArrayList<>(m.keySet());
+            Log.d("Lihat", "onMessageReceived MyFirebaseMessagingService : " + list1);
             List<String> list21 = new ArrayList<>(m.values());
+            Log.d("Lihat", "onMessageReceived MyFirebaseMessagingService : " + list21);
             JSONObject mapToObject = new JSONObject(m);
+            Log.d("Lihat", "onMessageReceived MyFirebaseMessagingService : " + mapToObject);
         }
 
-        if (remoteMessage.getNotification() != null) {
-        }
-
-        makeNotification(remoteMessage.getNotification().getBody(),remoteMessage);
+        makeNotification(remoteMessage.getNotification().getBody(), remoteMessage);
     }
 
     private void makeNotification(String messageBody, RemoteMessage remoteMessage) {
@@ -81,7 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify(0 *//* ID of notification *//*, notificationBuilder.build());*/
 
         final Intent intent = new Intent(this, MainActivity.class);
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -89,13 +90,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_search);
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_wallet);
 
         Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_search)
+                .setSmallIcon(R.drawable.ic_wallet)
                 .setLargeIcon(largeIcon)
                 .setContentTitle(remoteMessage.getData().get("title"))
                 .setContentText(remoteMessage.getData().get("message"))
@@ -104,14 +105,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);
 
         //Set notification color to match your app color template
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationBuilder.setColor(getResources().getColor(R.color.colorPrimaryDark));
         }
         notificationManager.notify(notificationID, notificationBuilder.build());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setupChannels(NotificationManager notificationManager){
+    private void setupChannels(NotificationManager notificationManager) {
         CharSequence adminChannelName = "New notification";
         String adminChannelDescription = "Device to devie notification";
 

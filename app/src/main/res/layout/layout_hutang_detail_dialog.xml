@@ -17,7 +17,7 @@
         android:visibility="gone">
 
         <android.support.v4.view.ViewPager
-            android:id="@+id/iv_hutang_detail_dialog_piutang_preview"
+            android:id="@+id/vp_hutang_detail_dialog_piutang_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerInside"
@@ -155,8 +155,8 @@
                     style="@style/TvStandart"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_margin_5dp"
                     android:gravity="center"
+                    android:padding="@dimen/padding_margin_5dp"
                     android:text="Status"
                     android:textSize="@dimen/medium_font_size" />
 
@@ -331,7 +331,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:padding="@dimen/padding_margin_5dp">
 
                     <android.support.v7.widget.RecyclerView
@@ -340,6 +340,27 @@
                         android:layout_height="match_parent"
                         tools:itemCount="1"
                         tools:listitem="@layout/item_hutang_list_detail_pay" />
+
+                    <LinearLayout
+                        android:id="@+id/cv_hutang_detail_pembayaran_bayar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        style="@style/TvBottomButtonPrimary"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <TextView
+                            style="@style/TvStandart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/padding_margin_5dp"
+                            android:text="Bayar"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/medium_font_size" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

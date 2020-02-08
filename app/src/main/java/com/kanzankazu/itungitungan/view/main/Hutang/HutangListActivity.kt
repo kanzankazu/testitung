@@ -14,6 +14,7 @@ import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.util.DialogUtil
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_hutang_list.*
@@ -141,9 +142,11 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, false)
             hutangListLunasAdapter.setData(hutangs)
             iv_hutang_list_mine_lunas_show_hide.visibility = View.VISIBLE
+            Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropdown)
         } else {
             toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, true)
             iv_hutang_list_mine_lunas_show_hide.visibility = View.GONE
+            Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropup)
         }
     }
 
@@ -180,15 +183,12 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private fun setListener() {
 
-        var viewShown = false
         ll_hutang_list_mine_lunas_show_hide.setOnClickListener {
-            if (hutangListLunasAdapter.getData().isNotEmpty()){
-                if (viewShown) {
-                    viewShown = false
+            if (hutangListLunasAdapter.getData().isNotEmpty()) {
+                if (rv_hutang_list_lunas.visibility == View.VISIBLE) {
                     Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropup)
                     rv_hutang_list_lunas.visibility = View.GONE
                 } else {
-                    viewShown = true
                     Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropdown)
                     rv_hutang_list_lunas.visibility = View.VISIBLE
                 }
@@ -244,34 +244,34 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     private fun removeDeleteDialog(hutang: Hutang, isHasReqDelete: Boolean) {
-        Utils.showIntroductionDialog(
-            this,
-            "",
-            "Konfirmasi",
-            if (isHasReqDelete) {
-                "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
-            } else {
-                "Apakah anda yakin ingin menghapus data ini?"
-            }
-            ,
-            "Ya",
-            "Tidak",
-            false,
-            -1,
-            object : Utils.IntroductionButtonListener {
-                override fun onFirstButtonClick() {
-                    if (!isHasReqDelete) {
-                        mPresenter.requestHutangHapus(hutang, false)
-                        if (!hutang.hutangBuktiGambar.isNullOrEmpty()) {
-                            mPresenter.hapusHutangCheckImage(hutang)
-                        }
-                    } else {
-                        mPresenter.requestHutangHapus(hutang, true)
-                    }
+        DialogUtil.showIntroductionDialog(
+                this,
+                "",
+                "Konfirmasi",
+                if (isHasReqDelete) {
+                    "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
+                } else {
+                    "Apakah anda yakin ingin menghapus data ini?"
                 }
+                ,
+                "Ya",
+                "Tidak",
+                false,
+                -1,
+                object : DialogUtil.IntroductionButtonListener {
+                    override fun onFirstButtonClick() {
+                        if (!isHasReqDelete) {
+                            mPresenter.requestHutangHapus(hutang, false)
+                            if (!hutang.hutangBuktiGambar.isNullOrEmpty()) {
+                                mPresenter.hapusHutangCheckImage(hutang)
+                            }
+                        } else {
+                            mPresenter.requestHutangHapus(hutang, true)
+                        }
+                    }
 
-                override fun onSecondButtonClick() {}
-            }
+                    override fun onSecondButtonClick() {}
+                }
         )
 
     }
@@ -279,7 +279,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     private fun detailDialog(hutang: Hutang, isApproveNew: Boolean, isApproveEdit: Boolean, isApproveDelete: Boolean, isApprovePay: Boolean) {
 
         val fm = supportFragmentManager
-        val hutangDetailDialog = HutangDetailDialog.newInstance(hutang, isApproveNew, isApproveEdit, isApproveDelete, isApprovePay)
+        val hutangDetailDialog = HutangDetailDialogFragment.newInstance(hutang, isApproveNew, isApproveEdit, isApproveDelete, isApprovePay)
         hutangDetailDialog.show(fm, "fragment_detail")
 
     }

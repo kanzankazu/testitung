@@ -1,12 +1,13 @@
 package com.kanzankazu.itungitungan.view.base;
 
 import android.view.View;
-import com.kanzankazu.itungitungan.util.Utils;
+
+import com.kanzankazu.itungitungan.util.DialogUtil;
 
 public interface BaseView {
 
     //PROGRESS DIALOG
-    void showRetryDialog(Utils.DialogButtonListener listener);
+    void showRetryDialog(DialogUtil.DialogButtonListener listener);
 
     void showProgressDialog();
 

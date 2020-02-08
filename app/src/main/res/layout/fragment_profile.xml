@@ -113,6 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:nestedScrollingEnabled="true"
+                    android:overScrollMode="always"
                     tools:ignore="ScrollViewSize"
                     tools:itemCount="5"
                     tools:listitem="@layout/item_title_desc_icon_option" />

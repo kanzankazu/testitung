@@ -17,6 +17,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.util.DialogUtil;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil;
 import com.kanzankazu.itungitungan.util.SystemUtil;
 import com.kanzankazu.itungitungan.util.Utils;
@@ -75,8 +76,8 @@ public class BaseFragment extends Fragment implements BaseView, FirebaseLoginUti
     }
 
     @Override
-    public void showRetryDialog(Utils.DialogButtonListener listener) {
-        Utils.showRetryDialog(mActivity, listener);
+    public void showRetryDialog(DialogUtil.DialogButtonListener listener) {
+        DialogUtil.showRetryDialog(mActivity, listener);
     }
 
     @Override

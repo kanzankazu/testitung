@@ -93,7 +93,7 @@
                         style="@style/EtText"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:imeOptions="actionNext" />
+                        android:imeOptions="actionDone" />
                 </android.support.design.widget.TextInputLayout>
 
                 <ImageView

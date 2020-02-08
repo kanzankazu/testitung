@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_title_desc_icon_option.view.*
 /**
  * Created by Faisal Bahri on 2019-12-05.
  */
-class ProfileListAdapter(private val mActivity: Activity, private val mView: ProfileFragmentContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProfileAccountOptionAdapter(private val mActivity: Activity, private val mView: Listener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var datas: MutableList<ProfileAccountModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -48,7 +48,7 @@ class ProfileListAdapter(private val mActivity: Activity, private val mView: Pro
         }
 
         fun setListener(position: Int) {
-            itemView.setOnClickListener { mView.itemAdapterClick(position) }
+            itemView.setOnClickListener { mView.onItemAdapterClick(position) }
         }
     }
 
@@ -100,6 +100,10 @@ class ProfileListAdapter(private val mActivity: Activity, private val mView: Pro
     fun updateSingleData(data: ProfileAccountModel, position: Int) {
         this.datas.set(position, data)
         notifyDataSetChanged()
+    }
+
+    interface Listener{
+        fun onItemAdapterClick(position: Int)
     }
 
 }

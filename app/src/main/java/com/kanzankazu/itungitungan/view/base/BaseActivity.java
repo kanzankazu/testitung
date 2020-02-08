@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.UserPreference;
+import com.kanzankazu.itungitungan.util.DialogUtil;
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil;
 import com.kanzankazu.itungitungan.util.SystemUtil;
 import com.kanzankazu.itungitungan.util.Utils;
@@ -54,8 +55,8 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
         }
     }
 
-    public void showRetryDialog(Utils.DialogButtonListener listener) {
-        Utils.showRetryDialog(this, listener);
+    public void showRetryDialog(DialogUtil.DialogButtonListener listener) {
+        DialogUtil.showRetryDialog(this, listener);
     }
 
     @Override
