@@ -20,6 +20,8 @@
     <string name="confirm_yes">Iya</string>
     <string name="confirm_no">Tidak</string>
     <string name="confirm_login">Masuk</string>
+    <string name="confirm_send">Kirim</string>
+    <string name="confirm_close">Tutup</string>
 
     <!--Message-->
     <string name="message_field_empty">Data ini tidak boleh kosong</string>
@@ -80,7 +82,7 @@
     <string name="fs_code">FS Code</string>
     <string name="t_message">Your message</string>
 
-    <!--Hutang-->
+    <!--Apps-->
     <string name="hutang_dialog_detail_installment_count_per">%s x Cicilan / %s</string>
     <string name="hutang_dialog_detail_installment_duedate">tanggal jatuh tempo : %s</string>
     <string name="hutang_pay_installment_to">%s dari %s</string>
@@ -95,5 +97,9 @@
     <string name="hutang_installment_to">Cicilan ke :</string>
     <string name="hutang_pay_date">Tanggal Pembayaran</string>
     <string name="hutang_note">Catatan</string>
+    <string name="donate_option_view_ads">Donasi dengan menonton iklan</string>
+    <string name="donate_option_with_give">Donasi dengan pemberian dana seikhlasnya</string>
+    <string name="account_activity_fast_notes">Pesan cepat</string>
+    <string name="account_activity_payment_account">Akun Penerimaan Pembayaran</string>
 
 </resources>

@@ -98,7 +98,7 @@
 
                 <ImageView
                     android:id="@+id/iv_hutang_add_user_clear"
-                    style="@style/TvBottomButtonPrimary"
+                    style="@style/TvButtonPrimary"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/padding_margin_5dp"
@@ -109,7 +109,7 @@
 
                 <ImageView
                     android:id="@+id/iv_hutang_add_user"
-                    style="@style/TvBottomButtonPrimary"
+                    style="@style/TvButtonPrimary"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:padding="@dimen/padding_margin_16dp"
@@ -152,7 +152,7 @@
 
                 <ImageView
                     android:id="@+id/iv_hutang_add_family_clear"
-                    style="@style/TvBottomButtonPrimary"
+                    style="@style/TvButtonPrimary"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/padding_margin_5dp"
@@ -455,7 +455,7 @@
 
     <TextView
         android:id="@+id/tv_hutang_add_simpan"
-        style="@style/TvBottomButtonPrimary"
+        style="@style/TvButtonPrimary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:text="SIMPAN" />

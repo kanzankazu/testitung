@@ -346,7 +346,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        style="@style/TvBottomButtonPrimary"
+                        style="@style/TvButtonPrimary"
                         android:visibility="gone"
                         tools:visibility="visible">
 
@@ -471,7 +471,7 @@
 
                 <TextView
                     android:id="@+id/tv_hutang_detail_dialog_submit_setuju"
-                    style="@style/TvBottomButtonPrimaryDark"
+                    style="@style/TvButtonPrimaryDark"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/padding_margin_40dp"
                     android:layout_margin="@dimen/padding_margin_5dp"

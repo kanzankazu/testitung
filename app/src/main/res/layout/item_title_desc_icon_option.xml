@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/padding_margin_10dp"
+    android:layout_marginBottom="@dimen/padding_margin_8dp"
     android:orientation="horizontal"
     android:padding="@dimen/padding_margin_10dp">
 
@@ -16,8 +16,8 @@
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/padding_margin_16dp"
         android:layout_weight="1"
         android:animateLayoutChanges="true"
@@ -27,7 +27,7 @@
             android:id="@+id/tv_item_title"
             style="@style/TvStandartCenter"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/padding_margin_10dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
@@ -39,20 +39,20 @@
             android:id="@+id/tv_item_description"
             style="@style/TvStandartCenter"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_margin_5dp"
             android:layout_marginEnd="@dimen/padding_margin_10dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:textSize="@dimen/normal_font_size"
             android:visibility="gone"
-            tools:text="@tools:sample/lorem" />
+            tools:text="@tools:sample/lorem[15]" />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/ib_item_right_icon"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="?android:selectableItemBackground"
         android:src="@drawable/ic_navigate_next" />
 </LinearLayout>

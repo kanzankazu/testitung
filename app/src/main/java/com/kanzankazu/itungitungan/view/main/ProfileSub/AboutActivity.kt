@@ -9,5 +9,11 @@ class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+        setView()
+        setListener()
     }
+
+    private fun setView() {}
+
+    private fun setListener() {}
 }

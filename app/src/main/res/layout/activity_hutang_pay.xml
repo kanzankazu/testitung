@@ -241,7 +241,7 @@
 
     <TextView
         android:id="@+id/tv_hutang_pay"
-        style="@style/TvBottomButtonPrimaryDark"
+        style="@style/TvButtonPrimaryDark"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:text="Bayar"

@@ -281,6 +281,5 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         val fm = supportFragmentManager
         val hutangDetailDialog = HutangDetailDialogFragment.newInstance(hutang, isApproveNew, isApproveEdit, isApproveDelete, isApprovePay)
         hutangDetailDialog.show(fm, "fragment_detail")
-
     }
 }

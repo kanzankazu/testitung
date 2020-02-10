@@ -15,6 +15,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -208,11 +209,13 @@ public class DialogUtil {
                 tvConfirmationDialogDescription.setVisibility(View.VISIBLE);
                 tvConfirmationDialogDescription.setText(dialogDescription);
             }
-            tvCloseDialog.setOnClickListener(v -> dialog.dismiss());
+
             tvCloseDialogOk.setOnClickListener(view -> {
                 dialogButtonListener.onDialogButtonClick();
                 dialog.dismiss();
             });
+            tvCloseDialog.setVisibility(View.GONE);
+            tvCloseDialog.setOnClickListener(v -> dialog.dismiss());
         }
     }
 
@@ -238,20 +241,29 @@ public class DialogUtil {
         }
     }
 
-    public static void showYesNoDialog(Activity activity, String title, String message, DialogStandartTwoListener listener) {
+    public static void showYesNoDialog(Activity activity, String title, String message, IntroductionButtonListener listener) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
-        alertDialog.setCancelable(false);
-        AlertDialog show = alertDialog.show();
         alertDialog.setPositiveButton(activity.getString(R.string.confirm_yes), (dialogInterface, i) -> {
-            show.dismiss();
-            listener.onClickButtonOne();
+            dialogInterface.dismiss();
+            listener.onFirstButtonClick();
         });
         alertDialog.setNegativeButton(activity.getString(R.string.confirm_no), (dialogInterface, i) -> {
-            show.dismiss();
-            listener.onClickButtonTwo();
+            dialogInterface.dismiss();
+            listener.onSecondButtonClick();
         });
+
+        AlertDialog alert = alertDialog.create();
+        alert.setCanceledOnTouchOutside(false);
+        alert.setCancelable(false);
+        alert.show();
+
+        Button posButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button negButton = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+        posButton.setTextColor(ContextCompat.getColor(activity, R.color.green));
+        negButton.setTextColor(ContextCompat.getColor(activity, R.color.red));
+
     }
 
     public static void listDialog(Activity mActivity, @ArrayRes int i, DialogInterface.OnClickListener listener) {
@@ -286,16 +298,6 @@ public class DialogUtil {
         return list.toArray(new CharSequence[list.size()]);
     }
 
-    public interface DialogStandartListener {
-        void onClickButton();
-    }
-
-    public interface DialogStandartTwoListener {
-        void onClickButtonOne();
-
-        void onClickButtonTwo();
-    }
-
     public interface DialogRadioListener {
         void onRadioButtonClick(int index, int identifier, String mode);
     }
@@ -309,7 +311,6 @@ public class DialogUtil {
     }
 
     public interface IntroductionButtonListener {
-
         void onFirstButtonClick();
 
         void onSecondButtonClick();

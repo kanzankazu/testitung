@@ -20,7 +20,8 @@ import com.kanzankazu.itungitungan.model.HutangPembayaran
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.widget.gallery2.DepthPageTransformer
 import com.kanzankazu.itungitungan.util.widget.gallery2.GalleryDetailPagerAdapter
-import kotlinx.android.synthetic.main.layout_hutang_detail_dialog.*
+import com.kanzankazu.itungitungan.view.base.BaseDialogFragment
+import kotlinx.android.synthetic.main.fragment_hutang_detail_dialog.*
 import java.util.*
 
 
@@ -28,7 +29,7 @@ import java.util.*
  * Created by Faisal Bahri on 2020-02-04.
  */
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class HutangDetailDialogFragment : DialogFragment(), HutangDetailDialogContract.View {
+class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContract.View {
 
     private var isApproveNew: Boolean = false
     private var isApproveEdit: Boolean = false
@@ -91,7 +92,7 @@ class HutangDetailDialogFragment : DialogFragment(), HutangDetailDialogContract.
             return fragment
         }
 
-        fun newInstance(): Fragment {
+        fun newInstance(): HutangDetailDialogFragment {
             return HutangDetailDialogFragment()
         }
     }
@@ -148,7 +149,7 @@ class HutangDetailDialogFragment : DialogFragment(), HutangDetailDialogContract.
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.layout_hutang_detail_dialog, container, false)
+        val view = inflater.inflate(R.layout.fragment_hutang_detail_dialog, container, false)
         return view
     }
 

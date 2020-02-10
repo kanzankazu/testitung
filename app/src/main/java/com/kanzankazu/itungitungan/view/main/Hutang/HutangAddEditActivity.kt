@@ -101,14 +101,13 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        DialogUtil.showYesNoDialog(this, "Konfirmasi", "Apakah anda tidak ingin melanutkan ini?", object : DialogUtil.DialogStandartTwoListener {
-            override fun onClickButtonOne() {
-                finish()
+        DialogUtil.showYesNoDialog(this, "Konfirmasi", "Apakah anda tidak ingin melanjutkan ini?", object : DialogUtil.IntroductionButtonListener {
+            override fun onFirstButtonClick() {
+                onBackPressed()
             }
 
-            override fun onClickButtonTwo() {}
-
+            override fun onSecondButtonClick() {
+            }
         })
     }
 
@@ -452,11 +451,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
 
         sw_hutang_add_editable.setOnCheckedChangeListener { _, b ->
-            if (b) {
+            if (!b) {
                 DialogUtil.showConfirmationDialog(
-                        this,
-                        "Konfirmasi",
-                        "Dengan mengubah opsi ini, penghutang dan piutang tidak bisa mengubah data hutang ini."
+                    this,
+                    "Konfirmasi",
+                    "Dengan mengubah opsi ini, penghutang dan piutang tidak bisa mengubah data hutang ini."
                 ) {}
             }
         }
@@ -686,21 +685,21 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         DialogUtil.showIntroductionDialog(this, "", "Konfirmasi", message, "Iya", "Tidak", false, -1, object : DialogUtil.IntroductionButtonListener {
             override fun onFirstButtonClick() {
                 FirebaseStorageUtil.deleteImages(this@HutangAddEditActivity, hutang.hutangBuktiGambar,
-                        object : FirebaseStorageUtil.DoneRemoveListener {
-                            override fun isFinised() {
-                                if (isChooseImage)
-                                    pictureUtil2.chooseGetImageDialog(activity, imageView)
+                    object : FirebaseStorageUtil.DoneRemoveListener {
+                        override fun isFinised() {
+                            if (isChooseImage)
+                                pictureUtil2.chooseGetImageDialog(activity, imageView)
 
-                                removeImagePath(0)
-                                removeImagePath(1)
-                                hutang.hutangBuktiGambar!!.clear()
-                                hutang.hutangBuktiGambar = null
-                            }
+                            removeImagePath(0)
+                            removeImagePath(1)
+                            hutang.hutangBuktiGambar!!.clear()
+                            hutang.hutangBuktiGambar = null
+                        }
 
-                            override fun isFailed(message: String?) {
-                                showSnackbar(message)
-                            }
-                        })
+                        override fun isFailed(message: String?) {
+                            showSnackbar(message)
+                        }
+                    })
             }
 
             override fun onSecondButtonClick() {}
@@ -800,16 +799,16 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                         if (isEdit && hutang.hutangBuktiGambar != null) {
                             if (hutang.hutangBuktiGambar!!.size > 0) {
                                 FirebaseStorageUtil.deleteImages(this@HutangAddEditActivity, hutang.hutangBuktiGambar,
-                                        object : FirebaseStorageUtil.DoneRemoveListener {
-                                            override fun isFinised() {
-                                                hutang.hutangBuktiGambar = imageDownloadUrls
-                                                mPresenter.saveEditHutang(hutang, isEdit)
-                                            }
+                                    object : FirebaseStorageUtil.DoneRemoveListener {
+                                        override fun isFinised() {
+                                            hutang.hutangBuktiGambar = imageDownloadUrls
+                                            mPresenter.saveEditHutang(hutang, isEdit)
+                                        }
 
-                                            override fun isFailed(message: String?) {
-                                                showSnackbar(message)
-                                            }
-                                        })
+                                        override fun isFailed(message: String?) {
+                                            showSnackbar(message)
+                                        }
+                                    })
                             } else {
                                 hutang.hutangBuktiGambar = imageDownloadUrls
                                 mPresenter.saveEditHutang(hutang, isEdit)

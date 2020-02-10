@@ -84,16 +84,8 @@
     </style>
 
     <!--Kanzan-->
-    <style name="TvBottomButtonPrimary">
+    <style name="TvButtonPrimary">
         <item name="android:background">@drawable/button_selector</item>
-        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">@dimen/padding_margin_20dp</item>
-    </style>
-
-    <style name="TvBottomButtonPrimaryDark">
-        <item name="android:background">@drawable/button_selector_dark</item>
         <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
         <item name="android:gravity">center</item>
         <item name="android:textAllCaps">true</item>
@@ -102,6 +94,14 @@
 
     <style name="TvButtonPrimaryDark">
         <item name="android:background">@drawable/button_selector_dark</item>
+        <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/padding_margin_20dp</item>
+    </style>
+
+    <style name="TvButtonWhite">
+        <item name="android:background">@drawable/google_button_selector</item>
         <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
         <item name="android:gravity">center</item>
         <item name="android:textAllCaps">true</item>
@@ -126,6 +126,11 @@
 
     <style name="TvStandart">
         <item name="android:fontFamily">@font/avenir_next_ltpro_demi</item>
+        <item name="android:imeOptions">actionNext</item>
+    </style>
+
+    <style name="TvStandartMedium">
+        <item name="android:fontFamily">@font/avenir_next_ltpro_medium</item>
         <item name="android:imeOptions">actionNext</item>
     </style>
 

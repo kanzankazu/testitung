@@ -1,9 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.kanzankazu.itungitungan.view.main.ProfileSub.AboutActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <include layout="@layout/app_toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_margin_16dp"
+        android:paddingTop="@dimen/padding_margin_16dp"
+        android:paddingRight="@dimen/padding_margin_16dp">
+
+
+        <ImageView
+            android:layout_width="@dimen/padding_margin_200dp"
+            android:layout_height="@dimen/padding_margin_200dp"
+            android:layout_marginBottom="@dimen/padding_margin_8dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            style="@style/TvStandartCenter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_margin_8dp"
+            android:text="@string/app_name"
+            android:textSize="@dimen/Big_font_size" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:itemCount="50"
+            tools:listitem="@layout/item_title_desc_icon_option" />
+    </LinearLayout>
+
+</LinearLayout>

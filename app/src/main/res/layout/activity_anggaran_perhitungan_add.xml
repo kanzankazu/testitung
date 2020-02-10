@@ -263,7 +263,7 @@
 
                     <ImageView
                         android:id="@+id/iv_perhitungan_add_user"
-                        style="@style/TvBottomButtonPrimary"
+                        style="@style/TvButtonPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:padding="@dimen/padding_margin_16dp"
@@ -403,7 +403,7 @@
 
     <TextView
         android:id="@+id/tv_perhitungan_add_simpan"
-        style="@style/TvBottomButtonPrimary"
+        style="@style/TvButtonPrimary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:text="SIMPAN" />

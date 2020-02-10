@@ -13,7 +13,10 @@ import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
+import com.kanzankazu.itungitungan.view.main.ProfileSub.AboutActivity
 import com.kanzankazu.itungitungan.view.main.ProfileSub.AccountActivity
+import com.kanzankazu.itungitungan.view.main.ProfileSub.DonateOptionDialogFragment
+import com.kanzankazu.itungitungan.view.main.ProfileSub.GiveStarDialogFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 
@@ -86,28 +89,32 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         profileListAdapter.setData(profileModels)
     }
 
-    override fun itemAdapterClick(position: Int) {
-        when (position) {
-            0 -> {
+    override fun itemAdapterClick(data: ProfileAccountModel) {
+        when (data.title) {
+            mActivity.getString(R.string.account) -> {
                 Utils.intentTo(mActivity, AccountActivity::class.java, false)
             }
-            1 -> {
+            mActivity.getString(R.string.share_friend_family) -> {
                 share()
             }
-            2 -> {
+            mActivity.getString(R.string.idea) -> {
                 showSnackbar("2")
             }
-            3 -> {
+            mActivity.getString(R.string.help) -> {
                 showSnackbar("3")
             }
-            4 -> {
-                showSnackbar("4")
+            mActivity.getString(R.string.donate) -> {
+                val fm = mActivity.supportFragmentManager
+                val donateOptionDialogFragment = DonateOptionDialogFragment.newInstance()
+                donateOptionDialogFragment.show(fm, "fragment_donateOptionDialogFragment")
             }
-            5 -> {
-                showSnackbar("5")
+            mActivity.getString(R.string.give_star) -> {
+                val fm = mActivity.supportFragmentManager
+                val giveStarDialogFragment = GiveStarDialogFragment.newInstance()
+                giveStarDialogFragment.show(fm, "fragment_giveStarDialogFragment")
             }
-            6 -> {
-                showSnackbar("6")
+            mActivity.getString(R.string.about) -> {
+                Utils.intentTo(mActivity, AboutActivity::class.java, false)
             }
         }
     }
@@ -169,8 +176,8 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         mPresenter = ProfileFragmentPresenter(mActivity, this)
 
         profileListAdapter = ProfileAccountOptionAdapter(mActivity, object : ProfileAccountOptionAdapter.Listener {
-            override fun onItemAdapterClick(position: Int) {
-                itemAdapterClick(position)
+            override fun onItemAdapterClick(position: Int, data: ProfileAccountModel) {
+                itemAdapterClick(data)
             }
         })
         //rv_profile_settings.setRecycledViewPool(RecyclerView.RecycledViewPool())

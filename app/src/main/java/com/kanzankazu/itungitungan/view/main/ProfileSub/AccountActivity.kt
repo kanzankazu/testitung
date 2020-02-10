@@ -64,42 +64,27 @@ class AccountActivity : BaseActivity(), AccountContract.View {
 
     private fun setOptionRecyclerView() {
         val listOfProfileAccount = mutableListOf<ProfileAccountModel>()
-        listOfProfileAccount.add(ProfileAccountModel(0, "Pesan cepat", "Opsi ini untuk mempermudah anda membalas cepat saat pembayaran hutang", true))
-        listOfProfileAccount.add(ProfileAccountModel(0, "Akun Penerimaan Pembayaran", "Opsi ini untuk mempermudah peminjam melakukan pembayaran dengan via trasfer", true))
+        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_fast_notes), "Opsi ini untuk mempermudah anda membalas cepat saat pembayaran hutang", true))
+        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_payment_account), "Opsi ini untuk mempermudah peminjam melakukan pembayaran dengan via trasfer", true))
 
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rv_account_option.layoutManager = linearLayoutManager
         optionAdapter = ProfileAccountOptionAdapter(this, object : ProfileAccountOptionAdapter.Listener {
-            override fun onItemAdapterClick(position: Int) {
-                itemAdapterClick(position)
+            override fun onItemAdapterClick(position: Int, data: ProfileAccountModel) {
+                itemAdapterClick(data)
             }
         })
         rv_account_option.adapter = optionAdapter
         optionAdapter.addDatas(listOfProfileAccount)
     }
 
-    private fun itemAdapterClick(position: Int) {
-        when (position) {
-            0 -> {
+    private fun itemAdapterClick(data: ProfileAccountModel) {
+        when (data.title) {
+            getString(R.string.account_activity_fast_notes) -> {
                 showSnackbar("0")
             }
-            1 -> {
+            getString(R.string.account_activity_payment_account) -> {
                 showSnackbar("1")
-            }
-            2 -> {
-                showSnackbar("2")
-            }
-            3 -> {
-                showSnackbar("3")
-            }
-            4 -> {
-                showSnackbar("4")
-            }
-            5 -> {
-                showSnackbar("5")
-            }
-            6 -> {
-                showSnackbar("6")
             }
         }
     }
@@ -137,7 +122,7 @@ class AccountActivity : BaseActivity(), AccountContract.View {
         val result: Pair<Int, Int> = when {
             percentOffset < ABROAD -> {
                 Pair(
-                        TO_EXPANDED_STATE, cashCollapseState?.second
+                    TO_EXPANDED_STATE, cashCollapseState?.second
                         ?: WAIT_FOR_SWITCH
                 )
             }
@@ -190,11 +175,11 @@ class AccountActivity : BaseActivity(), AccountContract.View {
                                 alpha = 0.2f
                                 this.translationX = width.toFloat() / 2
                                 animate().translationX(0f)
-                                        .setInterpolator(AnticipateOvershootInterpolator())
-                                        .alpha(1.0f)
-                                        .setStartDelay(69)
-                                        .setDuration(450)
-                                        .setListener(null)
+                                    .setInterpolator(AnticipateOvershootInterpolator())
+                                    .alpha(1.0f)
+                                    .setStartDelay(69)
+                                    .setDuration(450)
+                                    .setListener(null)
                             }
                         }
                     }

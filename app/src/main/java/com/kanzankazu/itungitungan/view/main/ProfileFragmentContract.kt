@@ -3,10 +3,8 @@ package com.kanzankazu.itungitungan.view.main
 interface ProfileFragmentContract {
     interface View {
         fun setProfileOptionList()
-        fun itemAdapterClick(position: Int)
+        fun itemAdapterClick(data: ProfileAccountModel)
     }
 
-    interface Presenter{
-
-    }
+    interface Presenter
 }

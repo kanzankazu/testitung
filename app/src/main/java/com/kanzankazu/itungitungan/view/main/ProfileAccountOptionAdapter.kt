@@ -30,13 +30,13 @@ class ProfileAccountOptionAdapter(private val mActivity: Activity, private val m
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val h = holder as ProfileListAdapterAdapterHolder
-        h.setView(datas[position])
-        h.setListener(position)
+        h.setView(datas[position], position)
+        h.setListener(datas[position], position)
 
     }
 
     inner class ProfileListAdapterAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        fun setView(model: ProfileAccountModel) {
+        fun setView(model: ProfileAccountModel, position: Int) {
             itemView.tv_item_description.visibility = View.GONE
             if (model.isShow) {
                 Utils.setDrawableImageView(mActivity, itemView.ib_item_left_icon, model.icon)
@@ -47,8 +47,8 @@ class ProfileAccountOptionAdapter(private val mActivity: Activity, private val m
 
         }
 
-        fun setListener(position: Int) {
-            itemView.setOnClickListener { mView.onItemAdapterClick(position) }
+        fun setListener(model: ProfileAccountModel, position: Int) {
+            itemView.setOnClickListener { mView.onItemAdapterClick(position, model) }
         }
     }
 
@@ -102,8 +102,8 @@ class ProfileAccountOptionAdapter(private val mActivity: Activity, private val m
         notifyDataSetChanged()
     }
 
-    interface Listener{
-        fun onItemAdapterClick(position: Int)
+    interface Listener {
+        fun onItemAdapterClick(position: Int, data: ProfileAccountModel)
     }
 
 }

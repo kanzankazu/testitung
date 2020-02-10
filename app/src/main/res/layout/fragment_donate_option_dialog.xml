@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/padding_margin_8dp"
+    app:cardElevation="@dimen/padding_margin_8dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_margin_16dp">
+
+            <TextView
+                android:id="@+id/tv_donate_option"
+                style="@style/TvStandartMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_8dp"
+                android:text="Bantu kami agar selalu bisa membuat fitur - fitur baru untuk anda dengan memberikan donasi berupa penyumbangan dana atau dengan menonton iklan, dengan cara klik salah 1 tombol di bawah"
+                android:textAlignment="center" />
+
+            <LinearLayout
+                android:id="@+id/ll_donate_option_donate"
+                style="@style/TvButtonPrimaryDark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_margin_8dp"
+                android:animateLayoutChanges="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_margin_8dp">
+
+                <ImageView
+                    android:layout_width="@dimen/padding_margin_20dp"
+                    android:layout_height="@dimen/padding_margin_20dp"
+                    android:layout_marginEnd="@dimen/padding_margin_10dp"
+                    android:src="@drawable/ic_donate"
+                    android:tint="@color/white" />
+
+                <TextView
+                    style="@style/TvStandart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/donate_option_with_give"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/small_font_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_donate_option_ads"
+                style="@style/TvButtonGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_margin_8dp">
+
+                <ImageView
+                    android:layout_width="@dimen/padding_margin_20dp"
+                    android:layout_height="@dimen/padding_margin_20dp"
+                    android:layout_marginEnd="@dimen/padding_margin_10dp"
+                    android:src="@drawable/ic_ads_video"
+                    android:tint="@color/Black" />
+
+                <TextView
+                    style="@style/TvStandart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/donate_option_view_ads"
+                    android:textAllCaps="false"
+                    android:textColor="@color/Black"
+                    android:textSize="@dimen/small_font_size" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/padding_margin_8dp"
+            android:background="@color/gray_very_light" />
+
+        <TextView
+            android:id="@+id/tv_donate_option_close"
+            style="@style/TvStandart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_margin_30dp"
+            android:layout_marginBottom="@dimen/padding_margin_8dp"
+            android:gravity="center"
+            android:text="@string/confirm_close"
+            android:textAllCaps="true"
+            android:textColor="@color/gray_very_light" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>
