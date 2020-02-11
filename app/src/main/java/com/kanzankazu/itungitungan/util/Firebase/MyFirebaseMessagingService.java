@@ -16,6 +16,7 @@
 
 package com.kanzankazu.itungitungan.util.Firebase;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -34,6 +35,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.util.Utils;
 import com.kanzankazu.itungitungan.view.main.MainActivity;
 
 import org.json.JSONObject;
@@ -46,6 +48,7 @@ import java.util.Random;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private final String ADMIN_CHANNEL_ID = "admin_channel";
+    private NotificationModel notif;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -57,30 +60,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d("Lihat", "onMessageReceived MyFirebaseMessagingService : " + list21);
             JSONObject mapToObject = new JSONObject(m);
             Log.d("Lihat", "onMessageReceived MyFirebaseMessagingService : " + mapToObject);
+
+            notif = (NotificationModel) Utils.convertJsonToObjectClass(NotificationModel.class, mapToObject.toString());
         }
 
-        makeNotification(remoteMessage.getNotification().getBody(), remoteMessage);
+        makeNotification1(notif);
     }
 
-    private void makeNotification(String messageBody, RemoteMessage remoteMessage) {
-        /*Intent intent = new Intent(this, MainWebView.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getMActivity(this, 0 *//* Request code *//*, intent, PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle("Remote Router Notification")
-                .setSmallIcon(R.drawable.ic_notif_remoterouter)
-                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_notif_remoterouter))
-                .setContentText(messageBody)
-                .setAutoCancel(true)
-                .setLights(Color.GREEN, 3000, 3000)
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 *//* ID of notification *//*, notificationBuilder.build());*/
-
+    private void makeNotification1(NotificationModel notif) {
         final Intent intent = new Intent(this, MainActivity.class);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
@@ -98,8 +86,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_wallet)
                 .setLargeIcon(largeIcon)
-                .setContentTitle(remoteMessage.getData().get("title"))
-                .setContentText(remoteMessage.getData().get("message"))
+                .setContentTitle(notif.getTITLE())
+                .setContentText(notif.getMESSAGE())
                 .setAutoCancel(true)
                 .setSound(notificationSoundUri)
                 .setContentIntent(pendingIntent);
@@ -125,5 +113,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(adminChannel);
         }
+    }
+
+    private void makeNotification2(String messageBody, Class<?> targetClass) {
+        Intent intent = new Intent(this, targetClass);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setContentTitle("Remote Router Notification")
+                .setSmallIcon(R.drawable.ic_wallet)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_wallet))
+                .setContentText(messageBody)
+                .setAutoCancel(true)
+                .setLights(Color.GREEN, 3000, 3000)
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+
     }
 }

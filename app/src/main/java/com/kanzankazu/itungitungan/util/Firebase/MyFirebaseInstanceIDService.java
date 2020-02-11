@@ -18,16 +18,16 @@ package com.kanzankazu.itungitungan.util.Firebase;
 
 import android.util.Log;
 
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.UserPreference;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
-    private static final String SUBSCRIBE_TO = "userABC";
+    private static final String SUBSCRIBE_TO = "AllUserApp";
 
     @Override
     public void onTokenRefresh() {
@@ -36,9 +36,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         Log.d("Lihat", "onTokenRefresh MyFirebaseInstanceIDService : " + token);
 
         UserPreference.getInstance().setFCMToken(token);
-
-        //FirebaseMessaging.getInstance().subscribeToTopic(SUBSCRIBE_TO);
-
+        FirebaseMessaging.getInstance().subscribeToTopic(SUBSCRIBE_TO);
         if (UserPreference.getInstance().isContainKey(Constants.SharedPreference.UID)) {
             sendRegistrationToServer(token);
         }

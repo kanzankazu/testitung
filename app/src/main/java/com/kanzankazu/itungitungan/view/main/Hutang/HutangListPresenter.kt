@@ -191,13 +191,13 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     override fun hapusHutangCheckImage(hutang: Hutang) {
         mView.dismissProgressDialogView()
 
-        if (hutang.hutangBuktiGambar != null) {
-            FirebaseStorageUtil.deleteImages(mActivity, hutang.hutangBuktiGambar, object : FirebaseStorageUtil.DoneRemoveListener {
+        if (hutang.hutangBuktiGambar.isNotEmpty()) {
+            FirebaseStorageUtil.deleteImages(mActivity, hutang.hutangBuktiGambar, object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
                 override fun isFinised() {
                     hapusHutang(hutang)
                 }
 
-                override fun isFailed(message: String?) {
+                override fun isFailed(message: String) {
                     mView.showSnackbarView(message)
                 }
             })

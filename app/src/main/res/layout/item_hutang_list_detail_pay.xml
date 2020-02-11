@@ -168,6 +168,6 @@
         android:layout_marginTop="@dimen/padding_margin_5dp"
         android:orientation="horizontal"
         tools:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/item_image_add" />
+        tools:listitem="@layout/item_image" />
 
 </LinearLayout>

@@ -214,7 +214,6 @@ public class DialogUtil {
                 dialogButtonListener.onDialogButtonClick();
                 dialog.dismiss();
             });
-            tvCloseDialog.setVisibility(View.GONE);
             tvCloseDialog.setOnClickListener(v -> dialog.dismiss());
         }
     }
@@ -231,8 +230,9 @@ public class DialogUtil {
             TextView tvCloseDialog = ButterKnife.findById(dialog, R.id.btn_close_dialog);
 
             ivDialog.setImageResource(R.drawable.ic_no_internet);
-            tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
-            tvCloseDialog.setTextColor(ContextCompat.getColor(mActivity, R.color.cyan));
+            //tvDescDialog.setText("Gagal terhubung jaringan,\n Silahkan coba kembali.");
+            tvDescDialog.setText(R.string.message_no_internet_network);
+            tvCloseDialog.setTextColor(ContextCompat.getColor(mActivity, R.color.colorPrimaryDark));
             tvCloseDialog.setText(mActivity.getResources().getString(R.string.confirm_retry));
             tvCloseDialog.setOnClickListener(v -> {
                 dialogButtonListener.onDialogButtonClick();
@@ -261,8 +261,8 @@ public class DialogUtil {
 
         Button posButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
         Button negButton = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
-        posButton.setTextColor(ContextCompat.getColor(activity, R.color.green));
-        negButton.setTextColor(ContextCompat.getColor(activity, R.color.red));
+        posButton.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimaryDark));
+        negButton.setTextColor(ContextCompat.getColor(activity, R.color.gray_light));
 
     }
 

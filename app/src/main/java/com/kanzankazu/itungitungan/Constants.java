@@ -66,7 +66,6 @@ public class Constants {
     }
 
     public interface Hutang {
-
         interface Installment {
             String Year = "Tahun";
             String Month = "Bulan";
@@ -78,6 +77,16 @@ public class Constants {
             String Lunas = "Lunas";
             String Berlebih = "Berlebih";
             String Kurang = "Kurang";
+        }
+    }
+
+    public interface FirebasePushNotif {
+        String TITLE = "TITLE";
+        String MESSAGE = "MESSAGE";
+        String TYPE = "TYPE";
+
+        interface TypeNotif {
+            String HUTANG = "HUTANG";
         }
     }
 }

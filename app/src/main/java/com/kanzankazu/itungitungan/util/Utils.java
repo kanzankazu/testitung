@@ -151,6 +151,7 @@ public class Utils {
     public static void overridePendingTransition(Activity mActivity) {
         mActivity.overridePendingTransition(0, 0);
     }
+
     public static void overridePendingTransition(Activity mActivity, int enterAnim, int exitAnim) {
         mActivity.overridePendingTransition(enterAnim, exitAnim);
     }
@@ -278,6 +279,29 @@ public class Utils {
         System.out.println(tag + jsonObject);
     }
 
+    public static void convertMapStringToJsonObject(Map<String, String> map, String printTag) {
+        Gson gson = new Gson();
+        System.out.println("gson to json object " + printTag + " : " + gson.toJsonTree(map).getAsJsonObject());
+    }
+
+    public static void convertMapObjectToJsonObject(Map<String, Object> map, String printTag) {
+        Gson gson = new Gson();
+        System.out.println("gson to json object " + printTag + " : " + gson.toJsonTree(map).getAsJsonObject());
+    }
+
+    public static String convertObjectClassToJson(Class aClass) {
+        Gson gson = new Gson();
+        return gson.toJson(aClass);
+    }
+
+    public static Object convertJsonToObjectClass(Class aClass, String jsonString) {
+        Object data;
+        Gson gson = new Gson();
+        data = gson.fromJson(jsonString, aClass);
+        return data;
+    }
+
+
     public static void openDeviceSetting(Activity activity) {
         activity.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
     }
@@ -379,16 +403,6 @@ public class Utils {
                 return Html.fromHtml("");
             }
         }
-    }
-
-    public static void convertMapStringToJsonObject(Map<String, String> map, String printTag) {
-        Gson gson = new Gson();
-        System.out.println("gson to json object " + printTag + " : " + gson.toJsonTree(map).getAsJsonObject());
-    }
-
-    public static void convertMapObjectToJsonObject(Map<String, Object> map, String printTag) {
-        Gson gson = new Gson();
-        System.out.println("gson to json object " + printTag + " : " + gson.toJsonTree(map).getAsJsonObject());
     }
 
     public static void setMargins(View view, int left, int top, int right, int bottom) {

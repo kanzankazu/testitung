@@ -30,10 +30,7 @@ class HutangAddEditAdapter(val mActivity: Activity, val mView: HutangAddEditCont
 
     inner class HutangAddEditAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         fun setView(position: Int) {
-            Glide.with(mActivity)
-                    .load(File(datas[position]))
-                    .placeholder(R.drawable.ic_profile)
-                    .into(itemView.civ_item_image)
+            Glide.with(mActivity).load(File(datas[position])).placeholder(R.drawable.ic_profile).into(itemView.civ_item_image)
         }
 
         fun setListener(position: Int) {

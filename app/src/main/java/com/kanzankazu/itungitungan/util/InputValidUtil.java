@@ -227,12 +227,10 @@ public class InputValidUtil {
         String s = editText.getText().toString().trim();
         if (isLenghtCharOver(s, minChar)) {
             textInputLayout.setErrorEnabled(false);
-
             return true;
         } else {
             textInputLayout.setError(errorMessage);
             textInputLayout.setErrorEnabled(true);
-
             return false;
         }
     }

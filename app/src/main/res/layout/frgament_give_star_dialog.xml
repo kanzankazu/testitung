@@ -18,10 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
+            android:gravity="center"
             android:orientation="vertical"
             android:padding="@dimen/padding_margin_16dp">
 
             <TextView
+                style="@style/TvStandartMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_margin_8dp"
@@ -30,14 +32,11 @@
 
             <RatingBar
                 android:id="@+id/rb_give_star_donate"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_margin_8dp"
-                android:isIndicator="true"
-                android:max="5"
                 android:numStars="5"
-                android:rating="1"
-                android:stepSize="1" />
+                android:stepSize="1.0" />
 
             <TextView
                 android:id="@+id/tv_give_star_result"

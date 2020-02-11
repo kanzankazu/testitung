@@ -27,8 +27,9 @@ android {
             fetchFirebase = 3600
             manifestPlaceholders = [appsName: "ItungItungan"]
             buildConfigField('String', 'GOOGLE_AUTH_CLIENT_ID', '"495676044825-us20n2sls9c4i163t2u9uv1c2pagn7dr.apps.googleusercontent.com"')
-            buildConfigField('String', 'BASE_URL', '""')
             buildConfigField('String', 'APP_NAME', '"ItungItungan"')
+            buildConfigField('String', 'FIREBASE_SERVER_KEY','""')
+            buildConfigField('String', 'BASE_URL', '""')
         }
         DevApp {
             applicationIdSuffix ".dev"
@@ -38,6 +39,7 @@ android {
             manifestPlaceholders = [appsName: "ItungItunganDev"]
             buildConfigField('String', 'GOOGLE_AUTH_CLIENT_ID', '"495676044825-qlk4hem944t8ecj0ph4rsqv0sam9h3ta.apps.googleusercontent.com"')
             buildConfigField('String', 'APP_NAME', '"ItungItungan"')
+            buildConfigField('String', 'FIREBASE_SERVER_KEY','"AAAAc2iYNhk:APA91bFbh-OEHt-v6ogqw5Gfy_gH_oip_6it48HpWRNddRvjXDkpBUiTjWJaM4azM1GBg-B1RYwlwcDHT_1q1uIeU_jYdn3Cny2EaoRe6W1mF0Ft-YfzxBCnjzq_oL5DQvNmJHmrmEKj"')
             buildConfigField('String', 'BASE_URL', '""')
         }
         DemoApp {
@@ -48,6 +50,7 @@ android {
             manifestPlaceholders = [appsName: "ItungItunganDemo"]
             buildConfigField('String', 'GOOGLE_AUTH_CLIENT_ID', '"495676044825-qlk4hem944t8ecj0ph4rsqv0sam9h3ta.apps.googleusercontent.com"')
             buildConfigField('String', 'APP_NAME', '"ItungItungan"')
+            buildConfigField('String', 'FIREBASE_SERVER_KEY','"AAAAc2iYNhk:APA91bFbh-OEHt-v6ogqw5Gfy_gH_oip_6it48HpWRNddRvjXDkpBUiTjWJaM4azM1GBg-B1RYwlwcDHT_1q1uIeU_jYdn3Cny2EaoRe6W1mF0Ft-YfzxBCnjzq_oL5DQvNmJHmrmEKj"')
             buildConfigField('String', 'BASE_URL', '""')
         }
     }

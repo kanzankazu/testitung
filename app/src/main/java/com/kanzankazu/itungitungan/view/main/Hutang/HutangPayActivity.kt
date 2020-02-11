@@ -62,7 +62,9 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
         showSnackbar(message)
     }
 
-    override fun showRetryDialogView() {}
+    override fun showRetryDialogView() {
+        showRetryDialog { }
+    }
 
     override fun showProgressDialogView() {
         showProgressDialog()
@@ -74,7 +76,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
 
     override fun checkData(isFocus: Boolean): Boolean {
         return if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_pay_nominal, et_hutang_pay_nominal, isFocus)) false
-        else InputValidUtil.isLenghtCharOver("Data kurang dari 6", til_hutang_pay_nominal, et_hutang_pay_nominal, 5)
+        else InputValidUtil.isLenghtCharOver(getString(R.string.message_field_less_nominal, "3"), til_hutang_pay_nominal, et_hutang_pay_nominal, 5)
     }
 
     override fun setSuggestNote(list: MutableList<NoteModel>) {
@@ -132,8 +134,6 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
     }
 
     private fun setBundleData() {
-
-
         nominalTotalPembayaran = if (hutang.hutangCicilanIs) {
             hutang.hutangCicilanNominal.toInt() * hutang.hutangCicilanBerapaKali.toInt()
         } else {
@@ -143,8 +143,6 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
         for (models in hutang.hutangPembayaranSub) {
             nominalSudahDiBayarkan += models.paymentNominal.toInt()
         }
-
-
 
         civ_hutang_pay_user.setImageDrawable(Utils.getInitialNameDrawable(hutang.debtorName))
 

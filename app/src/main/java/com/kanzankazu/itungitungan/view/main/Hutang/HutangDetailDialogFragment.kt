@@ -3,15 +3,13 @@ package com.kanzankazu.itungitungan.view.main.Hutang
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
@@ -20,6 +18,8 @@ import com.kanzankazu.itungitungan.model.HutangPembayaran
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.widget.gallery2.DepthPageTransformer
 import com.kanzankazu.itungitungan.util.widget.gallery2.GalleryDetailPagerAdapter
+import com.kanzankazu.itungitungan.util.widget.gallery2.ImageModel
+import com.kanzankazu.itungitungan.view.adapter.ImageListAdapter
 import com.kanzankazu.itungitungan.view.base.BaseDialogFragment
 import kotlinx.android.synthetic.main.fragment_hutang_detail_dialog.*
 import java.util.*
@@ -29,13 +29,14 @@ import java.util.*
  * Created by Faisal Bahri on 2020-02-04.
  */
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContract.View {
+class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContract.View, ImageListAdapter.ImageListContract {
 
     private var isApproveNew: Boolean = false
     private var isApproveEdit: Boolean = false
     private var isApproveDelete: Boolean = false
     private var isApprovePay: Boolean = false
     private var hutang = Hutang()
+    private lateinit var imageListAdapter: ImageListAdapter
     private lateinit var detailDialogPayAdapter: HutangDetailDialogPayAdapter
 
     private lateinit var mPresenter: HutangDetailDialogPresenter
@@ -63,7 +64,7 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
             }
         }
         val listOfPathImage = mutableListOf<String>()
-        listOfPathImage.addAll(hutang.hutangBuktiGambar!!)
+        listOfPathImage.addAll(hutang.hutangBuktiGambar)
         listOfPathImage.addAll(listOfProofImages)
 
         val mGalleryDetailPagerAdapter = GalleryDetailPagerAdapter(activity, listOfPathImage as ArrayList<String>?)
@@ -162,15 +163,31 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
         initListener()
     }
 
-    override fun showToastView(message: String?) {}
+    override fun showToastView(message: String?) {
+        showToast(message)
+    }
 
-    override fun showSnackbarView(message: String?) {}
+    override fun showSnackbarView(message: String?) {
+        showSnackbar(message)
+    }
 
-    override fun showRetryDialogView() {}
+    override fun showRetryDialogView() {
+        showRetryDialog { }
+    }
 
-    override fun showProgressDialogView() {}
+    override fun showProgressDialogView() {
+        showProgressDialog()
+    }
 
-    override fun dismissProgressDialogView() {}
+    override fun dismissProgressDialogView() {
+        dismissProgressDialog()
+    }
+
+    override fun onImageListView(data: ImageModel, position: Int) {}
+
+    override fun onImageListRemove(data: ImageModel, position: Int) {}
+
+    override fun onImageListAdd(data: ImageModel, position: Int) {}
 
     private fun initView() {
         when {
@@ -205,7 +222,7 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
             }
         }
 
-        if (!hutang.statusLunas && hutang.debtorId.equals(UserPreference.getInstance().uid)) {
+        if (!hutang.statusLunas && hutang.debtorId.equals(UserPreference.getInstance().uid, true)) {
             cv_hutang_detail_pembayaran_bayar.visibility = View.VISIBLE
         } else {
             cv_hutang_detail_pembayaran_bayar.visibility = View.GONE
@@ -258,28 +275,7 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
             cv_hutang_detail_pay_nominal_sudah.visibility = View.GONE
         }
 
-        if (hutang.hutangBuktiGambar != null) {
-            cv_hutang_detail_dialog_piutang_image.visibility = View.VISIBLE
-            when {
-                hutang.hutangBuktiGambar!!.size == 1 -> {
-                    Glide.with(this).load(hutang.hutangBuktiGambar!![0]).into(iv_hutang_detail_dialog_piutang_0)
-                    iv_hutang_detail_dialog_piutang_0.visibility = View.VISIBLE
-                    iv_hutang_detail_dialog_piutang_1.visibility = View.GONE
-                }
-                hutang.hutangBuktiGambar!!.size == 2 -> {
-                    iv_hutang_detail_dialog_piutang_0.visibility = View.VISIBLE
-                    iv_hutang_detail_dialog_piutang_1.visibility = View.VISIBLE
-                    Glide.with(this).load(hutang.hutangBuktiGambar!![0]).into(iv_hutang_detail_dialog_piutang_0)
-                    Glide.with(this).load(hutang.hutangBuktiGambar!![1]).into(iv_hutang_detail_dialog_piutang_1)
-                }
-                else -> {
-                    iv_hutang_detail_dialog_piutang_0.visibility = View.GONE
-                    iv_hutang_detail_dialog_piutang_1.visibility = View.GONE
-                }
-            }
-        } else {
-            cv_hutang_detail_dialog_piutang_image.visibility = View.GONE
-        }
+        setImageListAdapter()
     }
 
     private fun setPembayaranAdapter(hutangPembayaranSub: MutableList<HutangPembayaran>) {
@@ -287,6 +283,34 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
         rv_hutang_detail_pembayaran.layoutManager = linearLayoutManager
         detailDialogPayAdapter = HutangDetailDialogPayAdapter(activity, this, hutangPembayaranSub)
         rv_hutang_detail_pembayaran.adapter = detailDialogPayAdapter
+    }
+
+    private fun setImageListAdapter() {
+        val listOfProofImages = mutableListOf<String>()
+        if (hutang.hutangPembayaranSub.isNotEmpty()) {
+            for (data in hutang.hutangPembayaranSub) {
+                if (data.paymentProofImage.isNotEmpty()) {
+                    listOfProofImages.addAll(data.paymentProofImage)
+                }
+            }
+        }
+        val listOfPathImages = mutableListOf<String>()
+        listOfPathImages.addAll(hutang.hutangBuktiGambar)
+        listOfPathImages.addAll(listOfProofImages)
+
+        if (listOfPathImages.isNotEmpty()) {
+            rv_hutang_detail_dialog_piutang_image.visibility = View.VISIBLE
+
+            val gridLayoutManager = GridLayoutManager(mActivity, 2, GridLayoutManager.VERTICAL, false)
+            rv_hutang_detail_dialog_piutang_image.layoutManager = gridLayoutManager
+            imageListAdapter = ImageListAdapter(mActivity, this)
+            rv_hutang_detail_dialog_piutang_image.adapter = imageListAdapter
+
+            imageListAdapter.addDatasString(listOfPathImages, "view")
+        } else {
+            rv_hutang_detail_dialog_piutang_image.visibility = View.GONE
+        }
+
     }
 
     private fun setPembayaranTotal(hutangPembayaranSub: MutableList<HutangPembayaran>) {
@@ -299,20 +323,23 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
 
     private fun initListener() {
         iv_hutang_detail_dialog_piutang_preview_close.setOnClickListener { showHidePreview(false) }
-        iv_hutang_detail_dialog_piutang_0.setOnClickListener(imageClickShow)
-        iv_hutang_detail_dialog_piutang_1.setOnClickListener(imageClickShow)
         tv_hutang_detail_dialog_submit_setuju.setOnClickListener {
             when {
                 isApproveNew -> mPresenter.approveHutangNew(hutang, false)
                 isApproveEdit -> mPresenter.approveHutangEdit(hutang, false)
+                isApprovePay -> mPresenter.approveHutangCicilanPay(hutang, false)
+
                 isApproveDelete -> mPresenter.approveHutangHapus(hutang)
-                isApprovePay -> mPresenter.approveHutangCicilanPay(hutang)
                 else -> moveToHutangAdd(hutang)
             }
             dismiss()
         }
         tv_hutang_detail_dialog_submit_tidak.setOnClickListener {
             when {
+                isApproveNew -> mPresenter.approveHutangNew(hutang, false)
+                isApproveEdit -> mPresenter.approveHutangEdit(hutang, false)
+                isApprovePay -> mPresenter.approveHutangCicilanPay(hutang, false)
+
                 isApproveDelete -> mPresenter.requestHutangHapus(hutang, true)
             }
             dismiss()

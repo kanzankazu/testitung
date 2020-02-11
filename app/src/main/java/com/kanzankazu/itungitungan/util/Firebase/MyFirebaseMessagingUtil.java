@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kanzankazu.itungitungan.BuildConfig;
+import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.view.MySingleton;
 
 import org.json.JSONException;
@@ -17,29 +19,39 @@ import java.util.Map;
 /**
  * Created by Faisal Bahri on 2020-01-07.
  */
-public class MyFirebaseHandlerDirect {
+public class MyFirebaseMessagingUtil {
 
     static final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    static final private String serverKey = "key=" + "Your Firebase server key";
+    static final private String serverKey = "key=" + BuildConfig.FIREBASE_SERVER_KEY;
     static final private String contentType = "application/json";
-    static final String TAG = "NOTIFICATION TAG";
+    private static final String TAG = "NOTIFICATION TAG";
 
-    static String NOTIFICATION_TITLE;
-    static String NOTIFICATION_MESSAGE;
-    static String TOPIC;
-
-    public static void makeNotification(Activity activity, String title, String message) {
-        TOPIC = "/topics/userABC"; //topic has to match what the receiver subscribed to
-        NOTIFICATION_TITLE = title;
-        NOTIFICATION_MESSAGE = message;
+    public static void makeNotificationTopic(Activity activity, String topics, String title, String message) {
+        String TOPIC = "/topics/" + topics; //topic has to match what the receiver subscribed to
 
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
         try {
-            notifcationBody.put("title", NOTIFICATION_TITLE);
-            notifcationBody.put("message", NOTIFICATION_MESSAGE);
+            notifcationBody.put(Constants.FirebasePushNotif.TITLE, title);
+            notifcationBody.put(Constants.FirebasePushNotif.MESSAGE, message);
 
             notification.put("to", TOPIC);
+            notification.put("data", notifcationBody);
+        } catch (JSONException e) {
+            Log.e(TAG, "onCreate: " + e.getMessage());
+        }
+        sendNotification(activity, notification);
+    }
+
+    public static void makeNotificationToken(Activity activity, String token, String title, String message, String type) {
+        JSONObject notification = new JSONObject();
+        JSONObject notifcationBody = new JSONObject();
+        try {
+            notifcationBody.put(Constants.FirebasePushNotif.TITLE, title);
+            notifcationBody.put(Constants.FirebasePushNotif.MESSAGE, message);
+            notifcationBody.put(Constants.FirebasePushNotif.TYPE, type);
+
+            notification.put("to", token);
             notification.put("data", notifcationBody);
         } catch (JSONException e) {
             Log.e(TAG, "onCreate: " + e.getMessage());
@@ -54,8 +66,8 @@ public class MyFirebaseHandlerDirect {
                     Snackbar.make(activity.findViewById(android.R.id.content), response.toString(), Snackbar.LENGTH_SHORT).show();
                 },
                 error -> {
-                    Toast.makeText(activity, "Request error", Toast.LENGTH_LONG).show();
                     Log.i(TAG, "onErrorResponse: Didn't work");
+                    Toast.makeText(activity, "Request error", Toast.LENGTH_LONG).show();
                 }) {
             @Override
             public Map<String, String> getHeaders() {

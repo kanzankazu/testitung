@@ -14,7 +14,7 @@ interface HutangDetailDialogContract {
         fun approveHutangEdit(hutang: Hutang, isCancel: Boolean)
         fun requestHutangHapus(hutang: Hutang, isCancel: Boolean)
         fun approveHutangHapus(hutang: Hutang)
-        fun approveHutangCicilanPay(hutang: Hutang)
+        fun approveHutangCicilanPay(hutang: Hutang, isCancel: Boolean)
         fun hapusHutangCheckImage(hutang: Hutang)
     }
 

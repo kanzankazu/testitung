@@ -167,6 +167,15 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
         notifyItemRangeInserted(this.datas.size, datas.size)
     }
 
+    fun addDatasString(datas: MutableList<String>, typeView: String) {
+        for (data in datas) {
+            addData(ImageModel().apply {
+                path = data
+                type = typeView
+            })
+        }
+    }
+
     fun addData(data: ImageModel) {
         this.datas.add(data)
         notifyDataSetChanged()

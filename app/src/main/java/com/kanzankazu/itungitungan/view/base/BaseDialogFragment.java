@@ -93,7 +93,7 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
 
     @Override
     public void showToast(String message) {
-        Utils.showToast(getActivity(), message);
+        Utils.showToast(mActivity, message);
     }
 
     @Override

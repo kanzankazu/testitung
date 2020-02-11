@@ -9,37 +9,64 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 
 class HutangAddEditPresenter(private val mActivity: Activity, private val mView: HutangAddEditContract.View) : HutangAddEditContract.Presenter {
-    override fun showProgressDialoPresenter() {}
-
-    override fun dismissProgressDialogPresenter() {}
-
-    override fun onNoConnection(message: String?) {}
-
-    override fun saveEditHutang(hutang: Hutang, isEdit: Boolean) {
+    override fun showProgressDialoPresenter() {
         mView.showProgressDialogView()
+    }
+
+    override fun dismissProgressDialogPresenter() {
+        mView.dismissProgressDialogView()
+    }
+
+    override fun onNoConnection(message: String?) {
+        mView.showRetryDialogView()
+    }
+
+    override fun saveEditHutang(hutang: Hutang, isEdit: Boolean, isNotSilent: Boolean) {
+        var inviteUid = ""
+        if (hutang.hutangRadioIndex == 0) {
+            if (hutang.creditorId.isNotEmpty()) {
+                inviteUid = hutang.creditorId
+            }
+        } else {
+            if (hutang.debtorId.isNotEmpty()) {
+                inviteUid = hutang.debtorId
+            }
+        }
+
+        showProgressDialoPresenter()
         if (!isEdit) {
             FirebaseDatabaseHandler.setHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
                 override fun onSuccessSaveUpdate(message: String?) {
-                    mView.dismissProgressDialogView()
-                    mView.showSnackbarView(message)
-                    mActivity.finish()
+                    if (isNotSilent) {
+                        dismissProgressDialogPresenter()
+                        mView.showSnackbarView(message)
+                        mView.onSuccessSaveUpdate(hutang.hutangRadioIndex, inviteUid)
+                        mActivity.finish()
+                    }
                 }
 
                 override fun onFailureSaveUpdate(message: String?) {
-                    mView.dismissProgressDialogView()
-                    mView.showSnackbarView(message)
+                    if (isNotSilent) {
+                        dismissProgressDialogPresenter()
+                        mView.showSnackbarView(message)
+                    }
                 }
             })
         } else {
             FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
                 override fun onSuccessSaveUpdate(message: String?) {
-                    mView.dismissProgressDialogView()
-                    mView.showSnackbarView(message)
-                    mActivity.finish()
+                    if (isNotSilent) {
+                        dismissProgressDialogPresenter()
+                        mView.showSnackbarView(message)
+                        mView.onSuccessSaveUpdate(hutang.hutangRadioIndex, inviteUid)
+                        mActivity.finish()
+                    }
                 }
 
                 override fun onFailureSaveUpdate(message: String?) {
-                    mView.dismissProgressDialogView()
+                    if (isNotSilent) {
+                        dismissProgressDialogPresenter()
+                    }
                 }
             })
         }

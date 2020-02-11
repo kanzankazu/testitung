@@ -29,13 +29,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:label">
-        <activity android:name=".view.main.ProfileSub.IdeaListActivity"></activity>
-        <activity android:name=".view.main.ProfileSub.IdeaActivity" />
-        <activity android:name=".view.main.ProfileSub.HelpActivity" />
-        <activity android:name=".view.main.ProfileSub.DonateActivity" />
-        <activity android:name=".view.main.ProfileSub.AboutActivity" />
-        <activity android:name=".view.main.ProfileSub.PaymentAccountActivity" />
-        <activity android:name=".view.main.ProfileSub.PaymentAccountListActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -127,6 +120,41 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".view.main.ProfileSub.IdeaListActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.ProfileSub.IdeaActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.ProfileSub.HelpActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.ProfileSub.DonateActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.ProfileSub.AboutActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.ProfileSub.PaymentAccountActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.main.ProfileSub.PaymentAccountListActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".view.main.Stock.StockInOutActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
@@ -175,7 +203,7 @@
             android:name=".view.main.Hutang.HutangListActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" /> <!-- Sample -->
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.sample.SampleCrudMainActivity"
             android:configChanges="orientation|screenSize"

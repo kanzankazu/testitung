@@ -21,8 +21,8 @@ class HutangDetailDialogPresenter(var mActivity: AppCompatActivity, var mView: H
     }
 
     override fun approveHutangNew(hutang: Hutang, isCancel: Boolean) {
-        val isIPenghutang = if (!hutang.debtorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
-        val isIPiutang = if (!hutang.creditorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
+        val isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
+        val isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
 
         if (!isCancel) {
             if (isIPiutang) {
@@ -30,15 +30,9 @@ class HutangDetailDialogPresenter(var mActivity: AppCompatActivity, var mView: H
             } else if (isIPenghutang) {
                 hutang.debtorApprovalNew = true
             }
-
-            FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-                override fun onSuccessSaveUpdate(message: String?) {
-                    mView.showToastView(message)
-                }
-
-                override fun onFailureSaveUpdate(message: String?) {
-                    mView.showToastView(message)
-                }
+            saveUpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                override fun onSuccessSaveUpdate(message: String?) {}
+                override fun onFailureSaveUpdate(message: String?) {}
             })
         } else {
             hapusHutang(hutang)
@@ -46,31 +40,63 @@ class HutangDetailDialogPresenter(var mActivity: AppCompatActivity, var mView: H
     }
 
     override fun approveHutangEdit(hutang: Hutang, isCancel: Boolean) {
-        val isIPenghutang = if (!hutang.debtorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
-        val isIPiutang = if (!hutang.creditorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
+        val isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
+        val isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
 
+        if (!isCancel) {
+            if (isIPiutang) {
+                hutang.creditorApprovalEdit = true
+            } else if (isIPenghutang) {
+                hutang.debtorApprovalEdit = true
+            }
+            saveUpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                override fun onSuccessSaveUpdate(message: String?) {}
+                override fun onFailureSaveUpdate(message: String?) {}
+            })
+        } else {
+            cancelChange(hutang)
+        }
+    }
+
+    override fun approveHutangCicilanPay(hutang: Hutang, isCancel: Boolean) {
+        val hutangPembayaranSub = hutang.hutangPembayaranSub
+
+        if (!isCancel) {
+            for (i in hutangPembayaranSub.indices) {
+                hutangPembayaranSub[i].approvalCreditor = true
+            }
+            hutang.hutangPembayaranSub = hutangPembayaranSub
+            saveUpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                override fun onSuccessSaveUpdate(message: String?) {}
+                override fun onFailureSaveUpdate(message: String?) {}
+            })
+        } else {
+            cancelChange(hutang)
+        }
+    }
+
+    override fun approveHutangHapus(hutang: Hutang) {
+        val isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
+        val isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
 
         if (isIPiutang) {
-            hutang.creditorApprovalEdit = true
+            hutang.debtorApprovalDelete = true
         } else if (isIPenghutang) {
-            hutang.debtorApprovalEdit = true
+            hutang.creditorApprovalDelete = true
         }
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+        saveUpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
             override fun onSuccessSaveUpdate(message: String?) {
-                mView.showToastView(message)
+                hapusHutangCheckImage(hutang)
             }
 
-            override fun onFailureSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
+            override fun onFailureSaveUpdate(message: String?) {}
         })
-
     }
 
     override fun requestHutangHapus(hutang: Hutang, isCancel: Boolean) {
-        val isIPenghutang = if (!hutang.debtorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
-        val isIPiutang = if (!hutang.creditorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
+        val isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
+        val isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
 
         if (isCancel) {
             hutang.debtorApprovalDelete = true
@@ -83,72 +109,57 @@ class HutangDetailDialogPresenter(var mActivity: AppCompatActivity, var mView: H
             }
         }
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-            override fun onSuccessSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-
-            override fun onFailureSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-        })
-    }
-
-    override fun approveHutangHapus(hutang: Hutang) {
-        val isIPenghutang = if (!hutang.debtorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
-        val isIPiutang = if (!hutang.creditorId.isEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
-
-        if (isIPiutang) {
-            hutang.debtorApprovalDelete = true
-        } else if (isIPenghutang) {
-            hutang.creditorApprovalDelete = true
-        }
-
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-            override fun onSuccessSaveUpdate(message: String?) {
-                hapusHutangCheckImage(hutang)
-                mView.showToastView(message)
-            }
-
-            override fun onFailureSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-        })
-    }
-
-    override fun approveHutangCicilanPay(hutang: Hutang) {
-        val hutangPembayaranSub = hutang.hutangPembayaranSub
-
-        for (hutangSub in hutangPembayaranSub) {
-            hutangSub.approvalCreditor = true
-        }
-
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-            override fun onSuccessSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-
-            override fun onFailureSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
+        saveUpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+            override fun onSuccessSaveUpdate(message: String?) {}
+            override fun onFailureSaveUpdate(message: String?) {}
         })
     }
 
     override fun hapusHutangCheckImage(hutang: Hutang) {
         mView.dismissProgressDialogView()
 
-        if (hutang.hutangBuktiGambar != null) {
-            FirebaseStorageUtil.deleteImages(mActivity, hutang.hutangBuktiGambar, object : FirebaseStorageUtil.DoneRemoveListener {
+        if (hutang.hutangBuktiGambar.isNotEmpty()) {
+            FirebaseStorageUtil.deleteImages(mActivity, hutang.hutangBuktiGambar, object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
                 override fun isFinised() {
                     hapusHutang(hutang)
                 }
 
-                override fun isFailed(message: String?) {
+                override fun isFailed(message: String) {
                     mView.showSnackbarView(message)
                 }
             })
         } else {
             hapusHutang(hutang)
+        }
+    }
+
+    private fun saveUpdateHutang(hutang: Hutang?, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
+        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+            override fun onSuccessSaveUpdate(message: String?) {
+                listener.onSuccessSaveUpdate(message)
+                mView.showSnackbarView(message)
+            }
+
+            override fun onFailureSaveUpdate(message: String?) {
+                listener.onFailureSaveUpdate(message)
+                mView.showSnackbarView(message)
+            }
+        })
+    }
+
+    private fun cancelChange(hutang: Hutang) {
+        if (hutang.backupBeforeChange != null) {
+            val hutangBackup = hutang.backupBeforeChange
+            hutang.backupBeforeChange = null
+            saveUpdateHutang(hutangBackup, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                override fun onSuccessSaveUpdate(message: String?) {}
+                override fun onFailureSaveUpdate(message: String?) {}
+            })
+        } else {
+            saveUpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                override fun onSuccessSaveUpdate(message: String?) {}
+                override fun onFailureSaveUpdate(message: String?) {}
+            })
         }
     }
 

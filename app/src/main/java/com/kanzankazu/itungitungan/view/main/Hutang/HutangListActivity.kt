@@ -67,7 +67,9 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         showSnackbar(message)
     }
 
-    override fun showRetryDialogView() {}
+    override fun showRetryDialogView() {
+        showRetryDialog { }
+    }
 
     override fun showProgressDialogView() {
         showProgressDialog()
@@ -245,33 +247,33 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private fun removeDeleteDialog(hutang: Hutang, isHasReqDelete: Boolean) {
         DialogUtil.showIntroductionDialog(
-                this,
-                "",
-                "Konfirmasi",
-                if (isHasReqDelete) {
-                    "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
-                } else {
-                    "Apakah anda yakin ingin menghapus data ini?"
-                }
-                ,
-                "Ya",
-                "Tidak",
-                false,
-                -1,
-                object : DialogUtil.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        if (!isHasReqDelete) {
-                            mPresenter.requestHutangHapus(hutang, false)
-                            if (!hutang.hutangBuktiGambar.isNullOrEmpty()) {
-                                mPresenter.hapusHutangCheckImage(hutang)
-                            }
-                        } else {
-                            mPresenter.requestHutangHapus(hutang, true)
+            this,
+            "",
+            "Konfirmasi",
+            if (isHasReqDelete) {
+                "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
+            } else {
+                "Apakah anda yakin ingin menghapus data ini?"
+            }
+            ,
+            "Ya",
+            "Tidak",
+            false,
+            -1,
+            object : DialogUtil.IntroductionButtonListener {
+                override fun onFirstButtonClick() {
+                    if (!isHasReqDelete) {
+                        mPresenter.requestHutangHapus(hutang, false)
+                        if (hutang.hutangBuktiGambar.isNotEmpty()) {
+                            mPresenter.hapusHutangCheckImage(hutang)
                         }
+                    } else {
+                        mPresenter.requestHutangHapus(hutang, true)
                     }
-
-                    override fun onSecondButtonClick() {}
                 }
+
+                override fun onSecondButtonClick() {}
+            }
         )
 
     }

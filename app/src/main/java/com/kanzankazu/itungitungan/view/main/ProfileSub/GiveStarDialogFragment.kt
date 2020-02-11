@@ -137,13 +137,9 @@ class GiveStarDialogFragment : BaseDialogFragment(), GiveStarDialogContract.View
         }
         tv_give_star_send.setOnClickListener {
             DialogUtil.showIntroductionDialog(mActivity, "", "Informasi", "Untuk saat ini aplikasi belum terupload ke playstore, support kami terus agar bisa menjadikan aplikasi ini go internasional.", "Donasi", "Tutup", false, -1, object : DialogUtil.IntroductionButtonListener {
-                override fun onFirstButtonClick() {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
+                override fun onFirstButtonClick() {}
 
-                override fun onSecondButtonClick() {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
+                override fun onSecondButtonClick() {}
 
             })
         }

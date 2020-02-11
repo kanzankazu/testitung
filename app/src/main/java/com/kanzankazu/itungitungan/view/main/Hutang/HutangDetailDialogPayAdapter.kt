@@ -57,13 +57,7 @@ class HutangDetailDialogPayAdapter(var mActivity: FragmentActivity?, var mView: 
             if (data.paymentProofImage.isNotEmpty()) {
                 itemView.rv_hutang_list_detail_pay_image.visibility = View.VISIBLE
 
-                val imageModels = mutableListOf<ImageModel>()
-                for (image in data.paymentProofImage) {
-                    imageModels.add(ImageModel(image, "view"))
-                }
-
-                imageListAdapter.addDatas(imageModels)
-
+                imageListAdapter.addDatasString(data.paymentProofImage,"view")
             } else {
                 itemView.rv_hutang_list_detail_pay_image.visibility = View.GONE
             }

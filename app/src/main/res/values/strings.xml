@@ -30,13 +30,14 @@
     <string name="message_field_email_wrong_format">Format email salah [***@***.***]</string>
     <string name="message_field_phone_wrong_format">Format no telp/hp salah [+xx/0]*********</string>
     <string name="message_field_email_phone_wrong_format">Kolom ini untuk email dan no.Hp</string>
+    <string name="message_field_less_nominal">Data kurang dari %s digit</string>
     <string name="message_validation_failed">Tolong Lengkapi data - data yang ada tanda *</string>
     <string name="message_signin_success">Masuk Berhasil</string>
     <string name="message_signin_failed">Masuk Gagal</string>
     <string name="message_signout_success">Keluar berhasil</string>
     <string name="message_signout_failed">Keluar gagal</string>
     <string name="message_revoke_success">Batal Berhasil</string>
-    <string name="message_no_internet_network">Tidak ada jaringan internet</string>
+    <string name="message_no_internet_network">Gagal terhubung jaringan,\n Silahkan coba kembali.</string>
     <string name="message_database_save_success">Data berhasil disimpan</string>
     <string name="message_database_save_failed">Data gagal disimpan</string>
     <string name="message_database_update_success">Data berhasil diperbaharui</string>
@@ -67,6 +68,7 @@
     <string name="sign_up">Daftar</string>
     <string name="sign_out">Keluar</string>
     <string name="save">Simpan</string>
+    <string name="save_account">Simpan Akun</string>
     <string name="account">Akun</string>
     <string name="share_friend_family">Bagikan ke teman dan keluarga</string>
     <string name="share_friend_family_title">Bagikan ke teman dan keluarga dengan</string>

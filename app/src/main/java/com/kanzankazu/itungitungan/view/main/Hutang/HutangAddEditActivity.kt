@@ -24,6 +24,7 @@ import com.kanzankazu.itungitungan.util.DialogUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
+import com.kanzankazu.itungitungan.util.Firebase.MyFirebaseMessagingUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.PictureUtil2
 import com.kanzankazu.itungitungan.util.Utils
@@ -103,7 +104,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     override fun onBackPressed() {
         DialogUtil.showYesNoDialog(this, "Konfirmasi", "Apakah anda tidak ingin melanjutkan ini?", object : DialogUtil.IntroductionButtonListener {
             override fun onFirstButtonClick() {
-                onBackPressed()
+                finish()
             }
 
             override fun onSecondButtonClick() {
@@ -133,7 +134,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     override fun checkData(isFocus: Boolean): Boolean {
         if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, isFocus)) return false
-        else if (!InputValidUtil.isLenghtCharOver("Data kurang dari 6", til_hutang_add_nominal, et_hutang_add_nominal, CurrencyEditText.validationLimit)) return false
+        else if (!InputValidUtil.isLenghtCharOver(getString(R.string.message_field_less_nominal, "3"), til_hutang_add_nominal, et_hutang_add_nominal, CurrencyEditText.validationLimit)) return false
         else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, isFocus)) return false
         else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, isFocus)) return false
         else if (sw_hutang_add_installment.isChecked) {
@@ -166,6 +167,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             isEdit = true
             if (bundle.containsKey(Constants.Bundle.HUTANG)) {
                 hutang = bundle.getParcelable(Constants.Bundle.HUTANG) as Hutang
+                hutang.backupBeforeChange = hutang
+                mPresenter.saveEditHutang(hutang, isEdit, false)
                 isIInclude = if (hutang.debtorCreditorId.isNotEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
                 isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
                 isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
@@ -255,14 +258,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             }
         }, 500)
 
-        if (hutang.hutangBuktiGambar != null) {
-            if (hutang.hutangBuktiGambar!!.size == 1) {
-                Glide.with(this).load(hutang.hutangBuktiGambar!![0]).into(civ_hutang_add_image_0)
+        if (hutang.hutangBuktiGambar.isNotEmpty()) {
+            if (hutang.hutangBuktiGambar.size == 1) {
+                Glide.with(this).load(hutang.hutangBuktiGambar[0]).into(civ_hutang_add_image_0)
                 civ_hutang_remove_image_0.visibility = View.VISIBLE
-            } else if (hutang.hutangBuktiGambar!!.size == 2) {
-                Glide.with(this).load(hutang.hutangBuktiGambar!![0]).into(civ_hutang_add_image_0)
+            } else if (hutang.hutangBuktiGambar.size == 2) {
+                Glide.with(this).load(hutang.hutangBuktiGambar[0]).into(civ_hutang_add_image_0)
                 civ_hutang_remove_image_0.visibility = View.VISIBLE
-                Glide.with(this).load(hutang.hutangBuktiGambar!![1]).into(civ_hutang_add_image_1)
+                Glide.with(this).load(hutang.hutangBuktiGambar[1]).into(civ_hutang_add_image_1)
                 civ_hutang_remove_image_1.visibility = View.VISIBLE
             }
         }
@@ -333,9 +336,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
         watcherValidateInstallmentCount = object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
             override fun afterTextChanged(p0: Editable?) {
                 calculateNominalCount()
             }
@@ -357,12 +358,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
         et_hutang_add_nominal.setOnEditorActionListener { _, p1, _ ->
             if (p1 == EditorInfo.IME_ACTION_NEXT) {
+                checkData(false)
                 calculateNominalCount()
             }
             false
         }
         et_hutang_add_nominal.setOnFocusChangeListener { _, b ->
             if (!b) {
+                checkData(false)
                 calculateNominalCount()
             }
         }
@@ -484,7 +487,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     private fun removeImage(pos: Int, imageView: ImageView) {
         if (isEdit) {
-            if (hutang.hutangBuktiGambar != null) {
+            if (hutang.hutangBuktiGambar.isNotEmpty()) {
                 /*if (hutang.hutangBuktiGambar[pos].isNotEmpty()) {
                     com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil.deleteImage(hutang.hutangBuktiGambar[pos]
                             , {
@@ -546,7 +549,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private fun setSuggestUser(resultAccount: String) {
         showProgressDialog()
         if (!InputValidUtil.isEmail(resultAccount)) {
-            FirebaseDatabaseHandler.getUserByPhone(this, resultAccount, object : FirebaseDatabaseUtil.ValueListenerObject {
+            FirebaseDatabaseHandler.getUserByPhone(this, InputValidUtil.getPhoneNumber62(resultAccount), object : FirebaseDatabaseUtil.ValueListenerObject {
                 override fun onSuccessData(dataSnapshot: Any?) {
                     dismissProgressDialog()
                     setCheckSuggestUsers(dataSnapshot)
@@ -628,6 +631,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             Log.d("Lihat", "setSuggestUserFamily HutangAddEditActivity : " + (parent.adapter.getItem(position) as User).uId)
             Log.d("Lihat", "setSuggestUserFamily HutangAddEditActivity : " + userSuggest[position])
 
+            Utils.closeSoftKeyboard(this)
+
             if (mPresenter.getRadioGroupIndex(rg_hutang_add_user) == 0) {
                 hutang.debtorFamilyName = (parent.adapter.getItem(position) as User).name
                 hutang.debtorFamilyId = (parent.adapter.getItem(position) as User).uId
@@ -637,8 +642,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                     hutang.debtorFamilyId = ""
                     hutang.debtorFamilyName = ""
                     et_hutang_add_user_family.setText("")
-                } else if (hutang.creditorId.isNotEmpty() || hutang.debtorId.isNotEmpty()) {
-                    if (hutang.debtorFamilyId.equals(hutang.creditorId, true) || hutang.debtorFamilyId.equals(hutang.debtorId, true)) {
+                } else if (userInvite.uId.isNotEmpty()) {
+                    if (hutang.debtorFamilyId.equals(userInvite.uId, true)) {
                         showSnackbar(getString(R.string.message_its_you_invite))
                         hutang.debtorFamilyId = ""
                         hutang.debtorFamilyName = ""
@@ -656,8 +661,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                     hutang.creditorFamilyId = ""
                     hutang.creditorFamilyName = ""
                     et_hutang_add_user_family.setText("")
-                } else if (hutang.creditorId.isNotEmpty() || hutang.creditorId.isNotEmpty()) {
-                    if (hutang.creditorFamilyId.equals(hutang.creditorId, true) || hutang.creditorFamilyId.equals(hutang.creditorId, true)) {
+                } else if (userInvite.uId.isNotEmpty()) {
+                    if (hutang.creditorFamilyId.equals(userInvite.uId, true)) {
                         showSnackbar(getString(R.string.message_its_you_invite))
                         hutang.creditorFamilyId = ""
                         hutang.creditorFamilyName = ""
@@ -673,7 +678,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     private fun chooseDialogPickImage(activity: Activity, imageView: ImageView?, positionImage: Int) {
         this.positionImage = positionImage
         if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
-            if (isEdit && hutang.hutangBuktiGambar != null) {
+            if (isEdit && hutang.hutangBuktiGambar.isNotEmpty()) {
                 dialogClearImage(activity, imageView, true, "dengan anda mengambil gambar baru anda akan menghapus semua gambar yang tersimpan, apakah anda setuju?")
             } else {
                 pictureUtil2.chooseGetImageDialog(activity, imageView)
@@ -685,18 +690,17 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         DialogUtil.showIntroductionDialog(this, "", "Konfirmasi", message, "Iya", "Tidak", false, -1, object : DialogUtil.IntroductionButtonListener {
             override fun onFirstButtonClick() {
                 FirebaseStorageUtil.deleteImages(this@HutangAddEditActivity, hutang.hutangBuktiGambar,
-                    object : FirebaseStorageUtil.DoneRemoveListener {
+                    object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
                         override fun isFinised() {
                             if (isChooseImage)
                                 pictureUtil2.chooseGetImageDialog(activity, imageView)
 
                             removeImagePath(0)
                             removeImagePath(1)
-                            hutang.hutangBuktiGambar!!.clear()
-                            hutang.hutangBuktiGambar = null
+                            hutang.hutangBuktiGambar.clear()
                         }
 
-                        override fun isFailed(message: String?) {
+                        override fun isFailed(message: String) {
                             showSnackbar(message)
                         }
                     })
@@ -707,9 +711,38 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     }
 
     private fun dialogConfirmSave() {
-        DialogUtil.showConfirmationDialog(this, "Konfirmasi", "Apakah anda yakin ingin lanjut disimpan?") {
-            saveHutangValidate()
+        DialogUtil.showYesNoDialog(this, "Konfirmasi", "Apakah anda yakin ingin lanjut disimpan?", object : DialogUtil.IntroductionButtonListener {
+            override fun onFirstButtonClick() {
+                saveHutangValidate()
+            }
+
+            override fun onSecondButtonClick() {}
+        })
+    }
+
+    override fun onSuccessSaveUpdate(hutangRadioIndex: Int, inviteUid: String) {
+        val title: String
+        val message: String
+        val type: String = Constants.FirebasePushNotif.TypeNotif.HUTANG
+
+        if (hutangRadioIndex == 0) {
+            title = "Piutang Baru"
+            message = "Anda menjadi piutang baru, silahkan di buka aplikasinya"
+        } else {
+            title = "Piutang Baru"
+            message = "Anda menjadi penghutang baru, silahkan di buka aplikasinya"
         }
+
+        FirebaseDatabaseHandler.getUserByUid(inviteUid, object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
+            override fun onSuccessDataExist(dataSnapshot: DataSnapshot, isExsist: Boolean?) {
+                val user: User? = dataSnapshot.getValue(User::class.java)
+                MyFirebaseMessagingUtil.makeNotificationToken(this@HutangAddEditActivity, user!!.tokenFcm, title, message, type)
+            }
+
+            override fun onFailureDataExist(message: String?) {
+                showSnackbar(message)
+            }
+        })
     }
 
     private fun chooseDialogPickUserData() {
@@ -794,37 +827,37 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
             if (mCurrentPhotoPath0Uri != null || mCurrentPhotoPath1Uri != null) {
                 val listUri = PictureUtil2.convertArrayUriToArrayListUri(mCurrentPhotoPath0Uri, mCurrentPhotoPath1Uri)
-                FirebaseStorageUtil.uploadImages(this@HutangAddEditActivity, "HUTANG", listUri, object : FirebaseStorageUtil.DoneListener {
-                    override fun isFinised(imageDownloadUrls: ArrayList<String>?) {
-                        if (isEdit && hutang.hutangBuktiGambar != null) {
-                            if (hutang.hutangBuktiGambar!!.size > 0) {
+                FirebaseStorageUtil.uploadImages(this@HutangAddEditActivity, "HUTANG", listUri, object : FirebaseStorageUtil.DoneListenerMultiple {
+                    override fun isFinised(imageDownloadUrls: ArrayList<String>) {
+                        if (isEdit && hutang.hutangBuktiGambar.isNotEmpty()) {
+                            if (hutang.hutangBuktiGambar.size > 0) {
                                 FirebaseStorageUtil.deleteImages(this@HutangAddEditActivity, hutang.hutangBuktiGambar,
-                                    object : FirebaseStorageUtil.DoneRemoveListener {
+                                    object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
                                         override fun isFinised() {
                                             hutang.hutangBuktiGambar = imageDownloadUrls
-                                            mPresenter.saveEditHutang(hutang, isEdit)
+                                            mPresenter.saveEditHutang(hutang, isEdit, true)
                                         }
 
-                                        override fun isFailed(message: String?) {
+                                        override fun isFailed(message: String) {
                                             showSnackbar(message)
                                         }
                                     })
                             } else {
                                 hutang.hutangBuktiGambar = imageDownloadUrls
-                                mPresenter.saveEditHutang(hutang, isEdit)
+                                mPresenter.saveEditHutang(hutang, isEdit, true)
                             }
                         } else {
                             hutang.hutangBuktiGambar = imageDownloadUrls
-                            mPresenter.saveEditHutang(hutang, isEdit)
+                            mPresenter.saveEditHutang(hutang, isEdit, true)
                         }
                     }
 
-                    override fun isFailed(message: String?) {
+                    override fun isFailed(message: String) {
                         showSnackbar(message)
                     }
                 })
             } else {
-                mPresenter.saveEditHutang(hutang, isEdit)
+                mPresenter.saveEditHutang(hutang, isEdit, true)
             }
         } else {
             showSnackbar(getString(R.string.message_validation_failed))
