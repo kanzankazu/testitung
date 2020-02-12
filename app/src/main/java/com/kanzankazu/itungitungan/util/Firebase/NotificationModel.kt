@@ -8,8 +8,10 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class NotificationModel(
-    var TITLE: String = "",
-    var MESSAGE: String = "",
-    var TYPE: String = ""
+    var title: String = "",
+    var message: String = "",
+    var type: String = "",
+    var id: String = "",
+    var idSub: String = ""
 ) : Parcelable
 

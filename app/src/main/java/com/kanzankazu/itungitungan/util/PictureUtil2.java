@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.kanzankazu.itungitungan.BuildConfig;
 import com.kanzankazu.itungitungan.R;
+import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -127,18 +128,6 @@ public class PictureUtil2 {
                 compressImage();
                 if (imageView != null) Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
 
-                /*documentDataList.get(currentIndex).setPhotoPath(mCurrentPhotoPath);
-                preApprovalUploadAdapter.addToList(currentIndex, mCurrentPhotoPath);
-
-                for (int i = 0; i < documentDataList.size(); i++) {
-                    if (documentDataList.get(i).getPhotoPath().isEmpty()) {
-                        submitBtn.setEnabled(false);
-                        break;
-                    } else {
-                        submitBtn.setEnabled(true);
-                    }
-                }*/
-
                 return mCurrentPhotoPath;
 
             } catch (Exception e) {
@@ -156,22 +145,6 @@ public class PictureUtil2 {
                             .compressToFile(file);
                     mCurrentPhotoPath = getRealPathFromURIPath(Uri.parse(compressedImage.getAbsolutePath()));
                     if (imageView != null) Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
-
-                    /*CompressBitmap cb = new CompressBitmap(mActivity);
-                    String filepath = cb.getRealPathFromURI(mActivity, data.getDatas());
-                    Bitmap bitmap = cb.compressImage(cb.getRealPathFromURI(mActivity, data.getDatas()), filepath);*/
-
-                    /*documentDataList.get(currentIndex).setPhotoPath(String.valueOf(uri));
-                    preApprovalUploadAdapter.addToList(currentIndex, String.valueOf(uri));
-
-                    for (int i = 0; i < documentDataList.size(); i++) {
-                        if (documentDataList.get(i).getPhotoPath().isEmpty()) {
-                            submitBtn.setEnabled(false);
-                            break;
-                        } else {
-                            submitBtn.setEnabled(true);
-                        }
-                    }*/
 
                     return mCurrentPhotoPath;
                 } catch (Exception e) {

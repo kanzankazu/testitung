@@ -5,7 +5,7 @@ import retrofit2.Call;
 public interface BasePresenterContract {
 
     //PROGRESS DIALOG
-    void showProgressDialoPresenter();
+    void showProgressDialogPresenter();
 
     void dismissProgressDialogPresenter();
 

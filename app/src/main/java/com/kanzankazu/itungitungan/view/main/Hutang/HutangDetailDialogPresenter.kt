@@ -8,7 +8,7 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 
 class HutangDetailDialogPresenter(var mActivity: AppCompatActivity, var mView: HutangDetailDialogContract.View) : HutangDetailDialogContract.Presenter {
-    override fun showProgressDialoPresenter() {
+    override fun showProgressDialogPresenter() {
         mView.showProgressDialogView()
     }
 
@@ -118,8 +118,8 @@ class HutangDetailDialogPresenter(var mActivity: AppCompatActivity, var mView: H
     override fun hapusHutangCheckImage(hutang: Hutang) {
         mView.dismissProgressDialogView()
 
-        if (hutang.hutangBuktiGambar.isNotEmpty()) {
-            FirebaseStorageUtil.deleteImages(mActivity, hutang.hutangBuktiGambar, object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
+        if (hutang.hutangProofImage.isNotEmpty()) {
+            FirebaseStorageUtil.deleteImages(mActivity, hutang.hutangProofImage, object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
                 override fun isFinised() {
                     hapusHutang(hutang)
                 }

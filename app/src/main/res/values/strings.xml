@@ -27,6 +27,7 @@
     <string name="message_field_empty">Data ini tidak boleh kosong</string>
     <string name="message_field_empty_nominal">Nominal tidak boleh kosong</string>
     <string name="message_radio_empty">Anda belum memilih!!!</string>
+    <string name="message_data_empty">Data ini kosong</string>
     <string name="message_field_email_wrong_format">Format email salah [***@***.***]</string>
     <string name="message_field_phone_wrong_format">Format no telp/hp salah [+xx/0]*********</string>
     <string name="message_field_email_phone_wrong_format">Kolom ini untuk email dan no.Hp</string>
@@ -44,6 +45,7 @@
     <string name="message_database_delete_success">Data berhasil dihapus</string>
     <string name="message_database_delete_failed">Data gagal di hapus</string>
     <string name="message_database_data_exist">Data sudah ada</string>
+    <string name="message_database_data_not_exist">Data tidak ada</string>
     <string name="message_database_data_over">Data berlebih</string>
     <string name="message_database_data_empty">Data kosong</string>
     <string name="message_database_data_cant_find">Data tidak di temukan</string>

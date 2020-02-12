@@ -1,5 +1,7 @@
 package com.kanzankazu.itungitungan;
 
+import org.jetbrains.annotations.Nullable;
+
 public class Constants {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -32,6 +34,9 @@ public class Constants {
     public interface Bundle {
         String HUTANG = "hutang";
         String HUTANG_NEW = "hutang_new";
+        String HUTANG_ID = "hutang_id";
+        String ID = "id";
+        String ID_SUB = "id_sub";
     }
 
     public interface FirebaseRemoteConfig {
@@ -81,12 +86,16 @@ public class Constants {
     }
 
     public interface FirebasePushNotif {
-        String TITLE = "TITLE";
-        String MESSAGE = "MESSAGE";
-        String TYPE = "TYPE";
+        String title = "title";
+        String message = "message";
+        String type = "type";
+        String id = "id";
+        String idSub = "idSub";
 
         interface TypeNotif {
-            String HUTANG = "HUTANG";
+            String hutang = "hutang";
+            String hutangDetail = "hutangDetail";
+            String hutangPay = "hutangPay";
         }
     }
 }

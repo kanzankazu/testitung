@@ -104,7 +104,7 @@ public class NetworkUtil {
     }
 
     /**
-     * CHECK CONNECTION TYPE
+     * CHECK CONNECTION type
      */
     public static boolean isOnline2() {
         Runtime runtime = Runtime.getRuntime();
@@ -161,38 +161,38 @@ public class NetworkUtil {
         } else if (type == ConnectivityManager.TYPE_MOBILE) {
             switch (subType) {
                 case TelephonyManager.NETWORK_TYPE_1xRTT:
-                    return "NETWORK TYPE 1xRTT, Speed: 50-100 kbps"; // ~ 50-100 kbps
+                    return "NETWORK type 1xRTT, Speed: 50-100 kbps"; // ~ 50-100 kbps
                 case TelephonyManager.NETWORK_TYPE_CDMA:
-                    return "NETWORK TYPE CDMA (3G), Speed: 2 Mbps"; // ~ 14-64 kbps
+                    return "NETWORK type CDMA (3G), Speed: 2 Mbps"; // ~ 14-64 kbps
                 case TelephonyManager.NETWORK_TYPE_EDGE:
-                    return "NETWORK TYPE EDGE (2.75G), Speed: 100-120 Kbps"; // ~// 50-100 kbps
+                    return "NETWORK type EDGE (2.75G), Speed: 100-120 Kbps"; // ~// 50-100 kbps
                 case TelephonyManager.NETWORK_TYPE_EVDO_0:
-                    return "NETWORK TYPE EVDO_0, Speed: 400-1000 kbps"; // ~ 400-1000 kbps
+                    return "NETWORK type EVDO_0, Speed: 400-1000 kbps"; // ~ 400-1000 kbps
                 case TelephonyManager.NETWORK_TYPE_EVDO_A:
-                    return "NETWORK TYPE EVDO_A, Speed: 600-1400 kbps"; // ~ 600-1400 kbps
+                    return "NETWORK type EVDO_A, Speed: 600-1400 kbps"; // ~ 600-1400 kbps
                 case TelephonyManager.NETWORK_TYPE_GPRS:
-                    return "NETWORK TYPE GPRS (2.5G), Speed: 40-50 Kbps"; // ~ 100 kbps
+                    return "NETWORK type GPRS (2.5G), Speed: 40-50 Kbps"; // ~ 100 kbps
                 case TelephonyManager.NETWORK_TYPE_HSDPA:
-                    return "NETWORK TYPE HSDPA (4G), Speed: 2-14 Mbps"; // ~ 2-14 Mbps
+                    return "NETWORK type HSDPA (4G), Speed: 2-14 Mbps"; // ~ 2-14 Mbps
                 case TelephonyManager.NETWORK_TYPE_HSPA:
-                    return "NETWORK TYPE HSPA (4G), Speed: 0.7-1.7 Mbps"; // ~ 700-1700 kbps
+                    return "NETWORK type HSPA (4G), Speed: 0.7-1.7 Mbps"; // ~ 700-1700 kbps
                 case TelephonyManager.NETWORK_TYPE_HSUPA:
-                    return "NETWORK TYPE HSUPA (3G), Speed: 1-23 Mbps"; // ~ 1-23 Mbps
+                    return "NETWORK type HSUPA (3G), Speed: 1-23 Mbps"; // ~ 1-23 Mbps
                 case TelephonyManager.NETWORK_TYPE_UMTS:
-                    return "NETWORK TYPE UMTS (3G), Speed: 0.4-7 Mbps"; // ~ 400-7000 kbps
+                    return "NETWORK type UMTS (3G), Speed: 0.4-7 Mbps"; // ~ 400-7000 kbps
                 // NOT AVAILABLE YET IN API LEVEL 7
                 case NetworkUtil.NETWORK_TYPE_EHRPD:
-                    return "NETWORK TYPE EHRPD, Speed: 1-2 Mbps"; // ~ 1-2 Mbps
+                    return "NETWORK type EHRPD, Speed: 1-2 Mbps"; // ~ 1-2 Mbps
                 case NetworkUtil.NETWORK_TYPE_EVDO_B:
                     return "NETWORK_TYPE_EVDO_B, Speed: 5 Mbps"; // ~ 5 Mbps
                 case NetworkUtil.NETWORK_TYPE_HSPAP:
-                    return "NETWORK TYPE HSPA+ (4G), Speed: 10-20 Mbps"; // ~ 10-20 Mbps
+                    return "NETWORK type HSPA+ (4G), Speed: 10-20 Mbps"; // ~ 10-20 Mbps
                 case NetworkUtil.NETWORK_TYPE_IDEN:
-                    return "NETWORK TYPE IDEN, Speed: 25 kbps"; // ~25 kbps
+                    return "NETWORK type IDEN, Speed: 25 kbps"; // ~25 kbps
                 case NetworkUtil.NETWORK_TYPE_LTE:
-                    return "NETWORK TYPE LTE (4G), Speed: 10+ Mbps"; // ~ 10+ Mbps Unknown
+                    return "NETWORK type LTE (4G), Speed: 10+ Mbps"; // ~ 10+ Mbps Unknown
                 case TelephonyManager.NETWORK_TYPE_UNKNOWN:
-                    return "NETWORK TYPE UNKNOWN";
+                    return "NETWORK type UNKNOWN";
                 default:
                     return "";
             }
@@ -900,7 +900,7 @@ public class NetworkUtil {
 
 
 
-    /*CHECK CONNECTION TYPE*/
+    /*CHECK CONNECTION type*/
 
 
 

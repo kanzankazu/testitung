@@ -31,7 +31,7 @@ data class Hutang(
     var hutangKeperluan: String = "",
     var hutangCatatan: String = "",
     var hutangPinjam: String = "",
-    var hutangBuktiGambar: MutableList<String> = mutableListOf(),
+    var hutangProofImage: MutableList<String> = mutableListOf(),
     var hutangEditableis: Boolean = false,
     var hutangCicilanIs: Boolean = false,
     var hutangCicilanBerapaKali: String = "",

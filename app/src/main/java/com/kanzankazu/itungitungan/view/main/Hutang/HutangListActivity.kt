@@ -34,7 +34,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hutang_list)
 
-        Utils.setupAppToolbarForActivity(this, toolbar, "HUTANG")
+        Utils.setupAppToolbarForActivity(this, toolbar, "hutang")
 
         setView()
         setListener()
@@ -264,7 +264,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
                 override fun onFirstButtonClick() {
                     if (!isHasReqDelete) {
                         mPresenter.requestHutangHapus(hutang, false)
-                        if (hutang.hutangBuktiGambar.isNotEmpty()) {
+                        if (hutang.hutangProofImage.isNotEmpty()) {
                             mPresenter.hapusHutangCheckImage(hutang)
                         }
                     } else {

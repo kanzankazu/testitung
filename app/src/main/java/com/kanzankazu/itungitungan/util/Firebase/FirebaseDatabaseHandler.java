@@ -391,7 +391,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     /**
-     * HUTANG
+     * hutang
      */
     public static void isExistHutang(Hutang hutang, ValueListenerData listenerData) {
         getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
@@ -484,7 +484,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             List<Hutang> hutangs = new ArrayList<>();
                             /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                HUTANG hutang = snapshot.getValue(HUTANG.class);
+                                hutang hutang = snapshot.getValue(hutang.class);
                                 hutangs.add(hutang);
                             }*/
 
@@ -503,7 +503,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             List<Hutang> hutangs = new ArrayList<>();
                             /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                HUTANG hutang = snapshot.getValue(HUTANG.class);
+                                hutang hutang = snapshot.getValue(hutang.class);
                                 hutangs.add(hutang);
                             }*/
 
@@ -518,4 +518,22 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
         }
     }
+
+    public static void getHutangByHid(String hid, ValueListenerDataTrueFalse listenerData) {
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
+                .child(hid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("Lihat", "onDataChange FirebaseDatabaseHandler : " + dataSnapshot.getChildrenCount());
+                        listenerData.onSuccessDataExist(dataSnapshot, dataSnapshot.exists());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listenerData.onFailureDataExist(databaseError.getMessage());
+                    }
+                });
+    }
+
 }

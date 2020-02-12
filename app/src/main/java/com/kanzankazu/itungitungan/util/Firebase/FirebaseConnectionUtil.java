@@ -4,27 +4,42 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.kanzankazu.itungitungan.R;
+
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
 /**
  * Created by Faisal Bahri on 2019-11-15.
  */
-class FirebaseConnectionUtil {
+public class FirebaseConnectionUtil {
     FirebaseConnectionUtil() {
     }
 
-    boolean isConnected(Context context, FirebaseConnectionListener listener) {
+    public static boolean isConnect(Context context, FirebaseConnectionListener listener) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
         if (info != null && info.isConnected()) {
+            listener.hasInternet();
             return true;
         } else {
-            listener.noInternet();
+            listener.noInternet(context.getString(R.string.message_no_internet_network));
             return false;
         }
     }
 
-    String checkException(int statusCode) {
+    public boolean isConnected(Context context, FirebaseConnectionListener listener) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        if (info != null && info.isConnected()) {
+            listener.hasInternet();
+            return true;
+        } else {
+            listener.noInternet(context.getString(R.string.message_no_internet_network));
+            return false;
+        }
+    }
+
+    public String checkException(int statusCode) {
         switch (statusCode) {
             /*The operation was successful, but was used the device's cache. If this is a write, the data will be written when the device is online; errors will be written to the logs. If this is a read, the data was read from a device cache and may be stale.*/
             case -1:
@@ -64,7 +79,9 @@ class FirebaseConnectionUtil {
 
     }
 
-    interface FirebaseConnectionListener {
-        void noInternet();
+    public interface FirebaseConnectionListener {
+        void hasInternet();
+
+        void noInternet(String message);
     }
 }

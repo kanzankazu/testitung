@@ -24,7 +24,7 @@ import java.util.*
 class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.View) : HutangPayContract.Presenter {
     val mInteractor = HutangPayInteractor(mActivity, this)
 
-    override fun showProgressDialoPresenter() {
+    override fun showProgressDialogPresenter() {
         mView.showProgressDialogView()
     }
 
@@ -200,25 +200,30 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
                 hutang.hutangCicilanIsBayarKapanSaja = true
                 hutang.hutangCicilanTanggalAkhir = ""
 
+                val listOfProofImages = mutableListOf<String>()
                 if (hutang.hutangPembayaranSub.isNotEmpty()) {
-                    val listOfProofImages = mutableListOf<String>()
                     for (data in hutang.hutangPembayaranSub) {
                         if (data.paymentProofImage.isNotEmpty()) {
                             listOfProofImages.addAll(data.paymentProofImage)
                         }
                     }
-                    if (listOfProofImages.isNotEmpty()) {
-                        FirebaseStorageUtil.deleteImages(mActivity, listOfProofImages, object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
-                            override fun isFinised() {
-                                hutang.hutangPembayaranSub.clear()
-                            }
-
-                            override fun isFailed(message: String) {
-                                mView.showSnackbarView(message)
-                            }
-                        })
-                    }
                 }
+
+                if (listOfProofImages.isNotEmpty()) {
+                    FirebaseStorageUtil.deleteImages(mActivity, listOfProofImages, object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
+                        override fun isFinised() {
+                            hutang.hutangPembayaranSub.clear()
+                        }
+
+                        override fun isFailed(message: String) {
+                            mView.showSnackbarView(message)
+                        }
+                    })
+                } else {
+                    hutang.hutangPembayaranSub.clear()
+                }
+
+                hutang.hutangPembayaranSub.clear()
 
                 status = Constants.Hutang.Status.Berlebih
             }

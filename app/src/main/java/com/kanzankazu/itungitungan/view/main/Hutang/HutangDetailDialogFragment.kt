@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +28,7 @@ import java.util.*
  * Created by Faisal Bahri on 2020-02-04.
  */
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContract.View, ImageListAdapter.ImageListContract {
+class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContract.View {
 
     private var isApproveNew: Boolean = false
     private var isApproveEdit: Boolean = false
@@ -49,29 +48,6 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
             fl_hutang_detail_dialog_image.visibility = View.GONE
             ll_hutang_detail_dialog.visibility = View.VISIBLE
         }
-    }
-
-    private val imageClickShow = View.OnClickListener {
-        showHidePreview(true)
-
-        //val posData = if (it == iv_hutang_detail_dialog_piutang_0) 0 else 1
-        val listOfProofImages = mutableListOf<String>()
-        if (hutang.hutangPembayaranSub.isNotEmpty()) {
-            for (data in hutang.hutangPembayaranSub) {
-                if (data.paymentProofImage.isNotEmpty()) {
-                    listOfProofImages.addAll(data.paymentProofImage)
-                }
-            }
-        }
-        val listOfPathImage = mutableListOf<String>()
-        listOfPathImage.addAll(hutang.hutangBuktiGambar)
-        listOfPathImage.addAll(listOfProofImages)
-
-        val mGalleryDetailPagerAdapter = GalleryDetailPagerAdapter(activity, listOfPathImage as ArrayList<String>?)
-        vp_hutang_detail_dialog_piutang_preview.setPageTransformer(true, DepthPageTransformer())
-        vp_hutang_detail_dialog_piutang_preview.adapter = mGalleryDetailPagerAdapter
-        vp_hutang_detail_dialog_piutang_preview.offscreenPageLimit = 2
-        //iv_hutang_detail_dialog_piutang_preview.currentItem = posData
     }
 
     companion object {
@@ -183,26 +159,20 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
         dismissProgressDialog()
     }
 
-    override fun onImageListView(data: ImageModel, position: Int) {}
-
-    override fun onImageListRemove(data: ImageModel, position: Int) {}
-
-    override fun onImageListAdd(data: ImageModel, position: Int) {}
-
     private fun initView() {
         when {
             isApproveNew -> {
-                tv_hutang_detail_dialog_Title.text = "Persetujuan HUTANG Piutang Baru"
+                tv_hutang_detail_dialog_Title.text = "Persetujuan hutang Piutang Baru"
                 tv_hutang_detail_dialog_submit_tidak.visibility = View.VISIBLE
                 tv_hutang_detail_dialog_submit_setuju.visibility = View.VISIBLE
             }
             isApproveEdit -> {
-                tv_hutang_detail_dialog_Title.text = "Persetujuan HUTANG Piutang Ubah"
+                tv_hutang_detail_dialog_Title.text = "Persetujuan hutang Piutang Ubah"
                 tv_hutang_detail_dialog_submit_tidak.visibility = View.VISIBLE
                 tv_hutang_detail_dialog_submit_setuju.visibility = View.VISIBLE
             }
             isApproveDelete -> {
-                tv_hutang_detail_dialog_Title.text = "Persetujuan HUTANG Piutang Hapus"
+                tv_hutang_detail_dialog_Title.text = "Persetujuan hutang Piutang Hapus"
                 tv_hutang_detail_dialog_submit_tidak.visibility = View.VISIBLE
                 tv_hutang_detail_dialog_submit_setuju.visibility = View.VISIBLE
             }
@@ -212,7 +182,7 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
                 tv_hutang_detail_dialog_submit_setuju.visibility = View.VISIBLE
             }
             else -> {
-                tv_hutang_detail_dialog_Title.text = "Detail HUTANG Piutang"
+                tv_hutang_detail_dialog_Title.text = "Detail hutang Piutang"
                 tv_hutang_detail_dialog_submit_tidak.text = "TUTUP"
                 tv_hutang_detail_dialog_submit_setuju.text = "DETAIL"
                 if (!hutang.hutangEditableis || hutang.statusLunas) {
@@ -295,15 +265,25 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
             }
         }
         val listOfPathImages = mutableListOf<String>()
-        listOfPathImages.addAll(hutang.hutangBuktiGambar)
+        listOfPathImages.addAll(hutang.hutangProofImage)
         listOfPathImages.addAll(listOfProofImages)
 
         if (listOfPathImages.isNotEmpty()) {
             rv_hutang_detail_dialog_piutang_image.visibility = View.VISIBLE
 
-            val gridLayoutManager = GridLayoutManager(mActivity, 2, GridLayoutManager.VERTICAL, false)
-            rv_hutang_detail_dialog_piutang_image.layoutManager = gridLayoutManager
-            imageListAdapter = ImageListAdapter(mActivity, this)
+            val linearLayoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false)
+            rv_hutang_detail_dialog_piutang_image.layoutManager = linearLayoutManager
+            imageListAdapter = ImageListAdapter(mActivity, object : ImageListAdapter.ImageListContract {
+                override fun onImageListView(data: ImageModel, position: Int) {
+                    imageShow(position)
+                }
+
+                override fun onImageListRemove(data: ImageModel, position: Int) {
+                }
+
+                override fun onImageListAdd(data: ImageModel, position: Int) {
+                }
+            })
             rv_hutang_detail_dialog_piutang_image.adapter = imageListAdapter
 
             imageListAdapter.addDatasString(listOfPathImages, "view")
@@ -359,4 +339,26 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
         startActivity(intent)
     }
 
+    private fun imageShow(posData: Int) {
+        showHidePreview(true)
+
+        //val posData = if (it == iv_hutang_detail_dialog_piutang_0) 0 else 1
+        val listOfProofImages = mutableListOf<String>()
+        if (hutang.hutangPembayaranSub.isNotEmpty()) {
+            for (data in hutang.hutangPembayaranSub) {
+                if (data.paymentProofImage.isNotEmpty()) {
+                    listOfProofImages.addAll(data.paymentProofImage)
+                }
+            }
+        }
+        val listOfPathImage = mutableListOf<String>()
+        listOfPathImage.addAll(hutang.hutangProofImage)
+        listOfPathImage.addAll(listOfProofImages)
+
+        val mGalleryDetailPagerAdapter = GalleryDetailPagerAdapter(activity, listOfPathImage as ArrayList<String>?)
+        vp_hutang_detail_dialog_piutang_preview.setPageTransformer(true, DepthPageTransformer())
+        vp_hutang_detail_dialog_piutang_preview.adapter = mGalleryDetailPagerAdapter
+        vp_hutang_detail_dialog_piutang_preview.offscreenPageLimit = 3
+        vp_hutang_detail_dialog_piutang_preview.currentItem = posData
+    }
 }

@@ -382,7 +382,12 @@ public class FirebaseLoginUtil extends FirebaseConnectionUtil implements Firebas
     }
 
     @Override
-    public void noInternet() {
+    public void hasInternet() {
+
+    }
+
+    @Override
+    public void noInternet(String message) {
         mListener.uiConnectionError(mActivity.getString(R.string.message_no_internet_network), checkException(7));
     }
 

@@ -123,7 +123,11 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
         }
 
         fun setOnClickListener(data: ImageModel, position: Int) {
-            if (data.type.equals("view", true)) itemView.civ_item_image.setOnClickListener { mView.onImageListView(data, position) }
+            if (data.type.equals("view", true)) {
+                itemView.civ_item_image.setOnClickListener { mView.onImageListView(data, position) }
+            } else if (data.type.equals("other", true)) {
+                itemView.civ_item_image.setOnClickListener { mView.onImageListAdd(data, position) }
+            }
 
             itemView.civ_item_image_remove_edit.setOnClickListener { mView.onImageListRemove(data, position) }
         }
@@ -174,6 +178,7 @@ class ImageListAdapter(val mActivity: Activity, val mView: ImageListContract) : 
                 type = typeView
             })
         }
+        notifyItemRangeInserted(this.datas.size, datas.size)
     }
 
     fun addData(data: ImageModel) {

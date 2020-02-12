@@ -108,7 +108,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                 itemView.tv_hutang_list_nominal_installment_due_date.visibility = View.GONE
             }
 
-            if (hutang.hutangBuktiGambar.isNotEmpty()) {
+            if (hutang.hutangProofImage.isNotEmpty()) {
                 itemView.iv_hutang_list_is_image.visibility = View.VISIBLE
             } else {
                 itemView.iv_hutang_list_is_image.visibility = View.GONE
@@ -481,6 +481,7 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             return filterResults
         }
 
+        @Suppress("UNCHECKED_CAST")
         override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
 
             tempModel = filterResults.values as java.util.ArrayList<Hutang>

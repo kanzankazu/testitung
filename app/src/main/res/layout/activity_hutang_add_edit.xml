@@ -1,4 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
@@ -354,91 +356,66 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_margin_20dp"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/padding_margin_10dp"
-                    android:layout_marginBottom="@dimen/padding_margin_5dp"
-                    android:animateLayoutChanges="true"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/avenir_next_ltpro_demi"
-                        android:gravity="center_vertical"
-                        android:text="Upload foto bukti : "
-                        android:textColor="@color/Black" />
-
-                </LinearLayout>
+                app:cardBackgroundColor="@color/colorAccent"
+                app:cardCornerRadius="10dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_20dp"
                     android:animateLayoutChanges="true"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
+                    android:orientation="vertical">
 
-                    <FrameLayout
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center|top"
-                        android:layout_marginEnd="@dimen/padding_margin_5dp"
-                        android:background="@drawable/round">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/padding_margin_10dp"
+                        android:animateLayoutChanges="true"
+                        android:orientation="horizontal">
 
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/civ_hutang_add_image_0"
-                            android:layout_width="@dimen/padding_margin_90dp"
-                            android:layout_height="100dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_profile" />
+                        <TextView
+                            style="@style/TvStandart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="Bukti Gambar Pi/Hutang"
+                            android:textColor="@color/Black" />
 
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/civ_hutang_remove_image_0"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_gravity="top|end"
-                            android:layout_marginTop="5dp"
-                            android:src="@drawable/ic_clear_black_24dp"
-                            android:visibility="gone" />
+                        <ImageView
+                            android:id="@+id/iv_hutang_add_image_add"
+                            android:layout_width="@dimen/padding_margin_30dp"
+                            android:layout_height="@dimen/padding_margin_30dp"
+                            android:src="@drawable/ic_add_photo"
+                            android:visibility="visible" />
 
-                    </FrameLayout>
+                    </LinearLayout>
 
-                    <FrameLayout
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center|top"
-                        android:layout_marginEnd="@dimen/padding_margin_5dp"
-                        android:background="@drawable/round">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:animateLayoutChanges="true"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/civ_hutang_add_image_1"
-                            android:layout_width="@dimen/padding_margin_90dp"
-                            android:layout_height="100dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_profile" />
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_hutang_add_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            tools:itemCount="5"
+                            tools:layoutManager="LinearLayoutManager"
+                            tools:listitem="@layout/item_image" />
 
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/civ_hutang_remove_image_1"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_gravity="top|end"
-                            android:layout_marginTop="5dp"
-                            android:src="@drawable/ic_clear_black_24dp"
-                            android:visibility="gone" />
-
-                    </FrameLayout>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+
+            </android.support.v7.widget.CardView>
 
             <Switch
                 android:id="@+id/sw_hutang_add_editable"

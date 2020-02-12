@@ -11,7 +11,7 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import java.util.*
 
 class HutangListPresenter(val mActivity: Activity, private val mView: HutangListContract.View) : HutangListContract.Presenter {
-    override fun showProgressDialoPresenter() {
+    override fun showProgressDialogPresenter() {
         mView.showProgressDialogView()
     }
 
@@ -32,7 +32,6 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
 
                 mView.setZeroHutangs()
 
-
                 val hutangs = ArrayList<Hutang>()
                 val hutangMine = ArrayList<Hutang>()
                 val hutangFamily = ArrayList<Hutang>()
@@ -41,11 +40,10 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                     val hutang = snapshot.getValue(Hutang::class.java)
                     if (hutang != null) {
                         if (
-                                hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) ||
-                                (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
-                                (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
+                            hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) ||
+                            (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
+                            (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
                         ) {
-
                             if (hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
                                 if (hutang.statusLunas) {
                                     hutangLunas.add(hutang)
@@ -191,8 +189,8 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     override fun hapusHutangCheckImage(hutang: Hutang) {
         mView.dismissProgressDialogView()
 
-        if (hutang.hutangBuktiGambar.isNotEmpty()) {
-            FirebaseStorageUtil.deleteImages(mActivity, hutang.hutangBuktiGambar, object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
+        if (hutang.hutangProofImage.isNotEmpty()) {
+            FirebaseStorageUtil.deleteImages(mActivity, hutang.hutangProofImage, object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
                 override fun isFinised() {
                     hapusHutang(hutang)
                 }

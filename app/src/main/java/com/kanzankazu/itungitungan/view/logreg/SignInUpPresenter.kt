@@ -11,7 +11,7 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Utils
 
 class SignInUpPresenter(var mActivity: Activity, var mView: SignInUpContract.View): SignInUpContract.Presenter {
-    override fun showProgressDialoPresenter() {mView.showProgressDialog()}
+    override fun showProgressDialogPresenter() {mView.showProgressDialog()}
 
     override fun dismissProgressDialogPresenter() {mView.dismissProgressDialog()}
 

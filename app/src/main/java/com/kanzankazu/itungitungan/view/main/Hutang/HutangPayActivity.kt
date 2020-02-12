@@ -26,7 +26,6 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
     private var huCil: HutangPembayaran = HutangPembayaran()
     private var hutang: Hutang = Hutang()
     private var mCurrentPhotoPath: String = ""
-    private var mCurrentPhotoPathUri: Uri? = null
 
     private var nominalYangDiBayarkan: Int = 0
     private var nominalTotalPembayaran: Int = 0
@@ -48,8 +47,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == pictureUtil2.REQUEST_IMAGE_CAMERA || requestCode == pictureUtil2.REQUEST_IMAGE_GALLERY) {
             mCurrentPhotoPath = pictureUtil2.onActivityResult(requestCode, resultCode, data)
-            mCurrentPhotoPathUri = Uri.fromFile(File(mCurrentPhotoPath))
-
+            //mCurrentPhotoPathUri = Uri.fromFile(File(mCurrentPhotoPath))
             imageListAdapter.addData(ImageModel(mCurrentPhotoPath, ""))
         }
     }

@@ -10,7 +10,7 @@ import com.kanzankazu.itungitungan.util.NetworkUtil
 class DashboardFragmentPresenter(var mActivity: Activity, var mView: DashboardFragmentContract.View) : DashboardFragmentContract.Presenter {
     var mInteractor = DashboardFragmentinteractor(this)
 
-    override fun showProgressDialoPresenter() {
+    override fun showProgressDialogPresenter() {
         mView.showProgressDialogView()
     }
 

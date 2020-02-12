@@ -26,14 +26,17 @@ public class MyFirebaseMessagingUtil {
     static final private String contentType = "application/json";
     private static final String TAG = "NOTIFICATION TAG";
 
-    public static void makeNotificationTopic(Activity activity, String topics, String title, String message) {
+    public static void makeNotificationTopic(Activity activity, String topics, String title, String message, String type, String id, String idSub) {
         String TOPIC = "/topics/" + topics; //topic has to match what the receiver subscribed to
 
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
         try {
-            notifcationBody.put(Constants.FirebasePushNotif.TITLE, title);
-            notifcationBody.put(Constants.FirebasePushNotif.MESSAGE, message);
+            notifcationBody.put(Constants.FirebasePushNotif.title, title);
+            notifcationBody.put(Constants.FirebasePushNotif.message, message);
+            notifcationBody.put(Constants.FirebasePushNotif.type, type);
+            notifcationBody.put(Constants.FirebasePushNotif.id, id);
+            notifcationBody.put(Constants.FirebasePushNotif.idSub, idSub);
 
             notification.put("to", TOPIC);
             notification.put("data", notifcationBody);
@@ -43,13 +46,15 @@ public class MyFirebaseMessagingUtil {
         sendNotification(activity, notification);
     }
 
-    public static void makeNotificationToken(Activity activity, String token, String title, String message, String type) {
+    public static void makeNotificationToken(Activity activity, String token, String title, String message, String type, String id, String idSub) {
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
         try {
-            notifcationBody.put(Constants.FirebasePushNotif.TITLE, title);
-            notifcationBody.put(Constants.FirebasePushNotif.MESSAGE, message);
-            notifcationBody.put(Constants.FirebasePushNotif.TYPE, type);
+            notifcationBody.put(Constants.FirebasePushNotif.title, title);
+            notifcationBody.put(Constants.FirebasePushNotif.message, message);
+            notifcationBody.put(Constants.FirebasePushNotif.type, type);
+            notifcationBody.put(Constants.FirebasePushNotif.id, id);
+            notifcationBody.put(Constants.FirebasePushNotif.idSub, idSub);
 
             notification.put("to", token);
             notification.put("data", notifcationBody);
