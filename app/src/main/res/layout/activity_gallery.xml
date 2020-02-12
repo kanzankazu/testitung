@@ -46,11 +46,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:listitem="@layout/layout_list_gallery_grid" />
-
             </LinearLayout>
-
         </CustomScrollView>
-
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
@@ -61,8 +58,8 @@
         android:background="@color/colorPrimary"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="10dp"
         android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:visibility="gone">
 
         <ProgressBar

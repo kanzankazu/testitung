@@ -230,13 +230,13 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             //End checkNominal
 
             DialogUtil.showConfirmationDialog(
-                mActivity,
-                "Info",
-                when (status) {
-                    Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
-                    Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
-                    else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
-                }
+                    mActivity,
+                    "Info",
+                    when (status) {
+                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
+                    }
             ) {
                 huCil.approvalCreditor = status.equals(Constants.Hutang.Status.Lunas, true)
                 saveValidateImageData(imageListAdapter, isNew, hutang, huCil, listener)

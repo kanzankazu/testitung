@@ -30,7 +30,6 @@ public class CustomScrollView extends NestedScrollView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-
         if (isEnableScrolling()) {
             return super.onInterceptTouchEvent(ev);
         } else {
