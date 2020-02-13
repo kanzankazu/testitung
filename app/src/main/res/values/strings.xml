@@ -24,6 +24,7 @@
     <string name="confirm_close">Tutup</string>
 
     <!--Message-->
+    <string name="message_info_under_devlopment">Sedang dalam pengembangan, silahkan tunggu!!</string>
     <string name="message_field_empty">Data ini tidak boleh kosong</string>
     <string name="message_field_empty_nominal">Nominal tidak boleh kosong</string>
     <string name="message_radio_empty">Anda belum memilih!!!</string>

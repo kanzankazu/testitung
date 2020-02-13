@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
@@ -477,8 +478,10 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     public static void getHutangs(Boolean isSingleCall, ValueListenerData listenerData) {
+        DatabaseReference reference = getRootRef();
+
         if (isSingleCall) {
-            getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
+            reference.child(Constants.FirebaseDatabase.TABLE.HUTANG)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -497,7 +500,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         }
                     });
         } else {
-            getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
+            reference.child(Constants.FirebaseDatabase.TABLE.HUTANG)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

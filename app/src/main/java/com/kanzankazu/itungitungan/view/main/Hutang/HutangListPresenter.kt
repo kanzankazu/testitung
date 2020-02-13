@@ -10,7 +10,9 @@ import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import java.util.*
 
-class HutangListPresenter(val mActivity: Activity, private val mView: HutangListContract.View) : HutangListContract.Presenter {
+class HutangListPresenter(val mActivity: Activity, private val mView: HutangListContract.View) : HutangListContract.Presenter, FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+    var mInteractor = HutangListInteractor(mActivity, this)
+
     override fun showProgressDialogPresenter() {
         mView.showProgressDialogView()
     }
@@ -20,6 +22,14 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     }
 
     override fun onNoConnection(message: String?) {
+        mView.showSnackbarView(message)
+    }
+
+    override fun onSuccessSaveUpdate(message: String?) {
+        mView.showSnackbarView(message)
+    }
+
+    override fun onFailureSaveUpdate(message: String?) {
         mView.showSnackbarView(message)
     }
 
@@ -79,16 +89,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.hutangPembayaranSub[i].approvalCreditor = true
         }
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-            override fun onSuccessSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-
-            override fun onFailureSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-        })
-
+        mInteractor.updateHutang(hutang, this)
     }
 
     override fun approveHutangNew(hutang: Hutang, isCancel: Boolean) {
@@ -102,15 +103,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                 hutang.debtorApprovalNew = true
             }
 
-            FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-                override fun onSuccessSaveUpdate(message: String?) {
-                    mView.showToastView(message)
-                }
-
-                override fun onFailureSaveUpdate(message: String?) {
-                    mView.showToastView(message)
-                }
-            })
+            mInteractor.updateHutang(hutang, this)
         } else {
             hapusHutang(hutang)
         }
@@ -127,15 +120,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.debtorApprovalEdit = true
         }
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-            override fun onSuccessSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-
-            override fun onFailureSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-        })
+        mInteractor.updateHutang(hutang,this)
     }
 
     override fun requestHutangHapus(hutang: Hutang, isCancel: Boolean) {
@@ -153,15 +138,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             }
         }
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-            override fun onSuccessSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-
-            override fun onFailureSaveUpdate(message: String?) {
-                mView.showToastView(message)
-            }
-        })
+        mInteractor.updateHutang(hutang,this)
     }
 
     override fun approveHutangHapus(hutang: Hutang) {
@@ -174,7 +151,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.creditorApprovalDelete = true
         }
 
-        FirebaseDatabaseHandler.updateHutang(mActivity, hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+        mInteractor.updateHutang(hutang, object : FirebaseDatabaseUtil. ValueListenerStringSaveUpdate {
             override fun onSuccessSaveUpdate(message: String?) {
                 hapusHutangCheckImage(hutang)
                 mView.showToastView(message)

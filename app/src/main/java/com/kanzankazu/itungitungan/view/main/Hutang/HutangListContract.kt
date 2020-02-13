@@ -1,6 +1,7 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
 import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.view.base.BasePresenterContractWOCheckMessage
 import com.kanzankazu.itungitungan.view.base.BaseViewContract
 import java.util.*
@@ -35,7 +36,7 @@ interface HutangListContract {
     }
 
     interface Interactor {
-
+        fun updateHutang(hutang: Hutang, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
     }
 
 }

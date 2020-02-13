@@ -30,6 +30,12 @@ android {
             buildConfigField('String', 'APP_NAME', '"ItungItungan"')
             buildConfigField('String', 'FIREBASE_SERVER_KEY','""')
             buildConfigField('String', 'BASE_URL', '""')
+            resValue "string", "ads_id_app", "ca-app-pub-8192956138167564~3659538988"
+            resValue "string", "ads_id_banner", "ca-app-pub-8192956138167564/4031622814"
+            resValue "string", "ads_id_interstitial", "ca-app-pub-8192956138167564/8218279836"
+            resValue "string", "ads_id_native", "ca-app-pub-8192956138167564/8958314731"
+            resValue "string", "ads_id_reward_video", "ca-app-pub-8192956138167564/8900806110"
+
         }
         DevApp {
             applicationIdSuffix ".dev"
@@ -41,6 +47,11 @@ android {
             buildConfigField('String', 'APP_NAME', '"ItungItungan"')
             buildConfigField('String', 'FIREBASE_SERVER_KEY','"AAAAc2iYNhk:APA91bFbh-OEHt-v6ogqw5Gfy_gH_oip_6it48HpWRNddRvjXDkpBUiTjWJaM4azM1GBg-B1RYwlwcDHT_1q1uIeU_jYdn3Cny2EaoRe6W1mF0Ft-YfzxBCnjzq_oL5DQvNmJHmrmEKj"')
             buildConfigField('String', 'BASE_URL', '""')
+            resValue "string", "ads_id_app", "ca-app-pub-3940256099942544~3347511713"
+            resValue "string", "ads_id_banner", "ca-app-pub-3940256099942544/6300978111"
+            resValue "string", "ads_id_interstitial", "ca-app-pub-3940256099942544/1033173712"
+            resValue "string", "ads_id_native", "ca-app-pub-3940256099942544/2247696110"
+            resValue "string", "ads_id_reward_video", "ca-app-pub-3940256099942544/5224354917"
         }
         DemoApp {
             applicationIdSuffix ".dev"
@@ -52,6 +63,11 @@ android {
             buildConfigField('String', 'APP_NAME', '"ItungItungan"')
             buildConfigField('String', 'FIREBASE_SERVER_KEY','"AAAAc2iYNhk:APA91bFbh-OEHt-v6ogqw5Gfy_gH_oip_6it48HpWRNddRvjXDkpBUiTjWJaM4azM1GBg-B1RYwlwcDHT_1q1uIeU_jYdn3Cny2EaoRe6W1mF0Ft-YfzxBCnjzq_oL5DQvNmJHmrmEKj"')
             buildConfigField('String', 'BASE_URL', '""')
+            resValue "string", "ads_id_app", "ca-app-pub-3940256099942544~3347511713"
+            resValue "string", "ads_id_banner", "ca-app-pub-3940256099942544/6300978111"
+            resValue "string", "ads_id_interstitial", "ca-app-pub-3940256099942544/1033173712"
+            resValue "string", "ads_id_native", "ca-app-pub-3940256099942544/2247696110"
+            resValue "string", "ads_id_reward_video", "ca-app-pub-3940256099942544/5224354917"
         }
     }
     signingConfigs {
@@ -144,7 +160,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:12.0.1'
     implementation 'com.google.android.gms:play-services-analytics:12.0.1'
 
-    implementation 'com.google.firebase:firebase-ads:12.0.1'
+    implementation 'com.google.firebase:firebase-ads:17.0.0'
     implementation 'com.google.firebase:firebase-messaging:12.0.1'
     implementation 'com.google.firebase:firebase-crash:12.0.1'
     implementation 'com.google.firebase:firebase-auth:12.0.1'

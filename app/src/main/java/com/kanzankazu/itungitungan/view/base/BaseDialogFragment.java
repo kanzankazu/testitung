@@ -6,8 +6,8 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.R;
@@ -30,8 +34,10 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
     public FirebaseLoginUtil loginUtil;
     public FirebaseAuth mAuth;
     public FirebaseUser firebaseUser;
-
+    private InterstitialAd mInterstitialAd;
+    private RewardedVideoAd mRewardedVideoAd;
     public AppCompatActivity mActivity;
+
     ProgressDialogConnection progressDialogConnection = new ProgressDialogConnection();
 
     @Override
@@ -67,12 +73,20 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
 
     @Override
     public void onResume() {
+        mRewardedVideoAd.resume(mActivity);
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mRewardedVideoAd.pause(mActivity);
+        super.onPause();
     }
 
     @Override
     public void onDestroy() {
         progressDialogConnection.dismissProgressDialog();
+        mRewardedVideoAd.destroy(mActivity);
         super.onDestroy();
     }
 
@@ -167,7 +181,7 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
         }
     }
 
-    public void initAds(@IdRes int id) {
+    public void initBannerAds(@IdRes int id) {
         AdView mAdView = mActivity.findViewById(id);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -198,5 +212,41 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
                 SystemUtil.visibileAnim(mActivity, mAdView, View.VISIBLE, R.anim.masuk_dari_bawah);
             }
         });
+    }
+
+    public void setupInterstitialAds() {
+        mInterstitialAd = new InterstitialAd(mActivity);
+        mInterstitialAd.setAdUnitId(getString(R.string.ads_id_interstitial));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+    private void showInterstitialAds() {
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            Log.d("Lihat", "showInterstitialAd Base : " + "The interstitial wasn't loaded yet.");
+        }
+    }
+
+    public void setupRewardVideoLegacyApi(RewardedVideoAdListener listener) {
+        MobileAds.initialize(mActivity, getString(R.string.ads_id_app));
+        // Use an activity context to get the rewarded video instance.
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(mActivity);
+        mRewardedVideoAd.setRewardedVideoAdListener(listener);
+
+        loadRewardedVideoAd();
+    }
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd(mActivity.getString(R.string.ads_id_reward_video), new AdRequest.Builder().build());
+    }
+
+    private void showRewardedAds() {
+        if (mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.show();
+        } else {
+            Log.d("Lihat", "showRewardedAds Base : " + "The reward video wasn't loaded yet.");
+        }
     }
 }

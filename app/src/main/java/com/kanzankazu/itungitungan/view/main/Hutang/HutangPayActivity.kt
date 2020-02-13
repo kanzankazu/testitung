@@ -1,7 +1,6 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.kanzankazu.itungitungan.Constants
@@ -17,7 +16,6 @@ import com.kanzankazu.itungitungan.util.widget.gallery2.ImageModel
 import com.kanzankazu.itungitungan.view.adapter.ImageListAdapter
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_hutang_pay.*
-import java.io.File
 
 
 class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
@@ -47,8 +45,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == pictureUtil2.REQUEST_IMAGE_CAMERA || requestCode == pictureUtil2.REQUEST_IMAGE_GALLERY) {
             mCurrentPhotoPath = pictureUtil2.onActivityResult(requestCode, resultCode, data)
-            //mCurrentPhotoPathUri = Uri.fromFile(File(mCurrentPhotoPath))
-            imageListAdapter.addData(ImageModel(mCurrentPhotoPath, ""))
+            if (mCurrentPhotoPath.isNotEmpty()) imageListAdapter.addData(ImageModel(mCurrentPhotoPath, ""))
         }
     }
 

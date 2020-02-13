@@ -29,7 +29,7 @@ class NotificationsFragment : Fragment() {
             return fragment
         }
 
-        fun newInstance(): Fragment {
+        fun newInstance(): NotificationsFragment {
             return NotificationsFragment()
         }
     }

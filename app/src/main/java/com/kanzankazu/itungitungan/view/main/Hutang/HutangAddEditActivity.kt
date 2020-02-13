@@ -73,6 +73,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         if (requestCode == pictureUtil2.REQUEST_IMAGE_CAMERA || requestCode == pictureUtil2.REQUEST_IMAGE_GALLERY) {
             val mCurrentPhotoPath = pictureUtil2.onActivityResult(requestCode, resultCode, data)
             imageListAdapter.addDataFirst(ImageModel(mCurrentPhotoPath, ""))
+            checkImageData()
         } else if (requestCode == AndroidUtil.REQ_CODE_PICK_EMAIL_ACCOUNT) {
             val emailAccountResult = AndroidUtil.pickEmailAccountResult(requestCode, resultCode, data)
             mPresenter.getSuggestUserValidate(emailAccountResult, et_hutang_add_user)
@@ -338,9 +339,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             } else if (bundle.containsKey(Constants.Bundle.HUTANG_ID)) {
                 val hutangId = bundle.getString(Constants.Bundle.HUTANG_ID, "")
 
-                if (hutangId.isNotEmpty()){
+                if (hutangId.isNotEmpty()) {
                     mPresenter.getHutangByHid(hutangId)
-                }else{
+                } else {
                     showToast(getString(R.string.message_field_empty))
                     finish()
                 }
@@ -348,6 +349,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             //isFromValuationActivity = bundle.getBoolean(Constants.ScreenFlag.IS_FROM_VALUATION_ACTIVITY)
         }
 
+        if (isEdit) {
+            setBundleData()
+            setFamilyViewOnly(!isIFamily)
+
+            Utils.setupAppToolbarForActivity(this, toolbar, "Ubah hutang Piutang")
+        } else {
+            Utils.setupAppToolbarForActivity(this, toolbar, "Tambah hutang Piutang")
+        }
     }
 
     private fun setPreBundleData() {
@@ -358,15 +367,6 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         isIFamily = if (hutang.creditorFamilyId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorFamilyId, true) else false
         isIFamily = if (hutang.debtorFamilyId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorFamilyId, true) else false
         isDataPenghutang = hutang.hutangRadioIndex == 0
-
-        if (isEdit) {
-            setBundleData()
-            setFamilyViewOnly(!isIFamily)
-
-            Utils.setupAppToolbarForActivity(this, toolbar, "Ubah hutang Piutang")
-        } else {
-            Utils.setupAppToolbarForActivity(this, toolbar, "Tambah hutang Piutang")
-        }
     }
 
     private fun setBundleData() {
@@ -439,6 +439,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
         if (hutang.hutangProofImage.isNotEmpty()) {
             imageListAdapter.addDatasString(hutang.hutangProofImage, "")
+            checkImageData()
         }
     }
 
@@ -547,6 +548,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         recyclerView.adapter = imageListAdapter
     }
 
+    private fun checkImageData(){
+        if (imageListAdapter.getDatas().isNotEmpty()){
+            rv_hutang_add_image.visibility=View.VISIBLE
+        }else{
+            rv_hutang_add_image.visibility=View.GONE
+        }
+    }
+
     private fun setListSuggestFamilyAdapter(userSuggest: MutableList<User>) {
         userSuggestAdapter = UserSuggestAdapter(this@HutangAddEditActivity, R.layout.activity_hutang_add_edit, R.id.et_hutang_add_desc, userSuggest)
         et_hutang_add_user_family.setAdapter(userSuggestAdapter)
@@ -621,6 +630,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                                     object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
                                         override fun isFinised() {
                                             imageListAdapter.removeAt(position)
+                                            checkImageData()
                                         }
 
                                         override fun isFailed(message: String) {
@@ -635,6 +645,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                         })
                     } else {
                         imageListAdapter.removeAt(position)
+                        checkImageData()
                     }
                 }
 

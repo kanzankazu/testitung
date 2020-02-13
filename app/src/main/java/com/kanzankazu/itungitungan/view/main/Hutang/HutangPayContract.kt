@@ -33,7 +33,6 @@ interface HutangPayContract {
 
     interface Interactor {
         fun UpdateHutang(hutang: Hutang, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
-
     }
 
 }

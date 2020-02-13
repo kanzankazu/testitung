@@ -106,7 +106,7 @@ public class DialogUtil {
      * @param titleButton1               text untuk tombol utama
      * @param titleButton2               text untuk tombol ke 2
      * @param isCancelable               apakah bisa di tutup, dan jika bisa akan ada tanda silang di pojok kanan atas
-     * @param assetHardCode              gambar yang di tampilkan jika `imageUrl` tidak ada (berbentuk int drawable / atau resourceId)
+     * @param assetHardCode              gambar yang di tampilkan jika `imageUrl` tidak ada (jika = 0 {imageIntro Default}/ jika = -1 {imgIntro GONE})
      */
     public static void showIntroductionDialog(Activity mActivity, String imageUrl, String title, String message, String titleButton1, String titleButton2, boolean isCancelable, int assetHardCode, IntroductionButtonListener introductionButtonListener) {
         if (!mActivity.isFinishing()) {
@@ -137,10 +137,12 @@ public class DialogUtil {
             } else {
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500);
                 imgIntro.setLayoutParams(layoutParams);
-                if (assetHardCode != -1) {
-                    Glide.with(mActivity).load(assetHardCode).into(imgIntro);
-                } else {
+                if (assetHardCode == -1) {
+                    imgIntro.setVisibility(View.GONE);
+                } else if (assetHardCode == 0) {
                     Glide.with(mActivity).load(R.mipmap.ic_launcher).into(imgIntro);
+                } else {
+                    Glide.with(mActivity).load(assetHardCode).into(imgIntro);
                 }
             }
 

@@ -33,6 +33,7 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
     }
 
     override fun onNoConnection(message: String?) {
+        dismissProgressDialogPresenter()
         mView.showSnackbarView(message)
     }
 
@@ -223,23 +224,29 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
                     hutang.hutangPembayaranSub.clear()
                 }
 
-                hutang.hutangPembayaranSub.clear()
-
                 status = Constants.Hutang.Status.Berlebih
             }
             //End checkNominal
 
             DialogUtil.showConfirmationDialog(
-                    mActivity,
-                    "Info",
-                    when (status) {
-                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
-                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
-                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
-                    }
+                mActivity,
+                "Info",
+                when (status) {
+                    Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+                    Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+                    else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
+                }
             ) {
-                huCil.approvalCreditor = status.equals(Constants.Hutang.Status.Lunas, true)
-                saveValidateImageData(imageListAdapter, isNew, hutang, huCil, listener)
+                when (status) {
+                    Constants.Hutang.Status.Berlebih -> {
+                        val huCilEmpty = HutangPembayaran()
+                        saveValidateImageData(imageListAdapter, isNew, hutang, huCilEmpty, listener)
+                    }
+                    else -> {
+                        huCil.approvalCreditor = status.equals(Constants.Hutang.Status.Lunas, true)
+                        saveValidateImageData(imageListAdapter, isNew, hutang, huCil, listener)
+                    }
+                }
             }
         } else {
             mView.showSnackbarView(mActivity.getString(R.string.message_validation_failed))
@@ -288,14 +295,17 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
 
     override fun saveUpdateData(hutang: Hutang, huCil: HutangPembayaran, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
         hutang.hutangEditableis = hutang.creditorId.isEmpty()
-        hutang.hutangPembayaranSub.add(huCil)
+        if (huCil.hId.isNotEmpty()) hutang.hutangPembayaranSub.add(huCil)
 
+        showProgressDialogPresenter()
         mInteractor.UpdateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
             override fun onSuccessSaveUpdate(message: String?) {
+                dismissProgressDialogPresenter()
                 listener.onSuccessSaveUpdate(message)
             }
 
             override fun onFailureSaveUpdate(message: String?) {
+                dismissProgressDialogPresenter()
                 listener.onFailureSaveUpdate(message)
             }
         })

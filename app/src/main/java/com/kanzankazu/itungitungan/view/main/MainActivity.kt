@@ -34,7 +34,7 @@ class MainActivity : BaseActivity() {
 
         arrayOfMenuId = fragmentUtil.intArray(R.id.menuHome, R.id.menuDash, R.id.menuNotif, R.id.menuProfile)
         arrayOfFragments = fragmentUtil.intFragment(HomeFragment.newInstance(), DashboardFragment.newInstance(), NotificationsFragment.newInstance(), ProfileFragment.newInstance())
-        fragmentUtil.setupBottomNavigationView(bnv_main, arrayOfMenuId, HomeFragment.newInstance(), true, *arrayOfFragments)
+        fragmentUtil.setupBottomNavigationView(bnv_main, arrayOfMenuId, HomeFragment.newInstance(), false, *arrayOfFragments)
     }
 
     private fun initListener() {

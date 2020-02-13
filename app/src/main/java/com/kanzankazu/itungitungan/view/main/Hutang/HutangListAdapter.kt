@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -442,31 +443,23 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
 
             if (!TextUtils.isEmpty(charSequence)) {
                 val arrayList1 = ArrayList<Hutang>()
+                Log.d("Lihat performFiltering SubjectDataFilter", charSequence)
 
-                for (subject in mainModel) {
-                    /*if (subject.hutangRadioIndex == 0) {//saya berhutang(piutang)
-                        if (subject.debtorEmail.equals(charSequence.toString(),true) ||
-                            subject.debtorName.equals(charSequence.toString(),true) ||
-                            subject.hutangNominal.equals(charSequence.toString(),true)
-                        ) {
-                            arrayList1.add(subject)
-                        }
-                    } else {// saya pemberi hutang(penghutang)
-                        if (subject.creditorEmail.equals(charSequence.toString(),true) ||
-                            subject.creditorName.equals(charSequence.toString(),true) ||
-                            subject.hutangNominal.equals(charSequence.toString(),true)
-                        ) {
-                            arrayList1.add(subject)
-                        }
-                    }*/
-                    if (
-                        charSequence.contains(subject.debtorEmail) ||
-                        charSequence.contains(subject.debtorName) ||
-                        charSequence.contains(subject.creditorEmail) ||
-                        charSequence.contains(subject.creditorName) ||
-                        charSequence.contains(subject.hutangNominal)
-                    ) {
-                        arrayList1.add(subject)
+                for (hutang in mainModel) {
+                    var isIInclude = if (hutang.debtorCreditorId.isNotEmpty()) UserPreference.getInstance().uid.contains(hutang.debtorCreditorId, true) else false
+                    val isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
+                    val isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
+                    var isIFamily1 = if (hutang.creditorFamilyId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorFamilyId, true) else false
+                    var isIFamily2 = if (hutang.debtorFamilyId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorFamilyId, true) else false
+                    var isDataPenghutang = hutang.hutangRadioIndex == 0
+                    var isLunas = hutang.statusLunas
+
+                    if (isIPenghutang && (hutang.creditorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) || hutang.creditorName.toLowerCase().contains(charSequence.toString().toLowerCase()))) {
+                        arrayList1.add(hutang)
+                    } else if (isIPiutang && (hutang.debtorEmail.toLowerCase().contains(charSequence.toString().toLowerCase()) || hutang.debtorName.toLowerCase().contains(charSequence.toString().toLowerCase()))) {
+                        arrayList1.add(hutang)
+                    } else if (hutang.hutangNominal.toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        arrayList1.add(hutang)
                     }
                 }
 

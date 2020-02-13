@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kanzankazu.itungitungan.Constants;
@@ -27,6 +29,7 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
     public FirebaseLoginUtil loginUtil;
     public FirebaseAuth mAuth;
     public FirebaseUser firebaseUser;
+    private InterstitialAd mInterstitialAd;
 
     ProgressDialogConnection progressDialogConnection = new ProgressDialogConnection();
 
@@ -143,7 +146,7 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
         }
     }
 
-    public void initAds(@IdRes int id) {
+    public void initBannerAds(@IdRes int id) {
         AdView mAdView = findViewById(id);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -174,5 +177,20 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
                 SystemUtil.visibileAnim(getBaseContext(), mAdView, View.VISIBLE, R.anim.masuk_dari_bawah);
             }
         });
+    }
+
+    public void setupInterstitialAds() {
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.ads_id_interstitial));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+    private void showInterstitialAds() {
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            Log.d("Lihat", "showInterstitialAd BaseActivity : " + "The interstitial wasn't loaded yet.");
+        }
     }
 }

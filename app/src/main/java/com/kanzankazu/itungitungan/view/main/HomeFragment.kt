@@ -32,7 +32,7 @@ class HomeFragment : BaseFragment(), HomeContract.View {
             return fragment
         }
 
-        fun newInstance(): Fragment {
+        fun newInstance(): HomeFragment {
             return HomeFragment()
         }
     }

@@ -34,7 +34,7 @@ class DashboardFragment : BaseFragment(), DashboardFragmentContract.View, View.O
             return fragment
         }
 
-        fun newInstance(): Fragment {
+        fun newInstance(): DashboardFragment {
             return DashboardFragment()
         }
 
@@ -90,11 +90,9 @@ class DashboardFragment : BaseFragment(), DashboardFragmentContract.View, View.O
     }
 
     override fun showHideHutangProgressView(isShow: Boolean) {
-        if (isShow && pb_dash_hutang.visibility == View.GONE) {
-            pb_dash_hutang.visibility = View.VISIBLE
+        if (isShow) {
             ll_dash_hutang_status.visibility = View.GONE
         } else {
-            pb_dash_hutang.visibility = View.GONE
             ll_dash_hutang_status.visibility = View.VISIBLE
         }
     }

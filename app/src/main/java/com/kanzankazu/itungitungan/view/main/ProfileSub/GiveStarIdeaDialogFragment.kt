@@ -4,13 +4,14 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.kanzankazu.itungitungan.R
-import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.DialogUtil
+import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseDialogFragment
 import kotlinx.android.synthetic.main.frgament_give_star_dialog.*
 
@@ -18,21 +19,23 @@ import kotlinx.android.synthetic.main.frgament_give_star_dialog.*
 /**
  * Created by Faisal Bahri on 2020-02-04.
  */
-class GiveStarDialogFragment : BaseDialogFragment(), GiveStarDialogContract.View {
+class GiveStarIdeaDialogFragment : BaseDialogFragment(), GiveStarDialogContract.View {
+
+    private var isGiveStar: Boolean = true
 
     companion object {
         private const val ARG_PARAM1 = "arg_param"
 
-        fun newInstance(hutang: Hutang): GiveStarDialogFragment {
-            val fragment = GiveStarDialogFragment()
+        fun newInstance(isGiveStar: Boolean): GiveStarIdeaDialogFragment {
+            val fragment = GiveStarIdeaDialogFragment()
             val args = Bundle()
-            //args.putParcelable(ARG_PARAM1, hutang)
+            if (args.containsKey(ARG_PARAM1)) args.putBoolean(ARG_PARAM1, isGiveStar)
             fragment.arguments = args
             return fragment
         }
 
-        fun newInstance(): GiveStarDialogFragment {
-            return GiveStarDialogFragment()
+        fun newInstance(): GiveStarIdeaDialogFragment {
+            return GiveStarIdeaDialogFragment()
         }
     }
 
@@ -60,7 +63,7 @@ class GiveStarDialogFragment : BaseDialogFragment(), GiveStarDialogContract.View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            //hutang = arguments!!.getParcelable(ARG_PARAM1)
+            if (arguments!!.containsKey(ARG_PARAM1)) isGiveStar = arguments!!.getBoolean(ARG_PARAM1)
         }
 
         // Pick a style based on the num.
@@ -121,28 +124,58 @@ class GiveStarDialogFragment : BaseDialogFragment(), GiveStarDialogContract.View
     }
 
     private fun initView() {
-
+        if (isGiveStar) {
+            ll_give_star_idea_star.visibility = View.VISIBLE
+            iv_give_star_idea_idea.visibility = View.GONE
+        } else {
+            ll_give_star_idea_star.visibility = View.GONE
+            iv_give_star_idea_idea.visibility = View.VISIBLE
+        }
     }
 
     private fun initListener() {
-        rb_give_star_donate.setOnRatingBarChangeListener { ratingBar, _, _ ->
+        rb_give_star_idea_star.setOnRatingBarChangeListener { ratingBar, _, _ ->
+            Log.d("Lihat initListener GiveStarIdeaDialogFragment", ratingBar.rating.toInt().toString())
+            when {
+                ratingBar.rating.toInt() < 3 -> til_give_star_idea_note.visibility = View.VISIBLE
+                else -> {
+                    til_give_star_idea_note.visibility = View.GONE
+                    Utils.closeSoftKeyboard(mActivity)
+                }
+            }
+            tv_give_star_idea_send.isEnabled = ratingBar.rating.toInt() != 0
+
             when (ratingBar.rating.toInt()) {
-                1 -> tv_give_star_result.text = "Very bad"
-                2 -> tv_give_star_result.text = "Need some improvement"
-                3 -> tv_give_star_result.text = "Good"
-                4 -> tv_give_star_result.text = "Great"
-                5 -> tv_give_star_result.text = "Awesome. I love it"
-                else -> tv_give_star_result.text = ""
+                1 -> tv_give_star_idea_star_result.text = "Tidak Bagus, Masih banyak kekurangan"
+                2 -> tv_give_star_idea_star_result.text = "Lumayan, Butuh pengembangan"
+                3 -> tv_give_star_idea_star_result.text = "Bagus"
+                4 -> tv_give_star_idea_star_result.text = "Sangat Bagus"
+                5 -> tv_give_star_idea_star_result.text = "Keren, Saya suka aplikasi ini"
+                else -> tv_give_star_idea_star_result.text = ""
             }
         }
-        tv_give_star_send.setOnClickListener {
-            DialogUtil.showIntroductionDialog(mActivity, "", "Informasi", "Untuk saat ini aplikasi belum terupload ke playstore, support kami terus agar bisa menjadikan aplikasi ini go internasional.", "Donasi", "Tutup", false, -1, object : DialogUtil.IntroductionButtonListener {
-                override fun onFirstButtonClick() {}
+        tv_give_star_idea_send.setOnClickListener {
+            if (isGiveStar) {
+                DialogUtil.showIntroductionDialog(
+                    mActivity,
+                    "",
+                    "Informasi",
+                    "Untuk saat ini aplikasi belum terupload ke playstore, support kami terus agar bisa menjadikan aplikasi ini go internasional.",
+                    "Donasi",
+                    "Tutup",
+                    false,
+                    -1,
+                    object : DialogUtil.IntroductionButtonListener {
+                        override fun onFirstButtonClick() {}
 
-                override fun onSecondButtonClick() {}
+                        override fun onSecondButtonClick() {}
 
-            })
+                    }
+                )
+            } else {
+                showToast(mActivity.getString(R.string.message_info_under_devlopment))
+            }
         }
-        tv_give_star_close.setOnClickListener { dismiss() }
+        tv_give_star_idea_close.setOnClickListener { dismiss() }
     }
 }

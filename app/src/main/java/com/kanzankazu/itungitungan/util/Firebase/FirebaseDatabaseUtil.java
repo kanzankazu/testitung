@@ -10,9 +10,18 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FirebaseDatabaseUtil {
 
     static DatabaseReference getRootRef() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        DatabaseReference reference = firebaseDatabase.getReference();
+        DatabaseReference reference = database.getReference();
+
+        return reference;
+    }
+
+    static DatabaseReference getRootRefPersistence() {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference reference = database.getReference();
 
         return reference;
     }

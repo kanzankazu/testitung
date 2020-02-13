@@ -91,7 +91,14 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     }
 
     override fun onHutangHapusClick(hutang: Hutang, position: Int, isHasReqDelete: Boolean) {
-        removeDeleteDialog(hutang, isHasReqDelete)
+        val isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
+        val isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
+
+        if ((isIPenghutang && hutang.creditorId.isEmpty())||(isIPiutang && hutang.debtorId.isEmpty())){
+            mPresenter.hapusHutangCheckImage(hutang)
+        }else{
+            dialogDeleteRequestHutang(hutang, isHasReqDelete)
+        }
     }
 
     override fun onHutangFilter(hutangs: MutableList<Hutang>) {
@@ -245,7 +252,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         startActivity(intent)
     }
 
-    private fun removeDeleteDialog(hutang: Hutang, isHasReqDelete: Boolean) {
+    private fun dialogDeleteRequestHutang(hutang: Hutang, isHasReqDelete: Boolean) {
         DialogUtil.showIntroductionDialog(
             this,
             "",
@@ -262,13 +269,10 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             -1,
             object : DialogUtil.IntroductionButtonListener {
                 override fun onFirstButtonClick() {
-                    if (!isHasReqDelete) {
-                        mPresenter.requestHutangHapus(hutang, false)
-                        if (hutang.hutangProofImage.isNotEmpty()) {
-                            mPresenter.hapusHutangCheckImage(hutang)
-                        }
-                    } else {
+                    if (isHasReqDelete) {
                         mPresenter.requestHutangHapus(hutang, true)
+                    } else {
+                        mPresenter.requestHutangHapus(hutang, false)
                     }
                 }
 

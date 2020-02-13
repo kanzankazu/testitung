@@ -123,9 +123,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_margin_5dp"
-                android:fontFamily="@font/avenir_next_ltpro_regular"
                 android:text="@string/hutang_invite_info_penghutang_piutang"
-                android:textColor="@color/red"
+                android:textColor="@color/blue"
                 android:textSize="@dimen/small_font_size" />
 
             <LinearLayout
@@ -169,9 +168,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_margin_5dp"
-                android:fontFamily="@font/avenir_next_ltpro_regular"
                 android:text="@string/hutang_invite_info_keluarga"
-                android:textColor="@color/red"
+                android:textColor="@color/blue"
                 android:textSize="@dimen/small_font_size" />
 
             <android.support.design.widget.TextInputLayout
@@ -251,10 +249,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_margin_20dp"
-                android:fontFamily="@font/avenir_next_ltpro_regular"
-                android:text="@string/hutang_info_pay"
-                android:textColor="@color/red"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
+                android:text="@string/hutang_invite_info_keluarga"
+                android:textColor="@color/blue"
                 android:textSize="@dimen/small_font_size" />
 
             <Switch
@@ -408,9 +405,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
+                            android:visibility="gone"
                             tools:itemCount="5"
                             tools:layoutManager="LinearLayoutManager"
-                            tools:listitem="@layout/item_image" />
+                            tools:listitem="@layout/item_image"
+                            tools:visibility="visible" />
 
                     </LinearLayout>
                 </LinearLayout>

@@ -283,15 +283,6 @@
 
                         </LinearLayout>
                     </LinearLayout>
-
-                    <ProgressBar
-                        android:id="@+id/pb_dash_hutang"
-                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
-
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>

@@ -2,7 +2,6 @@ package com.kanzankazu.itungitungan.view.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +15,7 @@ import com.kanzankazu.itungitungan.view.base.BaseFragment
 import com.kanzankazu.itungitungan.view.main.ProfileSub.AboutActivity
 import com.kanzankazu.itungitungan.view.main.ProfileSub.AccountActivity
 import com.kanzankazu.itungitungan.view.main.ProfileSub.DonateOptionDialogFragment
-import com.kanzankazu.itungitungan.view.main.ProfileSub.GiveStarDialogFragment
+import com.kanzankazu.itungitungan.view.main.ProfileSub.GiveStarIdeaDialogFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 
@@ -45,7 +44,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
             return fragment
         }*/
 
-        fun newInstance(): Fragment {
+        fun newInstance(): ProfileFragment {
             return ProfileFragment()
         }
     }
@@ -77,9 +76,14 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         Log.d("Lihat", "onActivityResult ProfileFragment2 $requestCode , $resultCode")
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        initContent()
+    }
+
     override fun setProfileOptionList() {
         val profileModels = arrayListOf<ProfileAccountModel>()
-        profileModels.add(ProfileAccountModel(R.drawable.ic_profile, mActivity.getString(R.string.account), "", true))
         profileModels.add(ProfileAccountModel(R.drawable.ic_share, mActivity.getString(R.string.share_friend_family), "", true))
         profileModels.add(ProfileAccountModel(R.drawable.ic_idea, mActivity.getString(R.string.idea), "", true))
         profileModels.add(ProfileAccountModel(R.drawable.ic_help, mActivity.getString(R.string.help), "", true))
@@ -91,14 +95,13 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
 
     override fun itemAdapterClick(data: ProfileAccountModel) {
         when (data.title) {
-            mActivity.getString(R.string.account) -> {
-                Utils.intentTo(mActivity, AccountActivity::class.java, false)
-            }
             mActivity.getString(R.string.share_friend_family) -> {
                 share()
             }
             mActivity.getString(R.string.idea) -> {
-                showSnackbar("2")
+                val fm = mActivity.supportFragmentManager
+                val giveStarDialogFragment = GiveStarIdeaDialogFragment.newInstance(false)
+                giveStarDialogFragment.show(fm, "fragment_giveStarDialogFragment")
             }
             mActivity.getString(R.string.help) -> {
                 showSnackbar("3")
@@ -110,7 +113,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
             }
             mActivity.getString(R.string.give_star) -> {
                 val fm = mActivity.supportFragmentManager
-                val giveStarDialogFragment = GiveStarDialogFragment.newInstance()
+                val giveStarDialogFragment = GiveStarIdeaDialogFragment.newInstance(true)
                 giveStarDialogFragment.show(fm, "fragment_giveStarDialogFragment")
             }
             mActivity.getString(R.string.about) -> {
@@ -190,11 +193,18 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
 
     private fun initListener() {
         iv_profile_settings.setOnClickListener { }
-        civ_profile_photo.setOnClickListener { }
+        civ_profile_photo.setOnClickListener {
+            moveTo(AccountActivity::class.java, false)
+        }
+        civ_profile_edit.setOnClickListener { }
         cv_profile_signout.setOnClickListener {
             showProgressDialog()
             loginUtil.signOut(true)
         }
+    }
+
+    private fun moveTo(targetClass: Class<*>, isFinish: Boolean) {
+        Utils.intentTo(mActivity, targetClass, isFinish)
     }
 
     private fun setProfileData() {

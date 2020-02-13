@@ -4,10 +4,13 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import com.google.android.gms.ads.reward.RewardItem
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.view.base.BaseDialogFragment
@@ -18,6 +21,8 @@ import kotlinx.android.synthetic.main.fragment_donate_option_dialog.*
  * Created by Faisal Bahri on 2020-02-04.
  */
 class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContract.View {
+
+    private var isRewardVideoComplete: Boolean = false
 
     companion object {
         private const val ARG_PARAM1 = "arg_param"
@@ -94,6 +99,36 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
         super.onViewCreated(view, savedInstanceState)
 
         //mPresenter = DonateOptionDialogPresenter(activity as AppCompatActivity, this)
+        setupRewardVideoLegacyApi(object : RewardedVideoAdListener {
+            override fun onRewardedVideoAdClosed() {
+                if (isRewardVideoComplete) dialogViewAgain()
+            }
+
+            override fun onRewardedVideoAdLeftApplication() {
+            }
+
+            override fun onRewardedVideoAdLoaded() {
+            }
+
+            override fun onRewardedVideoAdOpened() {
+            }
+
+            override fun onRewardedVideoCompleted() {
+                isRewardVideoComplete = true
+            }
+
+            override fun onRewarded(p0: RewardItem?) {
+                Log.d("Lihat onRewarded DonateOptionDialogFragment", p0!!.type)
+                Log.d("Lihat onRewarded DonateOptionDialogFragment", p0.amount.toString())
+            }
+
+            override fun onRewardedVideoStarted() {
+                isRewardVideoComplete = false
+            }
+
+            override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+            }
+        })
 
         initView()
         initListener()
@@ -129,5 +164,9 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
         ll_donate_option_donate.setOnClickListener { }
         ll_donate_option_ads.setOnClickListener { }
         tv_donate_option_close.setOnClickListener { dismiss() }
+    }
+
+    private fun dialogViewAgain() {
+
     }
 }
