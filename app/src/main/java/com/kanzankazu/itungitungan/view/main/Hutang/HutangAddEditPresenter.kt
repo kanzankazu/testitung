@@ -206,7 +206,7 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
                 FirebaseDatabaseHandler.getUserByUid(inviteUid, object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
                     override fun onSuccessDataExist(dataSnapshot: DataSnapshot, isExsist: Boolean?) {
                         val user: User? = dataSnapshot.getValue(User::class.java)
-                        MyFirebaseMessagingUtil.makeNotificationToken(mActivity, user!!.tokenFcm, title, message, type, "", "")
+                        FirebaseMessagingUtil.makeNotificationToken(mActivity, user!!.tokenFcm, title, message, type, "", "")
                     }
 
                     override fun onFailureDataExist(message: String?) {

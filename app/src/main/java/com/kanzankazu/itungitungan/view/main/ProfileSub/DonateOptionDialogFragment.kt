@@ -13,6 +13,7 @@ import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.util.DialogUtil
 import com.kanzankazu.itungitungan.view.base.BaseDialogFragment
 import kotlinx.android.synthetic.main.fragment_donate_option_dialog.*
 
@@ -101,6 +102,8 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
         //mPresenter = DonateOptionDialogPresenter(activity as AppCompatActivity, this)
         setupRewardVideoLegacyApi(object : RewardedVideoAdListener {
             override fun onRewardedVideoAdClosed() {
+                showToast("Terima kasih sudah berdonasi.")
+                loadRewardedVideoAd()
                 if (isRewardVideoComplete) dialogViewAgain()
             }
 
@@ -111,6 +114,7 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
             }
 
             override fun onRewardedVideoAdOpened() {
+                showToast("Silahkan menonton sampai habis ya...")
             }
 
             override fun onRewardedVideoCompleted() {
@@ -161,12 +165,19 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
     }
 
     private fun initListener() {
-        ll_donate_option_donate.setOnClickListener { }
-        ll_donate_option_ads.setOnClickListener { }
+        ll_donate_option_donate.setOnClickListener { showSnackbar(mActivity.getString(R.string.message_info_under_devlopment)) }
+        ll_donate_option_ads.setOnClickListener { showRewardedAds() }
         tv_donate_option_close.setOnClickListener { dismiss() }
     }
 
     private fun dialogViewAgain() {
+        DialogUtil.showYesNoDialog(mActivity, "Konfirmasi", "Apakah anda ingin berdonasi kembali dengan melihat video lagi?", object : DialogUtil.IntroductionButtonListener {
+            override fun onFirstButtonClick() {
+                showRewardedAds()
+            }
 
+            override fun onSecondButtonClick() {
+            }
+        })
     }
 }

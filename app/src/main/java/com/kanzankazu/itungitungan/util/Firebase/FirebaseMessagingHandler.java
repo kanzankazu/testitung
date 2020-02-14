@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Created by Faisal Bahri on 2019-12-04.
  */
-public class MyFirebaseHandler {
+public class FirebaseMessagingHandler {
     public void enableFCM(){
         // Enable FCM via enable Auto-init service which generate new token and receive in FCMService
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);

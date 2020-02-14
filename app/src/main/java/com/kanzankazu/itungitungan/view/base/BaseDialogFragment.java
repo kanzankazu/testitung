@@ -34,11 +34,10 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
     public FirebaseLoginUtil loginUtil;
     public FirebaseAuth mAuth;
     public FirebaseUser firebaseUser;
+    public AppCompatActivity mActivity;
+    ProgressDialogConnection progressDialogConnection = new ProgressDialogConnection();
     private InterstitialAd mInterstitialAd;
     private RewardedVideoAd mRewardedVideoAd;
-    public AppCompatActivity mActivity;
-
-    ProgressDialogConnection progressDialogConnection = new ProgressDialogConnection();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,20 +72,20 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
 
     @Override
     public void onResume() {
-        mRewardedVideoAd.resume(mActivity);
+        if (mRewardedVideoAd != null) mRewardedVideoAd.resume(mActivity);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        mRewardedVideoAd.pause(mActivity);
+        if (mRewardedVideoAd != null) mRewardedVideoAd.pause(mActivity);
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
         progressDialogConnection.dismissProgressDialog();
-        mRewardedVideoAd.destroy(mActivity);
+        if (mRewardedVideoAd != null) mRewardedVideoAd.destroy(mActivity);
         super.onDestroy();
     }
 
@@ -221,7 +220,7 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
         mInterstitialAd.loadAd(adRequest);
     }
 
-    private void showInterstitialAds() {
+    public void showInterstitialAds() {
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         } else {
@@ -238,11 +237,11 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
         loadRewardedVideoAd();
     }
 
-    private void loadRewardedVideoAd() {
+    public void loadRewardedVideoAd() {
         mRewardedVideoAd.loadAd(mActivity.getString(R.string.ads_id_reward_video), new AdRequest.Builder().build());
     }
 
-    private void showRewardedAds() {
+    public void showRewardedAds() {
         if (mRewardedVideoAd.isLoaded()) {
             mRewardedVideoAd.show();
         } else {

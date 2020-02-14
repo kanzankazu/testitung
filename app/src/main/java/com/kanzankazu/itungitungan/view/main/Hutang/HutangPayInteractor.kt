@@ -1,12 +1,10 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
 import android.app.Activity
-import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseConnectionUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
-import com.kanzankazu.itungitungan.util.NetworkUtil
 
 class HutangPayInteractor(var mActivity: Activity, var mPresenter: HutangPayContract.Presenter) : HutangPayContract.Interactor {
     override fun UpdateHutang(hutang: Hutang, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {

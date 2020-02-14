@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Created by Faisal Bahri on 2020-01-07.
  */
-public class MyFirebaseMessagingUtil {
+public class FirebaseMessagingUtil {
 
     static final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
     static final private String serverKey = "key=" + BuildConfig.FIREBASE_SERVER_KEY;

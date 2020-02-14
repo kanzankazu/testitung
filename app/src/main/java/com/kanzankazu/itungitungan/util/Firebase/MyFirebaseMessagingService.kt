@@ -42,7 +42,7 @@ import com.kanzankazu.itungitungan.view.main.MainActivity
 import org.json.JSONObject
 import java.util.*
 
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+abstract class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private val ADMIN_CHANNEL_ID = "admin_channel"
     private var notif: NotificationModel? = null
@@ -56,11 +56,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notif = Utils.convertJsonToObjectClass(NotificationModel::class.java, mapToObject.toString()) as NotificationModel
         }
 
-        makeNotification1(notif!!)
+        makeNotification1(notif!!, remoteMessage)
     }
 
-
-    private fun makeNotification1(notif: NotificationModel) {
+    private fun makeNotification1(notif: NotificationModel, remoteMessage: RemoteMessage) {
         val intent: Intent = when (notif.type) {
             Constants.FirebasePushNotif.TypeNotif.hutang -> {
                 Intent(this, HutangListActivity::class.java)
@@ -78,6 +77,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             setupChannels(notificationManager)
         }
 
+        Log.d("Lihat makeNotification1 MyFirebaseMessagingService", remoteMessage.notification?.title)
+        Log.d("Lihat makeNotification1 MyFirebaseMessagingService", remoteMessage.notification?.body)
+        Log.d("Lihat makeNotification1 MyFirebaseMessagingService", remoteMessage.notification?.icon)
+        Log.d("Lihat makeNotification1 MyFirebaseMessagingService", remoteMessage.notification?.color)
+        Log.d("Lihat makeNotification1 MyFirebaseMessagingService", remoteMessage.notification?.tag)
+        Log.d("Lihat makeNotification1 MyFirebaseMessagingService", remoteMessage.notification?.link.toString())
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
 
@@ -85,13 +91,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_wallet)
-            .setLargeIcon(largeIcon)
-            .setContentTitle(notif.title)
-            .setContentText(notif.message)
-            .setAutoCancel(true)
-            .setSound(notificationSoundUri)
-            .setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_wallet)
+                .setLargeIcon(largeIcon)
+                .setContentTitle(if (notif.title.isNotEmpty()) notif.title else remoteMessage.notification!!.title)
+                .setContentText(if (notif.message.isNotEmpty()) notif.message else remoteMessage.notification!!.body)
+                .setAutoCancel(true)
+                .setSound(notificationSoundUri)
+                .setContentIntent(pendingIntent)
 
         //Set notification color to match your app color template
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -121,14 +127,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this)
-            .setContentTitle("Remote Router Notification")
-            .setSmallIcon(R.drawable.ic_wallet)
-            .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.drawable.ic_wallet))
-            .setContentText(messageBody)
-            .setAutoCancel(true)
-            .setLights(Color.GREEN, 3000, 3000)
-            .setDefaults(Notification.DEFAULT_SOUND)
-            .setContentIntent(pendingIntent)
+                .setContentTitle("Remote Router Notification")
+                .setSmallIcon(R.drawable.ic_wallet)
+                .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.drawable.ic_wallet))
+                .setContentText(messageBody)
+                .setAutoCancel(true)
+                .setLights(Color.GREEN, 3000, 3000)
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setContentIntent(pendingIntent)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())

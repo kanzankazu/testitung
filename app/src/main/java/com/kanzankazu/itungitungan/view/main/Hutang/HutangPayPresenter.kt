@@ -6,15 +6,16 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.EditText
 import android.widget.TextView
+import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.model.HutangPembayaran
+import com.kanzankazu.itungitungan.model.User
 import com.kanzankazu.itungitungan.util.DateTimeUtil
 import com.kanzankazu.itungitungan.util.DialogUtil
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
-import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
+import com.kanzankazu.itungitungan.util.Firebase.*
 import com.kanzankazu.itungitungan.util.PictureUtil2
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil
@@ -22,7 +23,11 @@ import com.kanzankazu.itungitungan.view.adapter.ImageListAdapter
 import java.util.*
 
 class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.View) : HutangPayContract.Presenter {
-    val mInteractor = HutangPayInteractor(mActivity, this)
+    private var nominalYangDiBayarkanSekarang: Int = 0
+    private var nominalSudahDiBayarkan: Int = 0
+    private var nominalTotalPembayaran: Int = 0
+    private var statusPembayaran: String = ""
+    private val mInteractor = HutangPayInteractor(mActivity, this)
 
     override fun showProgressDialogPresenter() {
         mView.showProgressDialogView()
@@ -90,23 +95,22 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             huCil.approvalDebtor = true
 
             //Start checkNominal
-            val nominalTotalPembayaran: Int = if (hutang.hutangCicilanIs) {
+            nominalTotalPembayaran = if (hutang.hutangCicilanIs) {
                 hutang.hutangCicilanNominal.toInt() * hutang.hutangCicilanBerapaKali.toInt()
             } else {
                 hutang.hutangNominal.toInt()
             }
 
-            var nominalSudahDiBayarkan = 0
+            nominalSudahDiBayarkan = 0
             for (models in hutang.hutangPembayaranSub) {
                 nominalSudahDiBayarkan += models.paymentNominal.toInt()
             }
 
-            val nominalYangDiBayarkanSekarang = Utils.getRupiahToString(et_hutang_pay_nominal).toInt()
+            nominalYangDiBayarkanSekarang = Utils.getRupiahToString(et_hutang_pay_nominal).toInt()
 
-            var status = ""
             if (nominalSudahDiBayarkan + nominalYangDiBayarkanSekarang == nominalTotalPembayaran) {
                 hutang.statusLunas = true
-                status = Constants.Hutang.Status.Lunas
+                statusPembayaran = Constants.Hutang.Status.Lunas
             } else if (nominalSudahDiBayarkan + nominalYangDiBayarkanSekarang > nominalTotalPembayaran) {
                 if (hutang.debtorId.equals(UserPreference.getInstance().uid, true)) {
                     val tempHutangRadioIndex = 1
@@ -224,26 +228,26 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
                     hutang.hutangPembayaranSub.clear()
                 }
 
-                status = Constants.Hutang.Status.Berlebih
+                statusPembayaran = Constants.Hutang.Status.Berlebih
             }
             //End checkNominal
 
             DialogUtil.showConfirmationDialog(
-                mActivity,
-                "Info",
-                when (status) {
-                    Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
-                    Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
-                    else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
-                }
+                    mActivity,
+                    "Info",
+                    when (statusPembayaran) {
+                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
+                    }
             ) {
-                when (status) {
+                when (statusPembayaran) {
                     Constants.Hutang.Status.Berlebih -> {
                         val huCilEmpty = HutangPembayaran()
                         saveValidateImageData(imageListAdapter, isNew, hutang, huCilEmpty, listener)
                     }
                     else -> {
-                        huCil.approvalCreditor = status.equals(Constants.Hutang.Status.Lunas, true)
+                        huCil.approvalCreditor = statusPembayaran.equals(Constants.Hutang.Status.Lunas, true)
                         saveValidateImageData(imageListAdapter, isNew, hutang, huCil, listener)
                     }
                 }
@@ -302,6 +306,7 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             override fun onSuccessSaveUpdate(message: String?) {
                 dismissProgressDialogPresenter()
                 listener.onSuccessSaveUpdate(message)
+                sendNotifAddEditHutang(hutang)
             }
 
             override fun onFailureSaveUpdate(message: String?) {
@@ -310,6 +315,37 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             }
         })
     }
+
+    fun sendNotifAddEditHutang(hutang: Hutang) {
+        val title = "Pembayaran Hutang"
+        val message: String = when (statusPembayaran) {
+            Constants.Hutang.Status.Lunas -> "Piutang anda sudah di lunaskan.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+            Constants.Hutang.Status.Berlebih -> "Piutang anda sudah di lunaskan.\n tapi peminjam membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+            else -> "piutang anda sudah dibayarkan dengan nominal Rp.$nominalYangDiBayarkanSekarang dan piutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
+        }
+        val type: String = Constants.FirebasePushNotif.TypeNotif.hutang
+
+
+        FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil.FirebaseConnectionListener {
+            override fun hasInternet() {
+                FirebaseDatabaseHandler.getUserByUid(hutang.creditorId, object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
+                    override fun onSuccessDataExist(dataSnapshot: DataSnapshot, isExsist: Boolean?) {
+                        val user: User? = dataSnapshot.getValue(User::class.java)
+                        FirebaseMessagingUtil.makeNotificationToken(mActivity, user!!.tokenFcm, title, message, type, "", "")
+                    }
+
+                    override fun onFailureDataExist(message: String?) {
+                        mView.showSnackbarView(message)
+                    }
+                })
+            }
+
+            override fun noInternet(message: String?) {
+                onNoConnection(message)
+            }
+        })
+    }
+
 
     private fun getSuggestNoteManual(): MutableList<NoteModel> {
         val list = mutableListOf<NoteModel>()

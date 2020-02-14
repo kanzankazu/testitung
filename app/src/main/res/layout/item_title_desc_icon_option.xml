@@ -45,13 +45,14 @@
             android:gravity="center_vertical"
             android:textSize="@dimen/normal_font_size"
             android:visibility="gone"
-            tools:text="@tools:sample/lorem[15]" />
+            tools:text="@tools:sample/lorem[15]"
+            tools:visibility="visible" />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/ib_item_right_icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="?android:selectableItemBackground"
         android:src="@drawable/ic_navigate_next" />
 </LinearLayout>

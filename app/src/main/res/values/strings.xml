@@ -104,7 +104,7 @@
     <string name="hutang_note">Catatan</string>
     <string name="donate_option_view_ads">Donasi dengan menonton iklan</string>
     <string name="donate_option_with_give">Donasi dengan pemberian dana seikhlasnya</string>
-    <string name="account_activity_fast_notes">Pesan cepat</string>
-    <string name="account_activity_payment_account">Akun Penerimaan Pembayaran</string>
+    <string name="account_activity_fast_notes">Pesan cepat pembayaran pi/hutang</string>
+    <string name="account_activity_payment_account">Akun Penerimaan Pembayaran (Akun Bank / Akun Fintech(OVO/DANA))</string>
 
 </resources>

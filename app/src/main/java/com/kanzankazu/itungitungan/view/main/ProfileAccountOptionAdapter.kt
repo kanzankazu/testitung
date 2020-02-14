@@ -21,11 +21,11 @@ class ProfileAccountOptionAdapter(private val mActivity: Activity, private val m
     }
 
     override fun getItemCount(): Int {
-        val list = arrayListOf<ProfileAccountModel>()
+        val listShown = arrayListOf<ProfileAccountModel>()
         for (model in datas) {
-            if (model.isShow) list.add(model)
+            if (model.isShow) listShown.add(model)
         }
-        return list.size
+        return listShown.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -37,10 +37,16 @@ class ProfileAccountOptionAdapter(private val mActivity: Activity, private val m
 
     inner class ProfileListAdapterAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         fun setView(model: ProfileAccountModel, position: Int) {
-            itemView.tv_item_description.visibility = View.GONE
             if (model.isShow) {
                 Utils.setDrawableImageView(mActivity, itemView.ib_item_left_icon, model.icon)
                 itemView.tv_item_title.text = model.title
+
+                if (model.desc.isNotEmpty()) {
+                    itemView.tv_item_description.text = model.desc
+                    itemView.tv_item_description.visibility = View.VISIBLE
+                } else {
+                    itemView.tv_item_description.visibility = View.GONE
+                }
             } else {
                 itemView.visibility = View.GONE
             }
