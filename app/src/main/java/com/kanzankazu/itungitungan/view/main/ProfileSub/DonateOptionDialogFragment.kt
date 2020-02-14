@@ -4,16 +4,19 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Toast
 import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.DialogUtil
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseConnectionUtil
 import com.kanzankazu.itungitungan.view.base.BaseDialogFragment
 import kotlinx.android.synthetic.main.fragment_donate_option_dialog.*
 
@@ -102,9 +105,11 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
         //mPresenter = DonateOptionDialogPresenter(activity as AppCompatActivity, this)
         setupRewardVideoLegacyApi(object : RewardedVideoAdListener {
             override fun onRewardedVideoAdClosed() {
-                showToast("Terima kasih sudah berdonasi.")
-                loadRewardedVideoAd()
-                if (isRewardVideoComplete) dialogViewAgain()
+                if (isRewardVideoComplete) {
+                    showToast("Terima kasih sudah berdonasi d(^u^)b.", Toast.LENGTH_LONG)
+                } else {
+                    showToast("Yah anda menutup iklan (TnT)", Toast.LENGTH_LONG)
+                }
             }
 
             override fun onRewardedVideoAdLeftApplication() {
@@ -114,23 +119,26 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
             }
 
             override fun onRewardedVideoAdOpened() {
-                showToast("Silahkan menonton sampai habis ya...")
+                isRewardVideoComplete = false
+                showToast("Silahkan menonton sampai habis ya d(^u^)b ...", Toast.LENGTH_LONG)
             }
 
             override fun onRewardedVideoCompleted() {
-                isRewardVideoComplete = true
             }
 
             override fun onRewarded(p0: RewardItem?) {
+                isRewardVideoComplete = true
                 Log.d("Lihat onRewarded DonateOptionDialogFragment", p0!!.type)
                 Log.d("Lihat onRewarded DonateOptionDialogFragment", p0.amount.toString())
             }
 
             override fun onRewardedVideoStarted() {
                 isRewardVideoComplete = false
+                loadRewardedVideoAd()
             }
 
             override fun onRewardedVideoAdFailedToLoad(p0: Int) {
+                Log.d("Lihat onRewardedVideoAdFailedToLoad DonateOptionDialogFragment", p0.toString())
             }
         })
 
@@ -161,11 +169,37 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
     }
 
     private fun initView() {
+        checkVideoRewardLoaded()
+    }
+
+    private fun checkVideoRewardLoaded() {
+        FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil.FirebaseConnectionListener {
+            override fun hasInternet() {
+                if (mRewardedVideoAd != null && mRewardedVideoAd.isLoaded) {
+                    ll_donate_option_ads.isEnabled = true
+                    tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_ready)
+                } else {
+                    ll_donate_option_ads.isEnabled = false
+                    tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_loading)
+                    Handler().postDelayed({
+                        checkVideoRewardLoaded()
+                    }, 1000)
+                }
+            }
+
+            override fun noInternet(message: String?) {
+                ll_donate_option_ads.isEnabled = false
+                tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_loading)
+                Handler().postDelayed({
+                    checkVideoRewardLoaded()
+                }, 5000)
+            }
+        })
 
     }
 
     private fun initListener() {
-        ll_donate_option_donate.setOnClickListener { showSnackbar(mActivity.getString(R.string.message_info_under_devlopment)) }
+        ll_donate_option_donate.setOnClickListener { showSnackbar(mActivity.getString(R.string.message_info_under_development)) }
         ll_donate_option_ads.setOnClickListener { showRewardedAds() }
         tv_donate_option_close.setOnClickListener { dismiss() }
     }

@@ -78,6 +78,11 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
     }
 
     @Override
+    public void showToast(String message, int toastLenght) {
+        Utils.showToast(this, message, toastLenght);
+    }
+
+    @Override
     public void showSnackbar(String message) {
         Utils.showSnackBar(this, message);
     }

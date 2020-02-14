@@ -84,12 +84,12 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
 
     override fun setProfileOptionList() {
         val profileModels = arrayListOf<ProfileAccountModel>()
-        profileModels.add(ProfileAccountModel(R.drawable.ic_share, mActivity.getString(R.string.share_friend_family), "", true))
-        profileModels.add(ProfileAccountModel(R.drawable.ic_idea, mActivity.getString(R.string.idea), "", true))
-        profileModels.add(ProfileAccountModel(R.drawable.ic_help, mActivity.getString(R.string.help), "", true))
-        profileModels.add(ProfileAccountModel(R.drawable.ic_donate, mActivity.getString(R.string.donate), "", true))
-        profileModels.add(ProfileAccountModel(R.drawable.ic_rate_app, mActivity.getString(R.string.give_star), "", true))
-        profileModels.add(ProfileAccountModel(R.drawable.ic_info, mActivity.getString(R.string.about), "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_share, mActivity.getString(R.string.share_friend_family), "", "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_idea, mActivity.getString(R.string.idea), "", "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_help, mActivity.getString(R.string.help), "", "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_donate, mActivity.getString(R.string.donate), "", "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_rate_app, mActivity.getString(R.string.give_star), "", "", true))
+        profileModels.add(ProfileAccountModel(R.drawable.ic_info, mActivity.getString(R.string.about), "", "", true))
         profileListAdapter.setData(profileModels)
     }
 
@@ -208,7 +208,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     }
 
     private fun setProfileData() {
-        tv_account_user_name_long.text = UserPreference.getInstance().name
+        tv_account_user_name_big.text = UserPreference.getInstance().name
         tv_profile_email.text = UserPreference.getInstance().email
     }
 }

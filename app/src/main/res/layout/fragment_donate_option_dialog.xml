@@ -76,10 +76,11 @@
                     android:tint="@color/Black" />
 
                 <TextView
+                    android:id="@+id/tv_donate_option_ads"
                     style="@style/TvStandart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/donate_option_view_ads"
+                    android:text="@string/donate_option_view_ads_ready"
                     android:textAllCaps="false"
                     android:textColor="@color/Black"
                     android:textSize="@dimen/small_font_size" />

@@ -9,6 +9,9 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnticipateOvershootInterpolator
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.model.User
+import com.kanzankazu.itungitungan.util.InputValidUtil
+import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.main.ProfileAccountModel
 import com.kanzankazu.itungitungan.view.main.ProfileAccountOptionAdapter
@@ -24,48 +27,100 @@ class AccountActivity : BaseActivity(), AccountContract.View {
     private var startAvatarAnimatePointY: Float = 0F
     private var animateWeigt: Float = 0F
     private var isCalculated = false
-    /*private lateinit var iv_account_user_image: ImageView
-    private lateinit var toolbar_account: Toolbar
-    private lateinit var appbarlayout_account: AppBarLayout
-    private lateinit var tv_account_user_name_long: AppCompatTextView
-    private lateinit var tv_account_user_name_short: AppCompatTextView
-    private lateinit var fl_account_stuff_container: FrameLayout
-    private lateinit var fl_account_background: FrameLayout*/
-    private lateinit var optionAdapter: ProfileAccountOptionAdapter
+    private val mLowerLimitTransparently = ABROAD * 0.45
+    private val mUpperLimitTransparently = ABROAD * 0.65
+
 
     private lateinit var mPresenter: AccountPresenter
+    private lateinit var optionAdapter: ProfileAccountOptionAdapter
+
+    companion object {
+        const val ABROAD = 0.99f
+        const val TO_EXPANDED_STATE = 0
+        const val TO_COLLAPSED_STATE = 1
+        const val WAIT_FOR_SWITCH = 0
+        const val SWITCHED = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
 
         mPresenter = AccountPresenter(this, this)
+        Utils.setupAppToolbarForActivity(this, toolbar_account)
 
         setView()
         setListener()
     }
 
+    override fun showToastView(message: String?) {
+        showToast(message)
+    }
+
+    override fun showSnackbarView(message: String?) {
+        showSnackbar(message)
+    }
+
+    override fun showRetryDialogView() {
+        showRetryDialog { }
+    }
+
+    override fun showProgressDialogView() {
+        showProgressDialog()
+    }
+
+    override fun dismissProgressDialogView() {
+        dismissProgressDialog()
+    }
+
+    override fun setDataUser(user: User) {
+        et_account_user_name.setText(user.name)
+        et_account_user_email.setText(user.email)
+        et_account_user_phone.setText(user.phone)
+    }
+
     private fun setView() {
         setCollapseView()
-
         setOptionRecyclerView()
+
+        mPresenter.getUserData()
+    }
+
+    private fun setListener() {
+        appbarlayout_account.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
+            if (isCalculated.not()) {
+                startAvatarAnimatePointY = abs((appBarLayout.height - EXPAND_AVATAR_SIZE - toolbar_account.height / 2) / appBarLayout.totalScrollRange)
+                animateWeigt = 1 / (1 - startAvatarAnimatePointY)
+                isCalculated = true
+            }
+
+            val offset = abs(i / appBarLayout.totalScrollRange.toFloat())
+            updateToolbarViewImage(offset)
+        })
+
+        b_account_save.setOnClickListener { checkUserData(true) }
+    }
+
+    private fun checkUserData(isFocus: Boolean): Boolean {
+        return when {
+            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_name, et_account_user_name, isFocus) -> false
+            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_email, et_account_user_name, isFocus) -> false
+            !InputValidUtil.isEmail(getString(R.string.message_field_email_wrong_format), til_account_user_email, et_account_user_name, isFocus) -> false
+            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_phone, et_account_user_phone, isFocus) -> false
+            !InputValidUtil.isPhoneNumber(getString(R.string.message_field_empty), til_account_user_phone, et_account_user_phone, isFocus) -> false
+            else -> true
+        }
     }
 
     private fun setCollapseView() {
-        /*appbarlayout_account = findViewById(R.id.appbarlayout_account)
-        toolbar_account = findViewById(R.id.toolbar_account)
-        fl_account_stuff_container = findViewById(R.id.fl_account_stuff_container)
-        iv_account_user_image = findViewById(R.id.iv_account_user_image)
-        tv_account_user_name_long = findViewById(R.id.tv_account_user_name_long)
-        tv_account_user_name_short = findViewById(R.id.tv_account_user_name_short)
-        fl_account_background = findViewById(R.id.fl_account_background)*/
         toolbar_account.visibility = View.INVISIBLE
     }
 
     private fun setOptionRecyclerView() {
         val listOfProfileAccount = mutableListOf<ProfileAccountModel>()
-        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_fast_notes), "Opsi ini untuk mempermudah anda membalas cepat saat pembayaran hutang", true))
-        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_payment_account), "Opsi ini untuk mempermudah peminjam melakukan pembayaran dengan via trasfer", true))
+        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_fast_notes), "Opsi ini untuk mempermudah anda membalas cepat saat pembayaran hutang", "", true))
+        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_payment_account), "Opsi ini untuk mempermudah peminjam melakukan pembayaran dengan via trasfer", "", true))
+        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_category_cash_inout), "Opsi ini mengkategorikan pengeluaran dan pemasukan anda", "", true))
 
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rv_account_option.layoutManager = linearLayoutManager
@@ -81,7 +136,7 @@ class AccountActivity : BaseActivity(), AccountContract.View {
     private fun itemAdapterClick(data: ProfileAccountModel) {
         when (data.title) {
             getString(R.string.account_activity_fast_notes) -> {
-                showSnackbar("0")
+                showSnackbar(getString(R.string.message_info_under_development))
             }
             getString(R.string.account_activity_payment_account) -> {
                 showSnackbar("1")
@@ -89,32 +144,17 @@ class AccountActivity : BaseActivity(), AccountContract.View {
         }
     }
 
-    private fun setListener() {
-        appbarlayout_account.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, i ->
-            if (isCalculated.not()) {
-                startAvatarAnimatePointY = abs((appBarLayout.height - EXPAND_AVATAR_SIZE - toolbar_account.height / 2) / appBarLayout.totalScrollRange)
-                animateWeigt = 1 / (1 - startAvatarAnimatePointY)
-                isCalculated = true
-            }
-
-            val offset = abs(i / appBarLayout.totalScrollRange.toFloat())
-            updateToolbarViewImage(offset)
-        })
-
-        b_account_save.setOnClickListener { finish() }
-    }
-
     private fun updateToolbarViewImage(percentOffset: Float) {
         /* Collapsing avatar transparent*/
         when {
             percentOffset > mUpperLimitTransparently -> {
                 //avatarContainerView.alpha = 0.0f
-                tv_account_user_name_long.alpha = 0.0F
+                tv_account_user_name_big.alpha = 0.0F
             }
 
             percentOffset < mUpperLimitTransparently -> {
                 //  avatarContainerView.alpha = 1 - percentOffset
-                tv_account_user_name_long.alpha = 1f
+                tv_account_user_name_big.alpha = 1f
             }
         }
 
@@ -143,8 +183,8 @@ class AccountActivity : BaseActivity(), AccountContract.View {
                             headContainerHeight = appbarlayout_account.totalScrollRange.toFloat()
                             currentImageSize = EXPAND_AVATAR_SIZE.toInt()
                             /**/
-                            tv_account_user_name_long.visibility = View.VISIBLE
-                            tv_account_user_name_short.visibility = View.INVISIBLE
+                            tv_account_user_name_big.visibility = View.VISIBLE
+                            tv_account_user_name_small.visibility = View.INVISIBLE
                             fl_account_background.setBackgroundColor(ContextCompat.getColor(this@AccountActivity, R.color.color_transparent))
                             /**/
                             iv_account_user_image.translationX = 0f
@@ -169,8 +209,8 @@ class AccountActivity : BaseActivity(), AccountContract.View {
                                 start()
                             }
                             /**/
-                            tv_account_user_name_long.visibility = View.INVISIBLE
-                            tv_account_user_name_short.apply {
+                            tv_account_user_name_big.visibility = View.INVISIBLE
+                            tv_account_user_name_small.apply {
                                 visibility = View.VISIBLE
                                 alpha = 0.2f
                                 this.translationX = width.toFloat() / 2
@@ -232,16 +272,4 @@ class AccountActivity : BaseActivity(), AccountContract.View {
 
         }
     }
-
-    companion object {
-        const val ABROAD = 0.99f
-        const val TO_EXPANDED_STATE = 0
-        const val TO_COLLAPSED_STATE = 1
-        const val WAIT_FOR_SWITCH = 0
-        const val SWITCHED = 1
-    }
-
-    private val mLowerLimitTransparently = ABROAD * 0.45
-    private val mUpperLimitTransparently = ABROAD * 0.65
-
 }

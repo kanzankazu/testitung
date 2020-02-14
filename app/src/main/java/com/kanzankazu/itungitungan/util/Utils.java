@@ -254,6 +254,10 @@ public class Utils {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
     }
 
+    public static void showToast(Activity activity, String message, int toastLenght) {
+        Toast.makeText(activity, message, toastLenght).show();
+    }
+
     public static double roundToHalf(double d) { // Result : 2.1 -> 2, 2,2 -> 2, 2.3 -> 2.5, 2.4 -> 2.5
         return Math.round(d * 2) / 2.0;
     }

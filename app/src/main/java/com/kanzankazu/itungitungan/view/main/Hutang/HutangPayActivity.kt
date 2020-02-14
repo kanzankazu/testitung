@@ -13,6 +13,7 @@ import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.PictureUtil2
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.widget.gallery2.ImageModel
+import com.kanzankazu.itungitungan.util.widget.view.CurrencyEditText
 import com.kanzankazu.itungitungan.view.adapter.ImageListAdapter
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_hutang_pay.*
@@ -71,7 +72,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
 
     override fun checkData(isFocus: Boolean): Boolean {
         return if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_pay_nominal, et_hutang_pay_nominal, isFocus)) false
-        else InputValidUtil.isLenghtCharOver(getString(R.string.message_field_less_nominal, "3"), til_hutang_pay_nominal, et_hutang_pay_nominal, 5)
+        else InputValidUtil.isLenghtCharOver(getString(R.string.message_field_less_nominal, CurrencyEditText.lenghtNominalDigits), til_hutang_pay_nominal, et_hutang_pay_nominal, CurrencyEditText.validationLimit)
     }
 
     override fun setSuggestNote(list: MutableList<NoteModel>) {
@@ -149,7 +150,13 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
                 } else {
                     val nominalCicilanPerPembayaran = hutang.hutangCicilanNominal.toInt() * (hutang.hutangPembayaranSub.size + 1)
                     val nominalKurangPembayaran = nominalCicilanPerPembayaran - nominalSudahDiBayarkan
-                    Utils.setRupiah(nominalKurangPembayaran.toString())
+
+                    if (nominalKurangPembayaran < 1) {
+                        Utils.setRupiah(1.toString())
+                    } else {
+                        Utils.setRupiah(nominalKurangPembayaran.toString())
+                    }
+
                 }
             } else {
                 Utils.setRupiah((nominalTotalPembayaran - nominalSudahDiBayarkan).toString())

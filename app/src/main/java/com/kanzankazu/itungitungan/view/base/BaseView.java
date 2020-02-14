@@ -16,6 +16,8 @@ public interface BaseView {
     //TOAST SNACKBAR
     void showToast(String message);
 
+    void showToast(String message, int snackbarLenght);
+
     void showSnackbar(String message);
 
     void showSnackbar(String message, int snackbarLenght);

@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.Window
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.util.DialogUtil
-import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseDialogFragment
 import kotlinx.android.synthetic.main.frgament_give_star_dialog.*
 
@@ -21,7 +20,7 @@ import kotlinx.android.synthetic.main.frgament_give_star_dialog.*
  */
 class GiveStarIdeaDialogFragment : BaseDialogFragment(), GiveStarDialogContract.View {
 
-    private var isGiveStar: Boolean = true
+    private var isGiveStar: Boolean = false
 
     companion object {
         private const val ARG_PARAM1 = "arg_param"
@@ -29,7 +28,7 @@ class GiveStarIdeaDialogFragment : BaseDialogFragment(), GiveStarDialogContract.
         fun newInstance(isGiveStar: Boolean): GiveStarIdeaDialogFragment {
             val fragment = GiveStarIdeaDialogFragment()
             val args = Bundle()
-            if (args.containsKey(ARG_PARAM1)) args.putBoolean(ARG_PARAM1, isGiveStar)
+            args.putBoolean(ARG_PARAM1, isGiveStar)
             fragment.arguments = args
             return fragment
         }
@@ -63,7 +62,9 @@ class GiveStarIdeaDialogFragment : BaseDialogFragment(), GiveStarDialogContract.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            if (arguments!!.containsKey(ARG_PARAM1)) isGiveStar = arguments!!.getBoolean(ARG_PARAM1)
+            if (arguments!!.containsKey(ARG_PARAM1)) {
+                isGiveStar = arguments!!.getBoolean(ARG_PARAM1)
+            }
         }
 
         // Pick a style based on the num.
@@ -125,11 +126,13 @@ class GiveStarIdeaDialogFragment : BaseDialogFragment(), GiveStarDialogContract.
 
     private fun initView() {
         if (isGiveStar) {
-            ll_give_star_idea_star.visibility = View.VISIBLE
             iv_give_star_idea_idea.visibility = View.GONE
+            ll_give_star_idea_star.visibility = View.VISIBLE
+            til_give_star_idea_note.visibility = View.GONE
         } else {
-            ll_give_star_idea_star.visibility = View.GONE
             iv_give_star_idea_idea.visibility = View.VISIBLE
+            ll_give_star_idea_star.visibility = View.GONE
+            til_give_star_idea_note.visibility = View.VISIBLE
         }
     }
 
@@ -140,10 +143,9 @@ class GiveStarIdeaDialogFragment : BaseDialogFragment(), GiveStarDialogContract.
                 ratingBar.rating.toInt() < 3 -> til_give_star_idea_note.visibility = View.VISIBLE
                 else -> {
                     til_give_star_idea_note.visibility = View.GONE
-                    Utils.closeSoftKeyboard(mActivity)
+                    hideKeyboard()
                 }
             }
-            tv_give_star_idea_send.isEnabled = ratingBar.rating.toInt() != 0
 
             when (ratingBar.rating.toInt()) {
                 1 -> tv_give_star_idea_star_result.text = "Tidak Bagus, Masih banyak kekurangan"
@@ -151,7 +153,7 @@ class GiveStarIdeaDialogFragment : BaseDialogFragment(), GiveStarDialogContract.
                 3 -> tv_give_star_idea_star_result.text = "Bagus"
                 4 -> tv_give_star_idea_star_result.text = "Sangat Bagus"
                 5 -> tv_give_star_idea_star_result.text = "Keren, Saya suka aplikasi ini"
-                else -> tv_give_star_idea_star_result.text = ""
+                else -> tv_give_star_idea_star_result.text = "Gimana nih bagus nggak aplikasinya?, kasih masukan aja deh kalo masih bingung"
             }
         }
         tv_give_star_idea_send.setOnClickListener {
@@ -173,7 +175,7 @@ class GiveStarIdeaDialogFragment : BaseDialogFragment(), GiveStarDialogContract.
                     }
                 )
             } else {
-                showToast(mActivity.getString(R.string.message_info_under_devlopment))
+                showToast(mActivity.getString(R.string.message_info_under_development))
             }
         }
         tv_give_star_idea_close.setOnClickListener { dismiss() }

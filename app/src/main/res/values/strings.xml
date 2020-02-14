@@ -24,7 +24,7 @@
     <string name="confirm_close">Tutup</string>
 
     <!--Message-->
-    <string name="message_info_under_devlopment">Sedang dalam pengembangan, silahkan tunggu!!</string>
+    <string name="message_info_under_development">Sedang dalam pengembangan, silahkan tunggu!!</string>
     <string name="message_field_empty">Data ini tidak boleh kosong</string>
     <string name="message_field_empty_nominal">Nominal tidak boleh kosong</string>
     <string name="message_radio_empty">Anda belum memilih!!!</string>
@@ -102,9 +102,12 @@
     <string name="hutang_installment_to">Cicilan ke :</string>
     <string name="hutang_pay_date">Tanggal Pembayaran</string>
     <string name="hutang_note">Catatan</string>
-    <string name="donate_option_view_ads">Donasi dengan menonton iklan</string>
+    <string name="donate_option_view_ads_ready">Donasi dengan menonton iklan</string>
+    <string name="donate_option_view_ads_loading">Tunggu sebentar ya,\nDonasi iklan sedang di muat</string>
+    <string name="donate_option_view_ads_no_load">Donasi iklan tidak muncul karena tidak ada internet,\nSilahkan cari internet untuk berdonasi dengan menonton iklan</string>
     <string name="donate_option_with_give">Donasi dengan pemberian dana seikhlasnya</string>
     <string name="account_activity_fast_notes">Pesan cepat pembayaran pi/hutang</string>
     <string name="account_activity_payment_account">Akun Penerimaan Pembayaran (Akun Bank / Akun Fintech(OVO/DANA))</string>
+    <string name="account_activity_category_cash_inout">Kategori</string>
 
 </resources>

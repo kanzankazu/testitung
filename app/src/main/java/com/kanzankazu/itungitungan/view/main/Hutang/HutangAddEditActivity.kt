@@ -123,7 +123,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     override fun validateFieldData(isFocus: Boolean): Boolean {
         if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_user, et_hutang_add_user, isFocus)) return false
-        else if (!InputValidUtil.isLenghtCharOver(getString(R.string.message_field_less_nominal, "3"), til_hutang_add_nominal, et_hutang_add_nominal, CurrencyEditText.validationLimit)) return false
+        else if (!InputValidUtil.isLenghtCharOver(getString(R.string.message_field_less_nominal, CurrencyEditText.lenghtNominalDigits), til_hutang_add_nominal, et_hutang_add_nominal, CurrencyEditText.validationLimit)) return false
         else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_desc, et_hutang_add_desc, isFocus)) return false
         else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_hutang_add_date, et_hutang_add_date, isFocus)) return false
         else if (sw_hutang_add_installment.isChecked) {
@@ -548,11 +548,11 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         recyclerView.adapter = imageListAdapter
     }
 
-    private fun checkImageData(){
-        if (imageListAdapter.getDatas().isNotEmpty()){
-            rv_hutang_add_image.visibility=View.VISIBLE
-        }else{
-            rv_hutang_add_image.visibility=View.GONE
+    private fun checkImageData() {
+        if (imageListAdapter.getDatas().isNotEmpty()) {
+            rv_hutang_add_image.visibility = View.VISIBLE
+        } else {
+            rv_hutang_add_image.visibility = View.GONE
         }
     }
 
@@ -561,7 +561,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         et_hutang_add_user_family.setAdapter(userSuggestAdapter)
         et_hutang_add_user_family.threshold = 3
         et_hutang_add_user_family.setOnItemClickListener { parent, view, position, id ->
-            Utils.closeSoftKeyboard(this)
+            hideKeyboard()
 
             if (mPresenter.getRadioGroupIndex(rg_hutang_add_user) == 0) {
                 hutang.debtorFamilyName = (parent.adapter.getItem(position) as User).name

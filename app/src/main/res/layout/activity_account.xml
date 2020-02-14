@@ -76,13 +76,15 @@
                     android:layout_width="135dp"
                     android:layout_height="135dp"
                     android:layout_gravity="bottom|center_horizontal"
+                    android:background="@drawable/round"
+                    android:padding="@dimen/padding_margin_5dp"
                     android:src="@drawable/ic_profile"
                     app:civ_border_color="@color/color_white" />
 
             </FrameLayout>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_account_user_name_short"
+                android:id="@+id/tv_account_user_name_small"
                 android:layout_width="wrap_content"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="center_horizontal"
@@ -99,7 +101,7 @@
                 tools:visibility="visible" />
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_account_user_name_long"
+                android:id="@+id/tv_account_user_name_big"
                 style="@style/TvStandartCenter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

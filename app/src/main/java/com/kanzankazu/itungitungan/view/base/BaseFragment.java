@@ -99,6 +99,11 @@ public class BaseFragment extends Fragment implements BaseView, FirebaseLoginUti
     }
 
     @Override
+    public void showToast(String message, int toastLenght) {
+        Utils.showToast(getActivity(), message, toastLenght);
+    }
+
+    @Override
     public void showSnackbar(String message) {
         Utils.showSnackBar(mActivity, message);
     }

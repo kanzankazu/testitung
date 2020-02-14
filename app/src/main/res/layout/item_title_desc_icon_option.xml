@@ -2,57 +2,78 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="@dimen/padding_margin_16dp">
+    android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/ib_item_left_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/padding_margin_16dp"
-        android:background="?android:selectableItemBackground"
-        android:src="@drawable/ic_back_black" />
-
+    <View
+        android:id="@+id/v_item_option_line_top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/padding_margin_16dp"
-        android:layout_weight="1"
-        android:animateLayoutChanges="true"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_margin_8dp">
 
-        <TextView
-            android:id="@+id/tv_item_title"
-            style="@style/TvStandartCenter"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/ib_item_option_left_icon"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/padding_margin_10dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/medium_font_size"
-            tools:text="@tools:sample/lorem" />
+            android:background="?android:selectableItemBackground"
+            android:padding="@dimen/padding_margin_5dp"
+            android:src="@drawable/ic_back_black" />
 
-        <TextView
-            android:id="@+id/tv_item_description"
-            style="@style/TvStandartCenter"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_margin_5dp"
-            android:layout_marginEnd="@dimen/padding_margin_10dp"
+            android:layout_marginStart="@dimen/padding_margin_16dp"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/normal_font_size"
-            android:visibility="gone"
-            tools:text="@tools:sample/lorem[15]"
-            tools:visibility="visible" />
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_item_option_title"
+                style="@style/TvStandartCenter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/medium_font_size"
+                tools:text="@tools:sample/lorem" />
+
+            <TextView
+                android:id="@+id/tv_item_option_description"
+                style="@style/TvStandartCenter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_margin_5dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/normal_font_size"
+                android:visibility="gone"
+                tools:text="@tools:sample/lorem[8]"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/ib_item_option_right_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_margin_16dp"
+            android:background="?android:selectableItemBackground"
+            android:padding="@dimen/padding_margin_5dp"
+            android:src="@drawable/ic_navigate_next" />
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/ib_item_right_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="?android:selectableItemBackground"
-        android:src="@drawable/ic_navigate_next" />
+    <View
+        android:id="@+id/v_item_option_line_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </LinearLayout>

@@ -37,7 +37,7 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
     public AppCompatActivity mActivity;
     ProgressDialogConnection progressDialogConnection = new ProgressDialogConnection();
     private InterstitialAd mInterstitialAd;
-    private RewardedVideoAd mRewardedVideoAd;
+    public RewardedVideoAd mRewardedVideoAd;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,6 +107,11 @@ public class BaseDialogFragment extends DialogFragment implements BaseView, Fire
     @Override
     public void showToast(String message) {
         Utils.showToast(mActivity, message);
+    }
+
+    @Override
+    public void showToast(String message, int toastLenght) {
+        Utils.showToast(mActivity, message, toastLenght);
     }
 
     @Override

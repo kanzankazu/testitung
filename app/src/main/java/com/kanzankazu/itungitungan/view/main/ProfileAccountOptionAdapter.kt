@@ -32,20 +32,28 @@ class ProfileAccountOptionAdapter(private val mActivity: Activity, private val m
         val h = holder as ProfileListAdapterAdapterHolder
         h.setView(datas[position], position)
         h.setListener(datas[position], position)
-
     }
 
     inner class ProfileListAdapterAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         fun setView(model: ProfileAccountModel, position: Int) {
+
+            if (position == 0) {
+                itemView.v_item_option_line_top.visibility = View.VISIBLE
+                itemView.v_item_option_line_bottom.visibility = View.VISIBLE
+            } else {
+                itemView.v_item_option_line_top.visibility = View.GONE
+                itemView.v_item_option_line_bottom.visibility = View.VISIBLE
+            }
+
             if (model.isShow) {
-                Utils.setDrawableImageView(mActivity, itemView.ib_item_left_icon, model.icon)
-                itemView.tv_item_title.text = model.title
+                Utils.setDrawableImageView(mActivity, itemView.ib_item_option_left_icon, model.icon)
+                itemView.tv_item_option_title.text = model.title
 
                 if (model.desc.isNotEmpty()) {
-                    itemView.tv_item_description.text = model.desc
-                    itemView.tv_item_description.visibility = View.VISIBLE
+                    itemView.tv_item_option_description.text = model.desc
+                    itemView.tv_item_option_description.visibility = View.VISIBLE
                 } else {
-                    itemView.tv_item_description.visibility = View.GONE
+                    itemView.tv_item_option_description.visibility = View.GONE
                 }
             } else {
                 itemView.visibility = View.GONE

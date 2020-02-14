@@ -10,6 +10,7 @@ import kotlinx.android.parcel.Parcelize
 data class ProfileAccountModel(
         var icon: Int = 0,
         var title: String = "",
-        var desc: String,
+        var desc: String = "",
+        var type: String = "",
         var isShow: Boolean
 ) : Parcelable

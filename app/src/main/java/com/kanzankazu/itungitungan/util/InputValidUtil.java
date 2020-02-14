@@ -132,7 +132,7 @@ public class InputValidUtil {
         if (!isEmail(editText.getText().toString())) {
             textInputLayout.setError(message);
             textInputLayout.setErrorEnabled(true);
-            editText.requestFocus();
+            if (isFocus) editText.requestFocus();
             return false;
         } else {
             return true;
@@ -170,6 +170,17 @@ public class InputValidUtil {
         Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
         Matcher matcher = pattern.matcher(ip4);
         return !matcher.matches();
+    }
+
+    public static boolean isPhoneNumber(String message, TextInputLayout textInputLayout, EditText editText, Boolean isFocus) {
+        if (!isPhoneNumber(editText.getText().toString())) {
+            textInputLayout.setError(message);
+            textInputLayout.setErrorEnabled(true);
+            if (isFocus) editText.requestFocus();
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public static boolean isPhoneNumber(final String num) {

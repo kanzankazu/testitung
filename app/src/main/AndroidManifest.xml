@@ -46,12 +46,16 @@
 
         <service
             android:name=".util.Firebase.MyFirebaseInstanceIDService"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".util.Firebase.MyFirebaseMessagingService">
+        <service
+            android:name=".util.Firebase.MyFirebaseMessagingService"
+            android:exported="false"
+            tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

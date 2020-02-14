@@ -21,9 +21,12 @@ import java.util.Locale;
  */
 public class CurrencyEditText extends android.support.v7.widget.AppCompatEditText {
 
-    public static int validationLimit = 5;
 
-    private static String prefix = "Rp ";
+    public static String prefix = "Rp ";
+    public static String validationNominal = prefix + "xx";
+    public static int validationLimit = validationNominal.length();
+    public static String lenghtNominalDigits = String.valueOf(validationNominal.split(" ")[1].length());
+
     private static final int MAX_LENGTH = 14;
     private static final int MAX_DECIMAL = 0;
     private CurrencyTextWatcher currencyTextWatcher = new CurrencyTextWatcher(this, prefix);
