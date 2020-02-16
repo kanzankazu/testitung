@@ -1,6 +1,7 @@
 package com.kanzankazu.itungitungan.view.main.ProfileSub
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.content.ContextCompat
@@ -8,10 +9,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
 import android.view.animation.AnticipateOvershootInterpolator
+import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.User
+import com.kanzankazu.itungitungan.util.DateTimeUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
+import com.kanzankazu.itungitungan.util.PictureUtil2
 import com.kanzankazu.itungitungan.util.Utils
+import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.main.ProfileAccountModel
 import com.kanzankazu.itungitungan.view.main.ProfileAccountOptionAdapter
@@ -29,6 +34,10 @@ class AccountActivity : BaseActivity(), AccountContract.View {
     private var isCalculated = false
     private val mLowerLimitTransparently = ABROAD * 0.45
     private val mUpperLimitTransparently = ABROAD * 0.65
+    private var user: User = User()
+
+    private var pictureUtil = PictureUtil2(this)
+    private var permissionUtil = AndroidPermissionUtil(this, true, *AndroidPermissionUtil.permCameraGallery)
 
 
     private lateinit var mPresenter: AccountPresenter
@@ -53,6 +62,31 @@ class AccountActivity : BaseActivity(), AccountContract.View {
         setListener()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val photoPath = pictureUtil.onActivityResult(requestCode, resultCode, data)
+        user.photoUrl = photoPath
+        user.photoChangeAt = DateTimeUtil.currentDateString!!
+        setUserImage(photoPath)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionUtil.onRequestPermissionsResult(
+                false,
+                object : AndroidPermissionUtil.AndroidPermissionUtilListener {
+                    override fun onPermissionGranted() {
+                        pictureUtil.chooseGetImageDialog()
+                    }
+
+                    override fun onPermissionDenied(message: String) {
+                        showSnackbar(message)
+                    }
+                },
+                requestCode, permissions, grantResults
+        )
+    }
+
     override fun showToastView(message: String?) {
         showToast(message)
     }
@@ -74,9 +108,11 @@ class AccountActivity : BaseActivity(), AccountContract.View {
     }
 
     override fun setDataUser(user: User) {
+        this.user = user
         et_account_user_name.setText(user.name)
         et_account_user_email.setText(user.email)
         et_account_user_phone.setText(user.phone)
+        setUserImage(user.photoUrl)
     }
 
     private fun setView() {
@@ -97,8 +133,23 @@ class AccountActivity : BaseActivity(), AccountContract.View {
             val offset = abs(i / appBarLayout.totalScrollRange.toFloat())
             updateToolbarViewImage(offset)
         })
+        iv_account_user_image.setOnClickListener {
+            if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
+                pictureUtil.chooseGetImageDialog()
+            }
+        }
 
-        b_account_save.setOnClickListener { checkUserData(true) }
+        b_account_save.setOnClickListener {
+            if (checkUserData(true)) {
+                saveUserData()
+            }
+        }
+    }
+
+    private fun saveUserData() {
+        user.name = et_account_user_name.text.toString().trim()
+        user.email = et_account_user_email.text.toString().trim()
+        user.phone = et_account_user_phone.text.toString().trim()
     }
 
     private fun checkUserData(isFocus: Boolean): Boolean {
@@ -118,9 +169,9 @@ class AccountActivity : BaseActivity(), AccountContract.View {
 
     private fun setOptionRecyclerView() {
         val listOfProfileAccount = mutableListOf<ProfileAccountModel>()
-        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_fast_notes), "Opsi ini untuk mempermudah anda membalas cepat saat pembayaran hutang", "", true))
+        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_fast_notes), "Opsi ini untuk mempermudah anda membalas cepat saat pembayaran hutangList", "", true))
         listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_payment_account), "Opsi ini untuk mempermudah peminjam melakukan pembayaran dengan via trasfer", "", true))
-        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_category_cash_inout), "Opsi ini mengkategorikan pengeluaran dan pemasukan anda", "", true))
+        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_category_cash_inout), "Opsi ini mengkategorikan pemasukan dan pengeluaran anda", "", true))
 
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rv_account_option.layoutManager = linearLayoutManager
@@ -133,6 +184,13 @@ class AccountActivity : BaseActivity(), AccountContract.View {
         optionAdapter.addDatas(listOfProfileAccount)
     }
 
+    private fun setUserImage(photoPath: String) {
+        Glide.with(this)
+                .load(photoPath)
+                .placeholder(R.drawable.ic_profile)
+                .into(iv_account_user_image)
+    }
+
     private fun itemAdapterClick(data: ProfileAccountModel) {
         when (data.title) {
             getString(R.string.account_activity_fast_notes) -> {
@@ -140,6 +198,9 @@ class AccountActivity : BaseActivity(), AccountContract.View {
             }
             getString(R.string.account_activity_payment_account) -> {
                 showSnackbar("1")
+            }
+            getString(R.string.account_activity_category_cash_inout) -> {
+                showSnackbar("2")
             }
         }
     }
@@ -162,7 +223,7 @@ class AccountActivity : BaseActivity(), AccountContract.View {
         val result: Pair<Int, Int> = when {
             percentOffset < ABROAD -> {
                 Pair(
-                    TO_EXPANDED_STATE, cashCollapseState?.second
+                        TO_EXPANDED_STATE, cashCollapseState?.second
                         ?: WAIT_FOR_SWITCH
                 )
             }
@@ -215,11 +276,11 @@ class AccountActivity : BaseActivity(), AccountContract.View {
                                 alpha = 0.2f
                                 this.translationX = width.toFloat() / 2
                                 animate().translationX(0f)
-                                    .setInterpolator(AnticipateOvershootInterpolator())
-                                    .alpha(1.0f)
-                                    .setStartDelay(69)
-                                    .setDuration(450)
-                                    .setListener(null)
+                                        .setInterpolator(AnticipateOvershootInterpolator())
+                                        .alpha(1.0f)
+                                        .setStartDelay(69)
+                                        .setDuration(450)
+                                        .setListener(null)
                             }
                         }
                     }

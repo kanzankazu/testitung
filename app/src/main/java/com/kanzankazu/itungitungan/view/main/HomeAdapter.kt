@@ -7,12 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.model.Home
 import kotlinx.android.synthetic.main.item_home.view.*
 
 class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mActivity: AppCompatActivity
     private lateinit var mView: HomeContract.View
-    private lateinit var datas: MutableList<HomeModel>
+    private lateinit var datas: MutableList<Home>
 
     constructor(mActivity: AppCompatActivity, mView: HomeContract.View) : this() {
         this.mActivity = mActivity
@@ -26,7 +27,7 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        val list = arrayListOf<HomeModel>()
+        val list = arrayListOf<Home>()
         for (model in datas) {
             if (model.isShow) list.add(model)
         }
@@ -40,7 +41,7 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     inner class ProfileListAdapterAdapterHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        fun setView(model: HomeModel) {
+        fun setView(model: Home) {
 
             if (model.image != 0) {
                 Glide.with(mActivity)
@@ -67,33 +68,33 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
         }
 
-        private fun setListener(model: HomeModel) {
+        private fun setListener(model: Home) {
             itemView.setOnClickListener { mView.itemAdapterClick(model) }
         }
     }
 
-    fun setData(datas: List<HomeModel>) {
+    fun setData(datas: List<Home>) {
         if (datas.isNotEmpty()) {
             this.datas.clear()
-            this.datas = datas as ArrayList<HomeModel>
+            this.datas = datas as ArrayList<Home>
         } else {
-            this.datas = datas as ArrayList<HomeModel>
+            this.datas = datas as ArrayList<Home>
         }
         notifyDataSetChanged()
     }
 
-    fun replaceData(datas: List<HomeModel>) {
+    fun replaceData(datas: List<Home>) {
         this.datas.clear()
         this.datas.addAll(datas)
         notifyDataSetChanged()
     }
 
-    fun addDatas(datas: List<HomeModel>) {
+    fun addDatas(datas: List<Home>) {
         this.datas.addAll(datas)
         notifyItemRangeInserted(this.datas.size, datas.size)
     }
 
-    fun addDataFirst(data: HomeModel) {
+    fun addDataFirst(data: Home) {
         val position = 0
         this.datas.add(position, data)
         notifyItemInserted(position)
@@ -112,12 +113,12 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemRangeChanged(position, this.datas.size)
     }
 
-    fun restoreData(data: HomeModel, position: Int) {
+    fun restoreData(data: Home, position: Int) {
         this.datas.add(position, data)
         notifyItemInserted(position)
     }
 
-    fun updateSingleData(data: HomeModel, position: Int) {
+    fun updateSingleData(data: Home, position: Int) {
         this.datas.set(position, data)
         notifyDataSetChanged()
     }

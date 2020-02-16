@@ -284,7 +284,7 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
     }
 
     private void applyFinishTranslation(float interpolatedTime, Ring ring) {
-        // shrink back down and complete a full rotation before
+        // shrink back down and complete a full rotation getDatebefore
         // starting other circles
         // Rotation goes between [0..1].
         float targetRotation = (float) (Math.floor(ring.getStartingRotation() / MAX_PROGRESS_ARC)

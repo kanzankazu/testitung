@@ -1,13 +1,13 @@
 package com.kanzankazu.itungitungan.view.main
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.model.Home
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import com.kanzankazu.itungitungan.view.main.Hutang.HutangListActivity
@@ -59,7 +59,7 @@ class HomeFragment : BaseFragment(), HomeContract.View {
         initListener()
     }
 
-    override fun itemAdapterClick(position: HomeModel) {
+    override fun itemAdapterClick(position: Home) {
         when {
             position.title.equals(Constants.HOME.Anggaran, true) -> {
             }
@@ -102,13 +102,13 @@ class HomeFragment : BaseFragment(), HomeContract.View {
 
     private fun setHomeList() {
 
-        val homeModels = arrayListOf<HomeModel>()
-        homeModels.add(HomeModel(R.drawable.ic_anggaran, Constants.HOME.Anggaran, isShow = true, isComingSoon = true))
-        homeModels.add(HomeModel(R.drawable.ic_arisan, Constants.HOME.Arisan, isShow = true, isComingSoon = true))
-        homeModels.add(HomeModel(R.drawable.ic_best_price, Constants.HOME.Banding, isShow = true, isComingSoon = true))
-        homeModels.add(HomeModel(R.drawable.ic_hutang, Constants.HOME.Hutang, isShow = true, isComingSoon = false))
-        homeModels.add(HomeModel(R.drawable.ic_keuangan, Constants.HOME.Keuangan, isShow = true, isComingSoon = true))
-        homeModels.add(HomeModel(R.drawable.ic_stok, Constants.HOME.Stok, isShow = true, isComingSoon = true))
+        val homeModels = arrayListOf<Home>()
+        homeModels.add(Home(R.drawable.ic_anggaran, Constants.HOME.Anggaran, isShow = true, isComingSoon = true))
+        homeModels.add(Home(R.drawable.ic_arisan, Constants.HOME.Arisan, isShow = true, isComingSoon = true))
+        homeModels.add(Home(R.drawable.ic_best_price, Constants.HOME.Banding, isShow = true, isComingSoon = true))
+        homeModels.add(Home(R.drawable.ic_hutang, Constants.HOME.Hutang, isShow = true, isComingSoon = false))
+        homeModels.add(Home(R.drawable.ic_keuangan, Constants.HOME.Keuangan, isShow = true, isComingSoon = true))
+        homeModels.add(Home(R.drawable.ic_stok, Constants.HOME.Stok, isShow = true, isComingSoon = true))
         homeAdapter.setData(homeModels)
 
     }

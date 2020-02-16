@@ -38,11 +38,11 @@ class SignInUpPresenter(var mActivity: Activity, var mView: SignInUpContract.Vie
         }
 
         if (isFirst) {
-            user.firstSignIn = DateTimeUtil.getCurrentDate().toString()
+            user.firstSignIn = DateTimeUtil.currentDateString.toString()
             user.phoneCode = Utils.getUniquePsuedoID()
         }
 
-        user.lastSignIn = DateTimeUtil.getCurrentDate().toString()
+        user.lastSignIn = DateTimeUtil.currentDateString.toString()
         FirebaseDatabaseHandler.setUser(mActivity, user, listener)
     }
 }

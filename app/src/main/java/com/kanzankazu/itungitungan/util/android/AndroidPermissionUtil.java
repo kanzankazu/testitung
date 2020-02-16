@@ -2,7 +2,6 @@ package com.kanzankazu.itungitungan.util.android;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -31,18 +30,24 @@ public class AndroidPermissionUtil {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-    public final int RP_ACCESS = 123;
-    private final String[] permissions;
+    public int RP_ACCESS = 123;
+    private String[] permissions;
     private Activity activity;
+    private boolean isPerpermissionForAllGranted = false;
 
 
-    public AndroidPermissionUtil(Activity activity, String... permissions) {
+    public AndroidPermissionUtil(Activity activity) {
+        this.activity = activity;
+    }
+
+    public AndroidPermissionUtil(Activity activity, Boolean isInitCheckPermission, String... permissions) {
         this.activity = activity;
         this.permissions = permissions;
-        checkPermission(permissions);
+        if (isInitCheckPermission) checkPermission(permissions);
     }
 
     public boolean checkPermission(String... permissions) {
+        this.permissions = permissions;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ArrayList<String> listStat = new ArrayList<>();
             for (String permission : permissions) {
@@ -59,36 +64,36 @@ public class AndroidPermissionUtil {
             if (frequency1 != permissions.length) {
                 ActivityCompat.requestPermissions(activity, permissions, RP_ACCESS);
                 return false;
+            } else {
+                return true;
             }
+        } else {
+            return true;
         }
-        return true;
     }
 
     /**
      * call when onRequestPermissionsResult
-     *  @param requestCode
+     *
+     * @param isFinish     jika semua izin tidak di berikan akan keluar activity
+     * @param listener
+     * @param requestCode
      * @param permissions
      * @param grantResults
-     * @param isFinish
      */
-    public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, boolean isFinish) {
+    public boolean onRequestPermissionsResult(boolean isFinish, AndroidPermissionUtilListener listener, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == RP_ACCESS) {
             Log.d("Lihat", "checkResultPermission AndroidPermissionUtil : " + grantResults.length);
             Log.d("Lihat", "checkResultPermission AndroidPermissionUtil : " + permissions.length);
-            boolean isPerpermissionForAllGranted = false;
             ArrayList<String> listStat = new ArrayList<>();
             if (grantResults.length > 0 && permissions.length == grantResults.length) {
                 for (int i = 0; i < permissions.length; i++) {
                     if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        isPerpermissionForAllGranted = true;
                         listStat.add("1");
                     } else {
-                        isPerpermissionForAllGranted = false;
                         listStat.add("0");
                     }
                 }
-            } else {
-                isPerpermissionForAllGranted = true;
             }
 
             int frequency0 = Collections.frequency(listStat, "0");
@@ -98,30 +103,41 @@ public class AndroidPermissionUtil {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
                 alertDialogBuilder.setMessage("you denied some permission, you must give all permission to next proccess?");
                 alertDialogBuilder.setCancelable(false);
-                alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        checkPermission(permissions);
-                    }
+                alertDialogBuilder.setPositiveButton("Yes", (arg0, arg1) -> {
+                    checkPermission(permissions);
                 });
-                alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        Snackbar.make(activity.findViewById(android.R.id.content), "Izin tidak di berikan", Snackbar.LENGTH_SHORT).show();
-                        if (isFinish)activity.finish();
-                    }
+                alertDialogBuilder.setNegativeButton("No", (arg0, arg1) -> {
+                    Snackbar.make(activity.findViewById(android.R.id.content), "Izin tidak di berikan", Snackbar.LENGTH_SHORT).show();
+                    if (isFinish) activity.finish();
                 });
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
+                isPerpermissionForAllGranted = false;
+                listener.onPermissionDenied("Izin tidak di berikan");
                 return false;
             } else {
+                listener.onPermissionGranted();
+                isPerpermissionForAllGranted = true;
                 return true;
             }
+        } else {
+            listener.onPermissionDenied("Izin tidak di berikan");
+            isPerpermissionForAllGranted = false;
+            return false;
         }
-        return false;
     }
 
     public String[] getCurrentpermission() {
         return permissions;
+    }
+
+    public boolean isPermissionGranted() {
+        return isPerpermissionForAllGranted;
+    }
+
+    public interface AndroidPermissionUtilListener {
+        void onPermissionGranted();
+
+        void onPermissionDenied(String message);
     }
 }

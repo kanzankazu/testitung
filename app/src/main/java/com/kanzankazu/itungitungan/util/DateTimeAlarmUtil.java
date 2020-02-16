@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class DateTimeAlarmUtil extends DateTimeUtil {
+public class DateTimeAlarmUtil {
     public static PendingIntent setPendingIntentMakeAlarm(Context context, Intent intent, int REQ_CODE) {
         return PendingIntent.getBroadcast(context, REQ_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
@@ -172,7 +172,7 @@ public class DateTimeAlarmUtil extends DateTimeUtil {
         }
 
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(), WEEK_MILLIS, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(), DateTimeUtil.INSTANCE.getWEEK_MILLIS(), pendingIntent);
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Log.v("AlarmManager", "Starting AlarmManager for >= KITKAT version");
@@ -200,7 +200,7 @@ public class DateTimeAlarmUtil extends DateTimeUtil {
         }
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(), WEEK_MILLIS, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(), DateTimeUtil.INSTANCE.getWEEK_MILLIS(), pendingIntent);
 
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -231,7 +231,7 @@ public class DateTimeAlarmUtil extends DateTimeUtil {
         }
 
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(), WEEK_MILLIS, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(), DateTimeUtil.INSTANCE.getWEEK_MILLIS(), pendingIntent);
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Log.v("AlarmManager", "Starting AlarmManager for >= KITKAT version");
@@ -261,7 +261,7 @@ public class DateTimeAlarmUtil extends DateTimeUtil {
         }
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(), WEEK_MILLIS, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(), DateTimeUtil.INSTANCE.getWEEK_MILLIS(), pendingIntent);
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Log.v("AlarmManager", "Starting AlarmManager for >= KITKAT version");

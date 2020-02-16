@@ -6,16 +6,17 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.EditText
 import android.widget.TextView
-import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.model.HutangPembayaran
-import com.kanzankazu.itungitungan.model.User
 import com.kanzankazu.itungitungan.util.DateTimeUtil
 import com.kanzankazu.itungitungan.util.DialogUtil
-import com.kanzankazu.itungitungan.util.Firebase.*
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseConnectionUtil
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import com.kanzankazu.itungitungan.util.PictureUtil2
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil
@@ -69,10 +70,10 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
     }
 
     override fun addImage(): PictureUtil2 {
-        val permissionUtil = AndroidPermissionUtil(mActivity, *AndroidPermissionUtil.permCameraGallery)
+        val permissionUtil = AndroidPermissionUtil(mActivity, true, *AndroidPermissionUtil.permCameraGallery)
         val pictureUtil2 = PictureUtil2(mActivity)
         if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
-            pictureUtil2.chooseGetImageDialog(mActivity)
+            pictureUtil2.chooseGetImageDialog()
         }
         return pictureUtil2
 
@@ -81,10 +82,10 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
     override fun saveSubHutangValidate(isNew: Boolean, huCil: HutangPembayaran, hutang: Hutang, tv_hutang_pay_cicilan_ke: TextView, et_hutang_pay_nominal: EditText, et_hutang_pay_note: EditText, imageListAdapter: ImageListAdapter, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
         if (mView.checkData(true)) {
             if (isNew) {
-                huCil.createAt = DateTimeUtil.getCurrentDate().toString()
+                huCil.createAt = DateTimeUtil.currentDateString.toString()
                 huCil.createBy = UserPreference.getInstance().uid
             } else {
-                huCil.updateAt = DateTimeUtil.getCurrentDate().toString()
+                huCil.updateAt = DateTimeUtil.currentDateString.toString()
                 huCil.updateBy = UserPreference.getInstance().uid
             }
             huCil.hIdSub = hutang.hId + "_" + Date()
@@ -236,9 +237,9 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
                     mActivity,
                     "Info",
                     when (statusPembayaran) {
-                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
-                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
-                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
+                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutangList."
+                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutangList atau bonus?."
+                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutangList anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
                     }
             ) {
                 when (statusPembayaran) {
@@ -319,25 +320,15 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
     fun sendNotifAddEditHutang(hutang: Hutang) {
         val title = "Pembayaran Hutang"
         val message: String = when (statusPembayaran) {
-            Constants.Hutang.Status.Lunas -> "Piutang anda sudah di lunaskan.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
-            Constants.Hutang.Status.Berlebih -> "Piutang anda sudah di lunaskan.\n tapi peminjam membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+            Constants.Hutang.Status.Lunas -> "Piutang anda sudah di lunaskan.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutangList."
+            Constants.Hutang.Status.Berlebih -> "Piutang anda sudah di lunaskan.\n tapi peminjam membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutangList atau bonus?."
             else -> "piutang anda sudah dibayarkan dengan nominal Rp.$nominalYangDiBayarkanSekarang dan piutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
         }
-        val type: String = Constants.FirebasePushNotif.TypeNotif.hutang
-
+        val type: String = Constants.FirebasePushNotif.TypeNotif.hutangList
 
         FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil.FirebaseConnectionListener {
             override fun hasInternet() {
-                FirebaseDatabaseHandler.getUserByUid(hutang.creditorId, object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
-                    override fun onSuccessDataExist(dataSnapshot: DataSnapshot, isExsist: Boolean?) {
-                        val user: User? = dataSnapshot.getValue(User::class.java)
-                        FirebaseMessagingUtil.makeNotificationToken(mActivity, user!!.tokenFcm, title, message, type, "", "")
-                    }
-
-                    override fun onFailureDataExist(message: String?) {
-                        mView.showSnackbarView(message)
-                    }
-                })
+                FirebaseDatabaseHandler.sendPushNotif(mActivity,hutang.creditorId, title, message, type, "", "")
             }
 
             override fun noInternet(message: String?) {

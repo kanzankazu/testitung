@@ -23,6 +23,7 @@ import java.util.*
 
 class HutangListActivity : BaseActivity(), HutangListContract.View {
 
+    private var hutangBundleId: String = ""
     private var hutangNominal: Int = 0
     private var piutangNominal: Int = 0
     private var mPresenter: HutangListPresenter = HutangListPresenter(this, this)
@@ -34,7 +35,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hutang_list)
 
-        Utils.setupAppToolbarForActivity(this, toolbar, "hutang")
+        Utils.setupAppToolbarForActivity(this, toolbar, "hutangList")
 
         setView()
         setListener()
@@ -85,7 +86,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     override fun onHutangBayarClick(hutang: Hutang) {
         val intent = Intent(this, HutangPayActivity::class.java)
-        intent.putExtra(Constants.Bundle.HUTANG, hutang)
+        intent.putExtra(Constants.Bundle.HUTANG_LIST, hutang)
         intent.putExtra(Constants.Bundle.HUTANG_NEW, true)
         startActivity(intent)
     }
@@ -94,9 +95,9 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         val isIPenghutang = if (hutang.debtorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.debtorId, true) else false
         val isIPiutang = if (hutang.creditorId.isNotEmpty()) UserPreference.getInstance().uid.equals(hutang.creditorId, true) else false
 
-        if ((isIPenghutang && hutang.creditorId.isEmpty())||(isIPiutang && hutang.debtorId.isEmpty())){
+        if ((isIPenghutang && hutang.creditorId.isEmpty()) || (isIPiutang && hutang.debtorId.isEmpty())) {
             mPresenter.hapusHutangCheckImage(hutang)
-        }else{
+        } else {
             dialogDeleteRequestHutang(hutang, isHasReqDelete)
         }
     }
@@ -128,34 +129,21 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         detailDialog(hutang, false, false, false, true)
     }
 
-    override fun setAllHutangsMine(hutangs: ArrayList<Hutang>) {
-        if (hutangs.isNotEmpty()) {
-            toggleEmptyDataLayout(tv_hutang_list_mine_empty, rv_hutang_list_mine, false)
-            hutangListMineAdapter.setData(hutangs)
-        } else {
-            toggleEmptyDataLayout(tv_hutang_list_mine_empty, rv_hutang_list_mine, true)
-        }
+    override fun onHutangSendReminderClick(hutang: Hutang, adapterPosition: Int) {
+        mPresenter.sendReminder(hutang, adapterPosition)
     }
 
-    override fun setAllHutangsFamily(hutangs: ArrayList<Hutang>) {
-        if (hutangs.isNotEmpty()) {
-            toggleEmptyDataLayout(tv_hutang_list_family_empty, rv_hutang_list_family, false)
-            hutangListFamilyAdapter.setData(hutangs)
-        } else {
-            toggleEmptyDataLayout(tv_hutang_list_family_empty, rv_hutang_list_family, true)
-        }
-    }
+    override fun setAllhutangs(hutangMine: ArrayList<Hutang>, hutangFamily: ArrayList<Hutang>, hutangLunas: ArrayList<Hutang>, hutangs: ArrayList<Hutang>) {
+        setAllHutangsMine(hutangMine)
+        setAllHutangsFamily(hutangFamily)
+        setAllHutangsLunas(hutangLunas)
 
-    override fun setAllHutangsLunas(hutangs: ArrayList<Hutang>) {
-        if (hutangs.isNotEmpty()) {
-            toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, false)
-            hutangListLunasAdapter.setData(hutangs)
-            iv_hutang_list_mine_lunas_show_hide.visibility = View.VISIBLE
-            Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropdown)
-        } else {
-            toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, true)
-            iv_hutang_list_mine_lunas_show_hide.visibility = View.GONE
-            Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropup)
+        if (hutangBundleId.isNotEmpty()){
+            for (hutang in hutangs) {
+                if (hutang.hId.equals(hutangBundleId,true)){
+                    onHutangLihatClick(hutang)
+                }
+            }
         }
     }
 
@@ -187,6 +175,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         hutangListFamilyAdapter = setRecyclerViewAdapter(rv_hutang_list_family)
         hutangListLunasAdapter = setRecyclerViewAdapter(rv_hutang_list_lunas)
 
+        getBundle()
         mPresenter.getAllHutang()
     }
 
@@ -227,6 +216,15 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         ib_hutang_list_search_clear.setOnClickListener { et_hutang_list_search.text.clear() }
     }
 
+    private fun getBundle() {
+        val bundle = intent.extras
+        if (bundle != null) {
+            if (bundle.containsKey(Constants.Bundle.ID)) {
+                hutangBundleId = bundle.getString(Constants.Bundle.ID, "")
+            }
+        }
+    }
+
     private fun setRecyclerViewAdapter(recyclerView: RecyclerView): HutangListAdapter {
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = linearLayoutManager
@@ -248,36 +246,67 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private fun moveToHutangAdd(hutang: Hutang) {
         val intent = Intent(this, HutangAddEditActivity::class.java)
-        intent.putExtra(Constants.Bundle.HUTANG, hutang)
+        intent.putExtra(Constants.Bundle.HUTANG_LIST, hutang)
         startActivity(intent)
+    }
+
+    fun setAllHutangsMine(hutangs: ArrayList<Hutang>) {
+        if (hutangs.isNotEmpty()) {
+            toggleEmptyDataLayout(tv_hutang_list_mine_empty, rv_hutang_list_mine, false)
+            hutangListMineAdapter.setData(hutangs)
+        } else {
+            toggleEmptyDataLayout(tv_hutang_list_mine_empty, rv_hutang_list_mine, true)
+        }
+    }
+
+    fun setAllHutangsFamily(hutangs: ArrayList<Hutang>) {
+        if (hutangs.isNotEmpty()) {
+            toggleEmptyDataLayout(tv_hutang_list_family_empty, rv_hutang_list_family, false)
+            hutangListFamilyAdapter.setData(hutangs)
+        } else {
+            toggleEmptyDataLayout(tv_hutang_list_family_empty, rv_hutang_list_family, true)
+        }
+    }
+
+    fun setAllHutangsLunas(hutangs: ArrayList<Hutang>) {
+        if (hutangs.isNotEmpty()) {
+            toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, false)
+            hutangListLunasAdapter.setData(hutangs)
+            iv_hutang_list_mine_lunas_show_hide.visibility = View.VISIBLE
+            Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropdown)
+        } else {
+            toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, true)
+            iv_hutang_list_mine_lunas_show_hide.visibility = View.GONE
+            Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropup)
+        }
     }
 
     private fun dialogDeleteRequestHutang(hutang: Hutang, isHasReqDelete: Boolean) {
         DialogUtil.showIntroductionDialog(
-            this,
-            "",
-            "Konfirmasi",
-            if (isHasReqDelete) {
-                "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
-            } else {
-                "Apakah anda yakin ingin menghapus data ini?"
-            }
-            ,
-            "Ya",
-            "Tidak",
-            false,
-            -1,
-            object : DialogUtil.IntroductionButtonListener {
-                override fun onFirstButtonClick() {
-                    if (isHasReqDelete) {
-                        mPresenter.requestHutangHapus(hutang, true)
-                    } else {
-                        mPresenter.requestHutangHapus(hutang, false)
-                    }
+                this,
+                "",
+                "Konfirmasi",
+                if (isHasReqDelete) {
+                    "Anda sudah meminta menghapus list hutangList ini, apa anda ini mencabut penghapusan list ini?"
+                } else {
+                    "Apakah anda yakin ingin menghapus data ini?"
                 }
+                ,
+                "Ya",
+                "Tidak",
+                false,
+                -1,
+                object : DialogUtil.IntroductionButtonListener {
+                    override fun onFirstButtonClick() {
+                        if (isHasReqDelete) {
+                            mPresenter.requestHutangHapus(hutang, true)
+                        } else {
+                            mPresenter.requestHutangHapus(hutang, false)
+                        }
+                    }
 
-                override fun onSecondButtonClick() {}
-            }
+                    override fun onSecondButtonClick() {}
+                }
         )
 
     }

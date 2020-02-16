@@ -162,17 +162,17 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
     private fun initView() {
         when {
             isApproveNew -> {
-                tv_hutang_detail_dialog_Title.text = "Persetujuan hutang Piutang Baru"
+                tv_hutang_detail_dialog_Title.text = "Persetujuan hutangList Piutang Baru"
                 tv_hutang_detail_dialog_submit_tidak.visibility = View.VISIBLE
                 tv_hutang_detail_dialog_submit_setuju.visibility = View.VISIBLE
             }
             isApproveEdit -> {
-                tv_hutang_detail_dialog_Title.text = "Persetujuan hutang Piutang Ubah"
+                tv_hutang_detail_dialog_Title.text = "Persetujuan hutangList Piutang Ubah"
                 tv_hutang_detail_dialog_submit_tidak.visibility = View.VISIBLE
                 tv_hutang_detail_dialog_submit_setuju.visibility = View.VISIBLE
             }
             isApproveDelete -> {
-                tv_hutang_detail_dialog_Title.text = "Persetujuan hutang Piutang Hapus"
+                tv_hutang_detail_dialog_Title.text = "Persetujuan hutangList Piutang Hapus"
                 tv_hutang_detail_dialog_submit_tidak.visibility = View.VISIBLE
                 tv_hutang_detail_dialog_submit_setuju.visibility = View.VISIBLE
             }
@@ -182,7 +182,7 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
                 tv_hutang_detail_dialog_submit_setuju.visibility = View.VISIBLE
             }
             else -> {
-                tv_hutang_detail_dialog_Title.text = "Detail hutang Piutang"
+                tv_hutang_detail_dialog_Title.text = "Detail hutangList Piutang"
                 tv_hutang_detail_dialog_submit_tidak.text = "TUTUP"
                 tv_hutang_detail_dialog_submit_setuju.text = "DETAIL"
                 if (!hutang.hutangEditableis || hutang.statusLunas) {
@@ -326,7 +326,7 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
         }
         cv_hutang_detail_pembayaran_bayar.setOnClickListener {
             val intent = Intent(activity, HutangPayActivity::class.java)
-            intent.putExtra(Constants.Bundle.HUTANG, hutang)
+            intent.putExtra(Constants.Bundle.HUTANG_LIST, hutang)
             intent.putExtra(Constants.Bundle.HUTANG_NEW, true)
             startActivity(intent)
             dismiss()
@@ -335,7 +335,7 @@ class HutangDetailDialogFragment : BaseDialogFragment(), HutangDetailDialogContr
 
     private fun moveToHutangAdd(hutang: Hutang) {
         val intent = Intent(activity, HutangAddEditActivity::class.java)
-        intent.putExtra(Constants.Bundle.HUTANG, hutang)
+        intent.putExtra(Constants.Bundle.HUTANG_LIST, hutang)
         startActivity(intent)
     }
 

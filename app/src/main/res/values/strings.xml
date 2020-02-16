@@ -47,6 +47,7 @@
     <string name="message_database_delete_failed">Data gagal di hapus</string>
     <string name="message_database_data_exist">Data sudah ada</string>
     <string name="message_database_data_not_exist">Data tidak ada</string>
+    <string name="message_database_data_not_exist_string">%s Data tidak ada</string>
     <string name="message_database_data_over">Data berlebih</string>
     <string name="message_database_data_empty">Data kosong</string>
     <string name="message_database_data_cant_find">Data tidak di temukan</string>
@@ -103,11 +104,11 @@
     <string name="hutang_pay_date">Tanggal Pembayaran</string>
     <string name="hutang_note">Catatan</string>
     <string name="donate_option_view_ads_ready">Donasi dengan menonton iklan</string>
-    <string name="donate_option_view_ads_loading">Tunggu sebentar ya,\nDonasi iklan sedang di muat</string>
-    <string name="donate_option_view_ads_no_load">Donasi iklan tidak muncul karena tidak ada internet,\nSilahkan cari internet untuk berdonasi dengan menonton iklan</string>
+    <string name="donate_option_view_ads_loading">Tunggu sebentar ya, Donasi iklan sedang di muat</string>
+    <string name="donate_option_view_ads_no_load_no_internet">Donasi iklan tidak muncul karena tidak ada internet,\nSilahkan cari internet untuk berdonasi dengan menonton iklan</string>
     <string name="donate_option_with_give">Donasi dengan pemberian dana seikhlasnya</string>
     <string name="account_activity_fast_notes">Pesan cepat pembayaran pi/hutang</string>
     <string name="account_activity_payment_account">Akun Penerimaan Pembayaran (Akun Bank / Akun Fintech(OVO/DANA))</string>
-    <string name="account_activity_category_cash_inout">Kategori</string>
+    <string name="account_activity_category_cash_inout">Kategori Pemasukan Pengeluaran</string>
 
 </resources>

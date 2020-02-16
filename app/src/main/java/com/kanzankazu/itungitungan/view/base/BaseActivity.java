@@ -29,9 +29,8 @@ public class BaseActivity extends AppCompatActivity implements BaseView, Firebas
     public FirebaseLoginUtil loginUtil;
     public FirebaseAuth mAuth;
     public FirebaseUser firebaseUser;
-    private InterstitialAd mInterstitialAd;
-
     ProgressDialogConnection progressDialogConnection = new ProgressDialogConnection();
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

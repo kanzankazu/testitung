@@ -1,6 +1,5 @@
 package com.kanzankazu.itungitungan.util;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -42,11 +41,7 @@ public class PictureUtil2 {
 
     public final int REQUEST_IMAGE_CAMERA = 1;
     public final int REQUEST_IMAGE_GALLERY = 2;
-    public String[] permCameraGallery = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
-    };
+    public String[] permCameraGallery = AndroidPermissionUtil.permCameraGallery;
     private String mCurrentPhotoPath;
     private Activity mActivity;
     private ImageView imageView = null;
@@ -71,8 +66,7 @@ public class PictureUtil2 {
         return uriArrayList;
     }
 
-    /*OLD*/
-    private static Bitmap resizeImageBitmap(Bitmap bitmap, int newSize) {
+    public static Bitmap resizeImageBitmap(Bitmap bitmap, int newSize) {
         int realWidth = bitmap.getWidth();
         int realHeight = bitmap.getHeight();
 
@@ -98,21 +92,20 @@ public class PictureUtil2 {
 
         return Bitmap.createBitmap(bitmap, 0, 0, realWidth, realHeight, matrix, true);
     }
-    /*OLD*/
 
-    public void chooseGetImageDialog(Activity activity, ImageView imageView) {
+    public void chooseGetImageDialog(ImageView imageView) {
         this.imageView = imageView;
 
-        chooseGetImageDialog(activity);
+        chooseGetImageDialog();
     }
 
-    public void chooseGetImageDialog(Activity activity) {
+    public void chooseGetImageDialog() {
         final String[] items = {"Pilih foto dari kamera", "Pilih foto dari galeri"};
 
         AlertDialog.Builder chooseImageDialog = new AlertDialog.Builder(mActivity);
         chooseImageDialog.setItems(items, (dialogInterface, i) -> {
             if (items[i].equals("Pilih foto dari kamera")) {
-                openCamera(activity);
+                openCamera();
             } else {
                 openGallery();
             }
@@ -156,16 +149,16 @@ public class PictureUtil2 {
         return "";
     }
 
-    private void openCamera(Activity activity) {
+    private void openCamera() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (takePictureIntent.resolveActivity(mActivity.getPackageManager()) != null) {
             File photoFile = null;
             try {
-                photoFile = createImageFile(activity, false);
+                photoFile = createImageFile(false);
                 mCurrentPhotoPath = photoFile.getAbsolutePath();
             } catch (IOException ex) {
-                Snackbar.make(activity.findViewById(android.R.id.content), activity.getString(R.string.message_image_get_failed), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mActivity.findViewById(android.R.id.content), mActivity.getString(R.string.message_image_get_failed), Snackbar.LENGTH_SHORT).show();
                 ex.printStackTrace();
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -185,12 +178,12 @@ public class PictureUtil2 {
         mActivity.startActivityForResult(Intent.createChooser(intent, "Pilih foto"), REQUEST_IMAGE_GALLERY);
     }
 
-    private File createImageFile(Activity activity, Boolean isUriFormat) throws IOException {
+    private File createImageFile(Boolean isUriFormat) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         //File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File storageDir = activity.getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = mActivity.getBaseContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File file = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",  /* suffix */

@@ -18,7 +18,7 @@ data class User(
         var email: String = "",
         var phone: String = "",
         var photoUrl: String = "",
-        var photoDt: String = "",
+        var photoChangeAt: String = "",
         var emailVerified: Boolean = false,
         var signIn: Boolean = false,
         var phoneCode: String = "",

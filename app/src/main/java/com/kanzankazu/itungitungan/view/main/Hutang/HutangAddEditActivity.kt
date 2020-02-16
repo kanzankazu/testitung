@@ -1,6 +1,5 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
-import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -85,9 +84,21 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == permissionUtil.RP_ACCESS) {
-            permissionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults, false)
-        }
+        permissionUtil.onRequestPermissionsResult(
+                false,
+                object : AndroidPermissionUtil.AndroidPermissionUtilListener {
+                    override fun onPermissionGranted() {
+                        if (permissions.contentEquals(AndroidPermissionUtil.permCameraGallery)) {
+                            pictureUtil2.chooseGetImageDialog()
+                        }
+                    }
+
+                    override fun onPermissionDenied(message: String?) {
+                        showSnackbar(message)
+                    }
+                },
+                requestCode, permissions, grantResults
+        )
     }
 
     override fun onBackPressed() {
@@ -187,8 +198,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
     }
 
     private fun setView() {
-        permissionUtil = AndroidPermissionUtil(this, *AndroidPermissionUtil.permCameraGallery)
         pictureUtil2 = PictureUtil2(this)
+        permissionUtil = AndroidPermissionUtil(this)
 
         mPresenter.getSuggestUserFamily()
         setListTypeInstallmentCount(sp_hutang_add_installment_count)
@@ -316,14 +327,14 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             dialogSaveConfirm()
         }
 
-        iv_hutang_add_image_add.setOnClickListener { dialogPickImage(this@HutangAddEditActivity) }
+        iv_hutang_add_image_add.setOnClickListener { dialogPickImage() }
 
         sw_hutang_add_editable.setOnCheckedChangeListener { _, b ->
             if (!b) {
                 DialogUtil.showConfirmationDialog(
-                    this,
-                    "Konfirmasi",
-                    "Dengan mengubah opsi ini, penghutang dan piutang tidak bisa mengubah data hutang ini."
+                        this,
+                        "Konfirmasi",
+                        "Dengan mengubah opsi ini, penghutang dan piutang tidak bisa mengubah data hutangList ini."
                 ) {}
             }
         }
@@ -333,8 +344,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         val bundle = intent.extras
         if (bundle != null) {
             isEdit = true
-            if (bundle.containsKey(Constants.Bundle.HUTANG)) {
-                hutang = bundle.getParcelable(Constants.Bundle.HUTANG) as Hutang
+            if (bundle.containsKey(Constants.Bundle.HUTANG_LIST)) {
+                hutang = bundle.getParcelable(Constants.Bundle.HUTANG_LIST) as Hutang
                 setPreBundleData()
             } else if (bundle.containsKey(Constants.Bundle.HUTANG_ID)) {
                 val hutangId = bundle.getString(Constants.Bundle.HUTANG_ID, "")
@@ -353,9 +364,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             setBundleData()
             setFamilyViewOnly(!isIFamily)
 
-            Utils.setupAppToolbarForActivity(this, toolbar, "Ubah hutang Piutang")
+            Utils.setupAppToolbarForActivity(this, toolbar, "Ubah hutangList Piutang")
         } else {
-            Utils.setupAppToolbarForActivity(this, toolbar, "Tambah hutang Piutang")
+            Utils.setupAppToolbarForActivity(this, toolbar, "Tambah hutangList Piutang")
         }
     }
 
@@ -605,52 +616,52 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
     }
 
-    private fun dialogPickImage(activity: Activity) {
+    private fun dialogPickImage() {
         if (permissionUtil.checkPermission(*AndroidPermissionUtil.permCameraGallery)) {
-            pictureUtil2.chooseGetImageDialog(activity)
+            pictureUtil2.chooseGetImageDialog()
         }
     }
 
     private fun dialogClearImage(data: ImageModel, position: Int) {
         DialogUtil.showIntroductionDialog(
-            this,
-            "",
-            "Konfirmasi",
-            "Apa anda yakin gambar ini akan di hapus? ",
-            "Iya",
-            "Tidak",
-            false,
-            -1,
-            object : DialogUtil.IntroductionButtonListener {
-                override fun onFirstButtonClick() {
-                    if (InputValidUtil.isLinkUrl(data.path)) {
-                        FirebaseConnectionUtil.isConnect(this@HutangAddEditActivity, object : FirebaseConnectionUtil.FirebaseConnectionListener {
-                            override fun hasInternet() {
-                                FirebaseStorageUtil.deleteImages(this@HutangAddEditActivity, hutang.hutangProofImage,
-                                    object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
-                                        override fun isFinised() {
-                                            imageListAdapter.removeAt(position)
-                                            checkImageData()
-                                        }
+                this,
+                "",
+                "Konfirmasi",
+                "Apa anda yakin gambar ini akan di hapus? ",
+                "Iya",
+                "Tidak",
+                false,
+                -1,
+                object : DialogUtil.IntroductionButtonListener {
+                    override fun onFirstButtonClick() {
+                        if (InputValidUtil.isLinkUrl(data.path)) {
+                            FirebaseConnectionUtil.isConnect(this@HutangAddEditActivity, object : FirebaseConnectionUtil.FirebaseConnectionListener {
+                                override fun hasInternet() {
+                                    FirebaseStorageUtil.deleteImages(this@HutangAddEditActivity, hutang.hutangProofImage,
+                                            object : FirebaseStorageUtil.DoneRemoveListenerMultiple {
+                                                override fun isFinised() {
+                                                    imageListAdapter.removeAt(position)
+                                                    checkImageData()
+                                                }
 
-                                        override fun isFailed(message: String) {
-                                            showSnackbar(message)
-                                        }
-                                    })
-                            }
+                                                override fun isFailed(message: String) {
+                                                    showSnackbar(message)
+                                                }
+                                            })
+                                }
 
-                            override fun noInternet(message: String?) {
-                                showRetryDialog { }
-                            }
-                        })
-                    } else {
-                        imageListAdapter.removeAt(position)
-                        checkImageData()
+                                override fun noInternet(message: String?) {
+                                    showRetryDialog { }
+                                }
+                            })
+                        } else {
+                            imageListAdapter.removeAt(position)
+                            checkImageData()
+                        }
                     }
-                }
 
-                override fun onSecondButtonClick() {}
-            }
+                    override fun onSecondButtonClick() {}
+                }
         )
     }
 

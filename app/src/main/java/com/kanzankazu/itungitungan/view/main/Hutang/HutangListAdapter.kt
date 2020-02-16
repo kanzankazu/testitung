@@ -65,12 +65,12 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
             isLunas = hutang.statusLunas
 
             builder = TextDrawable.builder()
-                .beginConfig()
-                .withBorder(4)
-                .width(80)
-                .height(80)
-                .endConfig()
-                .roundRect(20)
+                    .beginConfig()
+                    .withBorder(4)
+                    .width(80)
+                    .height(80)
+                    .endConfig()
+                    .roundRect(20)
 
             checkPersetujuanLabel(hutang)
             checkPersetujuanAlphaClick(hutang)
@@ -341,25 +341,29 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
 
         private fun setNormalOnClickListener(hutang: Hutang) {
             val strings: Array<String> =
-                if (isIFamily && !isLunas && hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
-                    arrayOf("Detail", "Lihat")
-                } else if (isIFamily && !isLunas && !hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
-                    arrayOf("Lihat")
-                } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPenghutang) {
-                    arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
-                } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPenghutang) {
-                    arrayOf("Lihat", "Bayar", "Hapus")
-                } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPiutang) {
-                    arrayOf("Ubah", "Lihat", "Hapus", "Kirim Pengingat")
-                } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPiutang) {
-                    arrayOf("Lihat", "Hapus", "Kirim Pengingat")
-                } else if (!isIFamily && isLunas && (isIPenghutang || isIPiutang)) {
-                    arrayOf("Lihat")
-                } else if (isIFamily && isLunas && (!isIPenghutang || !isIPiutang)) {
-                    arrayOf("Lihat")
-                } else {
-                    arrayOf("Lihat")
-                }
+                    if (isIFamily && !isLunas && hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Detail", "Lihat")
+                    } else if (isIFamily && !isLunas && !hutang.hutangEditableis && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPenghutang) {
+                        arrayOf("Ubah", "Lihat", "Bayar", "Hapus")
+                    } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPenghutang) {
+                        arrayOf("Lihat", "Bayar", "Hapus")
+                    } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPiutang && hutang.debtorId.isEmpty()) {
+                        arrayOf("Ubah", "Lihat", "Hapus")
+                    } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPiutang && hutang.debtorId.isEmpty()) {
+                        arrayOf("Lihat", "Hapus")
+                    } else if (!isIFamily && !isLunas && hutang.hutangEditableis && isIPiutang && hutang.debtorId.isNotEmpty()) {
+                        arrayOf("Ubah", "Lihat", "Hapus", "Kirim Pengingat")
+                    } else if (!isIFamily && !isLunas && !hutang.hutangEditableis && isIPiutang && hutang.debtorId.isNotEmpty()) {
+                        arrayOf("Lihat", "Hapus", "Kirim Pengingat")
+                    } else if (!isIFamily && isLunas && (isIPenghutang || isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else if (isIFamily && isLunas && (!isIPenghutang || !isIPiutang)) {
+                        arrayOf("Lihat")
+                    } else {
+                        arrayOf("Lihat")
+                    }
             DialogUtil.listDialog(mActivity, strings) { _, which ->
                 when (strings[which]) {
                     "Ubah" -> {
@@ -377,7 +381,8 @@ class HutangListAdapter(private val mActivity: Activity, private val mView: Huta
                     "Hapus" -> {
                         mView.onHutangHapusClick(hutang, adapterPosition, (!hutang.creditorApprovalDelete || !hutang.debtorApprovalDelete))
                     }
-                    "Kirim Pengingat" -> {//ONDEV
+                    "Kirim Pengingat" -> {
+                        mView.onHutangSendReminderClick(hutang, adapterPosition)
                     }
                 }
             }

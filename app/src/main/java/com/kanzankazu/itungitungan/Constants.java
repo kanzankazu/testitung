@@ -1,10 +1,10 @@
 package com.kanzankazu.itungitungan;
 
-import org.jetbrains.annotations.Nullable;
-
 public class Constants {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATE_FORMAT_DAY_MONTH = "EEEE/MMMM yyy-MM-dd kk:mm:ss";
+    public static final String DATE_FORMAT_DATE_TO_STRING = "E MMM dd kk:mm:ss zZ yyyy";
     public static final String PACKAGE_FACEBOOK = "com.facebook.katana";
     public static final String PACKAGE_TWITTER = "com.twitter.android";
     public static final String PACKAGE_INSTAGRAM = "com.instagram.android";
@@ -32,7 +32,7 @@ public class Constants {
     }
 
     public interface Bundle {
-        String HUTANG = "hutang";
+        String HUTANG_LIST = "hutangList";
         String HUTANG_NEW = "hutang_new";
         String HUTANG_ID = "hutang_id";
         String ID = "id";
@@ -49,6 +49,7 @@ public class Constants {
         interface TABLE {
             String USER = "user";
             String HUTANG = "hutang";
+            String INBOX_HISTORY = "inbox_history";
         }
 
         interface ROW {
@@ -58,6 +59,7 @@ public class Constants {
             String UID = "uid";
             String HID = "hid";
             String PIUHUTANGID = "debtorCreditorId";
+            String INBOX_ID = "inboxId";
         }
     }
 
@@ -93,9 +95,15 @@ public class Constants {
         String idSub = "idSub";
 
         interface TypeNotif {
-            String hutang = "hutang";
+            String hutangList = "hutangList";
             String hutangDetail = "hutangDetail";
             String hutangPay = "hutangPay";
+        }
+    }
+
+    public interface InboxHistory {
+        interface TypeView {
+            String Single = "single";
         }
     }
 }

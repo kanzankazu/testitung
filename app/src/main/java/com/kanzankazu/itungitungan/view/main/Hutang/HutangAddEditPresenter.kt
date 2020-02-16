@@ -11,8 +11,10 @@ import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
-import com.kanzankazu.itungitungan.model.User
-import com.kanzankazu.itungitungan.util.Firebase.*
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseConnectionUtil
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
+import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import com.kanzankazu.itungitungan.util.InputValidUtil
 
 class HutangAddEditPresenter(private val mActivity: Activity, private val mView: HutangAddEditContract.View) : HutangAddEditContract.Presenter, FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
@@ -122,7 +124,7 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
     }
 
     override fun saveImageHutang(hutang: Hutang, isEdit: Boolean, datasUri: MutableList<Uri>) {
-        FirebaseStorageUtil.uploadImages(mActivity, "hutang", datasUri, object : FirebaseStorageUtil.DoneListenerMultiple {
+        FirebaseStorageUtil.uploadImages(mActivity, "hutangList", datasUri, object : FirebaseStorageUtil.DoneListenerMultiple {
             override fun isFinised(imageDownloadUrls: ArrayList<String>) {
                 hutang.hutangProofImage = imageDownloadUrls
                 saveEditHutang(hutang, isEdit, true)
@@ -165,13 +167,13 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
     }
 
     override fun getHutangByHid(hutangId: String?) {
-        FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil. FirebaseConnectionListener {
+        FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil.FirebaseConnectionListener {
             override fun hasInternet() {
-                FirebaseDatabaseHandler.getHutangByHid(hutangId, object : FirebaseDatabaseUtil. ValueListenerDataTrueFalse {
+                FirebaseDatabaseHandler.getHutangByHid(hutangId, true, object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
                     override fun onSuccessDataExist(dataSnapshot: DataSnapshot?, isExsist: Boolean?) {
-                        if (isExsist!!){
+                        if (isExsist!!) {
                             mView.setHutangData(dataSnapshot)
-                        }else{
+                        } else {
                             mView.showSnackbarView(mActivity.getString(R.string.message_database_data_not_exist))
                         }
                     }
@@ -191,7 +193,7 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
     override fun sendNotifAddEditHutang() {
         val title: String
         val message: String
-        val type: String = Constants.FirebasePushNotif.TypeNotif.hutang
+        val type: String = Constants.FirebasePushNotif.TypeNotif.hutangList
 
         if (hutang.hutangRadioIndex == 0) {
             title = "Piutang Baru"
@@ -201,18 +203,9 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
             message = "Anda menjadi penghutang baru, silahkan di buka aplikasinya"
         }
 
-        FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil. FirebaseConnectionListener {
+        FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil.FirebaseConnectionListener {
             override fun hasInternet() {
-                FirebaseDatabaseHandler.getUserByUid(inviteUid, object : FirebaseDatabaseUtil.ValueListenerDataTrueFalse {
-                    override fun onSuccessDataExist(dataSnapshot: DataSnapshot, isExsist: Boolean?) {
-                        val user: User? = dataSnapshot.getValue(User::class.java)
-                        FirebaseMessagingUtil.makeNotificationToken(mActivity, user!!.tokenFcm, title, message, type, "", "")
-                    }
-
-                    override fun onFailureDataExist(message: String?) {
-                        mView.showSnackbarView(message)
-                    }
-                })
+                FirebaseDatabaseHandler.sendPushNotif(mActivity,inviteUid,title, message, type, "", "")
             }
 
             override fun noInternet(message: String?) {

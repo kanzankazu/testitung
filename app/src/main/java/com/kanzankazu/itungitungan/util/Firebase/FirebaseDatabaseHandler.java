@@ -11,6 +11,7 @@ import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.UserPreference;
 import com.kanzankazu.itungitungan.model.Hutang;
+import com.kanzankazu.itungitungan.model.InboxHistory;
 import com.kanzankazu.itungitungan.model.User;
 import com.kanzankazu.itungitungan.util.DateTimeUtil;
 import com.kanzankazu.itungitungan.util.Utils;
@@ -21,7 +22,28 @@ import java.util.List;
 /**
  * Created by Faisal Bahri on 2020-01-10.
  */
+@SuppressWarnings("ALL")
 public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
+    public static void sendPushNotif(Activity mActivity, String userId, String title, String message, String type, String id, String idSub) {
+        FirebaseDatabaseHandler.getUserByUid(userId, new ValueListenerDataTrueFalse() {
+            @Override
+            public void onSuccessDataExist(DataSnapshot dataSnapshot, Boolean isExsist) {
+                if (isExsist) {
+                    User user = dataSnapshot.getValue(User.class);
+                    FirebaseMessagingUtil.makeNotificationToken(mActivity, user.getTokenFcm(), title, message, type, id, idSub);
+                } else {
+                    Utils.showToast(mActivity, mActivity.getString(R.string.message_database_data_not_exist_string, "User"));
+                }
+                Log.d("Lihat", "onSuccessDataExist FirebaseDatabaseHandler : " + message);
+            }
+
+            @Override
+            public void onFailureDataExist(String message) {
+                Log.d("Lihat", "onFailureDataExist FirebaseDatabaseHandler : " + message);
+            }
+        });
+    }
+
     /**
      * User
      */
@@ -149,7 +171,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 User user = dataSnapshot.getValue(User.class);
                 user.setTokenFcm("");
                 user.setSignIn(false);
-                user.setLastSignOut(DateTimeUtil.getCurrentDate().toString());
+                user.setLastSignOut(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
                 setUserLogout(mActivity, user, listenerString);
             }
 
@@ -392,7 +414,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
     }
 
     /**
-     * hutang
+     * hutangList
      */
     public static void isExistHutang(Hutang hutang, ValueListenerData listenerData) {
         getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
@@ -415,7 +437,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         String primaryKey = getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG).push().getKey();
         hutang.setHId(primaryKey);
 
-        hutang.setCreateAt(DateTimeUtil.getCurrentDate().toString());
+        hutang.setCreateAt(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
         hutang.setCreateBy(UserPreference.getInstance().getUid());
 
         getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
@@ -427,7 +449,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     public static void updateHutang(Activity mActivity, Hutang hutang, ValueListenerStringSaveUpdate listenerString) {
 
-        hutang.setUpdateAt(DateTimeUtil.getCurrentDate().toString());
+        hutang.setUpdateAt(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
         hutang.setUpdateBy(UserPreference.getInstance().getUid());
 
         getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
@@ -445,33 +467,33 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
     }
 
-    public static void getHutang(String uId, Boolean isSingleCall, ValueListenerData listenerData) {
+    public static void getHutangByHid(String hid, Boolean isSingleCall, ValueListenerDataTrueFalse listenerData) {
         if (isSingleCall) {
             getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
-                    .child(uId)
+                    .child(hid)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            listenerData.onSuccessData(dataSnapshot);
+                            listenerData.onSuccessDataExist(dataSnapshot, dataSnapshot.exists());
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailureData(databaseError.getMessage());
+                            listenerData.onFailureDataExist(databaseError.getMessage());
                         }
                     });
         } else {
             getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
-                    .child(uId)
+                    .child(hid)
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            listenerData.onSuccessData(dataSnapshot);
+                            listenerData.onSuccessDataExist(dataSnapshot, dataSnapshot.exists());
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            listenerData.onFailureData(databaseError.getMessage());
+                            listenerData.onFailureDataExist(databaseError.getMessage());
                         }
                     });
         }
@@ -506,8 +528,8 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             List<Hutang> hutangs = new ArrayList<>();
                             /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                hutang hutang = snapshot.getValue(hutang.class);
-                                hutangs.add(hutang);
+                                hutangList hutangList = snapshot.getValue(hutangList.class);
+                                hutangs.add(hutangList);
                             }*/
 
                             listenerData.onSuccessData(dataSnapshot);
@@ -522,21 +544,134 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         }
     }
 
-    public static void getHutangByHid(String hid, ValueListenerDataTrueFalse listenerData) {
-        getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
-                .child(hid)
+    /**
+     * InboxHistory
+     */
+    public static void isExistInboxHistory(InboxHistory inboxHistory, ValueListenerData listenerData) {
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
+                .orderByChild(Constants.FirebaseDatabase.ROW.INBOX_ID)
+                .equalTo(inboxHistory.getInboxId())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.d("Lihat", "onDataChange FirebaseDatabaseHandler : " + dataSnapshot.getChildrenCount());
-                        listenerData.onSuccessDataExist(dataSnapshot, dataSnapshot.exists());
+                        listenerData.onSuccessData(dataSnapshot);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        listenerData.onFailureDataExist(databaseError.getMessage());
+                        listenerData.onFailureData(databaseError.getMessage());
                     }
                 });
     }
 
+    public static void setInboxHistory(Activity mActivity, InboxHistory inboxHistory, ValueListenerStringSaveUpdate listener) {
+        String primaryKey = getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY).push().getKey();
+        inboxHistory.setInboxId(primaryKey);
+
+        inboxHistory.setCreateAt(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
+        inboxHistory.setCreateBy(UserPreference.getInstance().getUid());
+
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
+                .child(inboxHistory.getInboxId())
+                .setValue(inboxHistory)
+                .addOnSuccessListener(aVoid -> listener.onSuccessSaveUpdate(mActivity.getString(R.string.message_database_save_success)))
+                .addOnFailureListener(e -> listener.onFailureSaveUpdate(e.getMessage()));
+    }
+
+    public static void updateInboxHistory(Activity mActivity, InboxHistory inboxHistory, ValueListenerStringSaveUpdate listenerString) {
+
+        inboxHistory.setUpdateAt(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
+        inboxHistory.setUpdateBy(UserPreference.getInstance().getUid());
+
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
+                .child(inboxHistory.getInboxId())
+                .setValue(inboxHistory)
+                .addOnSuccessListener(aVoid -> listenerString.onSuccessSaveUpdate(mActivity.getString(R.string.message_database_update_success)))
+                .addOnFailureListener(e -> listenerString.onFailureSaveUpdate(e.getMessage()));
+    }
+
+    public static void removeInboxHistory(Activity mActivity, String inboxId, ValueListenerString listenerString) {
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
+                .child(inboxId)
+                .removeValue()
+                .addOnSuccessListener(aVoid -> listenerString.onSuccessString(mActivity.getString(R.string.message_database_delete_success)))
+                .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
+    }
+
+    public static void getInboxHistory(String inboxId, Boolean isSingleCall, ValueListenerData listenerData) {
+        if (isSingleCall) {
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
+                    .child(inboxId)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            listenerData.onSuccessData(dataSnapshot);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            listenerData.onFailureData(databaseError.getMessage());
+                        }
+                    });
+        } else {
+            getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
+                    .child(inboxId)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            listenerData.onSuccessData(dataSnapshot);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            listenerData.onFailureData(databaseError.getMessage());
+                        }
+                    });
+        }
+    }
+
+    public static void getInboxHistorys(Boolean isSingleCall, ValueListenerData listenerData) {
+        DatabaseReference reference = getRootRef();
+
+        if (isSingleCall) {
+            reference.child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            List<InboxHistory> inboxHistorys = new ArrayList<>();
+                            /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                inboxHistory inboxHistory = snapshot.getValue(inboxHistory.class);
+                                inboxHistorys.add(inboxHistory);
+                            }*/
+
+                            listenerData.onSuccessData(dataSnapshot);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            listenerData.onFailureData(databaseError.getMessage());
+                        }
+                    });
+        } else {
+            reference.child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            List<InboxHistory> inboxHistorys = new ArrayList<>();
+                            /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                inboxHistory inboxHistory = snapshot.getValue(inboxHistory.class);
+                                inboxHistorys.add(inboxHistory);
+                            }*/
+
+                            listenerData.onSuccessData(dataSnapshot);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            listenerData.onFailureData(databaseError.getMessage());
+                        }
+                    });
+
+        }
+    }
 }

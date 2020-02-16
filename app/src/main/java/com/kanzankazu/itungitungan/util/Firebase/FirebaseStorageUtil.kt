@@ -12,10 +12,9 @@ import java.util.*
 
 object FirebaseStorageUtil {
 
-    private val rootRef: StorageReference
-        get() = FirebaseStorage.getInstance().reference
+    private val rootRef: StorageReference get() = FirebaseStorage.getInstance().reference
 
-    fun convertPathToUri(list: MutableList<String>): ArrayList<Uri> {
+    fun convertPathsToUris(list: MutableList<String>): ArrayList<Uri> {
         /*int i = 0;
         while (i < list.size()) {
 

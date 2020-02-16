@@ -3,16 +3,17 @@ package com.kanzankazu.itungitungan.view.main.Hutang
 import android.annotation.SuppressLint
 import android.app.Activity
 import com.google.firebase.database.DataSnapshot
+import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.model.InboxHistory
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import java.util.*
 
 class HutangListPresenter(val mActivity: Activity, private val mView: HutangListContract.View) : HutangListContract.Presenter, FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
-    var mInteractor = HutangListInteractor(mActivity, this)
-
+    private var mInteractor = HutangListInteractor(mActivity, this)
     override fun showProgressDialogPresenter() {
         mView.showProgressDialogView()
     }
@@ -33,13 +34,45 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
         mView.showSnackbarView(message)
     }
 
+    override fun sendReminder(hutang: Hutang, adapterPosition: Int) {
+        val inboxHistory = InboxHistory().apply {
+            inboxSenderUId = UserPreference.getInstance().uid
+            inboxReceiverUId = hutang.debtorId
+            inboxTitle = "Pengingat Pembayaran Pinjaman"
+            inboxMessage = if (hutang.hutangCicilanIs) {
+                if (hutang.hutangPembayaranSub.isEmpty()) {
+                    "anda mempunyai pembayaran dengan nominal Rp.${hutang.hutangNominal} yang di cicil dengan nominal Rp.${hutang.hutangCicilanNominal}, silahkan lakukan pembayaran dan konfirmasi dengan aplikasi ini."
+                } else {
+                    "anda mempunyai pembayaran dengan nominal Rp.${hutang.hutangNominal} yang di cicil dengan nominal Rp.${hutang.hutangCicilanNominal} dan anda sudah melakukan ${hutang.hutangPembayaranSub.size}x , silahkan lakukan pembayaran dan konfirmasi dengan aplikasi ini."
+                }
+            } else {
+                if (hutang.hutangPembayaranSub.isEmpty()) {
+                    "anda mempunyai pembayaran dengan nominal Rp.${hutang.hutangNominal}, silahkan lakukan pembayaran dan konfirmasi dengan aplikasi ini."
+                } else {
+                    "anda mempunyai pembayaran dengan nominal Rp.${hutang.hutangNominal} dan anda sudah melakukan ${hutang.hutangPembayaranSub.size}x , silahkan lakukan pembayaran dan konfirmasi dengan aplikasi ini."
+                }
+            }
+            inboxTypeNotif = Constants.FirebasePushNotif.TypeNotif.hutangList
+            inboxTypeView = Constants.InboxHistory.TypeView.Single
+            inboxIsRead = false
+        }
+
+    }
+
+    override fun showSnackBarPresenter(message: String) {
+        mView.showSnackbarView(message)
+    }
+
+    private fun sendPushNotif(hutang: Hutang, inboxHistory: InboxHistory) {
+        FirebaseDatabaseHandler.sendPushNotif(mActivity, hutang.debtorId, inboxHistory.inboxTitle, inboxHistory.inboxMessage, inboxHistory.inboxTypeNotif, hutang.hId, "")
+    }
+
     override fun getAllHutang() {
-        mView.showProgressDialogView()
+        showProgressDialogPresenter()
         FirebaseDatabaseHandler.getHutangs(false, object : FirebaseDatabaseUtil.ValueListenerData {
             @SuppressLint("DefaultLocale")
             override fun onSuccessData(dataSnapshot: DataSnapshot) {
-                mView.dismissProgressDialogView()
-
+                dismissProgressDialogPresenter()
                 mView.setZeroHutangs()
 
                 val hutangs = ArrayList<Hutang>()
@@ -50,9 +83,9 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                     val hutang = snapshot.getValue(Hutang::class.java)
                     if (hutang != null) {
                         if (
-                            hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) ||
-                            (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
-                            (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
+                                hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) ||
+                                (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
+                                (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
                         ) {
                             if (hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
                                 if (hutang.statusLunas) {
@@ -68,17 +101,16 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                                 }
                             }
                             mView.setTotalPiuHutang(hutang)//from database
+                            hutangs.add(hutang)
                         }
                     }
                 }
 
-                mView.setAllHutangsMine(hutangMine)
-                mView.setAllHutangsFamily(hutangFamily)
-                mView.setAllHutangsLunas(hutangLunas)
+                mView.setAllhutangs(hutangMine, hutangFamily, hutangLunas, hutangs)
             }
 
             override fun onFailureData(message: String?) {
-                mView.dismissProgressDialogView()
+                dismissProgressDialogPresenter()
                 mView.showSnackbarView(message)
             }
         })
@@ -120,7 +152,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.debtorApprovalEdit = true
         }
 
-        mInteractor.updateHutang(hutang,this)
+        mInteractor.updateHutang(hutang, this)
     }
 
     override fun requestHutangHapus(hutang: Hutang, isCancel: Boolean) {
@@ -138,7 +170,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             }
         }
 
-        mInteractor.updateHutang(hutang,this)
+        mInteractor.updateHutang(hutang, this)
     }
 
     override fun approveHutangHapus(hutang: Hutang) {
@@ -151,7 +183,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.creditorApprovalDelete = true
         }
 
-        mInteractor.updateHutang(hutang, object : FirebaseDatabaseUtil. ValueListenerStringSaveUpdate {
+        mInteractor.updateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
             override fun onSuccessSaveUpdate(message: String?) {
                 hapusHutangCheckImage(hutang)
                 mView.showToastView(message)

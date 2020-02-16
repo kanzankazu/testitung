@@ -12,7 +12,7 @@ import java.util.*
  */
 object DateTimeUtils {
 
-    var dateFormatter = SimpleDateFormat(Constants.DATE_FORMAT, Locale.US)
+    var dateFormatter = SimpleDateFormat(Constants.DATE_FORMAT_DAY_MONTH, Locale.US)
     var timeFormatter = SimpleDateFormat("HH:mm", Locale.US)
 
     private val DAYS_IN_WEEK = 7

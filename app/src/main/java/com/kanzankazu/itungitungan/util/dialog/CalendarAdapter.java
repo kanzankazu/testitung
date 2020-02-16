@@ -129,7 +129,7 @@ public class CalendarAdapter extends ArrayAdapter<Date>
         if (onChange == false){
             if (year != today.getYear() || day < today.getDate() && month == today.getMonth())
             {
-                //if this day is before today
+                //if this day is getDatebefore today
                 cellView.setTextColor(ContextCompat.getColor(getContext(),R.color.greyed_out));
                 cellView.setOnClickListener(null);
             }else if (month != today.getMonth()){
@@ -174,7 +174,7 @@ public class CalendarAdapter extends ArrayAdapter<Date>
         }else {
             if (year == today.getYear() && day < today.getDate() && month == today.getMonth())
             {
-                // if this day is before today
+                // if this day is getDatebefore today
                 cellView.setTextColor(ContextCompat.getColor(getContext(),R.color.greyed_out));
                 cellView.setOnClickListener(null);
                 if (month != monthPrevNext){

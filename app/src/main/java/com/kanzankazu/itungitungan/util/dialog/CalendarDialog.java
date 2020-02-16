@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kanzankazu.itungitungan.R;
-import com.kanzankazu.itungitungan.util.DateTimeUtils;
+import com.kanzankazu.itungitungan.util.DateTimeUtil;
 import com.kanzankazu.itungitungan.view_interface.CalendarOnClick;
 
 import java.text.SimpleDateFormat;
@@ -183,7 +183,7 @@ public class CalendarDialog extends Dialog {
 
                 getCurrentDay(position);
                 String dateFromCalendar = newCurrMonthYear + "-" + currDate;
-                DateTimeUtils.setDateFromCalendar(dateFromCalendar);
+                DateTimeUtil.INSTANCE.setDateFromCalendar(dateFromCalendar);
 
                 mDateOnClick.onCalendarOnClick(dateFromCalendar, position, getFirstMonth(), getFirstYear(), currMonth, currYear);
 

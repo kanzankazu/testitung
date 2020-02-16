@@ -4,13 +4,13 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Donate(
-        var id: String = "",
-        var uid: String = "",
-        var accoutNumber: String = "",
-        var accoutNumberName: String = "",
-        var accoutNumberImage: String = "",
-        var type: String = "",
+data class ArisanWinner(
+        var arisanWinnerId: String = "",
+        var arisanWinnerPeriod: String = "",
+        var arisanWinnerUid: String = "",
+        var arisanWinnerName: String = "",
+        var arisanWinnerTotal: String = "",
+        var arisanWinnerDesc: String = "",
         var createAt: String = "",
         var createBy: String = "",
         var updateAt: String = "",

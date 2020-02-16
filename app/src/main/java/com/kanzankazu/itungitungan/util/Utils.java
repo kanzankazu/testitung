@@ -19,6 +19,7 @@ import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
@@ -540,5 +541,9 @@ public class Utils {
         } else {
             imageView.setVisibility(View.GONE);
         }
+    }
+
+    public static void recyclerViewToBottom(RecyclerView recyclerView) {
+        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
     }
 }

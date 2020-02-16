@@ -38,7 +38,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.kanzankazu.itungitungan.Constants;
 import com.kanzankazu.itungitungan.R;
 import com.kanzankazu.itungitungan.util.Utils;
+import com.kanzankazu.itungitungan.view.main.Hutang.HutangAddEditActivity;
 import com.kanzankazu.itungitungan.view.main.Hutang.HutangListActivity;
+import com.kanzankazu.itungitungan.view.main.Hutang.HutangPayActivity;
 import com.kanzankazu.itungitungan.view.main.MainActivity;
 
 import org.json.JSONObject;
@@ -66,8 +68,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void makeNotification1(NotificationModel notif, RemoteMessage remoteMessage) {
         final Intent intent;
-        if (notif.getType().equalsIgnoreCase(Constants.FirebasePushNotif.TypeNotif.hutang)) {
+        if (notif.getType().equalsIgnoreCase(Constants.FirebasePushNotif.TypeNotif.hutangList)) {
             intent = new Intent(this, HutangListActivity.class);
+        } else if (notif.getType().equalsIgnoreCase(Constants.FirebasePushNotif.TypeNotif.hutangList)) {
+            intent = new Intent(this, HutangAddEditActivity.class);
+        } else if (notif.getType().equalsIgnoreCase(Constants.FirebasePushNotif.TypeNotif.hutangList)) {
+            intent = new Intent(this, HutangPayActivity.class);
         } else {
             intent = new Intent(this, MainActivity.class);
         }

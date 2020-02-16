@@ -1,7 +1,6 @@
 package com.kanzankazu.itungitungan.util.Firebase;
 
 import android.app.Activity;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -68,7 +67,7 @@ public class FirebaseMessagingUtil {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
                 response -> {
                     Log.i(TAG, "onResponse: " + response.toString());
-                    Snackbar.make(activity.findViewById(android.R.id.content), response.toString(), Snackbar.LENGTH_SHORT).show();
+                    //Snackbar.make(activity.findViewById(android.R.id.content), response.toString(), Snackbar.LENGTH_SHORT).show();
                 },
                 error -> {
                     Log.i(TAG, "onErrorResponse: Didn't work");

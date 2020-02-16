@@ -16,5 +16,7 @@ data class HutangPembayaran(
         var createAt: String = "",
         var createBy: String = "",
         var updateAt: String = "",
-        var updateBy: String = ""
+        var updateBy: String = "",
+        var deleteAt: String = "",
+        var deleteBy: String = ""
 ) : Parcelable

@@ -1,6 +1,7 @@
 package com.kanzankazu.itungitungan.view.main.Hutang
 
 import com.kanzankazu.itungitungan.model.Hutang
+import com.kanzankazu.itungitungan.model.InboxHistory
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.view.base.BasePresenterContractWOCheckMessage
 import com.kanzankazu.itungitungan.view.base.BaseViewContract
@@ -17,15 +18,15 @@ interface HutangListContract {
         fun onHutangApproveEditClick(hutang: Hutang)
         fun onHutangApproveDeleteClick(hutang: Hutang)
         fun onHutangApprovePayClick(hutang: Hutang)
-        fun setAllHutangsMine(hutangs: ArrayList<Hutang>)
-        fun setAllHutangsFamily(hutangs: ArrayList<Hutang>)
-        fun setAllHutangsLunas(hutangs: ArrayList<Hutang>)
+        fun onHutangSendReminderClick(hutang: Hutang, adapterPosition: Int)
+        fun setAllhutangs(hutangMine: ArrayList<Hutang>, hutangFamily: ArrayList<Hutang>, hutangLunas: ArrayList<Hutang>, hutangs: ArrayList<Hutang>)
         fun setTotalPiuHutang(hutang: Hutang)
         fun setZeroHutangs()
 
     }
 
     interface Presenter : BasePresenterContractWOCheckMessage {
+        fun showSnackBarPresenter(message: String)
         fun getAllHutang()
         fun hapusHutangCheckImage(hutang: Hutang)
         fun approveHutangNew(hutang: Hutang, isCancel: Boolean)
@@ -33,10 +34,13 @@ interface HutangListContract {
         fun requestHutangHapus(hutang: Hutang, isCancel: Boolean)
         fun approveHutangHapus(hutang: Hutang)
         fun approveHutangCicilanPay(hutang: Hutang)
+        fun sendReminder(hutang: Hutang, adapterPosition: Int)
     }
 
     interface Interactor {
         fun updateHutang(hutang: Hutang, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
+        fun sendReminder(inboxHistory: InboxHistory, hutang: Hutang, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
+        fun checkReminderIsExist(inboxHistory: InboxHistory, listener:FirebaseDatabaseUtil.ValueListenerDataTrueFalse)
     }
 
 }

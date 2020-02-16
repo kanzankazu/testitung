@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingRight="@dimen/padding_margin_10dp">
+    android:padding="@dimen/padding_margin_8dp">
 
     <FrameLayout
         android:layout_width="@dimen/padding_margin_50dp"
         android:layout_height="@dimen/padding_margin_50dp"
         android:layout_gravity="center|top"
-        android:layout_margin="@dimen/padding_margin_10dp"
+        android:layout_marginEnd="@dimen/padding_margin_5dp"
         android:background="@drawable/round">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -24,14 +24,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/padding_margin_10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/padding_margin_5dp"
             android:layout_weight="1"
             android:animateLayoutChanges="true"
             android:gravity="center_vertical"
@@ -46,11 +46,12 @@
 
                 <TextView
                     android:id="@+id/tv_item_inbox_name"
+                    style="@style/TvStandart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/padding_margin_10dp"
-                    android:fontFamily="@font/avenir_next_ltpro_demi"
-                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/medium_font_size"
                     tools:text="@tools:sample/first_names" />
 
                 <TextView
@@ -65,21 +66,24 @@
 
             <TextView
                 android:id="@+id/tv_item_inbox_isi"
+                style="@style/TvStandartMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:singleLine="true"
-                android:text=""
-                tools:text="@tools:sample/lorem/random" />
+                tools:text="@tools:sample/lorem[10]" />
 
         </LinearLayout>
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/padding_margin_5dp"
+            android:background="@color/colorAccent" />
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/padding_margin_50dp"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
-            android:gravity="center_vertical"
+            android:gravity="end"
             android:orientation="vertical">
 
             <TextView
@@ -88,17 +92,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_margin_5dp"
                 android:fontFamily="@font/avenir_next_ltpro_demi"
-                android:gravity="center_horizontal"
-                android:text="6 m" />
+                android:gravity="end"
+                android:text="+ 6 m" />
+
+            <ImageView
+                android:id="@+id/iv_item_inbox_new"
+                android:layout_width="@dimen/padding_margin_15dp"
+                android:layout_height="@dimen/padding_margin_15dp"
+                android:layout_marginBottom="@dimen/padding_margin_5dp"
+                android:src="@drawable/round" />
 
             <TextView
-                android:id="@+id/tv_item_inbox_new"
+                android:id="@+id/tv_item_inbox_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/avenir_next_ltpro_demi"
                 android:gravity="right"
                 android:text="1"
-                android:textColor="@color/red" />
+                android:textColor="@color/red"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
     </LinearLayout>

@@ -1,10 +1,10 @@
-package com.kanzankazu.itungitungan.view.main
+package com.kanzankazu.itungitungan.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class HomeModel(
+data class Home(
         var image: Int = 0,
         var title: String = "",
         var isShow: Boolean = false,

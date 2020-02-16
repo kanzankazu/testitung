@@ -34,7 +34,7 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
         fun newInstance(hutang: Hutang): DonateOptionDialogFragment {
             val fragment = DonateOptionDialogFragment()
             val args = Bundle()
-            //args.putParcelable(ARG_PARAM1, hutang)
+            //args.putParcelable(ARG_PARAM1, hutangList)
             fragment.arguments = args
             return fragment
         }
@@ -68,7 +68,7 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            //hutang = arguments!!.getParcelable(ARG_PARAM1)
+            //hutangList = arguments!!.getParcelable(ARG_PARAM1)
         }
 
         // Pick a style based on the num.
@@ -173,9 +173,10 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
     }
 
     private fun checkVideoRewardLoaded() {
+        var i = 0
         FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil.FirebaseConnectionListener {
             override fun hasInternet() {
-                if (mRewardedVideoAd != null && mRewardedVideoAd.isLoaded) {
+                if (mRewardedVideoAd.isLoaded) {
                     ll_donate_option_ads.isEnabled = true
                     tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_ready)
                 } else {
@@ -184,12 +185,13 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
                     Handler().postDelayed({
                         checkVideoRewardLoaded()
                     }, 1000)
+                    Log.d("Lihat hasInternet checkVideoRewardLoaded DonateOptionDialogFragment", i++.toString())
                 }
             }
 
             override fun noInternet(message: String?) {
                 ll_donate_option_ads.isEnabled = false
-                tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_loading)
+                tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_no_load_no_internet)
                 Handler().postDelayed({
                     checkVideoRewardLoaded()
                 }, 5000)

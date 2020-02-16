@@ -120,8 +120,8 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
     private fun getBundle() {
         val bundle = intent.extras
         if (bundle != null) {
-            if (bundle.containsKey(Constants.Bundle.HUTANG)) {
-                hutang = bundle.getParcelable(Constants.Bundle.HUTANG) as Hutang
+            if (bundle.containsKey(Constants.Bundle.HUTANG_LIST)) {
+                hutang = bundle.getParcelable(Constants.Bundle.HUTANG_LIST) as Hutang
                 isNew = bundle.getBoolean(Constants.Bundle.HUTANG_NEW, false)
             }
 
@@ -164,7 +164,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
         )
 
         if (hutang.hutangCicilanIs) {
-            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
+            tv_hutang_pay_total_nominal.text = "* total hutangList = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
             ll_hutang_pay_cicilan.visibility = View.VISIBLE
             if (hutang.hutangCicilanIs) {
                 tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_installment_to, (hutang.hutangPembayaranSub.size + 1).toString(), hutang.hutangCicilanBerapaKali)
@@ -179,7 +179,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
                 ll_hutang_pay_due_dt.visibility = View.GONE
             }
         } else {
-            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
+            tv_hutang_pay_total_nominal.text = "* total hutangList = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
             ll_hutang_pay_cicilan.visibility = View.GONE
         }
     }
