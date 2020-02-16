@@ -26,9 +26,9 @@ android {
             versionName "0.0.1"
             fetchFirebase = 3600
             manifestPlaceholders = [appsName: "ItungItungan"]
-            buildConfigField('String', 'GOOGLE_AUTH_CLIENT_ID', '"495676044825-us20n2sls9c4i163t2u9uv1c2pagn7dr.apps.googleusercontent.com"')
+            buildConfigField('String', 'GOOGLE_AUTH_CLIENT_ID', '"161045599621-5diutofojnmih4ijegmpd3k45m8mfq6c.apps.googleusercontent.com"')
             buildConfigField('String', 'APP_NAME', '"ItungItungan"')
-            buildConfigField('String', 'FIREBASE_SERVER_KEY','""')
+            buildConfigField('String', 'FIREBASE_SERVER_KEY','"AAAAJX8Q1YU:APA91bGIsz76BOXDrkefKO6GMpsyYpHUGSxER_Ro2x0E3Fssab95AxM9omG4QrlCTg5xcLwWIzP1xBPcDxzmTkflrAaptUHwRS4KIZyN9o_L6eTvzacRn_gd8O0nnXJSWDDlDiUHLQYN"')
             buildConfigField('String', 'BASE_URL', '""')
             resValue "string", "ads_id_app", "ca-app-pub-8192956138167564~3659538988"
             resValue "string", "ads_id_banner", "ca-app-pub-8192956138167564/4031622814"
