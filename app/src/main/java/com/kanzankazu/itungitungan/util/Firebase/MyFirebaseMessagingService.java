@@ -70,9 +70,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         final Intent intent;
         if (notif.getType().equalsIgnoreCase(Constants.FirebasePushNotif.TypeNotif.hutangList)) {
             intent = new Intent(this, HutangListActivity.class);
-        } else if (notif.getType().equalsIgnoreCase(Constants.FirebasePushNotif.TypeNotif.hutangList)) {
+        } else if (notif.getType().equalsIgnoreCase(Constants.FirebasePushNotif.TypeNotif.hutangDetail)) {
             intent = new Intent(this, HutangAddEditActivity.class);
-        } else if (notif.getType().equalsIgnoreCase(Constants.FirebasePushNotif.TypeNotif.hutangList)) {
+        } else if (notif.getType().equalsIgnoreCase(Constants.FirebasePushNotif.TypeNotif.hutangPay)) {
             intent = new Intent(this, HutangPayActivity.class);
         } else {
             intent = new Intent(this, MainActivity.class);

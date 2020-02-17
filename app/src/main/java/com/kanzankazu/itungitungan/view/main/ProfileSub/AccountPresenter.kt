@@ -20,7 +20,19 @@ class AccountPresenter(var activity: Activity, var mView: AccountContract.View):
         mView.showRetryDialogView()
     }
 
-    fun getUserData() {
+    override fun showSnackbarPresenter(message: String) {
+        mView.showSnackbarView(message)
+    }
+
+    override fun isPhoneNumberExist(phoneNumber: String) {
+        mInteractor.checkPhoneNumber(phoneNumber)
+    }
+
+    override fun onSuccessCheckPhone(phoneNumber: String) {
+        mView.setPhoneNumber(phoneNumber)
+    }
+
+    override fun getUserData() {
         mInteractor.getUserData(object : FirebaseDatabaseUtil. ValueListenerDataTrueFalse {
             override fun onSuccessDataExist(dataSnapshot: DataSnapshot?, isExsist: Boolean?) {
                 if (isExsist!!){
@@ -34,5 +46,4 @@ class AccountPresenter(var activity: Activity, var mView: AccountContract.View):
             }
         })
     }
-
 }

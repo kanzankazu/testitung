@@ -60,8 +60,8 @@ class SignInUpActivity :
         if (requestCode == RC_SIGN_IN) {
             showProgressDialog()
             loginGoogleUtil.signInActivityResult(requestCode, resultCode, data)
-        } else if (requestCode == GooglePhoneNumberValidation.REQ_CODE_G_PHONE_VALIDATION && resultCode == Activity.RESULT_OK) {
-            if (GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data, true)) {
+        } else if (requestCode == GooglePhoneNumberValidation.REQUEST_CODE_GOOGLE_PHONE_VALIDATION && resultCode == Activity.RESULT_OK) {
+            if (GooglePhoneNumberValidation.onActivityResultsIsVerify(requestCode, resultCode, data)) {
 
                 showProgressDialog()
                 FirebaseDatabaseHandler.setPhoneNumberUserValidate(this, UserPreference.getInstance().uid, GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data), object : FirebaseDatabaseUtil.ValueListenerString {

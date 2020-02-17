@@ -138,9 +138,9 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         setAllHutangsFamily(hutangFamily)
         setAllHutangsLunas(hutangLunas)
 
-        if (hutangBundleId.isNotEmpty()){
+        if (hutangBundleId.isNotEmpty()) {
             for (hutang in hutangs) {
-                if (hutang.hId.equals(hutangBundleId,true)){
+                if (hutang.hId.equals(hutangBundleId, true)) {
                     onHutangLihatClick(hutang)
                 }
             }
@@ -182,7 +182,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
     private fun setListener() {
 
         ll_hutang_list_mine_lunas_show_hide.setOnClickListener {
-            if (hutangListLunasAdapter.getData().isNotEmpty()) {
+            if (hutangListLunasAdapter.getMainData().isNotEmpty()) {
                 if (rv_hutang_list_lunas.visibility == View.VISIBLE) {
                     Utils.setDrawableImageView(this, iv_hutang_list_mine_lunas_show_hide, R.drawable.ic_dropup)
                     rv_hutang_list_lunas.visibility = View.GONE
@@ -250,7 +250,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         startActivity(intent)
     }
 
-    fun setAllHutangsMine(hutangs: ArrayList<Hutang>) {
+    private fun setAllHutangsMine(hutangs: ArrayList<Hutang>) {
         if (hutangs.isNotEmpty()) {
             toggleEmptyDataLayout(tv_hutang_list_mine_empty, rv_hutang_list_mine, false)
             hutangListMineAdapter.setData(hutangs)
@@ -259,7 +259,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         }
     }
 
-    fun setAllHutangsFamily(hutangs: ArrayList<Hutang>) {
+    private fun setAllHutangsFamily(hutangs: ArrayList<Hutang>) {
         if (hutangs.isNotEmpty()) {
             toggleEmptyDataLayout(tv_hutang_list_family_empty, rv_hutang_list_family, false)
             hutangListFamilyAdapter.setData(hutangs)
@@ -268,7 +268,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         }
     }
 
-    fun setAllHutangsLunas(hutangs: ArrayList<Hutang>) {
+    private fun setAllHutangsLunas(hutangs: ArrayList<Hutang>) {
         if (hutangs.isNotEmpty()) {
             toggleEmptyDataLayout(tv_hutang_list_lunas_empty, rv_hutang_list_lunas, false)
             hutangListLunasAdapter.setData(hutangs)
@@ -283,30 +283,30 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
 
     private fun dialogDeleteRequestHutang(hutang: Hutang, isHasReqDelete: Boolean) {
         DialogUtil.showIntroductionDialog(
-                this,
-                "",
-                "Konfirmasi",
-                if (isHasReqDelete) {
-                    "Anda sudah meminta menghapus list hutangList ini, apa anda ini mencabut penghapusan list ini?"
-                } else {
-                    "Apakah anda yakin ingin menghapus data ini?"
-                }
-                ,
-                "Ya",
-                "Tidak",
-                false,
-                -1,
-                object : DialogUtil.IntroductionButtonListener {
-                    override fun onFirstButtonClick() {
-                        if (isHasReqDelete) {
-                            mPresenter.requestHutangHapus(hutang, true)
-                        } else {
-                            mPresenter.requestHutangHapus(hutang, false)
-                        }
+            this,
+            "",
+            "Konfirmasi",
+            if (isHasReqDelete) {
+                "Anda sudah meminta menghapus list hutangList ini, apa anda ini mencabut penghapusan list ini?"
+            } else {
+                "Apakah anda yakin ingin menghapus data ini?"
+            }
+            ,
+            "Ya",
+            "Tidak",
+            false,
+            -1,
+            object : DialogUtil.IntroductionButtonListener {
+                override fun onFirstButtonClick() {
+                    if (isHasReqDelete) {
+                        mPresenter.requestHutangHapus(hutang, true)
+                    } else {
+                        mPresenter.requestHutangHapus(hutang, false)
                     }
-
-                    override fun onSecondButtonClick() {}
                 }
+
+                override fun onSecondButtonClick() {}
+            }
         )
 
     }

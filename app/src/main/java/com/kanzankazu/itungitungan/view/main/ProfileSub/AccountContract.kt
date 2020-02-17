@@ -8,15 +8,20 @@ import com.kanzankazu.itungitungan.view.base.BaseViewContract
 interface AccountContract {
     interface View : BaseViewContract {
         fun setDataUser(user: User)
+        fun setPhoneNumber(phoneNumber: String)
 
     }
 
     interface Presenter : BasePresenterContractWOCheckMessage {
-
+        fun showSnackbarPresenter(message: String)
+        fun getUserData()
+        fun isPhoneNumberExist(phoneNumber: String)
+        fun onSuccessCheckPhone(phoneNumber: String)
     }
 
     interface Interactor {
         fun getUserData(listener : FirebaseDatabaseUtil.ValueListenerDataTrueFalse)
+        fun checkPhoneNumber(phoneNumber: String)
 
     }
 }

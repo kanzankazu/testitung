@@ -192,21 +192,6 @@
                         android:animateLayoutChanges="true"
                         android:orientation="horizontal">
 
-                        <com.hbb20.CountryCodePicker
-                            android:id="@+id/ccp_account_user_phone"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            app:ccpDialog_keyboardAutoPopup="false"
-                            app:ccpDialog_searchEditTextTint="@color/colorPrimary"
-                            app:ccpDialog_showCloseIcon="true"
-                            app:ccp_areaCodeDetectedCountry="true"
-                            app:ccp_autoDetectCountry="true"
-                            app:ccp_defaultNameCode="ID"
-                            app:ccp_flagBorderColor="@color/gray_very_light"
-                            app:ccp_rememberLastSelection="true"
-                            app:ccp_selectionMemoryTag="anyDifferentString" />
-
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/til_account_user_phone"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -215,7 +200,7 @@
 
                             <android.support.design.widget.TextInputEditText
                                 android:id="@+id/et_account_user_phone"
-                                style="@style/EtNumber"
+                                style="@style/EtClickable"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="No. Hp"

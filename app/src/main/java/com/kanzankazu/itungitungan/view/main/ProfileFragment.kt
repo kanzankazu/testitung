@@ -96,7 +96,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     override fun itemAdapterClick(data: ProfileAccountModel) {
         when (data.title) {
             mActivity.getString(R.string.share_friend_family) -> {
-                share()
+                showSnackbar(getString(R.string.message_info_under_development))
             }
             mActivity.getString(R.string.idea) -> {
                 val fm = mActivity.supportFragmentManager
@@ -104,7 +104,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
                 giveStarDialogFragment.show(fm, "fragment_giveStarDialogFragment")
             }
             mActivity.getString(R.string.help) -> {
-                showSnackbar("3")
+                showSnackbar(getString(R.string.message_info_under_development))
             }
             mActivity.getString(R.string.donate) -> {
                 val fm = mActivity.supportFragmentManager

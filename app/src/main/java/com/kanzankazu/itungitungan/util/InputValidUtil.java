@@ -129,13 +129,13 @@ public class InputValidUtil {
     }
 
     public static boolean isEmail(String message, TextInputLayout textInputLayout, EditText editText, Boolean isFocus) {
-        if (!isEmail(editText.getText().toString())) {
+        if (isEmail(editText.getText().toString().trim())) {
+            return true;
+        } else {
             textInputLayout.setError(message);
             textInputLayout.setErrorEnabled(true);
             if (isFocus) editText.requestFocus();
             return false;
-        } else {
-            return true;
         }
     }
 

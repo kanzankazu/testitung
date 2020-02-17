@@ -19,4 +19,24 @@ class AccountInteractor(var mActivity: Activity, var mPresenter: AccountPresente
         })
     }
 
+    override fun checkPhoneNumber(phoneNumber: String) {
+        FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil. FirebaseConnectionListener {
+            override fun hasInternet() {
+                FirebaseDatabaseHandler.isExistPhone(phoneNumber, object : FirebaseDatabaseUtil. ValueListenerTrueFalse {
+                    override fun onSuccessExist(isExists: Boolean?) {
+                        mPresenter.onSuccessCheckPhone(phoneNumber)
+                    }
+
+                    override fun onFailureExist(message: String?) {
+                        mPresenter.showSnackbarPresenter(message!!)
+                    }
+                })
+            }
+
+            override fun noInternet(message: String?) {
+                mPresenter.onNoConnection(message)
+            }
+        })
+    }
+
 }

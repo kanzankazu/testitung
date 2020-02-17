@@ -4,15 +4,18 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.Constants
+import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.model.InboxHistory
+import com.kanzankazu.itungitungan.util.DateTimeUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseHandler
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseStorageUtil
 import java.util.*
 
 class HutangListPresenter(val mActivity: Activity, private val mView: HutangListContract.View) : HutangListContract.Presenter, FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+    private var hutang: Hutang = Hutang()
     private var mInteractor = HutangListInteractor(mActivity, this)
     override fun showProgressDialogPresenter() {
         mView.showProgressDialogView()
@@ -23,21 +26,31 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     }
 
     override fun onNoConnection(message: String?) {
+        dismissProgressDialogPresenter()
         mView.showSnackbarView(message)
     }
 
     override fun onSuccessSaveUpdate(message: String?) {
+        dismissProgressDialogPresenter()
         mView.showSnackbarView(message)
     }
 
     override fun onFailureSaveUpdate(message: String?) {
+        dismissProgressDialogPresenter()
+        mView.showSnackbarView(message)
+    }
+
+    override fun showSnackBarPresenter(message: String) {
+        dismissProgressDialogPresenter()
         mView.showSnackbarView(message)
     }
 
     override fun sendReminder(hutang: Hutang, adapterPosition: Int) {
+        this.hutang = hutang
         val inboxHistory = InboxHistory().apply {
             inboxSenderUId = UserPreference.getInstance().uid
             inboxReceiverUId = hutang.debtorId
+            inboxSenderReceiverUId = inboxSenderUId + "_" + inboxReceiverUId
             inboxTitle = "Pengingat Pembayaran Pinjaman"
             inboxMessage = if (hutang.hutangCicilanIs) {
                 if (hutang.hutangPembayaranSub.isEmpty()) {
@@ -55,16 +68,26 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             inboxTypeNotif = Constants.FirebasePushNotif.TypeNotif.hutangList
             inboxTypeView = Constants.InboxHistory.TypeView.Single
             inboxIsRead = false
+            inboxIsSingleDay = inboxSenderReceiverUId + "_" + DateTimeUtil.currentDateString
         }
 
+        showProgressDialogPresenter()
+        mInteractor.checkReminderIsExist(inboxHistory)
     }
 
-    override fun showSnackBarPresenter(message: String) {
-        mView.showSnackbarView(message)
+    override fun isExistReminder(exists: Boolean, inboxHistory: InboxHistory) {
+        if (exists) {
+            showProgressDialogPresenter()
+            showSnackBarPresenter(mActivity.getString(R.string.message_database_data_exist))
+        } else {
+            mInteractor.setReminder(inboxHistory)
+        }
     }
 
-    private fun sendPushNotif(hutang: Hutang, inboxHistory: InboxHistory) {
-        FirebaseDatabaseHandler.sendPushNotif(mActivity, hutang.debtorId, inboxHistory.inboxTitle, inboxHistory.inboxMessage, inboxHistory.inboxTypeNotif, hutang.hId, "")
+    override fun onSuccessSaveReminder(message: String, inboxHistory: InboxHistory) {
+        dismissProgressDialogPresenter()
+        showSnackBarPresenter(message)
+        sendPushNotif(inboxHistory, hutang)
     }
 
     override fun getAllHutang() {
@@ -83,9 +106,9 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                     val hutang = snapshot.getValue(Hutang::class.java)
                     if (hutang != null) {
                         if (
-                                hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) ||
-                                (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
-                                (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
+                            hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase()) ||
+                            (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true)) ||
+                            (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.toLowerCase().equals(UserPreference.getInstance().uid.toLowerCase(), true))
                         ) {
                             if (hutang.debtorCreditorId.toLowerCase().contains(UserPreference.getInstance().uid.toLowerCase())) {
                                 if (hutang.statusLunas) {
@@ -121,6 +144,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.hutangPembayaranSub[i].approvalCreditor = true
         }
 
+        showProgressDialogPresenter()
         mInteractor.updateHutang(hutang, this)
     }
 
@@ -135,6 +159,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                 hutang.debtorApprovalNew = true
             }
 
+            showProgressDialogPresenter()
             mInteractor.updateHutang(hutang, this)
         } else {
             hapusHutang(hutang)
@@ -152,6 +177,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.debtorApprovalEdit = true
         }
 
+        showProgressDialogPresenter()
         mInteractor.updateHutang(hutang, this)
     }
 
@@ -170,6 +196,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             }
         }
 
+        showProgressDialogPresenter()
         mInteractor.updateHutang(hutang, this)
     }
 
@@ -183,6 +210,7 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
             hutang.creditorApprovalDelete = true
         }
 
+        showProgressDialogPresenter()
         mInteractor.updateHutang(hutang, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
             override fun onSuccessSaveUpdate(message: String?) {
                 hapusHutangCheckImage(hutang)
@@ -226,5 +254,9 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
                 mView.showSnackbarView(message)
             }
         })
+    }
+
+    private fun sendPushNotif(inboxHistory: InboxHistory, hutang: Hutang) {
+        FirebaseDatabaseHandler.sendPushNotif(mActivity, hutang.debtorId, inboxHistory.inboxTitle, inboxHistory.inboxMessage, inboxHistory.inboxTypeNotif, this.hutang.hId, "")
     }
 }

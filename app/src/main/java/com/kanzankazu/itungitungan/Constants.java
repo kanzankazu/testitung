@@ -3,7 +3,7 @@ package com.kanzankazu.itungitungan;
 public class Constants {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
-    public static final String DATE_FORMAT_DAY_MONTH = "EEEE/MMMM yyy-MM-dd kk:mm:ss";
+    public static final String DATE_TIME_FORMAT_DAY_MONTH = "EEEE/MMMM yyy-MM-dd kk:mm:ss";
     public static final String DATE_FORMAT_DATE_TO_STRING = "E MMM dd kk:mm:ss zZ yyyy";
     public static final String PACKAGE_FACEBOOK = "com.facebook.katana";
     public static final String PACKAGE_TWITTER = "com.twitter.android";
@@ -60,6 +60,7 @@ public class Constants {
             String HID = "hid";
             String PIUHUTANGID = "debtorCreditorId";
             String INBOX_ID = "inboxId";
+            String INBOX_SINGLE_DAY_FLAG = "inboxIsSingleDay";
         }
     }
 

@@ -35,12 +35,14 @@ interface HutangListContract {
         fun approveHutangHapus(hutang: Hutang)
         fun approveHutangCicilanPay(hutang: Hutang)
         fun sendReminder(hutang: Hutang, adapterPosition: Int)
+        fun isExistReminder(exists: Boolean, inboxHistory: InboxHistory)
+        fun onSuccessSaveReminder(message: String, inboxHistory: InboxHistory)
     }
 
     interface Interactor {
         fun updateHutang(hutang: Hutang, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
-        fun sendReminder(inboxHistory: InboxHistory, hutang: Hutang, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
-        fun checkReminderIsExist(inboxHistory: InboxHistory, listener:FirebaseDatabaseUtil.ValueListenerDataTrueFalse)
+        fun checkReminderIsExist(inboxHistory: InboxHistory)
+        fun setReminder(inboxHistory: InboxHistory)
     }
 
 }

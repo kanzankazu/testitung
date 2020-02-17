@@ -19,10 +19,11 @@ object DateTimeUtil {
     val HOURS_SELECT = 2
     val MINUTES_SELECT = 3
     val SECONDS_SELECT = 4
+    const val DAYS_IN_WEEK = 7
     var MAX_DATE = Date(java.lang.Long.MAX_VALUE)
-    var dateFormatter = SimpleDateFormat(Constants.DATE_FORMAT_DAY_MONTH, Locale.US)
+    var dateFormatter = SimpleDateFormat(Constants.DATE_FORMAT, Locale.US)
+    var dateTimeFormatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT_DAY_MONTH, Locale.US)
     var timeFormatter = SimpleDateFormat("HH:mm", Locale.US)
-    private val DAYS_IN_WEEK = 7
     var dateFromCalendar: String? = null
 
     val dayNow: Int
@@ -42,6 +43,12 @@ object DateTimeUtil {
     /**Get Start*/
 
     val currentDate: Date = Calendar.getInstance().time
+
+    val currentDateTimeString: String?
+        get() {
+            val calendar = Calendar.getInstance()
+            return convertDateTimeToString(calendar.time)
+        }
 
     val currentDateString: String?
         get() {
@@ -154,17 +161,71 @@ object DateTimeUtil {
         return null
     }
 
+    fun convertStringToDate(stringDate: String): Date? {
+        var dateTime: Date? = null
+        try {
+            dateTime = dateFormatter.parse(stringDate)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return dateTime
+    }
+
+    fun convertStringToDateTime(stringDate: String): Date? {
+        var dateTime: Date? = null
+        try {
+            dateTime = dateTimeFormatter.parse(stringDate)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return dateTime
+    }
+
+    fun convertStringToTime(inputDate: String): String? {
+        val inputPattern = "yyyy-MM-dd HH:mm:ss"
+        val timePattern = "HH:mm"
+        val inputFormat = SimpleDateFormat(inputPattern)
+        val timeFormat = SimpleDateFormat(timePattern)
+
+        val date: Date?
+        var sTime = ""
+
+        try {
+            date = inputFormat.parse(inputDate)
+            sTime = timeFormat.format(date)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+
+        return sTime
+    }
+
+    fun convertDateToString(date: Date): String? {
+        var dateTime = ""
+        try {
+            dateTime = dateFormatter.format(date)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return dateTime
+    }
+
     fun convertDateToString(date: Date, dateFormat: SimpleDateFormat): String {
         return dateFormat.format(date)
     }
 
-    fun convertCalendarToString(cal: Calendar, dateFormat: SimpleDateFormat): String {
-        dateFormat.timeZone = cal.timeZone
-        return dateFormat.format(convertCalendarToDate(cal))
-    }
+    fun convertDateTimeToString(date: Date): String? {
+        var dateString: String? = null
+        try {
+            dateString = dateTimeFormatter.format(date)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
-    fun convertCalendarToDate(cal: Calendar): Date {
-        return cal.time
+        return dateString
     }
 
     fun convertDateToLong(dates: Date): Long {
@@ -184,26 +245,13 @@ object DateTimeUtil {
         return calendar.timeInMillis
     }
 
-    fun convertStringToDate(dateString: String): Date? {
-        var dateTime: Date? = null
-        try {
-            dateTime = dateFormatter.parse(dateString)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return dateTime
+    fun convertCalendarToString(cal: Calendar, dateFormat: SimpleDateFormat): String {
+        dateFormat.timeZone = cal.timeZone
+        return dateFormat.format(convertCalendarToDate(cal))
     }
 
-    fun convertDateToString(dateTime: Date): String? {
-        var dateString: String? = null
-        try {
-            dateString = dateFormatter.format(dateTime)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return dateString
+    fun convertCalendarToDate(cal: Calendar): Date {
+        return cal.time
     }
 
     fun convertTimeToString(time: String): String {
@@ -218,25 +266,6 @@ object DateTimeUtil {
         time2 = timeFormatter.format(dateTime)
 
         return time2
-    }
-
-    fun convertStringToTime(inputDate: String): String? {
-        val inputPattern = "yyyy-MM-dd HH:mm:ss"
-        val timePattern = "HH:mm"
-        val inputFormat = SimpleDateFormat(inputPattern)
-        val timeFormat = SimpleDateFormat(timePattern)
-
-        var date: Date? = null
-        var sTime: String? = null
-
-        try {
-            date = inputFormat.parse(inputDate)
-            sTime = timeFormat.format(date)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-
-        return sTime
     }
 
     fun convertLongToInt(l: Long): Int {
@@ -759,7 +788,7 @@ object DateTimeUtil {
     fun parseDate(calendar: Calendar, textView: TextView, inputDate: String?) {
         if (inputDate != null) {
             try {
-                val date = dateFormatter.parse(inputDate)
+                val date = dateTimeFormatter.parse(inputDate)
                 calendar.time = date
 
                 val sDate = calendar.get(Calendar.DAY_OF_MONTH).toString()
@@ -783,7 +812,7 @@ object DateTimeUtil {
 
     fun setInDateFormalFormatFromString(inputDate: String?): String {
         if (inputDate != null && !inputDate.isEmpty()) {
-            val date = convertStringToDate(inputDate)
+            val date = convertStringToDateTime(inputDate)
             val calendar = Calendar.getInstance()
             println("Date: $inputDate $date")
             calendar.time = date
@@ -800,7 +829,7 @@ object DateTimeUtil {
 
     fun setInDateFormalFormatFromStringIncompleteMonth(inputDate: String?): String {
         if (inputDate != null && !inputDate.isEmpty()) {
-            val date = convertStringToDate(inputDate)
+            val date = convertStringToDateTime(inputDate)
             val calendar = Calendar.getInstance()
             println("Date: $inputDate $date")
             calendar.time = date
@@ -816,7 +845,7 @@ object DateTimeUtil {
     }
 
     fun setDateSlashFormatFromString(inputDate: String): String {
-        val date = convertStringToDate(inputDate)
+        val date = convertStringToDateTime(inputDate)
         val calendar = Calendar.getInstance()
         println("Date: $inputDate $date")
         calendar.time = date
@@ -905,7 +934,7 @@ object DateTimeUtil {
     }
 
     fun setDayToLocaleINACompleteFromString(bookingDate: String): String {
-        val date = DateTimeUtil.convertStringToDate(bookingDate)
+        val date = DateTimeUtil.convertStringToDateTime(bookingDate)
         val completeDateFormat = SimpleDateFormat("EEEE")
 
         return completeDateFormat.format(date)

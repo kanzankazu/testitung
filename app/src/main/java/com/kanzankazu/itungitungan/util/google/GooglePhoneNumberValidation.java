@@ -13,7 +13,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -195,7 +194,7 @@ import java.util.regex.Pattern;
   </LinearLayout>
  */
 public class GooglePhoneNumberValidation extends AppCompatActivity {
-    public static final int REQ_CODE_G_PHONE_VALIDATION = 123;
+    public static final int REQUEST_CODE_GOOGLE_PHONE_VALIDATION = 123;
     private static final long timeoutDuration = 60L;
     private static final int UI_LOGIN = 0;
     private static final int UI_VERIFY = 1;
@@ -228,19 +227,19 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
 
     public static void startPhoneNumberValidation(Activity activity) {
         Intent intent = new Intent(activity, GooglePhoneNumberValidation.class);
-        activity.startActivityForResult(intent, REQ_CODE_G_PHONE_VALIDATION);
+        activity.startActivityForResult(intent, REQUEST_CODE_GOOGLE_PHONE_VALIDATION);
     }
 
     public static String onActivityResults(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQ_CODE_G_PHONE_VALIDATION && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_GOOGLE_PHONE_VALIDATION && resultCode == Activity.RESULT_OK) {
             return data.getStringExtra(Param.param0);
         } else {
             return "";
         }
     }
 
-    public static Boolean onActivityResults(int requestCode, int resultCode, Intent data, Boolean isVerify) {
-        return requestCode == REQ_CODE_G_PHONE_VALIDATION && resultCode == Activity.RESULT_OK;
+    public static Boolean onActivityResultsIsVerify(int requestCode, int resultCode, Intent data) {
+        return requestCode == REQUEST_CODE_GOOGLE_PHONE_VALIDATION && resultCode == Activity.RESULT_OK;
     }
 
     @Override
@@ -306,11 +305,9 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
                 if (credential != null) {
                     if (credential.getSmsCode() != null) {
                         updateUI(UI_VERIFY, credential);
-                        new Handler().postDelayed(new Runnable() {
-                            public void run() {
-                                //code here
-                                etValidPhoneNmbrfvbi.setText(credential.getSmsCode());
-                            }
+                        new Handler().postDelayed(() -> {
+                            //code here
+                            etValidPhoneNmbrfvbi.setText(credential.getSmsCode());
                         }, 1000L);
                     } else {
                         snackBar("instant validation", false);
@@ -322,11 +319,6 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
-                // This callback is invoked in an invalid request for verification is made,
-                // for instance if the the phone number format is not valid.
-
-                //Log.w(TAG, "onVerificationFailed", e);
-
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     etValidPhoneNmbrfvbi.setError("Invalid phone number, please check your number");
                 } else if (e instanceof FirebaseTooManyRequestsException) {
@@ -352,38 +344,17 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
     }
 
     private void initListener() {
-        etValidPhoneNmbrfvbi.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                boolean handled = false;
-                if (i == EditorInfo.IME_ACTION_GO) {
-                    checkData();
-                }
-                return handled;
-            }
-        });
-
-        llValidPhoneNmbrSubmitfvbi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        etValidPhoneNmbrfvbi.setOnEditorActionListener((textView, i, keyEvent) -> {
+            boolean handled = false;
+            if (i == EditorInfo.IME_ACTION_GO) {
                 checkData();
             }
+            return handled;
         });
 
-        tvLoginResendCodefvbi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resendVerificationCode(phoneNumberSavedwPlus, mResendToken);
-            }
-        });
-
-        llValidPhoneNmbrBackfvbi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signOut();
-
-            }
-        });
+        tvLoginResendCodefvbi.setOnClickListener(view -> resendVerificationCode(phoneNumberSavedwPlus, mResendToken));
+        llValidPhoneNmbrSubmitfvbi.setOnClickListener(view -> checkData());
+        llValidPhoneNmbrBackfvbi.setOnClickListener(view -> signOut());
     }
 
     private void updateUI(int ui, PhoneAuthCredential cred) {
@@ -417,7 +388,6 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
         if (!isEmptyField(etValidPhoneNmbrfvbi)) {
             if (isLogin) {
                 if (isValidatePhoneNumber(etValidPhoneNmbrfvbi.getText().toString())) {
-                    //Toast.makeText(getApplicationContext(), getNumberValid(etValidPhoneNmbrfvbi), Toast.LENGTH_SHORT).show();
                     startPhoneNumberVerification("+" + getNumberValid(etValidPhoneNmbrfvbi));
                     phoneNumberSavedwPlus = "+" + getNumberValid(etValidPhoneNmbrfvbi);
                     phoneNumberSavedwoPlus = getNumberValid(etValidPhoneNmbrfvbi);
@@ -512,12 +482,7 @@ public class GooglePhoneNumberValidation extends AppCompatActivity {
     private void snackBar(String success, Boolean reloadAction) {
         if (reloadAction) {
             Snackbar.make(findViewById(android.R.id.content), success, Snackbar.LENGTH_INDEFINITE)
-                    .setAction("RELOAD", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            checkData();
-                        }
-                    })
+                    .setAction("RELOAD", view -> checkData())
                     .show();
         } else {
             Snackbar.make(findViewById(android.R.id.content), success, Snackbar.LENGTH_LONG).show();

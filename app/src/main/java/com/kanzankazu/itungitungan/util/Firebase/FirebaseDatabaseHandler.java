@@ -24,8 +24,8 @@ import java.util.List;
  */
 @SuppressWarnings("ALL")
 public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
-    public static void sendPushNotif(Activity mActivity, String userId, String title, String message, String type, String id, String idSub) {
-        FirebaseDatabaseHandler.getUserByUid(userId, new ValueListenerDataTrueFalse() {
+    public static void sendPushNotif(Activity mActivity, String reciverUserId, String title, String message, String type, String id, String idSub) {
+        FirebaseDatabaseHandler.getUserByUid(reciverUserId, new ValueListenerDataTrueFalse() {
             @Override
             public void onSuccessDataExist(DataSnapshot dataSnapshot, Boolean isExsist) {
                 if (isExsist) {
@@ -171,7 +171,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 User user = dataSnapshot.getValue(User.class);
                 user.setTokenFcm("");
                 user.setSignIn(false);
-                user.setLastSignOut(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
+                user.setLastSignOut(DateTimeUtil.INSTANCE.getCurrentDateTimeString().toString());
                 setUserLogout(mActivity, user, listenerString);
             }
 
@@ -437,7 +437,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
         String primaryKey = getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG).push().getKey();
         hutang.setHId(primaryKey);
 
-        hutang.setCreateAt(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
+        hutang.setCreateAt(DateTimeUtil.INSTANCE.getCurrentDateTimeString().toString());
         hutang.setCreateBy(UserPreference.getInstance().getUid());
 
         getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
@@ -449,7 +449,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     public static void updateHutang(Activity mActivity, Hutang hutang, ValueListenerStringSaveUpdate listenerString) {
 
-        hutang.setUpdateAt(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
+        hutang.setUpdateAt(DateTimeUtil.INSTANCE.getCurrentDateTimeString().toString());
         hutang.setUpdateBy(UserPreference.getInstance().getUid());
 
         getRootRef().child(Constants.FirebaseDatabase.TABLE.HUTANG)
@@ -564,11 +564,28 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 });
     }
 
+    public static void isExistSingleDayInboxHistory(InboxHistory inboxHistory, ValueListenerData listenerData) {
+        getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
+                .orderByChild(Constants.FirebaseDatabase.ROW.INBOX_SINGLE_DAY_FLAG)
+                .equalTo(inboxHistory.getInboxIsSingleDay())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        listenerData.onSuccessData(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listenerData.onFailureData(databaseError.getMessage());
+                    }
+                });
+    }
+
     public static void setInboxHistory(Activity mActivity, InboxHistory inboxHistory, ValueListenerStringSaveUpdate listener) {
         String primaryKey = getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY).push().getKey();
         inboxHistory.setInboxId(primaryKey);
 
-        inboxHistory.setCreateAt(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
+        inboxHistory.setCreateAt(DateTimeUtil.INSTANCE.getCurrentDateTimeString().toString());
         inboxHistory.setCreateBy(UserPreference.getInstance().getUid());
 
         getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
@@ -580,7 +597,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
 
     public static void updateInboxHistory(Activity mActivity, InboxHistory inboxHistory, ValueListenerStringSaveUpdate listenerString) {
 
-        inboxHistory.setUpdateAt(DateTimeUtil.INSTANCE.getCurrentDateString().toString());
+        inboxHistory.setUpdateAt(DateTimeUtil.INSTANCE.getCurrentDateTimeString().toString());
         inboxHistory.setUpdateBy(UserPreference.getInstance().getUid());
 
         getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
@@ -598,7 +615,7 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                 .addOnFailureListener(e -> listenerString.onFailureString(e.getMessage()));
     }
 
-    public static void getInboxHistory(String inboxId, Boolean isSingleCall, ValueListenerData listenerData) {
+    public static void getInboxHistoryByInboxId(String inboxId, Boolean isSingleCall, ValueListenerData listenerData) {
         if (isSingleCall) {
             getRootRef().child(Constants.FirebaseDatabase.TABLE.INBOX_HISTORY)
                     .child(inboxId)
@@ -639,10 +656,6 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             List<InboxHistory> inboxHistorys = new ArrayList<>();
-                            /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                inboxHistory inboxHistory = snapshot.getValue(inboxHistory.class);
-                                inboxHistorys.add(inboxHistory);
-                            }*/
 
                             listenerData.onSuccessData(dataSnapshot);
                         }
@@ -658,10 +671,6 @@ public class FirebaseDatabaseHandler extends FirebaseDatabaseUtil {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             List<InboxHistory> inboxHistorys = new ArrayList<>();
-                            /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                inboxHistory inboxHistory = snapshot.getValue(inboxHistory.class);
-                                inboxHistorys.add(inboxHistory);
-                            }*/
 
                             listenerData.onSuccessData(dataSnapshot);
                         }

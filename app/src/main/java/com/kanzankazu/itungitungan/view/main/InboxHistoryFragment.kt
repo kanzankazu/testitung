@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.database.DataSnapshot
 import com.kanzankazu.itungitungan.R
+import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.model.InboxHistory
 import com.kanzankazu.itungitungan.view.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_inbox.*
@@ -30,7 +31,7 @@ class InboxHistoryFragment : BaseFragment(), InboxHistoryContract.View, SwipeRef
             val args = Bundle()
             args.putString(ARG_PARAM1, param1)
             args.putString(ARG_PARAM2, param2)
-            fragment.setArguments(args)
+            fragment.arguments = args
             return fragment
         }
 
@@ -99,7 +100,9 @@ class InboxHistoryFragment : BaseFragment(), InboxHistoryContract.View, SwipeRef
         val datas = mutableListOf<InboxHistory>()
         for (snapshot in dataSnapshot!!.children) {
             val data = snapshot.getValue(InboxHistory::class.java)
-            datas.add(data!!)
+            if (data!!.inboxSenderReceiverUId.toLowerCase().contains(UserPreference.getInstance().uid)) {
+                datas.add(data)
+            }
         }
         inboxAdapter.addDatas(datas)
     }

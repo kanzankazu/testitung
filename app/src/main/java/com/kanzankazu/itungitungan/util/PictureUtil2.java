@@ -39,8 +39,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class PictureUtil2 {
 
-    public final int REQUEST_IMAGE_CAMERA = 1;
-    public final int REQUEST_IMAGE_GALLERY = 2;
+    public static int REQUEST_CODE_IMAGE_CAMERA = 1;
+    public static int REQUEST_CODE_IMAGE_GALLERY = 2;
     public String[] permCameraGallery = AndroidPermissionUtil.permCameraGallery;
     private String mCurrentPhotoPath;
     private Activity mActivity;
@@ -115,7 +115,7 @@ public class PictureUtil2 {
     }
 
     public String onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAMERA && resultCode == RESULT_OK && mCurrentPhotoPath != null) { //FROM CAMERA
+        if (requestCode == REQUEST_CODE_IMAGE_CAMERA && resultCode == RESULT_OK && mCurrentPhotoPath != null) { //FROM CAMERA
             try {
                 compressImage();
                 if (imageView != null) Glide.with(mActivity).load(mCurrentPhotoPath).into(imageView);
@@ -126,7 +126,7 @@ public class PictureUtil2 {
                 Snackbar.make(mActivity.findViewById(android.R.id.content), mActivity.getString(R.string.message_picture_failed), Snackbar.LENGTH_LONG).show();
                 e.printStackTrace();
             }
-        } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) { //FROM GALLERY
+        } else if (requestCode == REQUEST_CODE_IMAGE_GALLERY && resultCode == RESULT_OK && data != null) { //FROM GALLERY
             try {
                 Uri uri = data.getData();
                 String galleryPath = getRealPathFromURIPath(uri);
@@ -163,10 +163,10 @@ public class PictureUtil2 {
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".provider", photoFile));
-                mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
+                mActivity.startActivityForResult(takePictureIntent, REQUEST_CODE_IMAGE_CAMERA);
             } else {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                mActivity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAMERA);
+                mActivity.startActivityForResult(takePictureIntent, REQUEST_CODE_IMAGE_CAMERA);
             }
         }
     }
@@ -175,7 +175,7 @@ public class PictureUtil2 {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_PICK);
-        mActivity.startActivityForResult(Intent.createChooser(intent, "Pilih foto"), REQUEST_IMAGE_GALLERY);
+        mActivity.startActivityForResult(Intent.createChooser(intent, "Pilih foto"), REQUEST_CODE_IMAGE_GALLERY);
     }
 
     private File createImageFile(Boolean isUriFormat) throws IOException {

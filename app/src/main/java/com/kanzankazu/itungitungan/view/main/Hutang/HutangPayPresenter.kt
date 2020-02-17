@@ -82,10 +82,10 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
     override fun saveSubHutangValidate(isNew: Boolean, huCil: HutangPembayaran, hutang: Hutang, tv_hutang_pay_cicilan_ke: TextView, et_hutang_pay_nominal: EditText, et_hutang_pay_note: EditText, imageListAdapter: ImageListAdapter, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
         if (mView.checkData(true)) {
             if (isNew) {
-                huCil.createAt = DateTimeUtil.currentDateString.toString()
+                huCil.createAt = DateTimeUtil.currentDateTimeString.toString()
                 huCil.createBy = UserPreference.getInstance().uid
             } else {
-                huCil.updateAt = DateTimeUtil.currentDateString.toString()
+                huCil.updateAt = DateTimeUtil.currentDateTimeString.toString()
                 huCil.updateBy = UserPreference.getInstance().uid
             }
             huCil.hIdSub = hutang.hId + "_" + Date()

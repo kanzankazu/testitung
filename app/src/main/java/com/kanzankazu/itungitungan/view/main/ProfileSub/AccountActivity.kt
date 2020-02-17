@@ -17,6 +17,7 @@ import com.kanzankazu.itungitungan.util.InputValidUtil
 import com.kanzankazu.itungitungan.util.PictureUtil2
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.util.android.AndroidPermissionUtil
+import com.kanzankazu.itungitungan.util.google.GooglePhoneNumberValidation
 import com.kanzankazu.itungitungan.view.base.BaseActivity
 import com.kanzankazu.itungitungan.view.main.ProfileAccountModel
 import com.kanzankazu.itungitungan.view.main.ProfileAccountOptionAdapter
@@ -64,26 +65,31 @@ class AccountActivity : BaseActivity(), AccountContract.View {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val photoPath = pictureUtil.onActivityResult(requestCode, resultCode, data)
-        user.photoUrl = photoPath
-        user.photoChangeAt = DateTimeUtil.currentDateString!!
-        setUserImage(photoPath)
+        if (requestCode == PictureUtil2.REQUEST_CODE_IMAGE_CAMERA || requestCode == PictureUtil2.REQUEST_CODE_IMAGE_GALLERY) {
+            val photoPath = pictureUtil.onActivityResult(requestCode, resultCode, data)
+            user.photoUrl = photoPath
+            user.photoChangeAt = DateTimeUtil.currentDateTimeString!!
+            setUserImage(photoPath)
+        } else if (requestCode == GooglePhoneNumberValidation.REQUEST_CODE_GOOGLE_PHONE_VALIDATION) {
+            val phoneNumber = GooglePhoneNumberValidation.onActivityResults(requestCode, resultCode, data)
+            mPresenter.isPhoneNumberExist(phoneNumber)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionUtil.onRequestPermissionsResult(
-                false,
-                object : AndroidPermissionUtil.AndroidPermissionUtilListener {
-                    override fun onPermissionGranted() {
-                        pictureUtil.chooseGetImageDialog()
-                    }
+            false,
+            object : AndroidPermissionUtil.AndroidPermissionUtilListener {
+                override fun onPermissionGranted() {
+                    pictureUtil.chooseGetImageDialog()
+                }
 
-                    override fun onPermissionDenied(message: String) {
-                        showSnackbar(message)
-                    }
-                },
-                requestCode, permissions, grantResults
+                override fun onPermissionDenied(message: String) {
+                    showSnackbar(message)
+                }
+            },
+            requestCode, permissions, grantResults
         )
     }
 
@@ -115,6 +121,10 @@ class AccountActivity : BaseActivity(), AccountContract.View {
         setUserImage(user.photoUrl)
     }
 
+    override fun setPhoneNumber(phoneNumber: String) {
+        et_account_user_phone.setText(phoneNumber)
+    }
+
     private fun setView() {
         setCollapseView()
         setOptionRecyclerView()
@@ -138,6 +148,7 @@ class AccountActivity : BaseActivity(), AccountContract.View {
                 pictureUtil.chooseGetImageDialog()
             }
         }
+        et_account_user_phone.setOnClickListener { GooglePhoneNumberValidation.startPhoneNumberValidation(this) }
 
         b_account_save.setOnClickListener {
             if (checkUserData(true)) {
@@ -158,8 +169,7 @@ class AccountActivity : BaseActivity(), AccountContract.View {
             InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_email, et_account_user_name, isFocus) -> false
             !InputValidUtil.isEmail(getString(R.string.message_field_email_wrong_format), til_account_user_email, et_account_user_name, isFocus) -> false
             InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_phone, et_account_user_phone, isFocus) -> false
-            !InputValidUtil.isPhoneNumber(getString(R.string.message_field_empty), til_account_user_phone, et_account_user_phone, isFocus) -> false
-            else -> true
+            else -> InputValidUtil.isPhoneNumber(getString(R.string.message_field_empty), til_account_user_phone, et_account_user_phone, isFocus)
         }
     }
 
@@ -186,9 +196,9 @@ class AccountActivity : BaseActivity(), AccountContract.View {
 
     private fun setUserImage(photoPath: String) {
         Glide.with(this)
-                .load(photoPath)
-                .placeholder(R.drawable.ic_profile)
-                .into(iv_account_user_image)
+            .load(photoPath)
+            .placeholder(R.drawable.ic_profile)
+            .into(iv_account_user_image)
     }
 
     private fun itemAdapterClick(data: ProfileAccountModel) {
@@ -197,10 +207,10 @@ class AccountActivity : BaseActivity(), AccountContract.View {
                 showSnackbar(getString(R.string.message_info_under_development))
             }
             getString(R.string.account_activity_payment_account) -> {
-                showSnackbar("1")
+                showSnackbar(getString(R.string.message_info_under_development))
             }
             getString(R.string.account_activity_category_cash_inout) -> {
-                showSnackbar("2")
+                showSnackbar(getString(R.string.message_info_under_development))
             }
         }
     }
@@ -223,7 +233,7 @@ class AccountActivity : BaseActivity(), AccountContract.View {
         val result: Pair<Int, Int> = when {
             percentOffset < ABROAD -> {
                 Pair(
-                        TO_EXPANDED_STATE, cashCollapseState?.second
+                    TO_EXPANDED_STATE, cashCollapseState?.second
                         ?: WAIT_FOR_SWITCH
                 )
             }
@@ -276,11 +286,11 @@ class AccountActivity : BaseActivity(), AccountContract.View {
                                 alpha = 0.2f
                                 this.translationX = width.toFloat() / 2
                                 animate().translationX(0f)
-                                        .setInterpolator(AnticipateOvershootInterpolator())
-                                        .alpha(1.0f)
-                                        .setStartDelay(69)
-                                        .setDuration(450)
-                                        .setListener(null)
+                                    .setInterpolator(AnticipateOvershootInterpolator())
+                                    .alpha(1.0f)
+                                    .setStartDelay(69)
+                                    .setDuration(450)
+                                    .setListener(null)
                             }
                         }
                     }

@@ -6,7 +6,6 @@ import com.kanzankazu.itungitungan.view.base.BaseViewContract
 
 interface InboxHistoryContract {
     interface View : BaseViewContract {
-
         fun toggleEmptyDataLayout(isVisible: Boolean)
         fun setInboxHistoryData(dataSnapshot: DataSnapshot?)
     }

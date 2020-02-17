@@ -1,15 +1,21 @@
 package com.kanzankazu.itungitungan.view.main
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.InboxHistory
 
 class InboxHistoryAdapter(var mActivity: Activity, var mView: InboxHistoryContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var datas: MutableList<InboxHistory> = mutableListOf()
+    private var subjectDataFilter: SubjectDataFilter? = null
+    private var mainModel: MutableList<InboxHistory> = mutableListOf()
+    private var tempModel: MutableList<InboxHistory> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_inbox, parent, false)
@@ -17,12 +23,12 @@ class InboxHistoryAdapter(var mActivity: Activity, var mView: InboxHistoryContra
     }
 
     override fun getItemCount(): Int {
-        return datas.size
+        return tempModel.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val h = holder as InboxAdapterAdapterHolder
-        h.setView(datas[position])
+        h.setView(tempModel[position])
 
     }
 
@@ -36,53 +42,62 @@ class InboxHistoryAdapter(var mActivity: Activity, var mView: InboxHistoryContra
         }
     }
 
+    fun getFilter(): Filter {
+        if (subjectDataFilter == null) {
+            subjectDataFilter = SubjectDataFilter()
+        }
+        return subjectDataFilter as SubjectDataFilter
+    }
+
     fun setData(datas: List<InboxHistory>) {
         if (datas.isNotEmpty()) {
-            this.datas.clear()
-            this.datas = datas as ArrayList<InboxHistory>
+            this.mainModel.clear()
+            this.tempModel.clear()
+
+            this.mainModel = datas as ArrayList<InboxHistory>
+            this.tempModel = datas
         } else {
-            this.datas = datas as ArrayList<InboxHistory>
+            this.mainModel = datas as ArrayList<InboxHistory>
+            this.tempModel = datas
         }
         notifyDataSetChanged()
     }
 
-    fun replaceData(datas: List<InboxHistory>) {
-        this.datas.clear()
-        this.datas.addAll(datas)
-        notifyDataSetChanged()
-    }
+    private inner class SubjectDataFilter : Filter() {
+        @SuppressLint("DefaultLocale")
+        override fun performFiltering(charSequence: CharSequence): FilterResults {
+            var charSequence = charSequence
 
-    fun addDatas(datas: List<InboxHistory>) {
-        this.datas.addAll(datas)
-        notifyItemRangeInserted(this.datas.size, datas.size)
-    }
+            charSequence = charSequence.toString()
+            val filterResults = FilterResults()
 
-    fun addDataFirst(data: InboxHistory) {
-        val position = 0
-        this.datas.add(position, data)
-        notifyItemInserted(position)
-    }
+            if (!TextUtils.isEmpty(charSequence)) {
+                val arrayList1 = java.util.ArrayList<InboxHistory>()
+                Log.d("Lihat performFiltering SubjectDataFilter", charSequence)
 
-    fun removeAt(position: Int) {
-        this.datas.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, this.datas.size)
-    }
+                for (data in mainModel) {
+                    if (data.toString().toLowerCase().contentEquals(charSequence.toString().toLowerCase())) {
+                        arrayList1.add(data)
+                    }
+                }
 
-    fun removeDataFirst() {
-        val position = 0
-        this.datas.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, this.datas.size)
-    }
+                filterResults.count = arrayList1.size
+                filterResults.values = arrayList1
+            } else {
+                synchronized(this) {
+                    filterResults.count = mainModel.size
+                    filterResults.values = mainModel
+                }
+            }
+            return filterResults
+        }
 
-    fun restoreData(data: InboxHistory, position: Int) {
-        this.datas.add(position, data)
-        notifyItemInserted(position)
-    }
+        @Suppress("UNCHECKED_CAST")
+        override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
 
-    fun updateSingleData(data: InboxHistory, position: Int) {
-        this.datas.set(position, data)
-        notifyDataSetChanged()
+            tempModel = filterResults.values as java.util.ArrayList<InboxHistory>
+
+            notifyDataSetChanged()
+        }
     }
 }

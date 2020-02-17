@@ -27,6 +27,7 @@ class InboxHistoryPresenter(private var mActivity: Activity, private var mView: 
             }
 
             override fun onFailureData(message: String?) {
+                mView.showSnackbarView(message)
             }
         })
     }
