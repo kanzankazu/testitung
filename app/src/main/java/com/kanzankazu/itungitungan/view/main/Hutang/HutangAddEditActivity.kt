@@ -69,7 +69,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == pictureUtil2.REQUEST_IMAGE_CAMERA || requestCode == pictureUtil2.REQUEST_IMAGE_GALLERY) {
+        if (requestCode == PictureUtil2.REQUEST_CODE_IMAGE_CAMERA || requestCode == PictureUtil2.REQUEST_CODE_IMAGE_GALLERY) {
             val mCurrentPhotoPath = pictureUtil2.onActivityResult(requestCode, resultCode, data)
             imageListAdapter.addDataFirst(ImageModel(mCurrentPhotoPath, ""))
             checkImageData()

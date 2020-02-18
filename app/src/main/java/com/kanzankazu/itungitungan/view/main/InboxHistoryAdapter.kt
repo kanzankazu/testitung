@@ -49,18 +49,24 @@ class InboxHistoryAdapter(var mActivity: Activity, var mView: InboxHistoryContra
         return subjectDataFilter as SubjectDataFilter
     }
 
-    fun setData(datas: List<InboxHistory>) {
-        if (datas.isNotEmpty()) {
+    fun setData(models: List<InboxHistory>) {
+        if (models.isNotEmpty()) {
             this.mainModel.clear()
             this.tempModel.clear()
 
-            this.mainModel = datas as ArrayList<InboxHistory>
-            this.tempModel = datas
+            this.mainModel = models as ArrayList<InboxHistory>
+            this.tempModel = models
         } else {
-            this.mainModel = datas as ArrayList<InboxHistory>
-            this.tempModel = datas
+            this.mainModel = models as ArrayList<InboxHistory>
+            this.tempModel = models
         }
         notifyDataSetChanged()
+    }
+
+    fun addDatas(datas: List<InboxHistory>) {
+        this.mainModel.addAll(datas)
+        this.tempModel.addAll(datas)
+        notifyItemRangeInserted(this.tempModel.size, datas.size)
     }
 
     private inner class SubjectDataFilter : Filter() {
