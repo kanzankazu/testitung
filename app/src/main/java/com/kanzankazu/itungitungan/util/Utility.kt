@@ -45,9 +45,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
-/**
- * Created by Stefanus Candra on 13/08/2019.
- */
 object Utility {
     interface DialogButtonListener {
         fun onDialogButtonClick()
@@ -177,7 +174,6 @@ object Utility {
             return cursor.getString(idx)
         }
     }
-
 
     fun intentWithClearTask(activity: AppCompatActivity?, classDestination: Class<*>) {
         if (activity != null) {

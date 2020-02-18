@@ -65,6 +65,7 @@ class InboxHistoryFragment : BaseFragment(), InboxHistoryContract.View, SwipeRef
     override fun onRefresh() {
         if (srl_inbox_history.isRefreshing) {
             srl_inbox_history.isRefreshing = false
+            mPresenter.getInboxHistoryData(true)
         }
     }
 
@@ -96,21 +97,25 @@ class InboxHistoryFragment : BaseFragment(), InboxHistoryContract.View, SwipeRef
         }
     }
 
-    override fun setInboxHistoryData(dataSnapshot: DataSnapshot?) {
+    override fun setInboxHistoryData(dataSnapshot: DataSnapshot?, isReload: Boolean) {
         val datas = mutableListOf<InboxHistory>()
         for (snapshot in dataSnapshot!!.children) {
             val data = snapshot.getValue(InboxHistory::class.java)
-            if (data!!.inboxSenderReceiverUId.toLowerCase().contains(UserPreference.getInstance().uid)) {
+            if (data!!.inboxSenderReceiverUId.contains(UserPreference.getInstance().uid, true)) {
                 datas.add(data)
             }
         }
-        inboxAdapter.addDatas(datas)
+        inboxAdapter.setData(datas)
+    }
+
+    override fun onListItemClick() {
+
     }
 
     private fun initView() {
         setupInboxAdapter()
 
-        mPresenter.getInboxHistoryData()
+        mPresenter.getInboxHistoryData(false)
     }
 
     private fun initListener() {

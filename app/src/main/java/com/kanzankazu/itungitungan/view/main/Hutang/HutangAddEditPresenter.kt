@@ -124,7 +124,7 @@ class HutangAddEditPresenter(private val mActivity: Activity, private val mView:
     }
 
     override fun saveImageHutang(hutang: Hutang, isEdit: Boolean, datasUri: MutableList<Uri>) {
-        FirebaseStorageUtil.uploadImages(mActivity, "hutangList", datasUri, object : FirebaseStorageUtil.DoneListenerMultiple {
+        FirebaseStorageUtil.uploadImages(mActivity, "hutang", datasUri, object : FirebaseStorageUtil.DoneListenerMultiple {
             override fun isFinised(imageDownloadUrls: ArrayList<String>) {
                 hutang.hutangProofImage = imageDownloadUrls
                 saveEditHutang(hutang, isEdit, true)

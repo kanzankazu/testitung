@@ -11,7 +11,8 @@
         android:layout_height="@dimen/padding_margin_50dp"
         android:layout_gravity="center|top"
         android:layout_marginEnd="@dimen/padding_margin_5dp"
-        android:background="@drawable/round">
+        android:background="@drawable/round"
+        android:visibility="gone">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/civ_item_inbox_photo"

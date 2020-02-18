@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Filter
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.InboxHistory
+import com.kanzankazu.itungitungan.util.DateTimeUtil
+import kotlinx.android.synthetic.main.item_inbox.view.*
 
 class InboxHistoryAdapter(var mActivity: Activity, var mView: InboxHistoryContract.View) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var subjectDataFilter: SubjectDataFilter? = null
@@ -34,11 +36,14 @@ class InboxHistoryAdapter(var mActivity: Activity, var mView: InboxHistoryContra
 
     inner class InboxAdapterAdapterHolder(view: View?) : RecyclerView.ViewHolder(view!!) {
         fun setView(model: InboxHistory) {
-
+            itemView.tv_item_inbox_name.text = model.inboxTitle
+            itemView.tv_item_inbox_isi.text = model.inboxMessage
+            itemView.tv_item_inbox_time.text = DateTimeUtil.getTimeAgoByDate(DateTimeUtil.convertStringToDateTime(model.createAt))
+            itemView.iv_item_inbox_new.visibility = if (model.inboxIsRead) View.GONE else View.VISIBLE
         }
 
         fun setListener(model: InboxHistory, itemView: View) {
-
+itemView.setOnClickListener{mView.onListItemClick()}
         }
     }
 

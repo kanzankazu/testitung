@@ -23,7 +23,7 @@ object DateTimeUtil {
     var MAX_DATE = Date(java.lang.Long.MAX_VALUE)
     var dateFormatter = SimpleDateFormat(Constants.DATE_FORMAT, Locale.US)
     var dateTimeFormatter = SimpleDateFormat(Constants.DATE_TIME_FORMAT_DAY_MONTH, Locale.US)
-    var timeFormatter = SimpleDateFormat("HH:mm", Locale.US)
+    var timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.US)
     var dateFromCalendar: String? = null
 
     val dayNow: Int
@@ -229,9 +229,8 @@ object DateTimeUtil {
     }
 
     fun convertDateToLong(dates: Date): Long {
-        //String date = "22/3/2014";
-        val date = convertDateToString(dates, SimpleDateFormat("dd/MM/yyyy"))
-        val parts = date.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val date = convertDateToString(dates)
+        val parts = date!!.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
         val day = Integer.parseInt(parts[0])
         val month = Integer.parseInt(parts[1])
@@ -647,7 +646,7 @@ object DateTimeUtil {
 
         val dim = getTimeDistanceInMinutes(time)
 
-        var timeAgo: String
+        val timeAgo: String
 
         if (dim == 0) {
             timeAgo = "less than a minute"
@@ -700,33 +699,6 @@ object DateTimeUtil {
         return if (c.get(Calendar.SECOND) > 0) {
             true
         } else c.get(Calendar.MILLISECOND) > 0
-    }
-
-    /**
-     * @param dateString yyyy-MM-dd
-     * @return
-     * @throws ParseException
-     */
-    @Throws(ParseException::class)
-    fun getTimeSecMinutesHoursDays(dateString: String): String {
-
-        val endDateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val currentDateAndTime = endDateFormat.format(Date())
-        val endDate = endDateFormat.parse(currentDateAndTime)
-
-        val startDateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val startDate = startDateFormat.parse(dateString)
-        // format the java.util.Date object to the desired format
-        //  String startDateString = new SimpleDateFormat(Constants.DateAndMonth.SAMPLE_DATE_TIME_FORMAT).format(startDate);
-        //long startMili = Tools.getMiliSecondsFromDateANDTIME(startDateString);
-        //long endMili = Tools.getMiliSecondsFromDateANDTIME(currentDateAndTime);
-        val difference = endDate.time - startDate.time
-
-        //String[] separated = minutesHoursDays.split(":");
-        //long seconds = TimeUnit.MILLISECONDS.toSeconds(difference);
-
-        return calculateTime(difference)
-
     }
 
     private fun calculateTime(milis: Long): String {

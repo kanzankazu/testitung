@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
+import com.kanzankazu.itungitungan.util.DialogUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseLoginUtil
 import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseFragment
@@ -198,9 +199,20 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         }
         civ_profile_edit.setOnClickListener { }
         cv_profile_signout.setOnClickListener {
-            showProgressDialog()
-            loginUtil.signOut(true)
+            dialogSignOutConfirm()
         }
+    }
+
+    private fun dialogSignOutConfirm() {
+        DialogUtil.showYesNoDialog(mActivity, "Konfirmasi", "Apakah anda ingin keluar akun?", object : DialogUtil.IntroductionButtonListener {
+            override fun onFirstButtonClick() {
+                showProgressDialog()
+                loginUtil.signOut(true)
+            }
+
+            override fun onSecondButtonClick() {
+            }
+        })
     }
 
     private fun moveTo(targetClass: Class<*>, isFinish: Boolean) {

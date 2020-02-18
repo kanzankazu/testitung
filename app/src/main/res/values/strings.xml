@@ -103,6 +103,7 @@
     <string name="hutang_installment_to">Cicilan ke :</string>
     <string name="hutang_pay_date">Tanggal Pembayaran</string>
     <string name="hutang_note">Catatan</string>
+    <string name="hutang_reminder_already_today">Anda sudah mengirim pengingat h</string>
     <string name="donate_option_view_ads_ready">Donasi dengan menonton iklan</string>
     <string name="donate_option_view_ads_loading">Tunggu sebentar ya, Donasi iklan sedang di muat</string>
     <string name="donate_option_view_ads_no_load_no_internet">Donasi iklan tidak muncul karena tidak ada internet,\nSilahkan cari internet untuk berdonasi dengan menonton iklan</string>

@@ -102,10 +102,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setLargeIcon(largeIcon)
                 .setContentTitle(title)
                 .setContentText(message)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(message)
+                )
                 .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_MAX)
                 .setSound(notificationSoundUri)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+                .setPriority(Notification.PRIORITY_MAX);
 
         //Set notification color to match your app color template
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

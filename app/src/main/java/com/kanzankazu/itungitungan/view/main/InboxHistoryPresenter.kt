@@ -20,10 +20,10 @@ class InboxHistoryPresenter(private var mActivity: Activity, private var mView: 
         mView.showRetryDialogView()
     }
 
-    override fun getInboxHistoryData() {
+    override fun getInboxHistoryData(isReload: Boolean) {
         FirebaseDatabaseHandler.getInboxHistorys(true, object : FirebaseDatabaseUtil.ValueListenerData {
             override fun onSuccessData(dataSnapshot: DataSnapshot?) {
-                mView.setInboxHistoryData(dataSnapshot)
+                mView.setInboxHistoryData(dataSnapshot,isReload)
             }
 
             override fun onFailureData(message: String?) {

@@ -176,25 +176,29 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
         var i = 0
         FirebaseConnectionUtil.isConnect(mActivity, object : FirebaseConnectionUtil.FirebaseConnectionListener {
             override fun hasInternet() {
-                if (mRewardedVideoAd.isLoaded) {
-                    ll_donate_option_ads.isEnabled = true
-                    tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_ready)
-                } else {
-                    ll_donate_option_ads.isEnabled = false
-                    tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_loading)
-                    Handler().postDelayed({
-                        checkVideoRewardLoaded()
-                    }, 1000)
-                    Log.d("Lihat hasInternet checkVideoRewardLoaded DonateOptionDialogFragment", i++.toString())
+                if (ll_donate_option_ads != null && tv_donate_option_ads != null) {
+                    if (mRewardedVideoAd.isLoaded) {
+                        ll_donate_option_ads.isEnabled = true
+                        tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_ready)
+                    } else {
+                        ll_donate_option_ads.isEnabled = false
+                        tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_loading)
+                        Handler().postDelayed({
+                            checkVideoRewardLoaded()
+                        }, 1000)
+                        Log.d("Lihat hasInternet checkVideoRewardLoaded DonateOptionDialogFragment", i++.toString())
+                    }
                 }
             }
 
             override fun noInternet(message: String?) {
-                ll_donate_option_ads.isEnabled = false
-                tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_no_load_no_internet)
-                Handler().postDelayed({
-                    checkVideoRewardLoaded()
-                }, 5000)
+                if (ll_donate_option_ads != null && tv_donate_option_ads != null){
+                    ll_donate_option_ads.isEnabled = false
+                    tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_no_load_no_internet)
+                    Handler().postDelayed({
+                        checkVideoRewardLoaded()
+                    }, 5000)
+                }
             }
         })
 
@@ -203,7 +207,10 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
     private fun initListener() {
         ll_donate_option_donate.setOnClickListener { showSnackbar(mActivity.getString(R.string.message_info_under_development)) }
         ll_donate_option_ads.setOnClickListener { showRewardedAds() }
-        tv_donate_option_close.setOnClickListener { dismiss() }
+        tv_donate_option_close.setOnClickListener {
+            mRewardedVideoAd.destroy(mActivity)
+            dismiss()
+        }
     }
 
     private fun dialogViewAgain() {

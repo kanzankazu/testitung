@@ -334,7 +334,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
                 DialogUtil.showConfirmationDialog(
                         this,
                         "Konfirmasi",
-                        "Dengan mengubah opsi ini, penghutang dan piutang tidak bisa mengubah data hutangList ini."
+                        "Dengan mengubah opsi ini, penghutang dan piutang tidak bisa mengubah data hutang ini."
                 ) {}
             }
         }
@@ -364,9 +364,9 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             setBundleData()
             setFamilyViewOnly(!isIFamily)
 
-            Utils.setupAppToolbarForActivity(this, toolbar, "Ubah hutangList Piutang")
+            Utils.setupAppToolbarForActivity(this, toolbar, "Ubah hutang Piutang")
         } else {
-            Utils.setupAppToolbarForActivity(this, toolbar, "Tambah hutangList Piutang")
+            Utils.setupAppToolbarForActivity(this, toolbar, "Tambah hutang Piutang")
         }
     }
 

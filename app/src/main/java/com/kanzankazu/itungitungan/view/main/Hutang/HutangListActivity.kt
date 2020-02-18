@@ -35,7 +35,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hutang_list)
 
-        Utils.setupAppToolbarForActivity(this, toolbar, "hutangList")
+        Utils.setupAppToolbarForActivity(this, toolbar, "hutang")
 
         setView()
         setListener()
@@ -138,12 +138,14 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         setAllHutangsFamily(hutangFamily)
         setAllHutangsLunas(hutangLunas)
 
+        var hutangView = Hutang()
         if (hutangBundleId.isNotEmpty()) {
             for (hutang in hutangs) {
                 if (hutang.hId.equals(hutangBundleId, true)) {
-                    onHutangLihatClick(hutang)
+                    hutangView = hutang
                 }
             }
+            onHutangLihatClick(hutangView)
         }
     }
 
@@ -287,7 +289,7 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
             "",
             "Konfirmasi",
             if (isHasReqDelete) {
-                "Anda sudah meminta menghapus list hutangList ini, apa anda ini mencabut penghapusan list ini?"
+                "Anda sudah meminta menghapus list hutang ini, apa anda ini mencabut penghapusan list ini?"
             } else {
                 "Apakah anda yakin ingin menghapus data ini?"
             }

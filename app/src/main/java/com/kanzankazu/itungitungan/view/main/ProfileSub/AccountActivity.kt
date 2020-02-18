@@ -36,12 +36,9 @@ class AccountActivity : BaseActivity(), AccountContract.View {
     private val mLowerLimitTransparently = ABROAD * 0.45
     private val mUpperLimitTransparently = ABROAD * 0.65
     private var user: User = User()
-
-    private var pictureUtil = PictureUtil2(this)
-    private var permissionUtil = AndroidPermissionUtil(this, true, *AndroidPermissionUtil.permCameraGallery)
-
-
+    private lateinit var permissionUtil: AndroidPermissionUtil
     private lateinit var mPresenter: AccountPresenter
+    private lateinit var pictureUtil: PictureUtil2
     private lateinit var optionAdapter: ProfileAccountOptionAdapter
 
     companion object {
@@ -56,6 +53,8 @@ class AccountActivity : BaseActivity(), AccountContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
 
+        pictureUtil = PictureUtil2(this)
+        permissionUtil = AndroidPermissionUtil(this, true, *AndroidPermissionUtil.permCameraGallery)
         mPresenter = AccountPresenter(this, this)
         Utils.setupAppToolbarForActivity(this, toolbar_account)
 
@@ -164,13 +163,15 @@ class AccountActivity : BaseActivity(), AccountContract.View {
     }
 
     private fun checkUserData(isFocus: Boolean): Boolean {
-        return when {
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_name, et_account_user_name, isFocus) -> false
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_email, et_account_user_name, isFocus) -> false
-            !InputValidUtil.isEmail(getString(R.string.message_field_email_wrong_format), til_account_user_email, et_account_user_name, isFocus) -> false
-            InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_phone, et_account_user_phone, isFocus) -> false
-            else -> InputValidUtil.isPhoneNumber(getString(R.string.message_field_empty), til_account_user_phone, et_account_user_phone, isFocus)
-        }
+        return if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_name, et_account_user_name, isFocus)) {
+            false
+        } else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_email, et_account_user_name, isFocus)) {
+            false
+        } else if (InputValidUtil.isEmptyField(getString(R.string.message_field_empty), til_account_user_phone, et_account_user_phone, isFocus)) {
+            false
+        } else if (!InputValidUtil.isEmail(getString(R.string.message_field_email_wrong_format), til_account_user_email, et_account_user_name, isFocus)) {
+            false
+        } else InputValidUtil.isPhoneNumber(getString(R.string.message_field_empty), til_account_user_phone, et_account_user_phone, isFocus)
     }
 
     private fun setCollapseView() {
@@ -179,7 +180,7 @@ class AccountActivity : BaseActivity(), AccountContract.View {
 
     private fun setOptionRecyclerView() {
         val listOfProfileAccount = mutableListOf<ProfileAccountModel>()
-        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_fast_notes), "Opsi ini untuk mempermudah anda membalas cepat saat pembayaran hutangList", "", true))
+        listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_fast_notes), "Opsi ini untuk mempermudah anda membalas cepat saat pembayaran hutang", "", true))
         listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_payment_account), "Opsi ini untuk mempermudah peminjam melakukan pembayaran dengan via trasfer", "", true))
         listOfProfileAccount.add(ProfileAccountModel(0, getString(R.string.account_activity_category_cash_inout), "Opsi ini mengkategorikan pemasukan dan pengeluaran anda", "", true))
 

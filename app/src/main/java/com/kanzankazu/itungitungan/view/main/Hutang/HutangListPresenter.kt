@@ -76,10 +76,11 @@ class HutangListPresenter(val mActivity: Activity, private val mView: HutangList
     }
 
     override fun isExistReminder(exists: Boolean, inboxHistory: InboxHistory) {
+        dismissProgressDialogPresenter()
         if (exists) {
-            showProgressDialogPresenter()
             showSnackBarPresenter(mActivity.getString(R.string.message_database_data_exist))
         } else {
+            showProgressDialogPresenter()
             mInteractor.setReminder(inboxHistory)
         }
     }

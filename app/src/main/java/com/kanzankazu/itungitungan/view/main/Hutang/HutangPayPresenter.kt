@@ -237,9 +237,9 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
                     mActivity,
                     "Info",
                     when (statusPembayaran) {
-                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutangList."
-                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutangList atau bonus?."
-                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutangList anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
+                        Constants.Hutang.Status.Lunas -> "Selamat, Hutang anda sudah LUNAS.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+                        Constants.Hutang.Status.Berlebih -> "Selamat, Hutang anda sudah LUNAS.\n tapi anda membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
+                        else -> "anda sudah membayar Rp.$nominalYangDiBayarkanSekarang dari hutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
                     }
             ) {
                 when (statusPembayaran) {
@@ -320,8 +320,8 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
     fun sendNotifAddEditHutang(hutang: Hutang) {
         val title = "Pembayaran Hutang"
         val message: String = when (statusPembayaran) {
-            Constants.Hutang.Status.Lunas -> "Piutang anda sudah di lunaskan.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutangList."
-            Constants.Hutang.Status.Berlebih -> "Piutang anda sudah di lunaskan.\n tapi peminjam membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutangList atau bonus?."
+            Constants.Hutang.Status.Lunas -> "Piutang anda sudah di lunaskan.\n gunakan terus aplikasi itung-itungan ini untuk mencatat keuangan anda terutama hutang."
+            Constants.Hutang.Status.Berlebih -> "Piutang anda sudah di lunaskan.\n tapi peminjam membayar berlebih, apakah kelebihan tersebut dicatat sebagai hutang atau bonus?."
             else -> "piutang anda sudah dibayarkan dengan nominal Rp.$nominalYangDiBayarkanSekarang dan piutang anda tinggal Rp." + (nominalTotalPembayaran - nominalSudahDiBayarkan - nominalYangDiBayarkanSekarang)
         }
         val type: String = Constants.FirebasePushNotif.TypeNotif.hutangList

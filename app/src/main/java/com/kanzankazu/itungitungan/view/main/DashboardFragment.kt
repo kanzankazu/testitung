@@ -107,7 +107,7 @@ class DashboardFragment : BaseFragment(), DashboardFragmentContract.View, View.O
         for (snapshot in dataSnapshot.children) {
             val hutang = snapshot.getValue(Hutang::class.java)
             if (hutang != null) {
-                if (hutang.debtorCreditorId.contains(UserPreference.getInstance().uid) ||
+                if (hutang.debtorCreditorId.contains(UserPreference.getInstance().uid,true) ||
                     (hutang.debtorFamilyId.isNotEmpty() && hutang.debtorFamilyId.equals(UserPreference.getInstance().uid, true)) ||
                     (hutang.creditorFamilyId.isNotEmpty() && hutang.creditorFamilyId.equals(UserPreference.getInstance().uid, true))
                 ) {
