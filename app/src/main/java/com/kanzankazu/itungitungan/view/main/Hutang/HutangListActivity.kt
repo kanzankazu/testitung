@@ -218,6 +218,10 @@ class HutangListActivity : BaseActivity(), HutangListContract.View {
         ib_hutang_list_search_clear.setOnClickListener { et_hutang_list_search.text.clear() }
     }
 
+    private fun showHideView() {
+
+    }
+
     private fun getBundle() {
         val bundle = intent.extras
         if (bundle != null) {

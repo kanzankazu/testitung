@@ -107,7 +107,9 @@ class HomeFragment : BaseFragment(), HomeContract.View {
         homeModels.add(Home(R.drawable.ic_arisan, Constants.HOME.Arisan, isShow = true, isComingSoon = true))
         homeModels.add(Home(R.drawable.ic_best_price, Constants.HOME.Banding, isShow = true, isComingSoon = true))
         homeModels.add(Home(R.drawable.ic_hutang, Constants.HOME.Hutang, isShow = true, isComingSoon = false))
+        homeModels.add(Home(R.drawable.ic_hutang, Constants.HOME.HutangLangganan, isShow = true, isComingSoon = true))
         homeModels.add(Home(R.drawable.ic_keuangan, Constants.HOME.Keuangan, isShow = true, isComingSoon = true))
+        homeModels.add(Home(R.drawable.ic_arisan, Constants.HOME.Nitip, isShow = true, isComingSoon = true))
         homeModels.add(Home(R.drawable.ic_stok, Constants.HOME.Stok, isShow = true, isComingSoon = true))
         homeAdapter.setData(homeModels)
 

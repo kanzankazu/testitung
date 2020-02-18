@@ -101,7 +101,7 @@ class InboxHistoryFragment : BaseFragment(), InboxHistoryContract.View, SwipeRef
         val datas = mutableListOf<InboxHistory>()
         for (snapshot in dataSnapshot!!.children) {
             val data = snapshot.getValue(InboxHistory::class.java)
-            if (data!!.inboxSenderReceiverUId.contains(UserPreference.getInstance().uid, true)) {
+            if (data!!.inboxReceiverUId.equals(UserPreference.getInstance().uid, true)) {
                 datas.add(data)
             }
         }
