@@ -1,12 +1,15 @@
 package com.kanzankazu.itungitungan.view.main
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
 import com.kanzankazu.itungitungan.util.DialogUtil
@@ -97,7 +100,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     override fun itemAdapterClick(data: ProfileAccountModel) {
         when (data.title) {
             mActivity.getString(R.string.share_friend_family) -> {
-                showSnackbar(getString(R.string.message_info_under_development))
+                share()
             }
             mActivity.getString(R.string.idea) -> {
                 val fm = mActivity.supportFragmentManager
@@ -105,7 +108,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
                 giveStarDialogFragment.show(fm, "fragment_giveStarDialogFragment")
             }
             mActivity.getString(R.string.help) -> {
-                showSnackbar(getString(R.string.message_info_under_development))
+                helpDialog()
             }
             mActivity.getString(R.string.donate) -> {
                 val fm = mActivity.supportFragmentManager
@@ -126,11 +129,11 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
     private fun share() {
 
         //Share text:
-        val intentText = Intent()
+        /*val intentText = Intent()
         intentText.action = Intent.ACTION_SEND
         intentText.type = "text/plain"
         intentText.putExtra(Intent.EXTRA_TEXT, R.string.share_friend_family_message)
-        startActivity(Intent.createChooser(intentText, "Share via"))
+        startActivity(Intent.createChooser(intentText, "Share via"))*/
 
         //via Email:
         /*val intent2 = Intent()
@@ -165,6 +168,12 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
             startActivity(Intent.createChooser(intent2, "Share via"))
         }*/
 
+        val shareBody = mActivity.getString(R.string.profile_share_body)
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mActivity.getString(R.string.profile_share_subject))
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
+        startActivity(Intent.createChooser(sharingIntent, "Share via"))
     }
 
     private fun initParam() {
@@ -179,7 +188,7 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         loginUtil = FirebaseLoginUtil(mActivity, this)
         mPresenter = ProfileFragmentPresenter(mActivity, this)
 
-        profileListAdapter = ProfileAccountOptionAdapter(mActivity, object : ProfileAccountOptionAdapter.Listener {
+        profileListAdapter = ProfileAccountOptionAdapter(mActivity, object : ProfileAccountOptionAdapter.ProfileAccountAdapterListener {
             override fun onItemAdapterClick(position: Int, data: ProfileAccountModel) {
                 itemAdapterClick(data)
             }
@@ -199,11 +208,56 @@ class ProfileFragment : BaseFragment(), ProfileFragmentContract.View {
         }
         civ_profile_edit.setOnClickListener { }
         cv_profile_signout.setOnClickListener {
-            dialogSignOutConfirm()
+            confirmSignOutDialog()
         }
     }
 
-    private fun dialogSignOutConfirm() {
+    private fun helpDialog() {
+        val listOf = mutableListOf("Email", "Whatsapp")
+        val sequenceArray = DialogUtil.convertListStringToCharSequenceArray(listOf)
+        val alertDialog = DialogUtil.setupRadioAlertDialog(mActivity, "Opsi Minta Bantuan", sequenceArray, -1, 0, "") { index, identifier, mode ->
+            when (index) {
+                0 -> {
+                    helpEmail()
+                }
+                1 -> {
+                    helpWhatsapp()
+                }
+            }
+        }
+        alertDialog.show()
+    }
+
+    private fun helpEmail() {
+        val emailIntent = Intent(Intent.ACTION_SEND)
+        emailIntent.type = "message/rfc822"
+        //emailIntent.type = "text/plain"
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(Constants.ADMIN_EMAIL))
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, mActivity.getString(R.string.profile_help_subject))
+        emailIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getString(R.string.profile_help_body))
+        //val root = Environment.getExternalStorageDirectory()
+        //val pathToMyAttachedFile = "temp/attachement.xml"
+        //val file = File(root, pathToMyAttachedFile)
+        //if (!file.exists() || !file.canRead()) {
+        //    return
+        //}
+        //val uri = Uri.fromFile(file)
+        //emailIntent.putExtra(Intent.EXTRA_STREAM, uri)
+        startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"))
+
+    }
+
+    private fun helpWhatsapp() {
+        try {
+            val intentAction = Intent(Intent.ACTION_VIEW)
+            intentAction.data = Uri.parse(Constants.URI_WA_FORMAT)
+            startActivity(intentAction)
+        } catch (e: ActivityNotFoundException) {
+            showToast(mActivity.getString(R.string.message_apps_not_found))
+        }
+    }
+
+    private fun confirmSignOutDialog() {
         DialogUtil.showYesNoDialog(mActivity, "Konfirmasi", "Apakah anda ingin keluar akun?", object : DialogUtil.IntroductionButtonListener {
             override fun onFirstButtonClick() {
                 showProgressDialog()

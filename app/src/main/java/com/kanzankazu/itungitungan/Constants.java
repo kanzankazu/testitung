@@ -12,6 +12,9 @@ public class Constants {
     public static final String FACEBOOK_NEW_VERSION_BASE_URL = "fb://facewebmodal/f?href=";
     public static final String FACEBOOK_OLD_VERSION_BASE_URL = "fb://page/";
     public static final long FETCH_FIREBASE = 3600;
+    public static final String ADMIN_EMAIL = "kanzankazu46@gmail.com";
+    public static final String ADMIN_WA_PHONENUMBER = "6283872203508";
+    public static final String URI_WA_FORMAT = "https://api.whatsapp.com/send?phone=" + ADMIN_WA_PHONENUMBER + "&text=Hallo tukang ngitung, tolong bantu saya punya pertanyaan?";
 
     public interface SharedPreference {
         String EMAIL = "EMAIL";

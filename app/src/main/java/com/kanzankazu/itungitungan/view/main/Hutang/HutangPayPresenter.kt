@@ -4,8 +4,6 @@ import android.app.Activity
 import android.net.Uri
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.EditText
-import android.widget.TextView
 import com.kanzankazu.itungitungan.Constants
 import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.UserPreference
@@ -79,7 +77,7 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
 
     }
 
-    override fun saveSubHutangValidate(isNew: Boolean, huCil: HutangPembayaran, hutang: Hutang, tv_hutang_pay_cicilan_ke: TextView, et_hutang_pay_nominal: EditText, et_hutang_pay_note: EditText, imageListAdapter: ImageListAdapter, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
+    override fun saveSubHutangValidate(isNew: Boolean, huCil: HutangPembayaran, hutang: Hutang, payNominal: String, payNote: String, imageListAdapter: ImageListAdapter, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate) {
         if (mView.checkData(true)) {
             if (isNew) {
                 huCil.createAt = DateTimeUtil.currentDateTimeString.toString()
@@ -91,8 +89,8 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             huCil.hIdSub = hutang.hId + "_" + Date()
             huCil.hId = hutang.hId
             huCil.paymentTo = hutang.hutangPembayaranSub.size + 1
-            huCil.paymentNominal = Utils.getRupiahToString(et_hutang_pay_nominal)
-            huCil.paymentDesc = et_hutang_pay_note.text.toString().trim()
+            huCil.paymentNominal = Utils.getRupiahToString(payNominal)
+            huCil.paymentDesc = payNote
             huCil.approvalDebtor = true
 
             //Start checkNominal
@@ -107,7 +105,7 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
                 nominalSudahDiBayarkan += models.paymentNominal.toInt()
             }
 
-            nominalYangDiBayarkanSekarang = Utils.getRupiahToString(et_hutang_pay_nominal).toInt()
+            nominalYangDiBayarkanSekarang = Utils.getRupiahToString(payNominal).toInt()
 
             if (nominalSudahDiBayarkan + nominalYangDiBayarkanSekarang == nominalTotalPembayaran) {
                 hutang.statusLunas = true
@@ -336,7 +334,6 @@ class HutangPayPresenter(val mActivity: Activity, val mView: HutangPayContract.V
             }
         })
     }
-
 
     private fun getSuggestNoteManual(): MutableList<NoteModel> {
         val list = mutableListOf<NoteModel>()

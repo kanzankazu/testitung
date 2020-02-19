@@ -1,7 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/app_toolbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tv_donate_submit"
+            android:layout_alignParentTop="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_10dp"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_donate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:itemCount="5"
+                        tools:layoutManager="LinearLayoutManager"
+                        tools:listitem="@layout/item_donate"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_margin_16dp"
+                    android:animateLayoutChanges="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/padding_margin_16dp"
+                    android:paddingRight="@dimen/padding_margin_16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/padding_margin_8dp"
+                        android:text="Upload bukti transfer * :" />
+
+                    <ImageView
+                        android:layout_width="@dimen/padding_margin_100dp"
+                        android:layout_height="@dimen/padding_margin_100dp"
+                        android:src="@drawable/ic_add_photo"
+                        tools:src="@tools:sample/avatars" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/padding_margin_16dp"
+                    android:paddingRight="@dimen/padding_margin_16dp">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/til_donate_nominal"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padding_margin_8dp">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_donate_nominal"
+                            style="@style/EtNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Masukan Nominal Donasi Anda"
+                            android:imeOptions="actionNext"
+                            android:selectAllOnFocus="true" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/til_donate_note"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padding_margin_8dp">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/et_donate_note"
+                            style="@style/EtMultiline"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Masukan Keterangan Donasi Anda"
+                            android:imeOptions="actionNext"
+                            android:inputType="phone"
+                            android:lines="3"
+                            android:minLines="3"
+                            android:selectAllOnFocus="true"
+                            android:singleLine="false" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padding_margin_5dp"
+                        android:text="Masukan keterangan tentang donasi anda, anda bisa juga memberikan masukan, kritik, saran untuk pengembangan aplikasi ini."
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/small_font_size" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+        <TextView
+            android:id="@+id/tv_donate_submit"
+            style="@style/TvStandartCenter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_margin_50dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/button_selector_dark"
+            android:text="Kirim"
+            android:textAllCaps="true"
+            android:textSize="@dimen/large_font_size" />
+
+    </RelativeLayout>
 
 
 </LinearLayout>

@@ -129,10 +129,12 @@ class GiveStarIdeaDialogFragment : BaseDialogFragment(), GiveStarDialogContract.
             iv_give_star_idea_idea.visibility = View.GONE
             ll_give_star_idea_star.visibility = View.VISIBLE
             til_give_star_idea_note.visibility = View.GONE
+            et_give_star_idea_note.maxLines = 2
         } else {
             iv_give_star_idea_idea.visibility = View.VISIBLE
             ll_give_star_idea_star.visibility = View.GONE
             til_give_star_idea_note.visibility = View.VISIBLE
+            et_give_star_idea_note.maxLines = 3
         }
     }
 

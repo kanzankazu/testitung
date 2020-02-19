@@ -164,7 +164,10 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
         )
 
         if (hutang.hutangCicilanIs) {
-            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
+            tv_hutang_pay_total_nominal.text =
+                "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + "\n" +
+                        "* nominal angsuran =" + Utils.setRupiah(hutang.hutangCicilanNominal) + "\n" +
+                        "* total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
             ll_hutang_pay_cicilan.visibility = View.VISIBLE
             if (hutang.hutangCicilanIs) {
                 tv_hutang_pay_cicilan_ke.text = getString(R.string.hutang_pay_installment_to, (hutang.hutangPembayaranSub.size + 1).toString(), hutang.hutangCicilanBerapaKali)
@@ -179,12 +182,17 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
                 ll_hutang_pay_due_dt.visibility = View.GONE
             }
         } else {
-            tv_hutang_pay_total_nominal.text = "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + " & total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
+            tv_hutang_pay_total_nominal.text =
+                "* total hutang = " + Utils.setRupiah(nominalTotalPembayaran.toString()) + "\n" +
+                        "* total sudah di bayarkan = " + Utils.setRupiah(nominalSudahDiBayarkan.toString())
             ll_hutang_pay_cicilan.visibility = View.GONE
         }
     }
 
     private fun dialogConfirmSave() {
+        val payNominal = et_hutang_pay_nominal.text.toString().trim()
+        val payNote = et_hutang_pay_note.text.toString().trim()
+
         DialogUtil.showIntroductionDialog(
             this,
             "",
@@ -196,7 +204,7 @@ class HutangPayActivity : BaseActivity(), HutangPayContract.View, FirebaseDataba
             -1,
             object : DialogUtil.IntroductionButtonListener {
                 override fun onFirstButtonClick() {
-                    mPresenter.saveSubHutangValidate(isNew, huCil, hutang, tv_hutang_pay_cicilan_ke, et_hutang_pay_nominal, et_hutang_pay_note, imageListAdapter, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
+                    mPresenter.saveSubHutangValidate(isNew, huCil, hutang, payNominal, payNote, imageListAdapter, object : FirebaseDatabaseUtil.ValueListenerStringSaveUpdate {
                         override fun onSuccessSaveUpdate(message: String?) {
                             showSnackbar(message)
                             finish()

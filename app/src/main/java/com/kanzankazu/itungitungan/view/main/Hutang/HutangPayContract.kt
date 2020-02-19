@@ -2,8 +2,6 @@ package com.kanzankazu.itungitungan.view.main.Hutang
 
 import android.net.Uri
 import android.support.v7.widget.RecyclerView
-import android.widget.EditText
-import android.widget.TextView
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.model.HutangPembayaran
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseDatabaseUtil
@@ -25,7 +23,7 @@ interface HutangPayContract {
         fun initImageAdapter(rv_hutang_pay_image: RecyclerView, listener: ImageListAdapter.ImageListContract): ImageListAdapter
         fun getSuggestNote()
         fun addImage(): PictureUtil2
-        fun saveSubHutangValidate(isNew: Boolean, huCil: HutangPembayaran, hutang: Hutang, tv_hutang_pay_cicilan_ke: TextView, et_hutang_pay_nominal: EditText, et_hutang_pay_note: EditText, imageListAdapter: ImageListAdapter, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
+        fun saveSubHutangValidate(isNew: Boolean, huCil: HutangPembayaran, hutang: Hutang, payNominal: String, payNote: String, imageListAdapter: ImageListAdapter, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
         fun saveImageData(hutang: Hutang, huCil: HutangPembayaran, imageLocalUri: MutableList<Uri>, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
         fun saveUpdateData(hutang: Hutang, huCil: HutangPembayaran, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)
         fun saveValidateImageData(imageListAdapter: ImageListAdapter, isNew: Boolean, hutang: Hutang, huCil: HutangPembayaran, listener: FirebaseDatabaseUtil.ValueListenerStringSaveUpdate)

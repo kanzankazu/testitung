@@ -292,7 +292,7 @@ public class DialogUtil {
         alert.show();
     }
 
-    public static CharSequence[] convertListStrinToCharSequenceArray(List<String> list) {
+    public static CharSequence[] convertListStringToCharSequenceArray(List<String> list) {
         return list.toArray(new CharSequence[list.size()]);
     }
 

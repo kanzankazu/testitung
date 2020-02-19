@@ -82,7 +82,9 @@
                     style="@style/EtMultiline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan kritik dan saran anda" />
+                    android:gravity="left"
+                    android:hint="Masukan kritik dan saran anda"
+                    android:minLines="3" />
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>

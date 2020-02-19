@@ -186,7 +186,7 @@ class AccountActivity : BaseActivity(), AccountContract.View {
 
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rv_account_option.layoutManager = linearLayoutManager
-        optionAdapter = ProfileAccountOptionAdapter(this, object : ProfileAccountOptionAdapter.Listener {
+        optionAdapter = ProfileAccountOptionAdapter(this, object : ProfileAccountOptionAdapter.ProfileAccountAdapterListener {
             override fun onItemAdapterClick(position: Int, data: ProfileAccountModel) {
                 itemAdapterClick(data)
             }

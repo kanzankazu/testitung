@@ -18,14 +18,14 @@
         android:paddingTop="@dimen/padding_margin_16dp"
         android:paddingRight="@dimen/padding_margin_16dp">
 
-
         <ImageView
-            android:layout_width="@dimen/padding_margin_200dp"
-            android:layout_height="@dimen/padding_margin_200dp"
+            android:layout_width="@dimen/padding_margin_150dp"
+            android:layout_height="@dimen/padding_margin_150dp"
             android:layout_marginBottom="@dimen/padding_margin_8dp"
             android:src="@mipmap/ic_launcher" />
 
         <TextView
+            android:id="@+id/tv_about_app_name"
             style="@style/TvStandartCenter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,7 +33,16 @@
             android:text="@string/app_name"
             android:textSize="@dimen/Big_font_size" />
 
+        <TextView
+            android:id="@+id/tv_about_app_version"
+            style="@style/TvStandartCenter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_margin_8dp"
+            android:textSize="@dimen/Big_font_size" />
+
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_about"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:itemCount="50"

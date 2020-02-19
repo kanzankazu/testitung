@@ -203,7 +203,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
 
         mPresenter.getSuggestUserFamily()
         setListTypeInstallmentCount(sp_hutang_add_installment_count)
-        setListImage(rv_hutang_add_image)
+        setListImageAdapter(rv_hutang_add_image)
 
         getBundle()
     }
@@ -544,7 +544,7 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
         }
     }
 
-    private fun setListImage(recyclerView: RecyclerView) {
+    private fun setListImageAdapter(recyclerView: RecyclerView) {
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = linearLayoutManager
         imageListAdapter = ImageListAdapter(this, object : ImageListAdapter.ImageListContract {
@@ -557,6 +557,8 @@ class HutangAddEditActivity : BaseActivity(), HutangAddEditContract.View {
             override fun onImageListAdd(data: ImageModel, position: Int) {}
         })
         recyclerView.adapter = imageListAdapter
+
+        checkImageData()
     }
 
     private fun checkImageData() {

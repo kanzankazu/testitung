@@ -66,6 +66,7 @@
     <string name="message_its_you">Ini anda</string>
     <string name="message_its_you_family">Ini keluarga anda</string>
     <string name="message_its_you_invite">Ini rekan yang kamu undang</string>
+    <string name="message_apps_not_found">aplikasi tidak di temukan</string>
 
     <!--Profile-->
     <string name="sign_in">Masuk</string>
@@ -105,11 +106,15 @@
     <string name="hutang_note">Catatan</string>
     <string name="hutang_reminder_already_today">Anda sudah mengirim pengingat h</string>
     <string name="donate_option_view_ads_ready">Donasi dengan menonton iklan</string>
-    <string name="donate_option_view_ads_loading">Tunggu sebentar ya, Donasi iklan sedang di muat</string>
+    <string name="donate_option_view_ads_loading">Tunggu sebentar ya, Donasi iklan sedang di muat. . .</string>
     <string name="donate_option_view_ads_no_load_no_internet">Donasi iklan tidak muncul karena tidak ada internet,\nSilahkan cari internet untuk berdonasi dengan menonton iklan</string>
     <string name="donate_option_with_give">Donasi dengan pemberian dana seikhlasnya</string>
     <string name="account_activity_fast_notes">Pesan cepat pembayaran pi/hutang</string>
     <string name="account_activity_payment_account">Akun Penerimaan Pembayaran (Akun Bank / Akun Fintech(OVO/DANA))</string>
     <string name="account_activity_category_cash_inout">Kategori Pemasukan Pengeluaran</string>
+    <string name="profile_share_subject">Tentang Aplikasi Itung - Itungan</string>
+    <string name="profile_share_body">Hallo yang perhitungan, ada aplikasi yang passss buat kamu yang suka itung-itungan… </string>
+    <string name="profile_help_subject">Bantuan Aplikasi Itung - Itungan</string>
+    <string name="profile_help_body">Hallo tukang ngitung, tolong bantu saya punya pertanyaan…</string>
 
 </resources>

@@ -23,7 +23,7 @@ public class CurrencyEditText extends android.support.v7.widget.AppCompatEditTex
 
 
     public static String prefix = "Rp ";
-    public static String validationNominal = prefix + "xx";
+    public static String validationNominal = prefix + "";
     public static int validationLimit = validationNominal.length();
     public static String lenghtNominalDigits = String.valueOf(validationNominal.split(" ")[1].length());
 

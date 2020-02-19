@@ -17,6 +17,7 @@ import com.kanzankazu.itungitungan.R
 import com.kanzankazu.itungitungan.model.Hutang
 import com.kanzankazu.itungitungan.util.DialogUtil
 import com.kanzankazu.itungitungan.util.Firebase.FirebaseConnectionUtil
+import com.kanzankazu.itungitungan.util.Utils
 import com.kanzankazu.itungitungan.view.base.BaseDialogFragment
 import kotlinx.android.synthetic.main.fragment_donate_option_dialog.*
 
@@ -192,7 +193,7 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
             }
 
             override fun noInternet(message: String?) {
-                if (ll_donate_option_ads != null && tv_donate_option_ads != null){
+                if (ll_donate_option_ads != null && tv_donate_option_ads != null) {
                     ll_donate_option_ads.isEnabled = false
                     tv_donate_option_ads.text = mActivity.getString(R.string.donate_option_view_ads_no_load_no_internet)
                     Handler().postDelayed({
@@ -205,12 +206,16 @@ class DonateOptionDialogFragment : BaseDialogFragment(), DonateOptionDialogContr
     }
 
     private fun initListener() {
-        ll_donate_option_donate.setOnClickListener { showSnackbar(mActivity.getString(R.string.message_info_under_development)) }
+        ll_donate_option_donate.setOnClickListener { moveTo(DonateActivity::class.java) }
         ll_donate_option_ads.setOnClickListener { showRewardedAds() }
         tv_donate_option_close.setOnClickListener {
             mRewardedVideoAd.destroy(mActivity)
             dismiss()
         }
+    }
+
+    private fun moveTo(targetClass: Class<*>) {
+        Utils.intentTo(mActivity, targetClass, false)
     }
 
     private fun dialogViewAgain() {
