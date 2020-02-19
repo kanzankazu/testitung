@@ -72,7 +72,9 @@ public class Constants {
         String Arisan = "Arisan";
         String Banding = "Banding harga";
         String Hutang = "Hutang";
+        String HutangLangganan= "Hutang Langganan";
         String Keuangan = "Keuangan";
+        String Nitip="Nitip";
         String Stok = "Stok Barang";
     }
 
